@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>O que é ser Fullstack? | Curso Fullstack</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=JetBrains+Mono:wght@400;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../shared/styles.css">
+<link rel="stylesheet" href="../../shared/components.css">
+<link rel="stylesheet" href="../../shared/animations.css">
+<style>
+  /* ====== Torre da stack ====== */
+  .tower{display:flex;flex-direction:column;gap:10px;max-width:560px;margin:8px auto}
+  .tower .floor{display:flex;align-items:center;gap:14px;background:var(--surface2);
+    border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:14px 18px;position:relative;overflow:hidden}
+  .tower .floor img{width:34px;height:34px;flex-shrink:0}
+  .tower .floor .emoji{font-size:1.8rem;width:34px;text-align:center;flex-shrink:0}
+  .tower .floor .ft{font-weight:800;font-size:1rem}
+  .tower .floor .fs{font-size:0.8rem;color:var(--text-dim)}
+  .tower .floor .layer-tag{margin-left:auto;font-size:0.6rem;font-weight:800;letter-spacing:1px;
+    text-transform:uppercase;padding:3px 10px;border-radius:50px}
+  .lt-front{background:rgba(97,218,251,0.15);color:var(--react)}
+  .lt-bridge{background:rgba(247,183,49,0.15);color:var(--accent5)}
+  .lt-back{background:rgba(109,179,63,0.15);color:var(--spring)}
+  .lt-data{background:rgba(51,103,145,0.22);color:#7fb0e0}
+  .lt-infra{background:rgba(255,153,0,0.15);color:var(--aws)}
+
+  /* ====== JOGO: Dev Run ====== */
+  .game{background:linear-gradient(180deg,#0b1020,#0d0d1a);border:1px solid rgba(108,99,255,0.25);
+    border-radius:18px;overflow:hidden;position:relative;margin:10px 0}
+  .game-stage{position:relative;height:300px;overflow:hidden}
+  .game-sky{position:absolute;inset:0;background:
+    radial-gradient(circle at 20% 20%, rgba(97,218,251,0.10), transparent 40%),
+    radial-gradient(circle at 80% 30%, rgba(247,183,49,0.08), transparent 40%)}
+  .game-world{position:absolute;left:0;bottom:46px;display:flex;align-items:flex-end;gap:42px;
+    padding-left:50%;will-change:transform}
+  .plat{width:120px;flex-shrink:0;text-align:center;position:relative}
+  .plat .top{height:70px;border-radius:12px 12px 0 0;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:2px;border:2px solid rgba(255,255,255,0.12);
+    border-bottom:none;background:var(--surface2);transition:transform .25s,box-shadow .25s}
+  .plat .top img{width:30px;height:30px}
+  .plat .top .emoji{font-size:1.6rem}
+  .plat .pname{font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text-dim);margin-top:6px;font-weight:700}
+  .plat.active .top{transform:translateY(-8px) scale(1.06);box-shadow:0 10px 30px rgba(0,0,0,0.5)}
+  .plat.active .pname{color:var(--text)}
+  .plat .pillar{height:90px;width:70%;margin:0 auto;background:linear-gradient(180deg,rgba(255,255,255,0.06),transparent);
+    border-left:1px solid rgba(255,255,255,0.06);border-right:1px solid rgba(255,255,255,0.06)}
+  .dev{position:absolute;bottom:46px;left:50%;transform:translateX(-50%);font-size:2.4rem;z-index:3;
+    filter:drop-shadow(0 6px 6px rgba(0,0,0,0.5));will-change:transform}
+  .game-ground{position:absolute;left:0;right:0;bottom:0;height:46px;
+    background:linear-gradient(180deg,#15152a,#0a0a14);border-top:2px solid rgba(108,99,255,0.3)}
+  .game-hud{display:flex;align-items:center;justify-content:space-between;gap:10px;
+    padding:12px 16px;background:rgba(255,255,255,0.03);border-top:1px solid rgba(255,255,255,0.06);flex-wrap:wrap}
+  .game-btns{display:flex;gap:8px}
+  .gbtn{background:var(--surface3);border:1px solid rgba(255,255,255,0.12);color:var(--text);
+    font-weight:800;font-size:0.85rem;padding:9px 16px;border-radius:10px;cursor:pointer;transition:all .2s}
+  .gbtn:hover:not(:disabled){background:var(--accent);border-color:var(--accent)}
+  .gbtn:disabled{opacity:0.35;cursor:not-allowed}
+  .gbtn.primary{background:linear-gradient(135deg,var(--react),var(--css));color:#0a0a12;border:none}
+  .game-dots{display:flex;gap:5px}
+  .game-dots i{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.18);transition:all .2s;display:block}
+  .game-dots i.on{background:var(--accent5);transform:scale(1.4)}
+  .game-card{padding:18px 20px;border-top:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02)}
+  .game-card .gc-head{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+  .game-card .gc-head img{width:30px;height:30px}
+  .game-card .gc-head .emoji{font-size:1.6rem}
+  .game-card .gc-name{font-weight:900;font-size:1.15rem}
+  .game-card .gc-badge{font-size:0.6rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;padding:3px 10px;border-radius:50px}
+  .game-card .gc-tip{color:var(--text-dim);font-size:0.92rem}
+  .game-hint{font-size:0.72rem;color:var(--text-dim);text-align:center;padding:6px}
+  .game-hint kbd{background:var(--surface3);border-radius:4px;padding:1px 6px;font-family:'JetBrains Mono',monospace}
+  @media(max-width:600px){.game-stage{height:240px}.dev{font-size:2rem}}
+
+  /* ====== Ciclo da requisição ====== */
+  .req-lab{background:var(--code-bg);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:18px;margin:10px 0}
+  .req-track{display:flex;align-items:center;justify-content:space-between;gap:8px;position:relative;flex-wrap:wrap}
+  .req-node{flex:1;min-width:120px;text-align:center;background:var(--surface2);border:1px solid rgba(255,255,255,0.08);
+    border-radius:12px;padding:12px 8px;transition:all .3s;position:relative}
+  .req-node.lit{border-color:var(--accent5);box-shadow:0 0 20px rgba(247,183,49,0.25);transform:translateY(-4px)}
+  .req-node .rn-ic{font-size:1.5rem}
+  .req-node .rn-t{font-size:0.72rem;font-weight:800;margin-top:4px}
+  .req-node .rn-s{font-size:0.62rem;color:var(--text-dim);font-family:'JetBrains Mono',monospace}
+  .req-msg{text-align:center;margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:0.82rem;
+    color:var(--accent5);min-height:20px}
+
+  /* ====== Logos backend hype ====== */
+  .logo-row{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin:14px 0}
+  .logo-chip{display:flex;align-items:center;gap:10px;background:var(--surface2);border:1px solid rgba(255,255,255,0.08);
+    border-radius:12px;padding:12px 18px}
+  .logo-chip img{width:30px;height:30px}
+  .logo-chip .lc-n{font-weight:800;font-size:0.9rem}
+  .logo-chip .lc-s{font-size:0.7rem;color:var(--text-dim)}
+
+  /* ====== Roadmap 15 sábados ====== */
+  .roadmap{display:grid;gap:8px;margin:10px 0}
+  .rm-row{display:flex;align-items:center;gap:12px;background:var(--surface2);border-radius:10px;padding:10px 14px;border:1px solid rgba(255,255,255,0.06)}
+  .rm-row .rm-n{font-family:'JetBrains Mono',monospace;font-weight:800;font-size:0.8rem;width:54px;flex-shrink:0}
+  .rm-front .rm-n{color:var(--react)}.rm-back .rm-n{color:var(--spring)}
+  .rm-row .rm-x{font-size:0.7rem;margin-left:auto;padding:2px 10px;border-radius:50px;font-weight:800;text-transform:uppercase;letter-spacing:1px}
+  .rm-front .rm-x{background:rgba(97,218,251,0.14);color:var(--react)}
+  .rm-back .rm-x{background:rgba(109,179,63,0.14);color:var(--spring)}
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-orbs"><div class="orb"></div><div class="orb"></div><div class="orb"></div></div>
+<div class="progress-track"><div class="progress-bar"></div></div>
+
+<!-- SIDEBAR -->
+<button class="menu-toggle" onclick="openSidebar()" aria-label="Abrir menu">☰</button>
+<div class="sidebar-overlay"></div>
+<nav class="sidebar-nav">
+  <button class="sidebar-close" onclick="closeSidebar()" aria-label="Fechar">✕</button>
+  <div class="sidebar-header">
+    <h3>🌐 O que é Fullstack?</h3>
+    <a class="sidebar-back" href="../../index.html">← Voltar ao hub</a>
+  </div>
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Neste capítulo</div>
+    <a class="sidebar-link" onclick="goTo('restaurante')"><span class="dot" style="background:var(--accent5)"></span> A analogia do restaurante</a>
+    <a class="sidebar-link" onclick="goTo('torre')"><span class="dot" style="background:var(--react)"></span> A torre da stack</a>
+    <a class="sidebar-link" onclick="goTo('jogo')"><span class="dot" style="background:var(--accent)"></span> 🎮 Dev Run (jogo)</a>
+    <a class="sidebar-link" onclick="goTo('requisicao')"><span class="dot" style="background:var(--accent5)"></span> Ciclo de uma requisição</a>
+    <a class="sidebar-link" onclick="goTo('backend')"><span class="dot" style="background:var(--spring)"></span> O motor: back, DB, nuvem</a>
+    <a class="sidebar-link" onclick="goTo('carreira')"><span class="dot" style="background:var(--accent7)"></span> 💼 Carreira &amp; salários</a>
+    <a class="sidebar-link" onclick="goTo('roadmap')"><span class="dot" style="background:var(--accent6)"></span> A jornada (15 sábados)</a>
+    <a class="sidebar-link" onclick="goTo('comecar')"><span class="dot" style="background:var(--html)"></span> Bora começar</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-icons" data-motion="float">🌐 🧑‍💻 🚀</div>
+  <span class="hero-badge react">Aula 00 · Antes do código</span>
+  <h1>O que é ser Fullstack?</h1>
+  <p style="font-family:'Caveat',cursive;font-size:clamp(1.6rem,4vw,2.4rem);color:var(--accent5);margin:-6px 0 18px;font-weight:700">
+    Front + Back + Banco + Nuvem = você no controle de tudo 🤯
+  </p>
+  <p class="subtitle">
+    Antes de digitar a primeira tag, vamos enxergar o <strong>mapa inteiro</strong>. No fim deste curso
+    você não vai saber só "fazer telas" — vai construir um sistema de <strong>ponta a ponta</strong>:
+    a interface, o servidor, o banco de dados e a publicação na nuvem.
+  </p>
+  <div class="hero-stack">
+    <span class="stack-chip html"><img src="../../assets/svg/html5.svg" alt="" width="16" height="16"> HTML</span>
+    <span class="stack-chip react"><img src="../../assets/svg/react.svg" alt="" width="16" height="16"> React</span>
+    <span class="stack-chip" style="border-color:rgba(248,152,32,0.4);color:var(--java)"><img src="../../assets/svg/java.svg" alt="" width="16" height="16"> Java</span>
+    <span class="stack-chip" style="border-color:rgba(109,179,63,0.4);color:var(--spring)"><img src="../../assets/svg/spring.svg" alt="" width="16" height="16"> Spring</span>
+    <span class="stack-chip" style="border-color:rgba(255,153,0,0.4);color:var(--aws)"><img src="../../assets/svg/aws.svg" alt="" width="22" height="16"> AWS</span>
+  </div>
+</section>
+
+<div class="container">
+
+  <!-- ════════ RESTAURANTE ════════ -->
+  <section class="step-section" id="restaurante">
+    <div class="step-header">
+      <div class="step-number sn-yellow">🍽️</div>
+      <div>
+        <div class="step-title">A analogia do restaurante</div>
+        <div class="step-sub">A forma mais honesta de entender "fullstack"</div>
+      </div>
+    </div>
+
+    <div class="card" data-motion="rise">
+      <p style="color:var(--text-dim);margin-bottom:12px">
+        Imagine um <strong style="color:var(--text)">restaurante</strong>. Todo sistema web funciona igualzinho:
+      </p>
+
+      <div class="tower">
+        <div class="floor" data-motion-child>
+          <span class="emoji">🪑</span>
+          <div><div class="ft">O salão &amp; o cardápio</div><div class="fs">o que o cliente vê e toca — mesa, menu, garçom</div></div>
+          <span class="layer-tag lt-front">Frontend</span>
+        </div>
+        <div class="floor" data-motion-child>
+          <span class="emoji">🧾</span>
+          <div><div class="ft">O garçom levando o pedido</div><div class="fs">leva o pedido pra cozinha e traz a resposta</div></div>
+          <span class="layer-tag lt-bridge">API</span>
+        </div>
+        <div class="floor" data-motion-child>
+          <span class="emoji">👨‍🍳</span>
+          <div><div class="ft">A cozinha</div><div class="fs">onde a comida é REALMENTE preparada — a lógica</div></div>
+          <span class="layer-tag lt-back">Backend</span>
+        </div>
+        <div class="floor" data-motion-child>
+          <span class="emoji">🥫</span>
+          <div><div class="ft">A despensa / estoque</div><div class="fs">onde os ingredientes ficam guardados — os dados</div></div>
+          <span class="layer-tag lt-data">Banco de dados</span>
+        </div>
+        <div class="floor" data-motion-child>
+          <span class="emoji">🏢</span>
+          <div><div class="ft">O prédio (aberto 24h)</div><div class="fs">o terreno e a energia que mantêm tudo funcionando</div></div>
+          <span class="layer-tag lt-infra">Nuvem / AWS</span>
+        </div>
+      </div>
+
+      <div class="concept" style="margin-top:14px">
+        <div class="concept-title">🧑‍🍳 Então "fullstack" é...</div>
+        <p>O profissional que entende e constrói <strong>o restaurante inteiro</strong>: monta o salão,
+        cozinha, organiza a despensa e ainda cuida do prédio. Não é "saber tudo de cor" — é
+        <strong>enxergar o todo</strong> e conseguir trabalhar em qualquer parte. É o profissional mais
+        valorizado do mercado justamente por isso.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ════════ TORRE DA STACK ════════ -->
+  <section class="step-section" id="torre">
+    <div class="step-header">
+      <div class="step-number sn-react">🗼</div>
+      <div>
+        <div class="step-title">A torre da stack (com nome aos bois)</div>
+        <div class="step-sub">As tecnologias de verdade que você vai dominar</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p style="color:var(--text-dim);margin-bottom:12px">
+        Agora trocando a analogia pelas ferramentas reais. <strong>Cada andar é um pedaço do curso.</strong>
+        Não se assuste com os nomes — a gente vai um de cada vez:
+      </p>
+      <div class="tower">
+        <div class="floor"><img src="../../assets/svg/html5.svg" alt="HTML5"><div><div class="ft">HTML &amp; CSS</div><div class="fs">estrutura e estilo das telas</div></div><span class="layer-tag lt-front">Front</span></div>
+        <div class="floor"><img src="../../assets/svg/javascript.svg" alt="JavaScript"><div><div class="ft">JavaScript</div><div class="fs">a lógica que roda no navegador</div></div><span class="layer-tag lt-front">Front</span></div>
+        <div class="floor"><img src="../../assets/svg/react.svg" alt="React"><div><div class="ft">React</div><div class="fs">interfaces modernas em componentes</div></div><span class="layer-tag lt-front">Front</span></div>
+        <div class="floor"><span class="emoji">🔌</span><div><div class="ft">API REST (HTTP + JSON)</div><div class="fs">o front conversa com o back por aqui</div></div><span class="layer-tag lt-bridge">Ponte</span></div>
+        <div class="floor"><img src="../../assets/svg/java.svg" alt="Java"><div><div class="ft">Java</div><div class="fs">a linguagem robusta do servidor</div></div><span class="layer-tag lt-back">Back</span></div>
+        <div class="floor"><img src="../../assets/svg/spring.svg" alt="Spring"><div><div class="ft">Spring Boot</div><div class="fs">framework que cria a API rapidinho</div></div><span class="layer-tag lt-back">Back</span></div>
+        <div class="floor"><img src="../../assets/svg/postgresql.svg" alt="PostgreSQL"><div><div class="ft">PostgreSQL</div><div class="fs">o banco onde os dados moram</div></div><span class="layer-tag lt-data">Dados</span></div>
+        <div class="floor"><img src="../../assets/svg/docker.svg" alt="Docker"><div><div class="ft">Docker &amp; AWS</div><div class="fs">empacotar e publicar na nuvem</div></div><span class="layer-tag lt-infra">Nuvem</span></div>
+      </div>
+      <div class="tip" style="margin-top:14px">
+        <span class="tip-icon">😌</span>
+        <div class="tip-content">
+          <strong>Respira.</strong> Você NÃO precisa entender nada disso agora. Esse slide é só o
+          "mapa do tesouro". Daqui a 15 sábados, todos esses nomes vão ser velhos conhecidos.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ════════ JOGO: DEV RUN ════════ -->
+  <section class="step-section" id="jogo">
+    <div class="step-header">
+      <div class="step-number sn-main">🎮</div>
+      <div>
+        <div class="step-title">Dev Run — caminhe pela stack</div>
+        <div class="step-sub">Use ◀ ▶ (ou as setas do teclado) pra avançar pela jornada</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p style="color:var(--text-dim);margin-bottom:10px">
+        Bora jogar enquanto eu explico? Cada plataforma é uma tecnologia. Leve o <strong>dev 🧑‍💻</strong>
+        do começo (HTML) até a nuvem (AWS) e descubra o que cada uma faz:
+      </p>
+
+      <div class="game" id="devrun">
+        <div class="game-stage">
+          <div class="game-sky"></div>
+          <div class="game-world" id="gw"></div>
+          <div class="dev" id="dev">🧑‍💻</div>
+          <div class="game-ground"></div>
+        </div>
+        <div class="game-card" id="gcard">
+          <div class="gc-head">
+            <span id="gc-ic"></span>
+            <span class="gc-name" id="gc-name"></span>
+            <span class="gc-badge" id="gc-badge"></span>
+          </div>
+          <div class="gc-tip" id="gc-tip"></div>
+        </div>
+        <div class="game-hud">
+          <div class="game-btns">
+            <button class="gbtn" id="gprev">◀ Voltar</button>
+            <button class="gbtn primary" id="gnext">Avançar ▶</button>
+          </div>
+          <div class="game-dots" id="gdots"></div>
+        </div>
+        <div class="game-hint">dica: use as setas <kbd>◀</kbd> <kbd>▶</kbd> do teclado · objetivo: chegar na ☁️ AWS</div>
+      </div>
+
+      <div class="tip" style="margin-top:12px">
+        <span class="tip-icon">🏁</span>
+        <div class="tip-content">
+          Chegou na nuvem? <strong>É essa a jornada que começa amanhã.</strong> A diferença é que, em vez
+          de apertar um botão, <strong>você</strong> vai construir cada plataforma com as próprias mãos.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ════════ CICLO DA REQUISIÇÃO ════════ -->
+  <section class="step-section" id="requisicao">
+    <div class="step-header">
+      <div class="step-number sn-yellow">⚡</div>
+      <div>
+        <div class="step-title">O que acontece quando você clica num botão</div>
+        <div class="step-sub">A viagem de uma requisição — assista rodar</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p style="color:var(--text-dim);margin-bottom:6px">
+        Você clica em "ver meus pedidos". Em milissegundos, acontece <strong>isto</strong> (clique em
+        <em>Rodar de novo</em> pra ver a animação):
+      </p>
+      <div class="req-lab">
+        <div class="req-track">
+          <div class="req-node" data-step="0"><div class="rn-ic">🖱️</div><div class="rn-t">Você clica</div><div class="rn-s">React</div></div>
+          <div class="req-node" data-step="1"><div class="rn-ic">🔌</div><div class="rn-t">Requisição</div><div class="rn-s">GET /pedidos</div></div>
+          <div class="req-node" data-step="2"><div class="rn-ic">☕</div><div class="rn-t">Servidor</div><div class="rn-s">Java + Spring</div></div>
+          <div class="req-node" data-step="3"><div class="rn-ic">🗄️</div><div class="rn-t">Banco</div><div class="rn-s">PostgreSQL</div></div>
+          <div class="req-node" data-step="4"><div class="rn-ic">📦</div><div class="rn-t">Resposta</div><div class="rn-s">200 · JSON</div></div>
+          <div class="req-node" data-step="5"><div class="rn-ic">🖥️</div><div class="rn-t">Tela atualiza</div><div class="rn-s">React</div></div>
+        </div>
+        <div class="req-msg" id="reqmsg">▶️ iniciando...</div>
+      </div>
+      <div style="text-align:center;margin-top:10px">
+        <button class="gbtn primary" id="reqplay">▶ Rodar de novo</button>
+      </div>
+      <div class="concept" style="margin-top:14px">
+        <div class="concept-title">💡 Saca o pulo do gato?</div>
+        <p>O <strong>front</strong> (React) nunca fala direto com o banco. Ele pede pro <strong>back</strong>
+        (Java/Spring), que é quem tem permissão de mexer no <strong>banco</strong> (PostgreSQL) e devolve
+        os dados em <strong>JSON</strong>. Esse vai-e-vem é o coração de TODO sistema web.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ════════ BACKEND HYPE ════════ -->
+  <section class="step-section" id="backend">
+    <div class="step-header">
+      <div class="step-number" style="background:var(--spring);color:#0a0a12">🔧</div>
+      <div>
+        <div class="step-title">Você não vai só fazer telas. Vai construir o motor.</div>
+        <div class="step-sub">A parte que separa "quem mexe em site" de "quem constrói software"</div>
+      </div>
+    </div>
+
+    <div class="card" data-motion="rise">
+      <p style="color:var(--text-dim);margin-bottom:6px">
+        Telas bonitas qualquer um faz. O que vale ouro no mercado é saber o que tem <strong>por trás</strong>:
+        o servidor que processa milhões de pedidos, o banco que guarda tudo sem perder um byte, e a nuvem
+        que mantém o sistema no ar pro mundo inteiro. <strong>Tudo isso está neste curso.</strong>
+      </p>
+
+      <div class="logo-row">
+        <div class="logo-chip" data-motion-child><img src="../../assets/svg/java.svg" alt="Java"><div><div class="lc-n">Java</div><div class="lc-s">roda em bancos e bigtechs</div></div></div>
+        <div class="logo-chip" data-motion-child><img src="../../assets/svg/spring.svg" alt="Spring"><div><div class="lc-n">Spring Boot</div><div class="lc-s">o framework #1 de APIs Java</div></div></div>
+        <div class="logo-chip" data-motion-child><img src="../../assets/svg/postgresql.svg" alt="PostgreSQL"><div><div class="lc-n">PostgreSQL</div><div class="lc-s">banco de dados de verdade</div></div></div>
+        <div class="logo-chip" data-motion-child><img src="../../assets/svg/docker.svg" alt="Docker"><div><div class="lc-n">Docker</div><div class="lc-s">empacota o sistema todo</div></div></div>
+        <div class="logo-chip" data-motion-child><img src="../../assets/svg/aws.svg" alt="AWS" style="width:46px"><div><div class="lc-n">AWS</div><div class="lc-s">a nuvem que o mundo usa</div></div></div>
+      </div>
+
+      <div class="warning">
+        <span class="warning-icon">💰</span>
+        <div class="warning-content">
+          <strong>Por que isso te empolga?</strong> Vaga de "fullstack Java + React" é das mais bem pagas
+          e disputadas do Brasil e da gringa. É exatamente a combinação que você vai ter no currículo —
+          e com um <strong>projeto real</strong> pra mostrar.
+        </div>
+      </div>
+
+      <figure style="margin:16px 0 0;text-align:center">
+        <img src="../../assets/memes/meme-fullstack-poder.png"
+             alt="Meme realista sobre o poder de um dev fullstack"
+             style="max-width:460px;width:100%;border-radius:14px;border:1px solid rgba(255,255,255,0.08)"
+             onerror="this.closest('figure').style.display='none'">
+      </figure>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ════════ CARREIRA / MERCADO / SALÁRIOS ════════ -->
+  <section class="step-section" id="carreira">
+    <div class="step-header">
+      <div class="step-number sn-mint">💼</div>
+      <div>
+        <div class="step-title">Por que essa carreira vale TANTO a pena 🚀</div>
+        <div class="step-sub">Salários, home-office, faculdade — a real sobre dev no Brasil</div>
+      </div>
+    </div>
+
+    <div class="career-hero">
+      <div class="career-hero-shine"></div>
+      <div class="career-hero-side">
+        <div class="career-hero-tag">📊 Pesquisa Salarial 2025</div>
+        <div class="career-hero-num">R$ 15.635</div>
+        <div class="career-hero-label">é o salário médio de um <strong>programador SÊNIOR</strong> no Brasil</div>
+        <div class="career-hero-foot">
+          Fonte: <a href="https://pesquisa.codigofonte.com.br/2025" target="_blank" rel="noopener">pesquisa.codigofonte.com.br/2025</a>
+          · 12.510 profissionais (mar–jul 2025)
+        </div>
+      </div>
+      <div class="career-hero-emoji">🚀</div>
+    </div>
+
+    <div class="card">
+      <h3 class="career-h3">💰 Quanto ganha um dev no Brasil?</h3>
+      <p style="color:var(--text-dim)">Médias de 2025 (pesquisa do <strong style="color:var(--text)">Código Fonte TV</strong>, a maior da área):</p>
+      <div class="salary-grid">
+        <div class="salary-tile"><div class="salary-level">JÚNIOR</div><div class="salary-num">R$ 4.154</div><div class="salary-when">0–2 anos<br>começo da estrada</div></div>
+        <div class="salary-tile pleno"><div class="salary-level">PLENO</div><div class="salary-num">R$ 7.840</div><div class="salary-when">2–5 anos<br>pegando o jeito</div></div>
+        <div class="salary-tile senior"><div class="salary-level">SÊNIOR</div><div class="salary-num">R$ 15.635</div><div class="salary-when">5+ anos &amp;<br>profundidade técnica</div></div>
+      </div>
+      <div class="data-source"><span class="data-source-icon">📊</span><div>Fonte: <strong>Pesquisa Salarial Código Fonte TV 2025</strong> · <a href="https://pesquisa.codigofonte.com.br/2025" target="_blank" rel="noopener">pesquisa.codigofonte.com.br/2025</a> · 12.510 profissionais.</div></div>
+
+      <h3 class="career-h3" style="margin-top:26px">🌍 E pra empresas no exterior?</h3>
+      <p style="color:var(--text-dim)">Inglês + dev sólido = você concorre globalmente, do quarto de casa.</p>
+      <div class="salary-grid exterior">
+        <div class="salary-tile"><div class="salary-flag">🇵🇹</div><div class="salary-level">PORTUGAL</div><div class="salary-num">≈ R$ 20.387</div><div class="salary-when">~ USD 2.450/mês</div></div>
+        <div class="salary-tile"><div class="salary-flag">🇺🇸</div><div class="salary-level">EUA</div><div class="salary-num">≈ R$ 39.750</div><div class="salary-when">~ USD 4.770/mês<br>remoto worldwide</div></div>
+        <div class="salary-tile"><div class="salary-flag">🇨🇭</div><div class="salary-level">SUÍÇA</div><div class="salary-num">≈ R$ 47.500</div><div class="salary-when">~ USD 5.700/mês<br>top do mercado</div></div>
+      </div>
+      <div class="data-source"><span class="data-source-icon">📊</span><div>Fonte: <strong>Código Fonte TV 2025</strong> (respondentes que trabalham fora) · conversão estimada a R$ 5,30/USD (varia com o câmbio).</div></div>
+
+      <div class="tip" style="margin-top:18px">
+        <span class="tip-icon">💵</span>
+        <div class="tip-content">Trabalhando pra fora dá pra <strong>multiplicar 3 a 5x</strong> o salário sênior brasileiro. Inglês + base sólida + portfólio = passaporte digital. Não precisa nem mudar de país.</div>
+      </div>
+
+      <figure style="margin:16px auto 0;max-width:400px;text-align:center">
+        <img src="../../assets/memes/meme-gringa-chinelo.png" alt="Meme: dev brasileiro trabalhando remoto pra empresa de fora, de chinelo, recebendo em dólar"
+          style="width:100%;border-radius:14px;border:1px solid rgba(255,255,255,0.08)"
+          onerror="this.closest('figure').style.display='none'">
+      </figure>
+    </div>
+
+    <div class="card">
+      <h3 class="career-h3">🏠 É verdade que rola muito home-office?</h3>
+      <div class="metric-row">
+        <div class="metric-tile"><div class="metric-pct">61<span class="pct-sign">%</span></div><div class="metric-label">trabalham<br><strong>remoto hoje</strong></div></div>
+        <div class="metric-tile highlight"><div class="metric-pct">78<span class="pct-sign">%</span></div><div class="metric-label">acham remoto<br>a modalidade <strong>ideal</strong></div></div>
+        <div class="metric-tile"><div class="metric-pct">1<span class="pct-sign">%</span></div><div class="metric-label">prefere<br><strong>presencial</strong></div></div>
+      </div>
+      <p style="color:var(--text-dim);margin-top:14px">Dev é <strong style="color:var(--text)">profissional sem fronteiras</strong>. Casa, café, praia, outro país — basta notebook e Wi-Fi decente.</p>
+      <div class="data-source"><span class="data-source-icon">📊</span><div>Fonte: <strong>Código Fonte TV 2025</strong> · 61,77% remoto · 78,16% remoto-ideal · 1,34% presencial.</div></div>
+    </div>
+
+    <div class="card">
+      <h3 class="career-h3">🎓 Precisa de faculdade?</h3>
+      <p style="color:var(--text-dim)">Resposta direta: <strong style="color:var(--accent7)">não obriga</strong>. A área é <strong style="color:var(--text)">meritocrática</strong> — vale o que você sabe entregar.</p>
+      <div class="metric-row two">
+        <div class="metric-tile"><div class="metric-pct">67<span class="pct-sign">%</span></div><div class="metric-label">têm <strong>ensino superior</strong></div></div>
+        <div class="metric-tile"><div class="metric-pct">33<span class="pct-sign">%</span></div><div class="metric-label">trabalham <strong>SEM faculdade</strong></div></div>
+      </div>
+      <div class="warning" style="margin-top:14px"><span class="warning-icon">⚖️</span><div class="warning-content"><strong>Mas atenção:</strong> faculdade não é obstáculo, é <strong style="color:var(--accent5)">acelerador</strong> (fundamentos, networking, disciplina). Com ou sem diploma, a <strong>base sólida</strong> é o que destaca — e é isso que este curso entrega.</div></div>
+      <div class="data-source"><span class="data-source-icon">📊</span><div>Fonte: <strong>Código Fonte TV 2025</strong> · 67,2% com superior · 32,8% sem diploma. Confirmado pela <strong>Stack Overflow Survey 2024</strong>.</div></div>
+    </div>
+
+    <div class="card">
+      <h3 class="career-h3">🥇 Linguagens mais bem pagas no Brasil</h3>
+      <p style="color:var(--text-dim)">E olha que coincidência boa pra quem faz <strong style="color:var(--text)">fullstack Java + React</strong>:</p>
+      <div class="lang-rank">
+        <div class="lang-row featured" style="border:1px solid rgba(248,152,32,0.4);background:rgba(248,152,32,0.06)">
+          <div class="lang-rank-num">#1</div>
+          <div class="lang-name">☕ Java <span style="font-size:0.62rem;font-weight:800;background:var(--java);color:#0a0a12;padding:2px 8px;border-radius:50px;margin-left:6px">VOCÊ APRENDE AQUI</span></div>
+          <div class="lang-val">R$ 10.735</div>
+        </div>
+        <div class="lang-row"><div class="lang-rank-num">#2</div><div class="lang-name">🟦 C#</div><div class="lang-val">R$ 10.195</div></div>
+        <div class="lang-row featured" style="border:1px solid rgba(41,101,241,0.4);background:rgba(41,101,241,0.06)">
+          <div class="lang-rank-num">#3</div>
+          <div class="lang-name">🔷 TypeScript <span style="font-size:0.62rem;color:var(--text-dim)">(o JavaScript turbinado)</span></div>
+          <div class="lang-val">R$ 9.627</div>
+        </div>
+        <div class="lang-row"><div class="lang-rank-num">#4</div><div class="lang-name">🐍 Python</div><div class="lang-val">R$ 9.506</div></div>
+        <div class="lang-row featured" style="border:1px solid rgba(247,223,30,0.4);background:rgba(247,223,30,0.06)">
+          <div class="lang-rank-num">#5</div>
+          <div class="lang-name"><img src="../../assets/svg/javascript.svg" alt="" width="16" height="16" style="vertical-align:-3px"> JavaScript <span style="font-size:0.62rem;font-weight:800;background:var(--js);color:#0a0a12;padding:2px 8px;border-radius:50px;margin-left:6px">VOCÊ APRENDE AQUI</span></div>
+          <div class="lang-val">R$ 8.896</div>
+        </div>
+      </div>
+      <div class="tip" style="margin-top:14px">
+        <span class="tip-icon">🎯</span>
+        <div class="tip-content">
+          Sacou? A stack que você vai dominar aqui — <strong style="color:var(--java)">Java</strong> (#1!) no back
+          e <strong style="color:var(--js)">JavaScript</strong>/React no front — é <strong>exatamente</strong> a
+          combinação mais pedida e mais bem paga do mercado. Não é sorte, é estratégia. 💸
+        </div>
+      </div>
+      <div class="data-source"><span class="data-source-icon">📊</span><div>Fonte: <strong>Código Fonte TV 2025</strong> · ranking por salário médio: Java R$ 10.735,79 · C# R$ 10.195,72 · TypeScript R$ 9.627,67 · Python R$ 9.506,39 · JavaScript R$ 8.896,38.</div></div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ════════ ROADMAP ════════ -->
+  <section class="step-section" id="roadmap">
+    <div class="step-header">
+      <div class="step-number sn-purple">🗺️</div>
+      <div>
+        <div class="step-title">A jornada completa — 15 sábados</div>
+        <div class="step-sub">Onde estamos e pra onde vamos</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p style="color:var(--text-dim);margin-bottom:10px">Visão geral do curso inteiro (front + back juntos):</p>
+      <div class="roadmap">
+        <div class="rm-row rm-front"><span class="rm-n">Hoje</span><div>O que é fullstack — o mapa que você está vendo agora 🗺️</div><span class="rm-x">você está aqui</span></div>
+        <div class="rm-row rm-front"><span class="rm-n">Front</span><div>HTML, CSS &amp; JavaScript — as telas ganham vida</div><span class="rm-x">Frontend</span></div>
+        <div class="rm-row rm-front"><span class="rm-n">Front</span><div>React — componentes, hooks, rotas, consumir API</div><span class="rm-x">Frontend</span></div>
+        <div class="rm-row rm-back"><span class="rm-n">Back</span><div>Java &amp; Spring Boot — construir a API REST</div><span class="rm-x">Backend</span></div>
+        <div class="rm-row rm-back"><span class="rm-n">Back</span><div>PostgreSQL — modelar e guardar os dados</div><span class="rm-x">Backend</span></div>
+        <div class="rm-row rm-back"><span class="rm-n">Deploy</span><div>Docker &amp; AWS — o sistema no ar pro mundo</div><span class="rm-x">Nuvem</span></div>
+      </div>
+      <div class="tip" style="margin-top:14px">
+        <span class="tip-icon">🧭</span>
+        <div class="tip-content">
+          Este material cobre a <strong>metade Frontend</strong>. A metade Backend tem o material dela
+          (Java/Spring/PostgreSQL). No fim, as duas se encontram: <strong>seu React conversando com a
+          sua API</strong>. Aí sim, fullstack de verdade. 🤝
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ CTA ════════ -->
+  <section class="step-section" id="comecar">
+    <div class="card" style="text-align:center;background:linear-gradient(135deg,rgba(227,79,38,0.10),rgba(97,218,251,0.06));border-color:rgba(227,79,38,0.20)">
+      <h3 style="font-size:1.5rem;margin-bottom:8px">Entendeu o mapa? Então bora construir 🛠️</h3>
+      <p class="text-dim" style="max-width:560px;margin:0 auto 20px">
+        Toda essa torre gigante começa com uma única tag. A sua primeira página está logo ali.
+      </p>
+      <a href="../01-html-css/" style="display:inline-block;padding:14px 34px;background:linear-gradient(135deg,var(--html),var(--accent5));color:var(--bg);text-decoration:none;font-weight:900;border-radius:50px;font-size:1.05rem">
+        🧱 Capítulo 01 — HTML &amp; CSS →
+      </a>
+      <p style="margin-top:12px"><a href="../../index.html" style="color:var(--accent4);text-decoration:none;font-size:0.85rem">← voltar ao hub</a></p>
+    </div>
+  </section>
+
+</div>
+
+<footer class="footer">
+  Feito com <span class="heart">♥</span> pela <strong style="color:var(--text)">programa AI</strong> ·
+  <a href="../../index.html">Hub do curso</a> · Aula 00 — O que é Fullstack
+</footer>
+
+<script src="../../shared/scripts.js" defer></script>
+<script type="module" src="../../shared/motion-fx.js"></script>
+<script type="module">
+  // ====== Dev Run: motor do jogo ======
+  let animate = null;
+  try { ({ animate } = await import('https://cdn.jsdelivr.net/npm/motion@11/+esm')); } catch(e){}
+
+  const SVG = '../../assets/svg/';
+  const STAGES = [
+    {logo:SVG+'html5.svg', name:'HTML',       layer:'Front',  cls:'lt-front',  tip:'A estrutura da página: títulos, textos, imagens, botões. O esqueleto de tudo.'},
+    {logo:SVG+'css3.svg',  name:'CSS',        layer:'Front',  cls:'lt-front',  tip:'A aparência: cores, fontes, espaçamento e layout. A roupa da página.'},
+    {logo:SVG+'javascript.svg', name:'JavaScript', layer:'Front', cls:'lt-front', tip:'A interatividade: o que acontece quando você clica, digita, rola a tela.'},
+    {logo:SVG+'react.svg', name:'React',      layer:'Front',  cls:'lt-front',  tip:'A biblioteca pra montar interfaces grandes com peças reutilizáveis (componentes).'},
+    {emoji:'🔌',           name:'API REST',   layer:'Ponte',  cls:'lt-bridge', tip:'A ponte entre front e back: o front pede, o back responde — tudo em JSON.'},
+    {logo:SVG+'java.svg',  name:'Java',       layer:'Back',   cls:'lt-back',   tip:'A linguagem do servidor: onde mora a lógica pesada do sistema.'},
+    {logo:SVG+'spring.svg',name:'Spring Boot',layer:'Back',   cls:'lt-back',   tip:'O framework que monta a API REST em Java de forma rápida e organizada.'},
+    {logo:SVG+'postgresql.svg', name:'PostgreSQL', layer:'Dados', cls:'lt-data', tip:'O banco de dados: onde os dados ficam guardados de verdade, com segurança.'},
+    {logo:SVG+'aws.svg',   name:'AWS ☁️',     layer:'Nuvem',  cls:'lt-infra',  tip:'A nuvem: onde o sistema roda 24 horas pro mundo inteiro acessar. Chegou no topo! 🏆', wide:true},
+  ];
+
+  const gw = document.getElementById('gw');
+  const dev = document.getElementById('dev');
+  const STEP = 162; // largura plataforma + gap
+  let i = 0;
+
+  // monta plataformas
+  STAGES.forEach((s, idx) => {
+    const p = document.createElement('div');
+    p.className = 'plat' + (idx===0?' active':'');
+    const icon = s.logo ? `<img src="${s.logo}" alt="" style="${s.wide?'width:46px':''}">` : `<span class="emoji">${s.emoji}</span>`;
+    p.innerHTML = `<div class="top">${icon}</div><div class="pillar"></div><div class="pname">${s.name}</div>`;
+    gw.appendChild(p);
+  });
+  const plats = [...gw.querySelectorAll('.plat')];
+  const dots = document.getElementById('gdots');
+  STAGES.forEach((_,idx)=>{ const d=document.createElement('i'); if(idx===0)d.className='on'; dots.appendChild(d); });
+  const dotEls = [...dots.children];
+
+  function render(){
+    const x = -i * STEP;
+    if (animate) {
+      animate(gw, { transform:`translateX(${x}px)` }, { duration:.5, easing:[0.22,1,0.36,1] });
+      animate(dev, { transform:['translateX(-50%) translateY(0px)','translateX(-50%) translateY(-46px)','translateX(-50%) translateY(0px)'] },
+        { duration:.5, easing:'ease-out' });
+    } else {
+      gw.style.transition='transform .4s'; gw.style.transform=`translateX(${x}px)`;
+    }
+    plats.forEach((p,idx)=>p.classList.toggle('active', idx===i));
+    dotEls.forEach((d,idx)=>d.classList.toggle('on', idx===i));
+    const s = STAGES[i];
+    document.getElementById('gc-ic').innerHTML = s.logo ? `<img src="${s.logo}" alt="" style="${s.wide?'width:46px':''}">` : `<span class="emoji">${s.emoji}</span>`;
+    document.getElementById('gc-name').textContent = s.name;
+    const badge = document.getElementById('gc-badge');
+    badge.textContent = s.layer; badge.className = 'gc-badge ' + s.cls;
+    const tip = document.getElementById('gc-tip');
+    tip.textContent = s.tip;
+    if (animate) animate(tip, { opacity:[0,1], transform:['translateY(8px)','translateY(0)'] }, { duration:.4 });
+    document.getElementById('gprev').disabled = i===0;
+    document.getElementById('gnext').disabled = i===STAGES.length-1;
+    document.getElementById('gnext').textContent = i===STAGES.length-2 ? '🏁 Chegar na nuvem' : 'Avançar ▶';
+  }
+  function go(d){ i = Math.max(0, Math.min(STAGES.length-1, i+d)); render(); }
+  document.getElementById('gnext').onclick = ()=>go(1);
+  document.getElementById('gprev').onclick = ()=>go(-1);
+  document.addEventListener('keydown', e=>{
+    if (e.key==='ArrowRight'){ go(1); } else if (e.key==='ArrowLeft'){ go(-1); }
+  });
+  render();
+
+  // ====== Ciclo da requisição ======
+  const MSGS = [
+    '🖱️ Você clica em "ver pedidos"',
+    '🔌 Front envia: GET /pedidos',
+    '☕ Spring recebe e processa',
+    '🗄️ Busca os dados no PostgreSQL',
+    '📦 Devolve 200 OK + JSON',
+    '🖥️ React mostra na tela ✨',
+  ];
+  const reqNodes = [...document.querySelectorAll('#requisicao .req-node')];
+  const reqMsg = document.getElementById('reqmsg');
+  let reqTimer = null;
+  function playReq(){
+    clearInterval(reqTimer);
+    let s = 0;
+    reqNodes.forEach(n=>n.classList.remove('lit'));
+    function tick(){
+      reqNodes.forEach((n,idx)=>n.classList.toggle('lit', idx===s));
+      reqMsg.textContent = MSGS[s];
+      if (animate) animate(reqMsg, { opacity:[0.3,1] }, { duration:.3 });
+      s++;
+      if (s>=MSGS.length){ clearInterval(reqTimer); setTimeout(()=>reqNodes.forEach(n=>n.classList.remove('lit')), 900); }
+    }
+    tick();
+    reqTimer = setInterval(tick, 750);
+  }
+  document.getElementById('reqplay').onclick = playReq;
+  // toca quando entra na tela
+  new IntersectionObserver((es,obs)=>{ es.forEach(e=>{ if(e.isIntersecting){ playReq(); obs.disconnect(); } }); },{threshold:.4})
+    .observe(document.getElementById('requisicao'));
+</script>
+</body>
+</html>
+</content>

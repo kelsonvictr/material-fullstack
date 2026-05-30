@@ -1,0 +1,1558 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cap 01 — HTML &amp; CSS | Curso Fullstack</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=JetBrains+Mono:wght@400;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../shared/styles.css">
+<link rel="stylesheet" href="../../shared/components.css">
+<link rel="stylesheet" href="../../shared/animations.css">
+<link rel="stylesheet" href="../../shared/playground.css">
+<style>
+  /* ── visual do box model ── */
+  .bm{margin:18px auto;max-width:420px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:0.72rem}
+  .bm .layer{border-radius:8px;padding:10px;position:relative}
+  .bm .margin{background:rgba(247,183,49,0.14);border:1px dashed var(--accent5)}
+  .bm .border{background:rgba(255,107,107,0.14);border:2px solid var(--accent2);margin-top:8px}
+  .bm .padding{background:rgba(78,205,196,0.14);border:1px dashed var(--accent3);margin-top:8px}
+  .bm .content{background:rgba(97,218,251,0.18);border:1px solid var(--react);padding:18px 10px;margin-top:8px;color:var(--text);font-weight:700}
+  .bm .lbl{position:absolute;top:4px;left:8px;font-size:0.62rem;letter-spacing:1px;text-transform:uppercase}
+  .bm .margin>.lbl{color:var(--accent5)}.bm .border>.lbl{color:var(--accent2)}.bm .padding>.lbl{color:var(--accent3)}
+  /* ── demo flexbox: centralizar a div ── */
+  .flex-demo{height:150px;border:1px dashed rgba(255,255,255,0.18);border-radius:12px;background:rgba(255,255,255,0.02);
+    display:flex;align-items:center;justify-content:center;margin:14px 0}
+  .flex-demo .square{width:64px;height:64px;border-radius:12px;background:linear-gradient(135deg,var(--react),var(--css));
+    display:flex;align-items:center;justify-content:center;font-size:1.6rem}
+  /* ── mini render preview ── */
+  .render-preview{background:#fff;color:#1a1a1a;border-radius:0 0 14px 14px;padding:18px 20px;font-family:'Nunito',sans-serif}
+  .render-preview h1,.render-preview h2,.render-preview p,.render-preview ul{all:revert;margin:6px 0;font-family:'Nunito',sans-serif}
+  .render-preview a{color:#2965f1}
+  .render-preview .rp-btn{background:#2965f1;color:#fff;border:none;padding:8px 16px;border-radius:8px;font-weight:700;cursor:pointer}
+  /* ── anatomia de uma tag ── */
+  .anatomy{margin:14px 0}
+  .anatomy-code{
+    font-family:'JetBrains Mono',monospace;font-size:clamp(0.95rem,3.4vw,1.45rem);
+    text-align:center;line-height:2;padding:18px 10px;border-radius:14px;
+    background:var(--code-bg);border:1px solid rgba(255,255,255,0.06);overflow-x:auto;white-space:nowrap;
+  }
+  .anatomy-code .aseg{padding:2px 1px;border-radius:5px;position:relative}
+  .anatomy-code .a-open {color:#f78c6c;background:rgba(247,140,108,0.12)}
+  .anatomy-code .a-attr {color:#ffcb6b;background:rgba(255,203,107,0.12)}
+  .anatomy-code .a-cont {color:#eef0f8;background:rgba(255,255,255,0.06)}
+  .anatomy-code .a-close{color:#f78c6c;background:rgba(247,140,108,0.12)}
+  .anatomy-legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin-top:14px}
+  .anatomy-legend .al{display:flex;gap:10px;align-items:flex-start;background:var(--surface2);
+    border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:12px 14px;font-size:0.86rem;color:var(--text-dim)}
+  .anatomy-legend .al i{width:14px;height:14px;border-radius:4px;flex-shrink:0;margin-top:3px}
+  .anatomy-legend .al strong{color:var(--text);display:block}
+  .anatomy-legend code{background:var(--code-bg);padding:1px 6px;border-radius:5px;color:var(--accent5);font-family:'JetBrains Mono',monospace;font-size:0.8rem}
+  /* ── árvore de aninhamento ── */
+  .nest-tree{font-family:'JetBrains Mono',monospace;font-size:0.86rem;line-height:1.95;
+    background:var(--code-bg);border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:18px 20px;color:#8b96b0}
+  .nest-tree .nt{display:block}
+  .nest-tree .nt .tag{color:#f78c6c}
+  .nest-tree .lvl1{padding-left:24px}.nest-tree .lvl2{padding-left:48px}
+  .nest-tree .pair{background:rgba(97,218,251,0.10);border-radius:4px;padding:0 3px}
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-orbs"><div class="orb"></div><div class="orb"></div><div class="orb"></div></div>
+<div class="progress-track"><div class="progress-bar"></div></div>
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<button class="menu-toggle" onclick="openSidebar()" aria-label="Abrir menu">☰</button>
+<div class="sidebar-overlay"></div>
+<nav class="sidebar-nav">
+  <button class="sidebar-close" onclick="closeSidebar()" aria-label="Fechar">✕</button>
+  <div class="sidebar-header">
+    <h3>🧱 Cap 01 · HTML &amp; CSS</h3>
+    <a class="sidebar-back" href="../../index.html">← Voltar ao hub</a>
+  </div>
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Neste capítulo</div>
+    <a class="sidebar-link" onclick="goTo('aquecimento')"><span class="dot" style="background:var(--accent5)"></span> Aquecimento</a>
+    <a class="sidebar-link" onclick="goTo('o-que-e-html')"><span class="dot" style="background:var(--html)"></span> O que é HTML</a>
+    <a class="sidebar-link" onclick="goTo('anatomia')"><span class="dot" style="background:var(--html)"></span> 🔬 Anatomia de uma tag</a>
+    <a class="sidebar-link" onclick="goTo('estrutura')"><span class="dot" style="background:var(--html)"></span> Estrutura da página</a>
+    <a class="sidebar-link" onclick="goTo('tags')"><span class="dot" style="background:var(--html)"></span> Tags essenciais</a>
+    <a class="sidebar-link" onclick="goTo('aninhamento')"><span class="dot" style="background:var(--html)"></span> 🪆 Aninhamento &amp; indentação</a>
+    <a class="sidebar-link" onclick="goTo('bora-html')"><span class="dot" style="background:var(--accent4)"></span> Bora codar: 1ª página</a>
+    <a class="sidebar-link" onclick="goTo('renderiza')"><span class="dot" style="background:var(--react)"></span> 🪄 As tags chegam no navegador</a>
+    <a class="sidebar-link" onclick="goTo('semantico')"><span class="dot" style="background:var(--html)"></span> HTML semântico</a>
+    <a class="sidebar-link" onclick="goTo('tabelas-forms')"><span class="dot" style="background:var(--html)"></span> Tabelas &amp; formulários</a>
+    <a class="sidebar-link" onclick="goTo('treino-html')"><span class="dot" style="background:var(--accent4)"></span> ⌨️ Treino no VSCode</a>
+    <a class="sidebar-link" onclick="goTo('o-que-e-css')"><span class="dot" style="background:var(--css)"></span> O que é CSS</a>
+    <a class="sidebar-link" onclick="goTo('seletores')"><span class="dot" style="background:var(--css)"></span> Seletores &amp; propriedades</a>
+    <a class="sidebar-link" onclick="goTo('box-model')"><span class="dot" style="background:var(--css)"></span> Box model</a>
+    <a class="sidebar-link" onclick="goTo('flexbox')"><span class="dot" style="background:var(--css)"></span> Flexbox &amp; centralizar</a>
+    <a class="sidebar-link" onclick="goTo('playground')"><span class="dot" style="background:var(--react)"></span> 🕹️ Playground ao vivo</a>
+    <a class="sidebar-link" onclick="goTo('bugzilla')"><span class="dot" style="background:var(--bug)"></span> BugZilla 🐛</a>
+    <a class="sidebar-link" onclick="goTo('desafios')"><span class="dot" style="background:var(--accent6)"></span> Desafios</a>
+    <a class="sidebar-link" onclick="goTo('resumo')"><span class="dot" style="background:var(--accent7)"></span> Resumo</a>
+  </div>
+</nav>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section class="hero">
+  <div class="hero-icons" data-motion="float">🧱 🎨</div>
+  <span class="hero-badge html">Capítulo 01 · Curso Fullstack</span>
+  <h1>HTML &amp; CSS</h1>
+  <p class="subtitle">
+    Toda página que você já viu na internet começa aqui. <strong style="color:var(--html)">HTML</strong>
+    monta a estrutura, <strong style="color:#6f9bff">CSS</strong> dá a aparência. Bora levantar a sua primeira página do zero.
+  </p>
+  <div class="hero-stack">
+    <span class="stack-chip html">🟧 tags</span>
+    <span class="stack-chip css">🟦 estilos</span>
+    <span class="stack-chip css">📦 box model</span>
+    <span class="stack-chip react">🧰 flexbox</span>
+  </div>
+</section>
+
+<div class="container">
+
+  <!-- ═══════════════ AQUECIMENTO ═══════════════ -->
+  <section class="step-section" id="aquecimento">
+    <div class="step-header">
+      <div class="step-number sn-yellow">🤔</div>
+      <div>
+        <div class="step-title">Aquecimento</div>
+        <div class="step-sub">Antes de começar, um chute esperto</div>
+      </div>
+    </div>
+    <div class="quiz">
+      <div class="quiz-q"><span class="q-emoji">1️⃣</span> Quando você abre um site, o que o navegador realmente recebe do servidor?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz(this,false)">Uma foto da tela pronta</button>
+        <button class="quiz-opt" data-correct="true" onclick="checkQuiz(this,true)">Arquivos de texto (HTML, CSS, JS) que o navegador monta</button>
+        <button class="quiz-opt" onclick="checkQuiz(this,false)">Um programa instalado no seu PC</button>
+        <button class="quiz-opt" onclick="checkQuiz(this,false)">Um vídeo da página</button>
+      </div>
+      <div class="quiz-feedback" data-correct="Isso!" data-wrong="Quase!" data-explain="o navegador baixa textos e MONTA a página. HTML é a planta dessa construção."></div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ O QUE É HTML ═══════════════ -->
+  <section class="step-section" id="o-que-e-html">
+    <div class="step-header">
+      <div class="step-number sn-html">🧱</div>
+      <div>
+        <div class="step-title">O que é HTML?</div>
+        <div class="step-sub">HyperText Markup Language — a planta da página</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="analogy">
+        <div class="analogy-title">Pensa numa casa 🏠</div>
+        <p>O <strong>HTML</strong> é a <strong>estrutura bruta</strong>: as paredes, o telhado, as portas,
+        os cômodos. Sem decoração nenhuma. É o que define <em>o que existe</em> na página: um título aqui,
+        um parágrafo ali, uma imagem, um botão.</p>
+        <p>O <strong>CSS</strong> (que vem já já) é a <strong>decoração</strong>: a cor da parede, o piso,
+        os móveis. E o <strong>JavaScript</strong> (próximo capítulo) é a <strong>parte elétrica</strong>:
+        o que acontece quando você aperta o interruptor.</p>
+      </div>
+
+      <p style="color:var(--text-dim);margin:14px 0 6px">
+        HTML é feito de <strong style="color:var(--text)">tags</strong>. Uma tag é um rótulo entre
+        <code>&lt;</code> e <code>&gt;</code> que diz ao navegador <em>"isto aqui é um..."</em>.
+        A maioria vem em par: uma de <strong>abertura</strong> e uma de <strong>fechamento</strong>
+        (com uma barra <code>/</code>):
+      </p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+          <span class="filename">exemplo de uma tag</span>
+          <span class="lang-badge html">HTML</span>
+        </div>
+<pre><span class="tag">&lt;p&gt;</span>Olá, eu sou um parágrafo!<span class="tag">&lt;/p&gt;</span>
+ <span class="cm">↑ abre</span>                       <span class="cm">↑ fecha (tem a barra /)</span></pre>
+      </div>
+
+      <div class="tip">
+        <span class="tip-icon">🔤</span>
+        <div class="tip-content">
+          <strong>"Markup" = marcação.</strong> Você não está programando lógica ainda — está
+          <strong>marcando</strong> os pedaços do conteúdo: "isto é um título", "isto é uma lista".
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ ANATOMIA DE UMA TAG ═══════════════ -->
+  <section class="step-section" id="anatomia">
+    <div class="step-header">
+      <div class="step-number sn-html">🔬</div>
+      <div>
+        <div class="step-title">A anatomia de uma tag</div>
+        <div class="step-sub">As peças que toda tag tem — e os nomes certos delas</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p style="color:var(--text-dim);margin-bottom:6px">
+        Antes de sair escrevendo, bora <strong style="color:var(--text)">olhar de pertinho</strong> uma tag.
+        Pega um link como exemplo. Cada cor abaixo é uma <strong>peça</strong> com nome próprio:
+      </p>
+
+      <div class="anatomy">
+        <div class="anatomy-code">
+          <span class="aseg a-open">&lt;a</span><span class="aseg a-attr"> href="https://google.com"</span><span class="aseg a-open">&gt;</span><span class="aseg a-cont">Ir pro Google</span><span class="aseg a-close">&lt;/a&gt;</span>
+        </div>
+        <div class="anatomy-legend">
+          <div class="al"><i style="background:#f78c6c"></i><div><strong>Tag de abertura</strong> <code>&lt;a&gt;</code> — diz "começa um link aqui".</div></div>
+          <div class="al"><i style="background:#ffcb6b"></i><div><strong>Atributo</strong> <code>href="..."</code> — uma config no formato <code>nome="valor"</code>.</div></div>
+          <div class="al"><i style="background:rgba(255,255,255,0.6)"></i><div><strong>Conteúdo</strong> — o que aparece na tela (o texto clicável).</div></div>
+          <div class="al"><i style="background:#f78c6c"></i><div><strong>Tag de fechamento</strong> <code>&lt;/a&gt;</code> — a barra <code>/</code> diz "acabou o link".</div></div>
+        </div>
+      </div>
+
+      <div class="concept">
+        <div class="concept-title">📐 A fórmula que se repete sempre</div>
+        <p>É quase sempre o mesmo molde: <code>&lt;tag&gt;</code> conteúdo <code>&lt;/tag&gt;</code>.
+        Troque a palavra e você troca o "papel" daquele pedaço: <code>&lt;p&gt;</code> é parágrafo,
+        <code>&lt;h1&gt;</code> é título, <code>&lt;button&gt;</code> é botão. <strong>Decora esse molde</strong> —
+        90% do HTML é isso.</p>
+      </div>
+
+      <div class="bug-box">
+        <span class="bug-icon">🐛</span>
+        <div class="bug-content">
+          <strong>As "solitárias" (void elements).</strong> Umas poucas tags <em>não</em> têm conteúdo nem
+          fechamento — elas se viram sozinhas: <code>&lt;img&gt;</code> (imagem), <code>&lt;input&gt;</code>
+          (campo) e <code>&lt;br&gt;</code> (quebra de linha). São a exceção; a maioria vem em par.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ ESTRUTURA DA PÁGINA ═══════════════ -->
+  <section class="step-section" id="estrutura">
+    <div class="step-header">
+      <div class="step-number sn-html">🦴</div>
+      <div>
+        <div class="step-title">O esqueleto de toda página</div>
+        <div class="step-sub">Esse trio você vai escrever em TODO arquivo HTML</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p style="color:var(--text-dim);margin-bottom:6px">
+        Toda página HTML tem o mesmo esqueleto. Decora esse padrão — ele se repete sempre:
+      </p>
+
+      <div class="code-block with-lines">
+        <div class="code-header">
+          <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+          <span class="filename">index.html</span>
+          <span class="lang-badge html">HTML</span>
+        </div>
+        <div class="line-numbers">1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9</div>
+<pre><span class="cm">&lt;!-- diz ao navegador: "isto é HTML5" --&gt;</span>
+<span class="tag">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;html</span> <span class="atr">lang</span>=<span class="st">"pt-BR"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;head&gt;</span>   <span class="cm">&lt;!-- configs invisíveis: título, idioma, css --&gt;</span>
+    <span class="tag">&lt;meta</span> <span class="atr">charset</span>=<span class="st">"UTF-8"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;title&gt;</span>Minha Página<span class="tag">&lt;/title&gt;</span>
+  <span class="tag">&lt;/head&gt;</span>
+  <span class="tag">&lt;body&gt;</span>  <span class="cm">&lt;!-- tudo que APARECE na tela mora aqui --&gt;</span>
+  <span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span></pre>
+      </div>
+
+      <div class="concept">
+        <div class="concept-title">📌 As duas salas da casa</div>
+        <p><code>&lt;head&gt;</code> = a <strong>cozinha nos fundos</strong>: configurações que o
+        usuário não vê (título da aba, idioma, ligação com o CSS).</p>
+        <p><code>&lt;body&gt;</code> = a <strong>sala de visitas</strong>: tudo que aparece na tela
+        (textos, imagens, botões) fica aqui dentro.</p>
+      </div>
+
+      <div class="warning">
+        <span class="warning-icon">⚙️</span>
+        <div class="warning-content">
+          <strong>Dica de ferramenta:</strong> use o <strong>VSCode</strong>. Digite <code>!</code>
+          e aperte <kbd>Tab</kbd> em um arquivo <code>.html</code> — ele cospe esse esqueleto inteiro
+          pra você (chama-se <em>Emmet</em>). Mas <strong>entenda</strong> cada linha, não decore por decorar.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ TAGS ESSENCIAIS ═══════════════ -->
+  <section class="step-section" id="tags">
+    <div class="step-header">
+      <div class="step-number sn-html">🏷️</div>
+      <div>
+        <div class="step-title">As tags que você vai usar toda hora</div>
+        <div class="step-sub">Um punhado delas resolve 90% das páginas</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="code-block">
+        <div class="code-header">
+          <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+          <span class="filename">dentro do &lt;body&gt;</span>
+          <span class="lang-badge html">HTML</span>
+        </div>
+<pre><span class="cm">&lt;!-- títulos: h1 é o maior, h6 o menor --&gt;</span>
+<span class="tag">&lt;h1&gt;</span>Título principal<span class="tag">&lt;/h1&gt;</span>
+<span class="tag">&lt;h2&gt;</span>Um subtítulo<span class="tag">&lt;/h2&gt;</span>
+
+<span class="cm">&lt;!-- parágrafo de texto --&gt;</span>
+<span class="tag">&lt;p&gt;</span>Um parágrafo qualquer com bla bla bla.<span class="tag">&lt;/p&gt;</span>
+
+<span class="cm">&lt;!-- link para outra página (atributo href) --&gt;</span>
+<span class="tag">&lt;a</span> <span class="atr">href</span>=<span class="st">"https://google.com"</span><span class="tag">&gt;</span>Ir pro Google<span class="tag">&lt;/a&gt;</span>
+
+<span class="cm">&lt;!-- imagem: tag "solitária", sem fechamento --&gt;</span>
+<span class="tag">&lt;img</span> <span class="atr">src</span>=<span class="st">"foto.jpg"</span> <span class="atr">alt</span>=<span class="st">"descrição da foto"</span><span class="tag">&gt;</span>
+
+<span class="cm">&lt;!-- lista com itens --&gt;</span>
+<span class="tag">&lt;ul&gt;</span>
+  <span class="tag">&lt;li&gt;</span>Item um<span class="tag">&lt;/li&gt;</span>
+  <span class="tag">&lt;li&gt;</span>Item dois<span class="tag">&lt;/li&gt;</span>
+<span class="tag">&lt;/ul&gt;</span>
+
+<span class="cm">&lt;!-- botão e campo de texto --&gt;</span>
+<span class="tag">&lt;button&gt;</span>Clique aqui<span class="tag">&lt;/button&gt;</span>
+<span class="tag">&lt;input</span> <span class="atr">type</span>=<span class="st">"text"</span> <span class="atr">placeholder</span>=<span class="st">"Seu nome"</span><span class="tag">&gt;</span></pre>
+      </div>
+
+      <div class="tip">
+        <span class="tip-icon">🧩</span>
+        <div class="tip-content">
+          <strong>Atributos</strong> são "configurações" dentro da tag de abertura, no formato
+          <code>nome="valor"</code>. Ex.: <code>href</code> (pra onde o link vai),
+          <code>src</code> (de onde vem a imagem), <code>alt</code> (texto alternativo, importante
+          pra acessibilidade!).
+        </div>
+      </div>
+
+      <div class="bug-box">
+        <span class="bug-icon">🐛</span>
+        <div class="bug-content">
+          <strong>Tags "solitárias":</strong> <code>&lt;img&gt;</code>, <code>&lt;input&gt;</code> e
+          <code>&lt;br&gt;</code> não têm tag de fechamento. São exceções — a maioria vem em par.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ ANINHAMENTO & INDENTAÇÃO ═══════════════ -->
+  <section class="step-section" id="aninhamento">
+    <div class="step-header">
+      <div class="step-number sn-html">🪆</div>
+      <div>
+        <div class="step-title">Tags dentro de tags (aninhamento)</div>
+        <div class="step-sub">Como uma página vira uma árvore — e por que a indentação importa</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="analogy">
+        <div class="analogy-title">Bonecas russas 🪆</div>
+        <p>Tags vivem <strong>umas dentro das outras</strong>, como bonecas russas (ou caixas dentro de caixas).
+        Um item de lista (<code>&lt;li&gt;</code>) fica dentro da lista (<code>&lt;ul&gt;</code>), que fica dentro
+        do corpo (<code>&lt;body&gt;</code>). A regra de ouro: <strong>a última que abre é a primeira que fecha</strong>.</p>
+      </div>
+
+      <div class="nest-tree">
+        <span class="nt"><span class="tag">&lt;body&gt;</span></span>
+        <span class="nt lvl1"><span class="tag">&lt;ul&gt;</span>            <span class="cm">&lt;!-- abre a lista --&gt;</span></span>
+        <span class="nt lvl2"><span class="tag">&lt;li&gt;</span>Item um<span class="tag">&lt;/li&gt;</span>  <span class="cm">&lt;!-- li dentro de ul --&gt;</span></span>
+        <span class="nt lvl2"><span class="tag">&lt;li&gt;</span>Item dois<span class="tag">&lt;/li&gt;</span></span>
+        <span class="nt lvl1"><span class="tag">&lt;/ul&gt;</span>           <span class="cm">&lt;!-- fecha a lista --&gt;</span></span>
+        <span class="nt"><span class="tag">&lt;/body&gt;</span></span>
+      </div>
+
+      <div class="tip">
+        <span class="tip-icon">⌨️</span>
+        <div class="tip-content">
+          <strong>Indentação = empurrar pra direita.</strong> Cada vez que você entra "uma caixa pra dentro",
+          dê um <kbd>Tab</kbd> (ou 2 espaços). O HTML funciona sem isso, mas fica <em>ilegível</em>. Código
+          alinhadinho é a diferença entre achar e <em>não</em> achar o erro depois. 🧹
+        </div>
+      </div>
+
+      <div class="bug-box">
+        <span class="bug-icon">🐛</span>
+        <div class="bug-content">
+          <strong>Não "cruze" as tags.</strong> Isto está errado:
+          <code>&lt;b&gt;&lt;i&gt;texto&lt;/b&gt;&lt;/i&gt;</code>. O certo é fechar na ordem inversa da abertura:
+          <code>&lt;b&gt;&lt;i&gt;texto&lt;/i&gt;&lt;/b&gt;</code>. Última a abrir, primeira a fechar. 🔒
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ BORA CODAR: PRIMEIRA PÁGINA ═══════════════ -->
+  <section class="step-section" id="bora-html">
+    <div class="step-header">
+      <div class="step-number sn-blue">💻</div>
+      <div>
+        <div class="step-title">Bora codar — sua primeira página (com o prof)</div>
+        <div class="step-sub">Abra o VSCode e acompanhe linha por linha</div>
+      </div>
+    </div>
+
+    <div class="exercise guided">
+      <div class="exercise-header">
+        <span class="exercise-icon">👨‍🏫</span>
+        <div>
+          <div class="exercise-title">Crie o arquivo perfil.html</div>
+          <div class="exercise-sub">No VSCode: Arquivo → Novo → salve como perfil.html</div>
+        </div>
+      </div>
+
+      <div class="code-block with-lines">
+        <div class="code-header">
+          <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+          <span class="filename">perfil.html</span>
+          <span class="lang-badge html">HTML</span>
+        </div>
+        <div class="line-numbers">1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13</div>
+<pre><span class="tag">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;html</span> <span class="atr">lang</span>=<span class="st">"pt-BR"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;head&gt;</span>
+    <span class="tag">&lt;meta</span> <span class="atr">charset</span>=<span class="st">"UTF-8"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;title&gt;</span>Meu Perfil<span class="tag">&lt;/title&gt;</span>
+  <span class="tag">&lt;/head&gt;</span>
+  <span class="tag">&lt;body&gt;</span>
+    <span class="tag">&lt;h1&gt;</span>Maria Silva<span class="tag">&lt;/h1&gt;</span>
+    <span class="tag">&lt;p&gt;</span>Futura desenvolvedora fullstack 🚀<span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;img</span> <span class="atr">src</span>=<span class="st">"https://placehold.co/120"</span> <span class="atr">alt</span>=<span class="st">"foto da Maria"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;a</span> <span class="atr">href</span>=<span class="st">"https://github.com"</span><span class="tag">&gt;</span>Meu GitHub<span class="tag">&lt;/a&gt;</span>
+  <span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span></pre>
+      </div>
+
+      <div class="warning">
+        <span class="warning-icon">👁️</span>
+        <div class="warning-content">
+          <strong>Como ver na tela?</strong> Instale a extensão <strong>Live Server</strong> no VSCode,
+          clique com o botão direito no arquivo → <em>"Open with Live Server"</em>. O navegador abre e
+          atualiza sozinho cada vez que você salva. 🪄
+        </div>
+      </div>
+
+      <p class="text-dim" style="font-size:0.85rem;margin-top:10px">É mais ou menos isso que vai aparecer (sem estilo nenhum ainda — é o HTML puro):</p>
+      <!-- Live Preview read-only: o navegador renderiza exatamente este HTML -->
+      <div class="mini-browser" data-url="perfil.html">
+<script type="text/html" data-mp="html">
+  <h1>Maria Silva</h1>
+  <p>Futura desenvolvedora fullstack 🚀</p>
+  <div style="width:120px;height:120px;background:#ddd;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#888;font-family:monospace;font-size:12px">foto 120×120</div>
+  <p><a href="#">Meu GitHub</a></p>
+</script>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ COMO O NAVEGADOR RENDERIZA (animação viva) ═══════════════ -->
+  <style>
+    .render-game{background:linear-gradient(180deg,#0b1020,#0d0d1a);border:1px solid rgba(97,218,251,0.25);
+      border-radius:16px;overflow:hidden;margin:12px 0}
+    .render-cols{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0}
+    @media(max-width:760px){.render-cols{grid-template-columns:1fr}}
+    .render-col{padding:14px;border-right:1px solid rgba(255,255,255,0.06);min-height:200px}
+    .render-col:last-child{border-right:none}
+    .render-col .rc-title{font-size:0.66rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;
+      color:var(--text-dim);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+    .rline{font-family:'JetBrains Mono',monospace;font-size:0.76rem;color:#8b96b0;line-height:1.8;
+      border-radius:5px;padding:1px 6px;transition:all .3s}
+    .rline.lit{background:rgba(247,183,49,0.18);color:#fff}
+    .tnode{font-family:'JetBrains Mono',monospace;font-size:0.74rem;color:var(--react);
+      background:rgba(97,218,251,0.08);border:1px solid rgba(97,218,251,0.2);border-radius:8px;
+      padding:4px 10px;margin:5px 0;opacity:0;transform:translateX(-10px)}
+    .tnode.show{opacity:1;transform:translateX(0)}
+    .tnode.lvl1{margin-left:16px}.tnode.lvl2{margin-left:32px}
+    .render-paint{background:#fff;border-radius:8px;padding:12px 14px;min-height:120px;color:#1a1a1a;font-family:system-ui,Arial}
+    .render-paint > *{opacity:0;transform:translateY(8px);transition:all .4s}
+    .render-paint > *.show{opacity:1;transform:translateY(0)}
+    .render-paint h1{font-size:1.3rem;margin:4px 0}
+    .render-paint p{font-size:0.85rem;margin:4px 0}
+    .render-paint button{background:#2965f1;color:#fff;border:none;padding:6px 14px;border-radius:6px;font-weight:700;margin-top:4px}
+    .render-hud{display:flex;align-items:center;gap:10px;padding:12px;background:rgba(255,255,255,0.03);border-top:1px solid rgba(255,255,255,0.06)}
+  </style>
+  <section class="step-section" id="renderiza">
+    <div class="step-header">
+      <div class="step-number sn-react">🪄</div>
+      <div>
+        <div class="step-title">As tags chegam no navegador — assista ao vivo</div>
+        <div class="step-sub">Veja cada tag voar do seu código e virar um pedaço da página</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="analogy">
+        <div class="analogy-title">Montando um LEGO 🧱</div>
+        <p>Quando você abre uma página, o navegador faz igual a montar um LEGO seguindo o manual:
+        ele <strong>lê seu HTML peça por peça</strong> e, pra cada tag, <strong>encaixa</strong> o
+        pedaço correspondente na tela. Aperta o ▶ e veja os "tijolos" voarem do código pro navegador:</p>
+      </div>
+
+      <!-- Forja de Tags (engine em shared/tag-forge.js) -->
+      <div class="forge" data-forge>
+        <div class="forge-stage">
+          <div class="forge-pane code">
+            <div class="fp-head">📄 seu HTML</div>
+            <div class="fp-body">
+              <div class="fp-line"><span class="cm">&lt;body&gt;</span></div>
+              <div class="fp-line">  <span class="brick" data-brick="0" data-msg="🧱 a tag &lt;h1&gt; vira o título grandão da página">&lt;h1&gt;</span> Bem-vindo! 👋</div>
+              <div class="fp-line">  <span class="brick" data-brick="1" data-msg="🧱 &lt;p&gt; vira um parágrafo de texto comum">&lt;p&gt;</span> Esta página foi montada…</div>
+              <div class="fp-line">  <span class="brick" data-brick="2" data-msg="🧱 &lt;ul&gt; vira uma lista com marcadores">&lt;ul&gt;</span> 2 itens</div>
+              <div class="fp-line">  <span class="brick" data-brick="3" data-msg="🧱 &lt;button&gt; vira um botão clicável">&lt;button&gt;</span> Clica em mim</div>
+              <div class="fp-line"><span class="cm">&lt;/body&gt;</span></div>
+            </div>
+          </div>
+          <div class="forge-pane browser">
+            <div class="mb-chrome">
+              <span class="mb-dots"><i></i><i></i><i></i></span>
+              <span class="mb-url"><span class="lock">🔒</span><span class="addr">minha-pagina.html</span></span>
+              <span class="mb-actions">⟳<span class="mb-tag">ao vivo</span></span>
+            </div>
+            <div class="fp-paint">
+              <h1 data-paint="0">Bem-vindo! 👋</h1>
+              <p data-paint="1">Esta página foi montada na sua frente.</p>
+              <ul data-paint="2"><li>aprender HTML</li><li>aprender CSS</li></ul>
+              <button data-paint="3">Clica em mim</button>
+            </div>
+          </div>
+        </div>
+        <div class="forge-hud">
+          <button class="forge-btn" data-forge-play>▶ Renderizar de novo</button>
+          <span class="forge-msg"></span>
+        </div>
+      </div>
+
+      <div class="concept">
+        <div class="concept-title">🌳 DOM = a árvore da página</div>
+        <p>DOM (Document Object Model) é só um nome chique pra <strong>"a página em forma de árvore"</strong>:
+        o <code>&lt;html&gt;</code> é o tronco, <code>&lt;body&gt;</code> é um galho, e cada tag é uma
+        folhinha. Guarde esse nome — quando chegarmos no <strong>JavaScript</strong> e no <strong>React</strong>,
+        a gente vai mexer nessa árvore o tempo todo. 🌳</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ HTML SEMÂNTICO ═══════════════ -->
+  <section class="step-section" id="semantico">
+    <div class="step-header">
+      <div class="step-number sn-html">🏠</div>
+      <div>
+        <div class="step-title">HTML semântico — dando nome aos cômodos</div>
+        <div class="step-sub">Tags que dizem o "papel" de cada parte da página</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="analogy">
+        <div class="analogy-title">Os cômodos da casa 🚪</div>
+        <p>Você poderia montar uma casa só com "espaços" genéricos. Mas faz muito mais sentido nomear:
+        <strong>cozinha</strong>, <strong>quarto</strong>, <strong>sala</strong>. No HTML é igual: em vez de
+        usar <code>&lt;div&gt;</code> pra tudo, usamos tags com <strong>significado</strong> (semântica):</p>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">pagina.html</span><span class="lang-badge html">HTML</span></div>
+<pre><span class="tag">&lt;header&gt;</span>   <span class="cm">&lt;!-- topo: logo, título --&gt;</span>
+  <span class="tag">&lt;h1&gt;</span>Meu Site<span class="tag">&lt;/h1&gt;</span>
+<span class="tag">&lt;/header&gt;</span>
+
+<span class="tag">&lt;nav&gt;</span>      <span class="cm">&lt;!-- menu de navegação --&gt;</span>
+  <span class="tag">&lt;a</span> <span class="atr">href</span>=<span class="st">"#"</span><span class="tag">&gt;</span>Início<span class="tag">&lt;/a&gt;</span>
+<span class="tag">&lt;/nav&gt;</span>
+
+<span class="tag">&lt;main&gt;</span>     <span class="cm">&lt;!-- conteúdo principal --&gt;</span>
+  <span class="tag">&lt;section&gt;</span>
+    <span class="tag">&lt;article&gt;</span>Um texto importante aqui.<span class="tag">&lt;/article&gt;</span>
+  <span class="tag">&lt;/section&gt;</span>
+<span class="tag">&lt;/main&gt;</span>
+
+<span class="tag">&lt;footer&gt;</span>   <span class="cm">&lt;!-- rodapé --&gt;</span>
+  <span class="tag">&lt;p&gt;</span>© 2026 Meu Site<span class="tag">&lt;/p&gt;</span>
+<span class="tag">&lt;/footer&gt;</span></pre>
+      </div>
+
+      <div class="tip">
+        <span class="tip-icon">🎯</span>
+        <div class="tip-content">
+          <strong>Por que isso importa?</strong> 1) Outros devs entendem seu código na hora.
+          2) O Google lê melhor seu site (SEO). 3) Leitores de tela (acessibilidade) ajudam pessoas
+          cegas a navegar. <strong>É a marca de um dev profissional</strong>, não amador.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ TABELAS E FORMULÁRIOS ═══════════════ -->
+  <section class="step-section" id="tabelas-forms">
+    <div class="step-header">
+      <div class="step-number sn-html">📋</div>
+      <div>
+        <div class="step-title">Tabelas e Formulários</div>
+        <div class="step-sub">Pra mostrar dados em grade e pra receber dados do usuário</div>
+      </div>
+    </div>
+    <div class="card">
+      <p style="color:var(--text-dim);margin-bottom:6px"><strong style="color:var(--text)">Tabela</strong> — pra dados em linhas e colunas (tipo Excel):</p>
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">tabela.html</span><span class="lang-badge html">HTML</span></div>
+<pre><span class="tag">&lt;table&gt;</span>
+  <span class="tag">&lt;tr&gt;</span>                      <span class="cm">&lt;!-- tr = linha --&gt;</span>
+    <span class="tag">&lt;th&gt;</span>Nome<span class="tag">&lt;/th&gt;</span>           <span class="cm">&lt;!-- th = cabeçalho --&gt;</span>
+    <span class="tag">&lt;th&gt;</span>Idade<span class="tag">&lt;/th&gt;</span>
+  <span class="tag">&lt;/tr&gt;</span>
+  <span class="tag">&lt;tr&gt;</span>
+    <span class="tag">&lt;td&gt;</span>João<span class="tag">&lt;/td&gt;</span>           <span class="cm">&lt;!-- td = célula --&gt;</span>
+    <span class="tag">&lt;td&gt;</span>25<span class="tag">&lt;/td&gt;</span>
+  <span class="tag">&lt;/tr&gt;</span>
+<span class="tag">&lt;/table&gt;</span></pre>
+      </div>
+
+      <p style="color:var(--text-dim);margin:14px 0 6px"><strong style="color:var(--text)">Formulário</strong> — pra receber dados (login, cadastro). Toda telinha de login é isto:</p>
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">login.html</span><span class="lang-badge html">HTML</span></div>
+<pre><span class="tag">&lt;form&gt;</span>
+  <span class="tag">&lt;label&gt;</span>E-mail:<span class="tag">&lt;/label&gt;</span>
+  <span class="tag">&lt;input</span> <span class="atr">type</span>=<span class="st">"email"</span> <span class="atr">placeholder</span>=<span class="st">"voce@email.com"</span><span class="tag">&gt;</span>
+
+  <span class="tag">&lt;label&gt;</span>Senha:<span class="tag">&lt;/label&gt;</span>
+  <span class="tag">&lt;input</span> <span class="atr">type</span>=<span class="st">"password"</span><span class="tag">&gt;</span>
+
+  <span class="tag">&lt;button&gt;</span>Entrar<span class="tag">&lt;/button&gt;</span>
+<span class="tag">&lt;/form&gt;</span></pre>
+      </div>
+      <div class="concept">
+        <div class="concept-title">💡 O atributo <code>type</code> do input</div>
+        <p><code>type="text"</code> (texto), <code>type="email"</code> (e-mail), <code>type="password"</code>
+        (esconde a senha com •••), <code>type="number"</code> (só números). O navegador já ajuda você de graça!</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ PROGRAMAÇÃO É PRÁTICA ═══════════════ -->
+  <section class="step-section">
+    <div class="card" style="text-align:center;background:linear-gradient(135deg,rgba(247,183,49,0.10),rgba(227,79,38,0.06));border-color:rgba(247,183,49,0.25)">
+      <div style="font-family:'Caveat',cursive;font-size:clamp(2rem,6vw,3rem);color:var(--accent5);font-weight:700;line-height:1.1">
+        PROGRAMAÇÃO É PRÁTICA 💪
+      </div>
+      <p class="text-dim" style="max-width:560px;margin:10px auto 0">
+        Ler é importante, mas é <strong style="color:var(--text)">digitando</strong> que vira habilidade.
+        Faça os exercícios abaixo no VSCode. Errar, apagar e tentar de novo <strong>é o caminho</strong>.
+      </p>
+      <figure style="margin:16px auto 0;max-width:380px">
+        <img src="../../assets/memes/meme-pratica.png" alt="Meme: programação é prática"
+          style="width:100%;border-radius:14px;border:1px solid rgba(255,255,255,0.08)"
+          onerror="this.closest('figure').style.display='none'">
+      </figure>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ BORA CODAR (série VSCode) ═══════════════ -->
+  <section class="step-section" id="treino-html">
+    <div class="step-header">
+      <div class="step-number sn-blue">⌨️</div>
+      <div>
+        <div class="step-title">Treino de HTML — construindo UMA página, peça por peça</div>
+        <div class="step-sub">Cada passo continua o anterior. Faça com o prof, depois voe sozinho(a)</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="warning">
+        <span class="warning-icon">📁</span>
+        <div class="warning-content">
+          Dentro da pasta <code>aula01</code>, crie <strong>um único arquivo</strong>:
+          <code>sobre-mim.html</code> (com o esqueleto do Emmet: digite <code>!</code> + <kbd>Tab</kbd>).
+          A cada passo você vai <strong>adicionar coisas dentro do <code>&lt;body&gt;</code></strong> —
+          a página vai crescendo na sua frente. O 👀 mostra a solução e o
+          <strong>mini-navegador</strong> mostra o resultado renderizado.
+        </div>
+      </div>
+
+      <!-- trilha de progresso (reusa o componente da arena) -->
+      <div class="arena-track">
+        <span class="at-dot lv1">1</span><span class="at-arrow">→</span>
+        <span class="at-dot lv1">2</span><span class="at-arrow">→</span>
+        <span class="at-dot lv2">3</span><span class="at-arrow">→</span>
+        <span class="at-dot lv2">4</span><span class="at-arrow">→</span>
+        <span class="at-dot lv2">5</span><span class="at-arrow">→</span>
+        <span class="at-dot lv3">6</span><span class="at-arrow">→</span>
+        <span class="at-dot lv3">🏆</span>
+      </div>
+
+      <!-- 1. com o prof — cabeçalho com textos -->
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">👨‍🏫</span><div>
+          <div class="exercise-title">Passo 1 — o cabeçalho (com o prof)</div>
+          <div class="exercise-sub">Títulos, parágrafo, negrito e itálico</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>Dentro do <code>&lt;body&gt;</code> do <code>sobre-mim.html</code>, escreva sua abertura com <code>&lt;h1&gt;</code>, <code>&lt;h2&gt;</code>, <code>&lt;p&gt;</code>, <code>&lt;strong&gt;</code> (negrito) e <code>&lt;em&gt;</code> (itálico). Acompanhe:</p></div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">sobre-mim.html (dentro do body)</span><span class="lang-badge html">HTML</span></div>
+<pre><span class="tag">&lt;h1&gt;</span>Oi, eu sou a Maria<span class="tag">&lt;/h1&gt;</span>
+<span class="tag">&lt;h2&gt;</span>Futura dev fullstack<span class="tag">&lt;/h2&gt;</span>
+<span class="tag">&lt;p&gt;</span>Eu <span class="tag">&lt;strong&gt;</span>amo<span class="tag">&lt;/strong&gt;</span> programar e estou
+   <span class="tag">&lt;em&gt;</span>começando agora<span class="tag">&lt;/em&gt;</span>.<span class="tag">&lt;/p&gt;</span></pre>
+        </div>
+        <p class="text-dim" style="font-size:0.82rem;margin:10px 0 4px">No navegador vai ficar assim 👇</p>
+        <div class="mini-browser" data-url="sobre-mim.html">
+<script type="text/html" data-mp="html">
+  <h1>Oi, eu sou a Maria</h1>
+  <h2>Futura dev fullstack</h2>
+  <p>Eu <strong>amo</strong> programar e estou <em>começando agora</em>.</p>
+</script>
+        </div>
+      </div>
+
+      <!-- 2. sozinho — adiciona listas ABAIXO do passo 1 -->
+      <div class="exercise solo">
+        <div class="exercise-header"><span class="exercise-icon">🧑‍💻</span><div>
+          <div class="exercise-title">Passo 2 — suas listas (sozinho/a)</div>
+          <div class="exercise-sub">Continua o MESMO arquivo, logo abaixo do que você acabou de escrever</div></div>
+        </div>
+        <div class="drill-tags"><span class="drill-level lv1"><span class="stars">★</span> fácil</span><span class="drill-tag">&lt;ul&gt;</span><span class="drill-tag">&lt;ol&gt;</span><span class="drill-tag">&lt;li&gt;</span></div>
+        <div class="concept"><div class="concept-title">💡 Dica</div><p>Logo <strong>depois</strong> do parágrafo do passo 1 (sem apagar nada!), adicione uma lista <strong>com marcadores</strong> (<code>&lt;ul&gt;</code>) com 3 hobbies e uma <strong>numerada</strong> (<code>&lt;ol&gt;</code>) com 3 objetivos. Cada item vai num <code>&lt;li&gt;</code>.</p></div>
+        <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Tenta primeiro!</strong> Só espia depois de escrever as duas listas e salvar (Live Server atualiza sozinho).</div></div>
+        <div class="toggler">
+          <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — Ver solução + resultado</span><span class="toggler-arrow">▼</span></div>
+          <div class="toggler-body">
+            <div class="code-block">
+              <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">sobre-mim.html (adicionado abaixo)</span><span class="lang-badge html">HTML</span></div>
+<pre><span class="tag">&lt;h2&gt;</span>Meus hobbies<span class="tag">&lt;/h2&gt;</span>
+<span class="tag">&lt;ul&gt;</span>
+  <span class="tag">&lt;li&gt;</span>Tocar violão<span class="tag">&lt;/li&gt;</span>
+  <span class="tag">&lt;li&gt;</span>Jogar futebol<span class="tag">&lt;/li&gt;</span>
+  <span class="tag">&lt;li&gt;</span>Cozinhar<span class="tag">&lt;/li&gt;</span>
+<span class="tag">&lt;/ul&gt;</span>
+
+<span class="tag">&lt;h2&gt;</span>Meus objetivos<span class="tag">&lt;/h2&gt;</span>
+<span class="tag">&lt;ol&gt;</span>
+  <span class="tag">&lt;li&gt;</span>Virar dev<span class="tag">&lt;/li&gt;</span>
+  <span class="tag">&lt;li&gt;</span>Trabalhar remoto<span class="tag">&lt;/li&gt;</span>
+  <span class="tag">&lt;li&gt;</span>Receber em dólar 🩴<span class="tag">&lt;/li&gt;</span>
+<span class="tag">&lt;/ol&gt;</span></pre>
+            </div>
+            <p class="text-dim" style="font-size:0.82rem;margin:4px 0">A página inteira até aqui (passo 1 + 2):</p>
+            <div class="mini-browser" data-url="sobre-mim.html">
+<script type="text/html" data-mp="html">
+  <h1>Oi, eu sou a Maria</h1>
+  <h2>Futura dev fullstack</h2>
+  <p>Eu <strong>amo</strong> programar e estou <em>começando agora</em>.</p>
+  <h2>Meus hobbies</h2>
+  <ul><li>Tocar violão</li><li>Jogar futebol</li><li>Cozinhar</li></ul>
+  <h2>Meus objetivos</h2>
+  <ol><li>Virar dev</li><li>Trabalhar remoto</li><li>Receber em dólar 🩴</li></ol>
+</script>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. com o prof — link + imagem -->
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">👨‍🏫</span><div>
+          <div class="exercise-title">Passo 3 — link e imagem (com o prof)</div>
+          <div class="exercise-sub">Continua o arquivo: agora com <code>&lt;a&gt;</code> e <code>&lt;img&gt;</code></div></div>
+        </div>
+        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>Ainda no mesmo arquivo, abaixo das listas, adicione uma <strong>foto</strong> e um <strong>link</strong> pro curso. Lembra: <code>&lt;img&gt;</code> é tag solitária (sem fechamento).</p></div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">sobre-mim.html (adicionado abaixo)</span><span class="lang-badge html">HTML</span></div>
+<pre><span class="tag">&lt;img</span> <span class="atr">src</span>=<span class="st">"https://placehold.co/120"</span> <span class="atr">alt</span>=<span class="st">"minha foto"</span><span class="tag">&gt;</span>
+<span class="tag">&lt;p&gt;</span>Quero entrar no
+  <span class="tag">&lt;a</span> <span class="atr">href</span>=<span class="st">"https://www.programaai.dev"</span><span class="tag">&gt;</span>melhor curso fullstack<span class="tag">&lt;/a&gt;</span>!
+<span class="tag">&lt;/p&gt;</span></pre>
+        </div>
+        <p class="text-dim" style="font-size:0.82rem;margin:10px 0 4px">Resultado renderizado 👇</p>
+        <div class="mini-browser" data-url="sobre-mim.html">
+<script type="text/html" data-mp="html">
+  <div style="width:120px;height:120px;background:#ddd;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#888;font-family:monospace;font-size:12px">foto 120×120</div>
+  <p>Quero entrar no <a href="#">melhor curso fullstack</a>!</p>
+</script>
+        </div>
+      </div>
+
+      <!-- 4. sozinho — tabela -->
+      <div class="exercise solo">
+        <div class="exercise-header"><span class="exercise-icon">🧑‍💻</span><div>
+          <div class="exercise-title">Passo 4 — uma tabela (sozinho/a)</div>
+          <div class="exercise-sub">Suas habilidades em linhas e colunas</div></div>
+        </div>
+        <div class="drill-tags"><span class="drill-level lv2"><span class="stars">★★</span> médio</span><span class="drill-tag">&lt;table&gt;</span><span class="drill-tag">&lt;tr&gt;</span><span class="drill-tag">&lt;th&gt;</span><span class="drill-tag">&lt;td&gt;</span></div>
+        <div class="concept"><div class="concept-title">💡 Dica</div><p>Abaixo do que já tem, monte uma <code>&lt;table&gt;</code> com 2 colunas (<strong>Habilidade</strong> e <strong>Nível</strong>) e 3 linhas. Cabeçalho usa <code>&lt;th&gt;</code>, as células usam <code>&lt;td&gt;</code>, e cada linha fica num <code>&lt;tr&gt;</code>.</p></div>
+        <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Tenta primeiro!</strong> Pensa na ordem: linha (<code>tr</code>) por fora, células (<code>td</code>) por dentro.</div></div>
+        <div class="toggler">
+          <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — Ver solução + resultado</span><span class="toggler-arrow">▼</span></div>
+          <div class="toggler-body">
+            <div class="code-block">
+              <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">sobre-mim.html (adicionado abaixo)</span><span class="lang-badge html">HTML</span></div>
+<pre><span class="tag">&lt;h2&gt;</span>Minhas habilidades<span class="tag">&lt;/h2&gt;</span>
+<span class="tag">&lt;table&gt;</span>
+  <span class="tag">&lt;tr&gt;</span><span class="tag">&lt;th&gt;</span>Habilidade<span class="tag">&lt;/th&gt;</span><span class="tag">&lt;th&gt;</span>Nível<span class="tag">&lt;/th&gt;</span><span class="tag">&lt;/tr&gt;</span>
+  <span class="tag">&lt;tr&gt;</span><span class="tag">&lt;td&gt;</span>HTML<span class="tag">&lt;/td&gt;</span><span class="tag">&lt;td&gt;</span>Aprendendo<span class="tag">&lt;/td&gt;</span><span class="tag">&lt;/tr&gt;</span>
+  <span class="tag">&lt;tr&gt;</span><span class="tag">&lt;td&gt;</span>Vontade<span class="tag">&lt;/td&gt;</span><span class="tag">&lt;td&gt;</span>Nível 100<span class="tag">&lt;/td&gt;</span><span class="tag">&lt;/tr&gt;</span>
+<span class="tag">&lt;/table&gt;</span></pre>
+            </div>
+            <p class="text-dim" style="font-size:0.82rem;margin:4px 0">Como o navegador desenha a tabela:</p>
+            <div class="mini-browser" data-url="sobre-mim.html">
+<script type="text/html" data-mp="html">
+  <h2>Minhas habilidades</h2>
+  <table border="1" cellpadding="8" cellspacing="0" style="border-collapse:collapse">
+    <tr><th>Habilidade</th><th>Nível</th></tr>
+    <tr><td>HTML</td><td>Aprendendo</td></tr>
+    <tr><td>Vontade</td><td>Nível 100</td></tr>
+  </table>
+</script>
+            </div>
+            <div class="tip" style="margin-top:8px"><span class="tip-icon">💡</span><div class="tip-content">A tabela "crua" do HTML é simples assim. O capricho (bordas, cores) vem depois com <strong>CSS</strong> — segura a ansiedade. 😉</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. com o prof — semântica envolvendo tudo -->
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">👨‍🏫</span><div>
+          <div class="exercise-title">Passo 5 — dando nome aos cômodos (com o prof)</div>
+          <div class="exercise-sub">Envolva o que você já tem em tags semânticas</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>Agora a sacada profissional: <strong>envolva</strong> seu conteúdo. O <code>&lt;h1&gt;</code>/<code>&lt;h2&gt;</code> do topo viram um <code>&lt;header&gt;</code>; o miolo (listas, foto, tabela) vai num <code>&lt;main&gt;</code>; e crie um <code>&lt;footer&gt;</code> no fim. Não apague conteúdo — só "embrulhe".</p></div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">sobre-mim.html (estrutura)</span><span class="lang-badge html">HTML</span></div>
+<pre><span class="tag">&lt;header&gt;</span>
+  <span class="tag">&lt;h1&gt;</span>Oi, eu sou a Maria<span class="tag">&lt;/h1&gt;</span>
+  <span class="tag">&lt;h2&gt;</span>Futura dev fullstack<span class="tag">&lt;/h2&gt;</span>
+<span class="tag">&lt;/header&gt;</span>
+
+<span class="tag">&lt;main&gt;</span>
+  <span class="cm">&lt;!-- aqui dentro: parágrafo, listas, foto, tabela --&gt;</span>
+<span class="tag">&lt;/main&gt;</span>
+
+<span class="tag">&lt;footer&gt;</span>
+  <span class="tag">&lt;p&gt;</span>Feito por mim com HTML 💛<span class="tag">&lt;/p&gt;</span>
+<span class="tag">&lt;/footer&gt;</span></pre>
+        </div>
+        <div class="tip"><span class="tip-icon">🎯</span><div class="tip-content">Na tela quase nada muda — <code>header</code>/<code>main</code>/<code>footer</code> não têm aparência própria. Mas agora seu código tem <strong>significado</strong>: é a marca de quem é dev de verdade (e o Google adora).</div></div>
+      </div>
+
+      <!-- 6. sozinho — formulário de contato -->
+      <div class="exercise solo">
+        <div class="exercise-header"><span class="exercise-icon">🧑‍💻</span><div>
+          <div class="exercise-title">Passo 6 — formulário "fale comigo" (sozinho/a)</div>
+          <div class="exercise-sub">Dentro do footer, um mini formulário</div></div>
+        </div>
+        <div class="drill-tags"><span class="drill-level lv3"><span class="stars">★★★</span> desafio</span><span class="drill-tag">&lt;form&gt;</span><span class="drill-tag">&lt;label&gt;</span><span class="drill-tag">&lt;input&gt;</span><span class="drill-tag">&lt;button&gt;</span></div>
+        <div class="concept"><div class="concept-title">💡 Dica</div><p>No <code>&lt;footer&gt;</code>, adicione um <code>&lt;form&gt;</code> com um campo de <strong>nome</strong> (<code>type="text"</code>), um de <strong>e-mail</strong> (<code>type="email"</code>), cada um com seu <code>&lt;label&gt;</code>, e um <code>&lt;button&gt;</code> "Enviar". É a mesma estrutura de toda tela de login/contato do mundo.</p></div>
+        <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Tenta antes de espiar!</strong> Cada campo é um <code>&lt;input&gt;</code> (tag solitária) com seu <code>&lt;label&gt;</code> em cima.</div></div>
+        <div class="toggler">
+          <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — Ver solução + resultado</span><span class="toggler-arrow">▼</span></div>
+          <div class="toggler-body">
+            <div class="code-block">
+              <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">sobre-mim.html (dentro do footer)</span><span class="lang-badge html">HTML</span></div>
+<pre><span class="tag">&lt;form&gt;</span>
+  <span class="tag">&lt;label&gt;</span>Nome:<span class="tag">&lt;/label&gt;</span>
+  <span class="tag">&lt;input</span> <span class="atr">type</span>=<span class="st">"text"</span> <span class="atr">placeholder</span>=<span class="st">"Seu nome"</span><span class="tag">&gt;</span>
+
+  <span class="tag">&lt;label&gt;</span>E-mail:<span class="tag">&lt;/label&gt;</span>
+  <span class="tag">&lt;input</span> <span class="atr">type</span>=<span class="st">"email"</span> <span class="atr">placeholder</span>=<span class="st">"voce@email.com"</span><span class="tag">&gt;</span>
+
+  <span class="tag">&lt;button&gt;</span>Enviar<span class="tag">&lt;/button&gt;</span>
+<span class="tag">&lt;/form&gt;</span></pre>
+            </div>
+            <p class="text-dim" style="font-size:0.82rem;margin:4px 0">O formulário renderizado:</p>
+            <div class="mini-browser" data-url="sobre-mim.html">
+<script type="text/html" data-mp="html">
+  <form>
+    <p style="margin:6px 0 2px"><label>Nome:</label></p>
+    <input type="text" placeholder="Seu nome">
+    <p style="margin:10px 0 2px"><label>E-mail:</label></p>
+    <input type="email" placeholder="voce@email.com">
+    <p><button type="button" style="background:#2965f1;color:#fff;border:0;padding:8px 16px;border-radius:8px;font-weight:700;cursor:pointer">Enviar</button></p>
+  </form>
+</script>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 7. desafio para casa — currículo -->
+      <div class="exercise home">
+        <div class="exercise-header"><span class="exercise-icon">🏠</span><div>
+          <div class="exercise-title">🏆 Desafio para casa — vire um currículo</div>
+          <div class="exercise-sub">Pega tudo que você construiu e transforma</div></div>
+        </div>
+        <div class="concept">
+          <div class="concept-title">💡 Missão</div>
+          <p>Salve uma cópia do seu <code>sobre-mim.html</code> como <code>curriculo.html</code> e ajuste o conteúdo
+          pra virar um <strong>currículo</strong> de verdade: <code>&lt;header&gt;</code> com nome e contato;
+          uma <code>&lt;section&gt;</code> "Experiência" e outra "Educação" (com listas); e o <code>&lt;footer&gt;</code>.
+          <strong>Guarde esse arquivo</strong> — daqui a pouco a gente vai deixar ele lindo com CSS!</p>
+        </div>
+        <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Faça sozinho(a)!</strong> Esse é o seu — capricha. Só espia o esqueleto se travar.</div></div>
+        <div class="toggler">
+          <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Ver um esqueleto de exemplo</span><span class="toggler-arrow">▼</span></div>
+          <div class="toggler-body">
+            <div class="code-block">
+              <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">curriculo.html</span><span class="lang-badge html">HTML</span></div>
+<pre><span class="tag">&lt;header&gt;</span>
+  <span class="tag">&lt;h1&gt;</span>Maria Silva<span class="tag">&lt;/h1&gt;</span>
+  <span class="tag">&lt;p&gt;</span>João Pessoa, PB · maria@email.com<span class="tag">&lt;/p&gt;</span>
+<span class="tag">&lt;/header&gt;</span>
+<span class="tag">&lt;section&gt;</span>
+  <span class="tag">&lt;h2&gt;</span>Experiência<span class="tag">&lt;/h2&gt;</span>
+  <span class="tag">&lt;ul&gt;</span>
+    <span class="tag">&lt;li&gt;</span><span class="tag">&lt;strong&gt;</span>programa AI<span class="tag">&lt;/strong&gt;</span> — Estagiária<span class="tag">&lt;/li&gt;</span>
+  <span class="tag">&lt;/ul&gt;</span>
+<span class="tag">&lt;/section&gt;</span>
+<span class="tag">&lt;section&gt;</span>
+  <span class="tag">&lt;h2&gt;</span>Educação<span class="tag">&lt;/h2&gt;</span>
+  <span class="tag">&lt;ul&gt;</span>
+    <span class="tag">&lt;li&gt;</span>UNIESP — Curso Fullstack<span class="tag">&lt;/li&gt;</span>
+  <span class="tag">&lt;/ul&gt;</span>
+<span class="tag">&lt;/section&gt;</span>
+<span class="tag">&lt;footer&gt;</span><span class="tag">&lt;p&gt;</span>Feito com HTML 💛<span class="tag">&lt;/p&gt;</span><span class="tag">&lt;/footer&gt;</span></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="chapter-divider">
+    <span class="chapter-icon">🎨</span>
+    <span class="chapter-number">Parte 2</span>
+    <h2 class="grad-css">Agora vamos dar estilo</h2>
+    <p class="chapter-subtitle">HTML montou a casa. CSS vai pintar, decorar e organizar tudo. Vamos estilizar aquele currículo!</p>
+  </div>
+
+  <!-- ═══════════════ O QUE É CSS ═══════════════ -->
+  <section class="step-section" id="o-que-e-css">
+    <div class="step-header">
+      <div class="step-number sn-css">🎨</div>
+      <div>
+        <div class="step-title">O que é CSS?</div>
+        <div class="step-sub">Cascading Style Sheets — as roupas da página</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="analogy">
+        <div class="analogy-title">Lembra da casa? 🏠</div>
+        <p>HTML é a estrutura crua. <strong>CSS</strong> é a decoração: cor de fundo, tamanho das letras,
+        espaçamentos, posição dos elementos. A mesma casa (HTML) pode ficar com <em>mil aparências</em>
+        diferentes só trocando o CSS.</p>
+      </div>
+
+      <p style="color:var(--text-dim);margin:14px 0 6px">A regra de CSS tem sempre esta forma:</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+          <span class="filename">anatomia de uma regra CSS</span>
+          <span class="lang-badge css">CSS</span>
+        </div>
+<pre><span class="sel">h1</span> <span class="punc">{</span>                  <span class="cm">/* seletor: QUEM vai ser estilizado */</span>
+  <span class="prop">color</span><span class="punc">:</span> <span class="val">#2965f1</span><span class="punc">;</span>      <span class="cm">/* propriedade: cor do texto */</span>
+  <span class="prop">font-size</span><span class="punc">:</span> <span class="num">32</span><span class="unit">px</span><span class="punc">;</span>    <span class="cm">/* propriedade: tamanho da fonte */</span>
+<span class="punc">}</span></pre>
+      </div>
+
+      <p style="color:var(--text-dim);margin:14px 0 6px">E como conectar o CSS no HTML? O jeito profissional é um arquivo
+      <code>.css</code> separado, ligado no <code>&lt;head&gt;</code>:</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+          <span class="filename">index.html (dentro do head)</span>
+          <span class="lang-badge html">HTML</span>
+        </div>
+<pre><span class="tag">&lt;link</span> <span class="atr">rel</span>=<span class="st">"stylesheet"</span> <span class="atr">href</span>=<span class="st">"estilo.css"</span><span class="tag">&gt;</span></pre>
+      </div>
+
+      <div class="tip">
+        <span class="tip-icon">🗂️</span>
+        <div class="tip-content">
+          <strong>Por que arquivo separado?</strong> Organização. O HTML cuida do conteúdo, o CSS cuida
+          da aparência. Em projetos React (lá na frente) a gente vai além disso com <strong>CSS Modules</strong>.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ SELETORES E PROPRIEDADES ═══════════════ -->
+  <section class="step-section" id="seletores">
+    <div class="step-header">
+      <div class="step-number sn-css">🎯</div>
+      <div>
+        <div class="step-title">Seletores: mirando os elementos certos</div>
+        <div class="step-sub">Por tag, por classe, por id</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="code-block">
+        <div class="code-header">
+          <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+          <span class="filename">estilo.css</span>
+          <span class="lang-badge css">CSS</span>
+        </div>
+<pre><span class="cm">/* por TAG: todos os parágrafos */</span>
+<span class="sel">p</span> <span class="punc">{</span> <span class="prop">color</span><span class="punc">:</span> <span class="val">gray</span><span class="punc">;</span> <span class="punc">}</span>
+
+<span class="cm">/* por CLASSE: elementos com class="destaque" (começa com .) */</span>
+<span class="sel">.destaque</span> <span class="punc">{</span> <span class="prop">background</span><span class="punc">:</span> <span class="val">yellow</span><span class="punc">;</span> <span class="punc">}</span>
+
+<span class="cm">/* por ID: o elemento com id="topo" (começa com #) */</span>
+<span class="sel">#topo</span> <span class="punc">{</span> <span class="prop">font-size</span><span class="punc">:</span> <span class="num">40</span><span class="unit">px</span><span class="punc">;</span> <span class="punc">}</span></pre>
+      </div>
+
+      <p style="color:var(--text-dim);margin:14px 0 6px">No HTML, você "marca" os elementos com <code>class</code> e <code>id</code>:</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+          <span class="filename">index.html</span>
+          <span class="lang-badge html">HTML</span>
+        </div>
+<pre><span class="tag">&lt;h1</span> <span class="atr">id</span>=<span class="st">"topo"</span><span class="tag">&gt;</span>Bem-vindo<span class="tag">&lt;/h1&gt;</span>
+<span class="tag">&lt;p</span> <span class="atr">class</span>=<span class="st">"destaque"</span><span class="tag">&gt;</span>Esse parágrafo fica com fundo amarelo<span class="tag">&lt;/p&gt;</span></pre>
+      </div>
+
+      <div class="concept">
+        <div class="concept-title">💡 Classe x Id</div>
+        <p><strong>Classe</strong> (<code>.</code>) pode repetir em vários elementos — use à vontade.
+        <strong>Id</strong> (<code>#</code>) deve ser único na página. No dia a dia,
+        <strong>classe é o que você mais vai usar</strong>.</p>
+      </div>
+
+      <p style="color:var(--text-dim);margin:14px 0 6px">Propriedades que você vai usar o tempo todo:</p>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+          <span class="filename">propriedades comuns</span>
+          <span class="lang-badge css">CSS</span>
+        </div>
+<pre><span class="sel">.cartao</span> <span class="punc">{</span>
+  <span class="prop">color</span><span class="punc">:</span> <span class="val">#222</span><span class="punc">;</span>            <span class="cm">/* cor do texto */</span>
+  <span class="prop">background</span><span class="punc">:</span> <span class="val">#f4f4f4</span><span class="punc">;</span>     <span class="cm">/* cor de fundo */</span>
+  <span class="prop">font-size</span><span class="punc">:</span> <span class="num">16</span><span class="unit">px</span><span class="punc">;</span>       <span class="cm">/* tamanho da fonte */</span>
+  <span class="prop">padding</span><span class="punc">:</span> <span class="num">20</span><span class="unit">px</span><span class="punc">;</span>          <span class="cm">/* espaço INTERNO */</span>
+  <span class="prop">margin</span><span class="punc">:</span> <span class="num">10</span><span class="unit">px</span><span class="punc">;</span>           <span class="cm">/* espaço EXTERNO */</span>
+  <span class="prop">border-radius</span><span class="punc">:</span> <span class="num">12</span><span class="unit">px</span><span class="punc">;</span>    <span class="cm">/* cantos arredondados */</span>
+<span class="punc">}</span></pre>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ BOX MODEL ═══════════════ -->
+  <section class="step-section" id="box-model">
+    <div class="step-header">
+      <div class="step-number sn-css">📦</div>
+      <div>
+        <div class="step-title">Box model: tudo é uma caixa</div>
+        <div class="step-sub">A confusão #1 de quem começa — vamos matar ela agora</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="analogy">
+        <div class="analogy-title">📦 Um quadro na parede</div>
+        <p>Imagine um quadro: a <strong>foto</strong> é o conteúdo. O <strong>passe-partout</strong>
+        (aquela borda branca por dentro) é o <code>padding</code>. A <strong>moldura</strong> é o
+        <code>border</code>. E o <strong>espaço até o próximo quadro</strong> na parede é o <code>margin</code>.</p>
+      </div>
+
+      <div class="bm">
+        <div class="layer margin">
+          <span class="lbl">margin (fora)</span>
+          <div class="layer border">
+            <span class="lbl">border</span>
+            <div class="layer padding">
+              <span class="lbl">padding (dentro)</span>
+              <div class="layer content">content</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tip">
+        <span class="tip-icon">🎯</span>
+        <div class="tip-content">
+          <strong>Macete:</strong> <code>padding</code> empurra o conteúdo <em>pra dentro</em> da caixa.
+          <code>margin</code> empurra a caixa <em>pra longe</em> das outras. Confundir os dois é normal —
+          olha esse desenho sempre que travar.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ FLEXBOX / CENTRALIZAR A DIV ═══════════════ -->
+  <section class="step-section" id="flexbox">
+    <div class="step-header">
+      <div class="step-number sn-react">🧰</div>
+      <div>
+        <div class="step-title">Flexbox &amp; o lendário "centralizar a div"</div>
+        <div class="step-sub">O meme mais real da história do frontend</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <figure style="margin:0 0 16px;text-align:center">
+        <img src="../../assets/memes/meme-css-centralizar.png"
+             alt="Meme: dev de madrugada lutando pra centralizar uma div na tela"
+             style="max-width:420px;width:100%;border-radius:14px;border:1px solid rgba(255,255,255,0.08)"
+             onerror="this.closest('figure').style.display='none'">
+        <figcaption class="text-dim" style="font-size:0.78rem;margin-top:6px">todo dev já passou por isso 😅</figcaption>
+      </figure>
+
+      <p style="color:var(--text-dim);margin-bottom:6px">
+        Durante anos, centralizar uma caixinha no meio da tela foi um pesadelo. Hoje temos o
+        <strong style="color:var(--text)">Flexbox</strong> — e a brincadeira virou 3 linhas.
+        Você coloca <code>display: flex</code> no <strong>elemento-pai</strong> (o container) e ele
+        passa a organizar os filhos pra você:
+      </p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+          <span class="filename">estilo.css</span>
+          <span class="lang-badge css">CSS</span>
+        </div>
+<pre><span class="sel">.container</span> <span class="punc">{</span>
+  <span class="prop">display</span><span class="punc">:</span> <span class="val">flex</span><span class="punc">;</span>            <span class="cm">/* liga o flexbox */</span>
+  <span class="prop">justify-content</span><span class="punc">:</span> <span class="val">center</span><span class="punc">;</span>  <span class="cm">/* centraliza na horizontal ↔ */</span>
+  <span class="prop">align-items</span><span class="punc">:</span> <span class="val">center</span><span class="punc">;</span>      <span class="cm">/* centraliza na vertical ↕ */</span>
+  <span class="prop">height</span><span class="punc">:</span> <span class="num">150</span><span class="unit">px</span><span class="punc">;</span>
+<span class="punc">}</span></pre>
+      </div>
+
+      <p class="text-dim" style="font-size:0.85rem">Resultado (esse quadrado está centralizado com exatamente esse CSS):</p>
+      <div class="flex-demo">
+        <div class="square" data-motion="float">🎯</div>
+      </div>
+
+      <div class="concept">
+        <div class="concept-title">🧭 Decora essa dupla</div>
+        <p><code>justify-content</code> = eixo principal (horizontal, por padrão).
+        <code>align-items</code> = eixo cruzado (vertical, por padrão). Os dois em <code>center</code>
+        = coisa centralizada. Esse é o feijão com arroz de 90% dos layouts.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ PLAYGROUND AO VIVO ═══════════════ -->
+  <section class="step-section" id="playground">
+    <div class="step-header">
+      <div class="step-number sn-react">🕹️</div>
+      <div>
+        <div class="step-title">Brinque aqui — ao vivo!</div>
+        <div class="step-sub">Edite o código e veja mudar na hora. Sério, mexe à vontade!</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p style="color:var(--text-dim);margin-bottom:6px">
+        Esse é um <strong style="color:var(--text)">playground de verdade</strong>: o que você digitar na
+        esquerda aparece na direita, rodando no seu navegador. Tente trocar a cor, o texto, o
+        <code>border-radius</code>… <strong>não tem como quebrar nada</strong>, então experimenta sem medo. 🧪
+      </p>
+
+      <div class="playground" data-mode="web" data-title="Experimente: um cartão">
+<textarea data-pg="html"><div class="cartao">
+  <h2>Tênis de Corrida 👟</h2>
+  <p>R$ 299,90</p>
+  <button>Comprar</button>
+</div></textarea>
+<textarea data-pg="css">body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  background: #eef0f8;
+}
+.cartao {
+  background: white;
+  padding: 24px;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+}
+.cartao button {
+  background: #2965f1;
+  color: white;
+  border: none;
+  padding: 10px 22px;
+  border-radius: 8px;
+  cursor: pointer;
+}</textarea>
+      </div>
+
+      <div class="tip">
+        <span class="tip-icon">🎯</span>
+        <div class="tip-content">
+          <strong>Desafio relâmpago:</strong> troque o <code>background</code> do botão pra
+          <code>#e34f26</code>, aumente o <code>border-radius</code> do cartão pra <code>30px</code> e
+          mude o emoji. Viu como é rápido? <strong>É essa a brincadeira de ser dev front.</strong>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ BUGZILLA ═══════════════ -->
+  <section class="step-section" id="bugzilla">
+    <div class="step-header">
+      <div class="step-number sn-red">🐛</div>
+      <div>
+        <div class="step-title">BugZilla ataca!</div>
+        <div class="step-sub">Os erros clássicos de HTML/CSS — e como derrotar</div>
+      </div>
+    </div>
+
+    <figure style="margin:0 0 16px;text-align:center">
+      <img src="../../assets/memes/meme-html-fechar-tag.png"
+           alt="Meme: dev horrorizado porque esqueceu de fechar uma tag e o site inteiro quebrou"
+           style="max-width:400px;width:100%;border-radius:14px;border:1px solid rgba(255,255,255,0.08)"
+           onerror="this.closest('figure').style.display='none'">
+    </figure>
+
+    <div class="bug-box">
+      <span class="bug-icon">🐛</span>
+      <div class="bug-content">
+        <strong>Bug 1 — tag não fechada.</strong> Você abre <code>&lt;p&gt;</code> mas esquece o
+        <code>&lt;/p&gt;</code>. A página "vaza" e tudo abaixo fica estranho.
+      </div>
+    </div>
+    <div class="toggler">
+      <div class="toggler-header" onclick="toggleSection(this)">
+        <span>👀 Ver o conserto</span><span class="toggler-arrow">▼</span>
+      </div>
+      <div class="toggler-body">
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">corrigido</span><span class="lang-badge html">HTML</span></div>
+<pre><span class="cm">&lt;!-- ERRADO --&gt;</span>
+<span class="tag">&lt;p&gt;</span>Olá
+
+<span class="cm">&lt;!-- CERTO: sempre feche a tag --&gt;</span>
+<span class="tag">&lt;p&gt;</span>Olá<span class="tag">&lt;/p&gt;</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="bug-box" style="margin-top:18px">
+      <span class="bug-icon">🐛</span>
+      <div class="bug-content">
+        <strong>Bug 2 — CSS não aparece.</strong> Você escreveu o CSS lindo, salvou, e... nada mudou.
+        Na maioria das vezes é o <code>&lt;link&gt;</code> errado ou o nome do arquivo trocado.
+      </div>
+    </div>
+    <div class="toggler">
+      <div class="toggler-header" onclick="toggleSection(this)">
+        <span>👀 Ver o que checar</span><span class="toggler-arrow">▼</span>
+      </div>
+      <div class="toggler-body">
+        <div class="tip" style="margin:0">
+          <span class="tip-icon">✅</span>
+          <div class="tip-content">
+            1) O <code>&lt;link rel="stylesheet" href="estilo.css"&gt;</code> está no <code>&lt;head&gt;</code>?
+            2) O nome no <code>href</code> é <strong>idêntico</strong> ao do arquivo (maiúsculas contam!)?
+            3) O arquivo está na mesma pasta? 4) Você <strong>salvou</strong> (Ctrl/Cmd+S)?
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bug-box" style="margin-top:18px">
+      <span class="bug-icon">🐛</span>
+      <div class="bug-content">
+        <strong>Bug 3 — esqueceu o <code>;</code> no CSS.</strong> Cada propriedade termina com
+        ponto e vírgula. Esquecer um faz a propriedade seguinte ser ignorada silenciosamente.
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ DESAFIOS ═══════════════ -->
+  <section class="step-section" id="desafios">
+    <div class="step-header">
+      <div class="step-number sn-purple">💪</div>
+      <div>
+        <div class="step-title">Hora de voar sozinho(a)</div>
+        <div class="step-sub">Tente DE VERDADE antes de espiar o olhinho</div>
+      </div>
+    </div>
+
+    <!-- Com o prof: estilizar o currículo -->
+    <div class="exercise guided">
+      <div class="exercise-header">
+        <span class="exercise-icon">👨‍🏫</span>
+        <div>
+          <div class="exercise-title">estilo.css — deixe seu currículo lindo (com o prof)</div>
+          <div class="exercise-sub">Lembra do <code>7_curriculo.html</code>? Bora dar vida a ele</div>
+        </div>
+      </div>
+      <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>Crie um <code>estilo.css</code>, conecte no currículo com <code>&lt;link&gt;</code> e estilize: fundo, fonte, e um destaque colorido no <code>&lt;header&gt;</code>. Acompanhe:</p></div>
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">estilo.css</span><span class="lang-badge css">CSS</span></div>
+<pre><span class="sel">body</span> <span class="punc">{</span>
+  <span class="prop">font-family</span><span class="punc">:</span> <span class="val">Arial</span>, <span class="val">sans-serif</span><span class="punc">;</span>
+  <span class="prop">background</span><span class="punc">:</span> <span class="val">#f4f4f4</span><span class="punc">;</span>
+  <span class="prop">color</span><span class="punc">:</span> <span class="val">#333</span><span class="punc">;</span>
+  <span class="prop">max-width</span><span class="punc">:</span> <span class="num">700</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">margin</span><span class="punc">:</span> <span class="num">0</span> <span class="val">auto</span><span class="punc">;</span>   <span class="cm">/* centraliza na página */</span>
+<span class="punc">}</span>
+<span class="sel">header</span> <span class="punc">{</span>
+  <span class="prop">background</span><span class="punc">:</span> <span class="val">#2965f1</span><span class="punc">;</span>
+  <span class="prop">color</span><span class="punc">:</span> <span class="val">white</span><span class="punc">;</span>
+  <span class="prop">padding</span><span class="punc">:</span> <span class="num">20</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">text-align</span><span class="punc">:</span> <span class="val">center</span><span class="punc">;</span>
+  <span class="prop">border-radius</span><span class="punc">:</span> <span class="num">10</span><span class="unit">px</span><span class="punc">;</span>
+<span class="punc">}</span>
+<span class="sel">section</span> <span class="punc">{</span>
+  <span class="prop">background</span><span class="punc">:</span> <span class="val">white</span><span class="punc">;</span>
+  <span class="prop">padding</span><span class="punc">:</span> <span class="num">20</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">margin</span><span class="punc">:</span> <span class="num">10</span><span class="unit">px</span> <span class="num">0</span><span class="punc">;</span>
+  <span class="prop">border-radius</span><span class="punc">:</span> <span class="num">8</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">box-shadow</span><span class="punc">:</span> <span class="num">0</span> <span class="num">0</span> <span class="num">10</span><span class="unit">px</span> <span class="val">rgba(0,0,0,0.1)</span><span class="punc">;</span>
+<span class="punc">}</span></pre>
+      </div>
+      <p class="text-dim" style="font-size:0.82rem;margin:10px 0 4px">O mesmo currículo, agora com o CSS acima aplicado 👇</p>
+      <div class="mini-browser" data-url="curriculo.html">
+<script type="text/html" data-mp="css">
+  body{font-family:Arial,sans-serif;background:#f4f4f4;color:#333;max-width:700px;margin:0 auto}
+  header{background:#2965f1;color:white;padding:20px;text-align:center;border-radius:10px}
+  section{background:white;padding:20px;margin:10px 0;border-radius:8px;box-shadow:0 0 10px rgba(0,0,0,0.1)}
+</script>
+<script type="text/html" data-mp="html">
+  <header>
+    <h1>Maria Silva</h1>
+    <p>João Pessoa, PB · maria@email.com</p>
+  </header>
+  <section>
+    <h2>Experiência</h2>
+    <ul><li><strong>programa AI</strong> — Estagiária</li></ul>
+  </section>
+  <section>
+    <h2>Educação</h2>
+    <ul><li>UNIESP — Curso Fullstack</li></ul>
+  </section>
+</script>
+      </div>
+      <div class="tip"><span class="tip-icon">✨</span><div class="tip-content">Salve e abra no navegador. O mesmo HTML "sem graça" virou um currículo de gente grande — <strong>só com CSS</strong>. Essa é a mágica.</div></div>
+    </div>
+
+    <!-- Desafio individual -->
+    <div class="exercise solo">
+      <div class="exercise-header">
+        <span class="exercise-icon">🧑‍💻</span>
+        <div>
+          <div class="exercise-title">Desafio Individual — cartao.html</div>
+          <div class="exercise-sub">Um cartãozinho de produto centralizado</div>
+        </div>
+      </div>
+
+      <div class="concept">
+        <div class="concept-title">💡 Dica pra fazer sozinho(a)</div>
+        <p>Crie <code>cartao.html</code> e <code>estilo.css</code>. No HTML, faça uma
+        <code>&lt;div class="cartao"&gt;</code> contendo um <code>&lt;h2&gt;</code> (nome do produto),
+        um <code>&lt;p&gt;</code> (preço) e um <code>&lt;button&gt;</code> (Comprar).</p>
+        <p>No CSS: dê <code>background</code>, <code>padding</code> e <code>border-radius</code> ao
+        <code>.cartao</code>. Depois, no <code>&lt;body&gt;</code>, use <strong>flexbox</strong> pra
+        centralizar o cartão na tela (lembra do <code>justify-content</code> + <code>align-items</code>?).</p>
+      </div>
+
+      <div class="try-first">
+        <div class="try-first-icon">🚨</div>
+        <div class="try-first-content">
+          <strong>PARE! Tente sozinho(a) primeiro.</strong> Abra o VSCode, erre, teste, ajuste.
+          <strong>Quem espia antes de tentar perde a maior parte do aprendizado!</strong>
+        </div>
+      </div>
+
+      <div class="toggler">
+        <div class="toggler-header" onclick="toggleSection(this)">
+          <span>👀 Só clique aqui DEPOIS de tentar — Ver solução completa</span>
+          <span class="toggler-arrow">▼</span>
+        </div>
+        <div class="toggler-body">
+          <div class="code-block">
+            <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">cartao.html</span><span class="lang-badge html">HTML</span></div>
+<pre><span class="tag">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;html</span> <span class="atr">lang</span>=<span class="st">"pt-BR"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;head&gt;</span>
+    <span class="tag">&lt;meta</span> <span class="atr">charset</span>=<span class="st">"UTF-8"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;title&gt;</span>Cartão<span class="tag">&lt;/title&gt;</span>
+    <span class="tag">&lt;link</span> <span class="atr">rel</span>=<span class="st">"stylesheet"</span> <span class="atr">href</span>=<span class="st">"estilo.css"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;/head&gt;</span>
+  <span class="tag">&lt;body&gt;</span>
+    <span class="tag">&lt;div</span> <span class="atr">class</span>=<span class="st">"cartao"</span><span class="tag">&gt;</span>
+      <span class="tag">&lt;h2&gt;</span>Tênis de Corrida<span class="tag">&lt;/h2&gt;</span>
+      <span class="tag">&lt;p&gt;</span>R$ 299,90<span class="tag">&lt;/p&gt;</span>
+      <span class="tag">&lt;button&gt;</span>Comprar<span class="tag">&lt;/button&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span></pre>
+          </div>
+          <div class="code-block">
+            <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">estilo.css</span><span class="lang-badge css">CSS</span></div>
+<pre><span class="sel">body</span> <span class="punc">{</span>
+  <span class="prop">display</span><span class="punc">:</span> <span class="val">flex</span><span class="punc">;</span>
+  <span class="prop">justify-content</span><span class="punc">:</span> <span class="val">center</span><span class="punc">;</span>
+  <span class="prop">align-items</span><span class="punc">:</span> <span class="val">center</span><span class="punc">;</span>
+  <span class="prop">height</span><span class="punc">:</span> <span class="num">100</span><span class="unit">vh</span><span class="punc">;</span>   <span class="cm">/* vh = altura da tela toda */</span>
+  <span class="prop">background</span><span class="punc">:</span> <span class="val">#f0f0f0</span><span class="punc">;</span>
+<span class="punc">}</span>
+<span class="sel">.cartao</span> <span class="punc">{</span>
+  <span class="prop">background</span><span class="punc">:</span> <span class="val">white</span><span class="punc">;</span>
+  <span class="prop">padding</span><span class="punc">:</span> <span class="num">24</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">border-radius</span><span class="punc">:</span> <span class="num">14</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">text-align</span><span class="punc">:</span> <span class="val">center</span><span class="punc">;</span>
+  <span class="prop">box-shadow</span><span class="punc">:</span> <span class="num">0</span> <span class="num">4</span><span class="unit">px</span> <span class="num">14</span><span class="unit">px</span> <span class="val">rgba(0,0,0,0.1)</span><span class="punc">;</span>
+<span class="punc">}</span>
+<span class="sel">.cartao button</span> <span class="punc">{</span>
+  <span class="prop">background</span><span class="punc">:</span> <span class="val">#2965f1</span><span class="punc">;</span>
+  <span class="prop">color</span><span class="punc">:</span> <span class="val">white</span><span class="punc">;</span>
+  <span class="prop">border</span><span class="punc">:</span> <span class="val">none</span><span class="punc">;</span>
+  <span class="prop">padding</span><span class="punc">:</span> <span class="num">10</span><span class="unit">px</span> <span class="num">20</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">border-radius</span><span class="punc">:</span> <span class="num">8</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">cursor</span><span class="punc">:</span> <span class="val">pointer</span><span class="punc">;</span>
+<span class="punc">}</span></pre>
+          </div>
+          <p class="text-dim" style="font-size:0.82rem;margin:4px 0">O cartão centralizado, ao vivo:</p>
+          <div class="mini-browser" data-url="cartao.html">
+<script type="text/html" data-mp="css">
+  body{display:flex;justify-content:center;align-items:center;height:240px;background:#f0f0f0}
+  .cartao{background:white;padding:24px;border-radius:14px;text-align:center;box-shadow:0 4px 14px rgba(0,0,0,0.1)}
+  .cartao button{background:#2965f1;color:white;border:none;padding:10px 20px;border-radius:8px;cursor:pointer}
+</script>
+<script type="text/html" data-mp="html">
+  <div class="cartao">
+    <h2>Tênis de Corrida</h2>
+    <p>R$ 299,90</p>
+    <button type="button">Comprar</button>
+  </div>
+</script>
+          </div>
+          <div class="tip" style="margin-top:8px">
+            <span class="tip-icon">✨</span>
+            <div class="tip-content"><strong>Sacou?</strong> Usei <code>100vh</code> pra ocupar a tela inteira
+            e o flexbox centralizou o cartão. Esse mesmo padrão centraliza <em>qualquer</em> coisa.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Desafio casa -->
+    <div class="exercise home" style="margin-top:18px">
+      <div class="exercise-header">
+        <span class="exercise-icon">🏠</span>
+        <div>
+          <div class="exercise-title">Desafio para Casa — sua landing page</div>
+          <div class="exercise-sub">Solte a criatividade</div>
+        </div>
+      </div>
+      <div class="concept">
+        <div class="concept-title">💡 Missão</div>
+        <p>Crie uma página de apresentação <strong>sua</strong>: um <code>&lt;h1&gt;</code> com seu nome,
+        um parágrafo sobre você, uma lista (<code>&lt;ul&gt;</code>) com 3 hobbies, e um link pro seu
+        Instagram/GitHub. Estilize com CSS: cor de fundo, fonte maior, um cartão centralizado.
+        <strong>Não tem gabarito</strong> — é seu! Traga no próximo sábado pra mostrar. 🎤</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ RESUMO ═══════════════ -->
+  <section class="step-section" id="resumo">
+    <div class="step-header">
+      <div class="step-number sn-mint">🎒</div>
+      <div>
+        <div class="step-title">O que você leva deste capítulo</div>
+        <div class="step-sub">Fixou? Então bora pro próximo</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <ul class="about-bullets">
+        <li><div><strong>HTML</strong> é a estrutura: tags em par (<code>&lt;p&gt;...&lt;/p&gt;</code>), o esqueleto <code>html → head → body</code>.</div></li>
+        <li><div><strong>Tags essenciais:</strong> <code>h1</code>–<code>h6</code>, <code>p</code>, <code>a</code>, <code>img</code>, <code>ul/li</code>, <code>button</code>, <code>input</code>.</div></li>
+        <li><div><strong>CSS</strong> é a aparência: <code>seletor { propriedade: valor; }</code>, conectado com <code>&lt;link&gt;</code>.</div></li>
+        <li><div><strong>Seletores:</strong> tag, <code>.classe</code>, <code>#id</code>. Classe é a estrela.</div></li>
+        <li><div><strong>Box model:</strong> content → padding → border → margin.</div></li>
+        <li><div><strong>Flexbox:</strong> <code>display:flex</code> + <code>justify-content</code> + <code>align-items</code> = centralizou.</div></li>
+      </ul>
+
+      <figure style="margin:16px auto;max-width:380px;text-align:center">
+        <img src="../../assets/memes/meme-css-funcionou.png" alt="Dev comemorando quando o CSS finalmente funciona"
+          style="width:100%;border-radius:14px;border:1px solid rgba(255,255,255,0.08)"
+          onerror="this.closest('figure').style.display='none'">
+        <figcaption class="text-dim" style="font-size:0.78rem;margin-top:6px">você quando o CSS finalmente colabora 🎉</figcaption>
+      </figure>
+
+      <div class="tip" style="margin-top:16px">
+        <span class="tip-icon">➡️</span>
+        <div class="tip-content">
+          <strong>No próximo capítulo:</strong> a página vai ganhar <em>vida</em>. Vamos aprender
+          <strong style="color:var(--js)">JavaScript</strong> — a linguagem que faz o botão reagir,
+          os dados mudarem e a tela responder ao usuário.
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:22px">
+        <a href="../02-javascript/" style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg,var(--js),var(--html));color:var(--bg);text-decoration:none;font-weight:900;border-radius:50px;font-size:1rem">
+          🟨 Capítulo 02 — JavaScript →
+        </a>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="footer">
+  Feito com <span class="heart">♥</span> pela <strong style="color:var(--text)">programa AI</strong> ·
+  <a href="../../index.html">Hub do curso</a> · Cap 01 — HTML &amp; CSS
+</footer>
+
+<script src="../../shared/scripts.js" defer></script>
+<script src="../../shared/playground.js" defer></script>
+<script type="module" src="../../shared/motion-fx.js"></script>
+<script type="module" src="../../shared/tag-forge.js"></script>
+</body>
+</html>

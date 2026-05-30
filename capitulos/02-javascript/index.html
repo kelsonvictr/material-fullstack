@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cap 02 — JavaScript | Curso Fullstack</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=JetBrains+Mono:wght@400;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../shared/styles.css">
+<link rel="stylesheet" href="../../shared/components.css">
+<link rel="stylesheet" href="../../shared/animations.css">
+<link rel="stylesheet" href="../../shared/playground.css">
+<style>
+  /* visual de "caixinha" (variável) */
+  .vbox-row{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin:16px 0}
+  .vbox{background:var(--surface2);border:1px solid rgba(247,223,30,0.3);border-radius:12px;
+    padding:12px 16px;text-align:center;min-width:120px}
+  .vbox .vname{font-family:'JetBrains Mono',monospace;color:var(--js);font-weight:700;font-size:0.85rem}
+  .vbox .vval{font-family:'JetBrains Mono',monospace;color:var(--text);font-size:1.15rem;margin-top:4px}
+  .vbox .vtype{font-size:0.66rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+  kbd{background:var(--surface3);border-radius:5px;padding:1px 6px;font-family:'JetBrains Mono',monospace;font-size:0.8rem}
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-orbs"><div class="orb"></div><div class="orb"></div><div class="orb"></div></div>
+<div class="progress-track"><div class="progress-bar"></div></div>
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<button class="menu-toggle" onclick="openSidebar()" aria-label="Abrir menu">☰</button>
+<div class="sidebar-overlay"></div>
+<nav class="sidebar-nav">
+  <button class="sidebar-close" onclick="closeSidebar()" aria-label="Fechar">✕</button>
+  <div class="sidebar-header">
+    <h3>🟨 Cap 02 · JavaScript</h3>
+    <a class="sidebar-back" href="../../index.html">← Voltar ao hub</a>
+  </div>
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Neste capítulo</div>
+    <a class="sidebar-link" onclick="goTo('aquecimento')"><span class="dot" style="background:var(--accent5)"></span> Aquecimento</a>
+    <a class="sidebar-link" onclick="goTo('o-que-e-js')"><span class="dot" style="background:var(--js)"></span> O que é JavaScript</a>
+    <a class="sidebar-link" onclick="goTo('curiosidades')"><span class="dot" style="background:var(--js)"></span> 🤓 Curiosidades</a>
+    <a class="sidebar-link" onclick="goTo('onde-roda')"><span class="dot" style="background:var(--js)"></span> Onde o JS roda</a>
+    <a class="sidebar-link" onclick="goTo('nodejs')"><span class="dot" style="background:var(--node)"></span> Node.js (rodar no PC)</a>
+    <a class="sidebar-link" onclick="goTo('playground')"><span class="dot" style="background:var(--js)"></span> 🕹️ Playground ao vivo</a>
+    <a class="sidebar-link" onclick="goTo('variaveis')"><span class="dot" style="background:var(--js)"></span> Variáveis</a>
+    <a class="sidebar-link" onclick="goTo('tipos')"><span class="dot" style="background:var(--js)"></span> Tipos de dados</a>
+    <a class="sidebar-link" onclick="goTo('condicionais')"><span class="dot" style="background:var(--accent4)"></span> Condições &amp; ===</a>
+    <a class="sidebar-link" onclick="goTo('operadores')"><span class="dot" style="background:var(--accent4)"></span> ➗ Operadores</a>
+    <a class="sidebar-link" onclick="goTo('rastreador')"><span class="dot" style="background:var(--js)"></span> 🔬 Rastreador de código</a>
+    <a class="sidebar-link" onclick="goTo('funcoes')"><span class="dot" style="background:var(--accent6)"></span> Funções</a>
+    <a class="sidebar-link" onclick="goTo('arrays')"><span class="dot" style="background:var(--accent3)"></span> Arrays &amp; objetos</a>
+    <a class="sidebar-link" onclick="goTo('bora')"><span class="dot" style="background:var(--accent4)"></span> Bora codar</a>
+    <a class="sidebar-link" onclick="goTo('treino-js')"><span class="dot" style="background:var(--js)"></span> ⌨️ Treino no VSCode</a>
+    <a class="sidebar-link" onclick="goTo('bugzilla')"><span class="dot" style="background:var(--bug)"></span> BugZilla 🐛</a>
+    <a class="sidebar-link" onclick="goTo('desafios')"><span class="dot" style="background:var(--accent6)"></span> Desafios</a>
+    <a class="sidebar-link" onclick="goTo('resumo')"><span class="dot" style="background:var(--accent7)"></span> Resumo</a>
+  </div>
+</nav>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section class="hero">
+  <div class="hero-icons" data-motion="float"><img src="../../assets/svg/javascript.svg" alt="JavaScript" width="52" height="52" style="vertical-align:middle;border-radius:8px"> ⚡</div>
+  <span class="hero-badge js">Capítulo 02 · Curso Fullstack</span>
+  <h1>JavaScript</h1>
+  <p class="subtitle">
+    Se HTML é a estrutura e CSS é a aparência, o <strong style="color:var(--js)">JavaScript</strong>
+    é o <strong>cérebro</strong>: o que faz a página pensar, reagir e mudar. É a linguagem que vai te
+    levar até o React.
+  </p>
+  <div class="hero-stack">
+    <span class="stack-chip js">📦 variáveis</span>
+    <span class="stack-chip js">🔤 tipos</span>
+    <span class="stack-chip js">⚙️ funções</span>
+    <span class="stack-chip react">📋 arrays / objetos</span>
+  </div>
+</section>
+
+<div class="container">
+
+  <!-- ═══════════════ AQUECIMENTO ═══════════════ -->
+  <section class="step-section" id="aquecimento">
+    <div class="step-header">
+      <div class="step-number sn-yellow">🤔</div>
+      <div>
+        <div class="step-title">Aquecimento</div>
+        <div class="step-sub">Pergunta capciosa logo de cara</div>
+      </div>
+    </div>
+    <div class="quiz">
+      <div class="quiz-q"><span class="q-emoji">1️⃣</span> JavaScript e Java são a mesma coisa?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz(this,false)">Sim, Java é o apelido</button>
+        <button class="quiz-opt" data-correct="true" onclick="checkQuiz(this,true)">Não! São linguagens diferentes</button>
+        <button class="quiz-opt" onclick="checkQuiz(this,false)">JavaScript é a versão nova do Java</button>
+        <button class="quiz-opt" onclick="checkQuiz(this,false)">Java roda dentro do JavaScript</button>
+      </div>
+      <div class="quiz-feedback" data-correct="Exato!" data-wrong="Pegadinha!" data-explain="JavaScript NÃO é Java. O nome foi marketing lá nos anos 90. São tão parecidos quanto 'pão' e 'pãozinho'… ou seja, só no nome."></div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ O QUE É JS ═══════════════ -->
+  <section class="step-section" id="o-que-e-js">
+    <div class="step-header">
+      <div class="step-number sn-js">🧠</div>
+      <div>
+        <div class="step-title">O que é JavaScript?</div>
+        <div class="step-sub">A linguagem que dá vida às páginas</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="analogy">
+        <div class="analogy-title">⚡ A parte elétrica da casa</div>
+        <p>HTML montou as paredes. CSS pintou tudo. Mas a casa ainda está <strong>"morta"</strong> —
+        nada acontece. O <strong>JavaScript</strong> é a <strong>parte elétrica</strong>: o interruptor
+        que acende a luz, a campainha que toca, o portão que abre quando você aperta o botão.</p>
+        <p>É o JS que faz: o botão reagir ao clique, o carrinho de compras somar, a mensagem
+        "senha incorreta" aparecer, os dados virem do servidor e preencherem a tela.</p>
+      </div>
+
+      <div class="warning">
+        <span class="warning-icon">🙅</span>
+        <div class="warning-content">
+          <strong>JavaScript ≠ Java.</strong> Apesar do nome, não têm relação direta. JS nasceu pra
+          deixar páginas web interativas e hoje é uma das linguagens mais usadas do mundo —
+          roda no navegador <strong>e</strong> no servidor (Node.js).
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ CURIOSIDADES / HISTÓRIA ═══════════════ -->
+  <section class="step-section" id="curiosidades">
+    <div class="step-header">
+      <div class="step-number sn-js">🤓</div>
+      <div>
+        <div class="step-title">Curiosidades que vão te impressionar</div>
+        <div class="step-sub">A história maluca da linguagem mais usada da web</div>
+      </div>
+    </div>
+    <div class="card">
+      <ul class="about-bullets">
+        <li><div>🚀 O JavaScript foi criado em <strong>apenas 10 dias</strong>, em 1995, por <strong>Brendan Eich</strong> na Netscape. Dez dias! E hoje roda metade da internet. 🤯</div></li>
+        <li><div>🎭 O nome "JavaScript" foi <strong>marketing</strong>: na época o Java estava na moda, então pegaram carona no nome. <strong>São linguagens diferentes</strong> (a gente já falou disso!).</div></li>
+        <li><div>🌍 É usado por <strong>Netflix, Airbnb, Instagram, WhatsApp</strong> e praticamente todo site grande que você acessa.</div></li>
+        <li><div>⚡ É <strong>interpretado</strong>: não precisa "compilar" antes — o navegador lê e executa na hora. Por isso é tão rápido de testar.</div></li>
+        <li><div>🧰 Roda no navegador <strong>e</strong> no servidor (com Node.js). É o canivete suíço da programação web.</div></li>
+      </ul>
+      <figure style="margin:14px 0 0;text-align:center">
+        <img src="../../assets/memes/meme-js-historia.png" alt="Meme: JavaScript foi criado em 10 dias e hoje roda o mundo inteiro"
+          style="max-width:420px;width:100%;border-radius:14px;border:1px solid rgba(255,255,255,0.08)"
+          onerror="this.closest('figure').style.display='none'">
+      </figure>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ ONDE RODA ═══════════════ -->
+  <section class="step-section" id="onde-roda">
+    <div class="step-header">
+      <div class="step-number sn-js">🎮</div>
+      <div>
+        <div class="step-title">Onde o JavaScript roda</div>
+        <div class="step-sub">Spoiler: você já tem o "compilador" instalado — é o navegador</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p style="color:var(--text-dim);margin-bottom:6px">
+        Diferente de outras linguagens, o JS <strong>não precisa instalar nada</strong>: o próprio
+        navegador entende. O jeito mais rápido de testar é o <strong>Console</strong>: abra qualquer
+        site, aperte <kbd>F12</kbd> (ou clique direito → Inspecionar), e vá na aba <strong>Console</strong>.
+      </p>
+
+      <div class="terminal" data-typewriter>
+        <div class="code-header" style="background:rgba(255,255,255,0.04);padding:8px 14px;border-radius:14px 14px 0 0">
+          <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+          <span class="filename">Console do navegador</span>
+        </div>
+        <div class="terminal-body">
+          <span class="prompt">&gt;</span> <span class="typed" data-text="console.log('Olá, mundo!')"></span><span class="cursor"></span>
+          <br><span class="out">Olá, mundo!</span>
+          <br><span class="prompt">&gt;</span> <span class="typed" data-text="2 + 3 * 10"></span>
+          <br><span class="out">32</span>
+        </div>
+      </div>
+
+      <div class="concept">
+        <div class="concept-title">📣 console.log()</div>
+        <p><code>console.log(...)</code> é o seu melhor amigo: ele <strong>imprime</strong> qualquer coisa
+        no console. É com ele que você "espia" o que está acontecendo no seu código. Vai usar isso a vida toda.</p>
+      </div>
+
+      <div class="tip">
+        <span class="tip-icon">📄</span>
+        <div class="tip-content">
+          No projeto de verdade, o JS vai num arquivo <code>.js</code> ligado no HTML com
+          <code>&lt;script src="app.js"&gt;&lt;/script&gt;</code> — bem parecido com o <code>&lt;link&gt;</code> do CSS.
+          Mas pra treinar a linguagem, o Console já resolve.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ NODE.JS ═══════════════ -->
+  <section class="step-section" id="nodejs">
+    <div class="step-header">
+      <div class="step-number sn-mint"><img src="../../assets/svg/nodejs.svg" alt="" width="26" height="26"></div>
+      <div>
+        <div class="step-title">Node.js — rodando JavaScript no seu computador</div>
+        <div class="step-sub">Pra testar seus arquivos <code>.js</code> direto no VSCode</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="analogy">
+        <div class="analogy-title">O JS saiu do navegador 🚪</div>
+        <p>Por muito tempo, o JavaScript só rodava <strong>dentro do navegador</strong>. Aí criaram o
+        <strong>Node.js</strong>: um programa que executa JavaScript <strong>direto no seu computador</strong>
+        (e nos servidores!). É graças a ele que dá pra rodar um arquivo <code>.js</code> sem abrir o navegador.</p>
+      </div>
+
+      <div class="concept">
+        <div class="concept-title">📥 Instalando o Node</div>
+        <p>Acesse <strong style="color:var(--node)">nodejs.org</strong> e baixe a versão <strong>LTS</strong>
+        (a "estável", recomendada). Instale como qualquer programa. Pra conferir, abra o terminal e digite
+        <code>node -v</code> — se aparecer um número de versão (ex.: <code>v20.x</code>), <strong>funcionou!</strong> 🎉</p>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">terminal</span><span class="lang-badge bash">bash</span></div>
+<pre><span class="cm"># confere se o Node está instalado</span>
+node -v
+<span class="cm"># roda um arquivo JavaScript</span>
+node meu_arquivo.js</pre>
+      </div>
+
+      <div class="tip">
+        <span class="tip-icon">▶️</span>
+        <div class="tip-content">
+          <strong>Atalho no VSCode:</strong> com a extensão <strong>Code Runner</strong> instalada (lembra da
+          aula de setup?), é só apertar <code>Ctrl/Cmd + Alt + N</code> com o arquivo aberto que ele roda e
+          mostra o resultado ali embaixo. Sem terminal, sem complicação. 😎
+        </div>
+      </div>
+
+      <div class="warning">
+        <span class="warning-icon">🔮</span>
+        <div class="warning-content">
+          <strong>Calma com o Node!</strong> Por enquanto a gente só usa ele pra <strong>rodar nossos
+          arquivos de treino</strong>. No <strong style="color:var(--react)">capítulo inicial de React</strong>
+          eu explico direitinho o que o Node faz por trás (npm, pacotes, servidor de desenvolvimento). Por
+          agora, é só o nosso "play" de JavaScript. ▶️
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ PLAYGROUND JS AO VIVO ═══════════════ -->
+  <section class="step-section" id="playground">
+    <div class="step-header">
+      <div class="step-number sn-js">🕹️</div>
+      <div>
+        <div class="step-title">Seu console particular — ao vivo!</div>
+        <div class="step-sub">Edite o JavaScript e veja a saída na hora</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p style="color:var(--text-dim);margin-bottom:6px">
+        Sem precisar abrir o navegador: digite JavaScript aqui e o resultado do <code>console.log</code>
+        aparece na hora. <strong>Mexe à vontade</strong> — roda no seu navegador, com segurança. 🧪
+      </p>
+
+      <div class="playground" data-mode="js" data-title="Experimente JavaScript">
+<textarea data-pg="js">// edite e veja a saída aparecer ->
+console.log("Olá, mundo!");
+
+let nome = "Maria";
+let idade = 25;
+console.log(`Eu sou ${nome} e tenho ${idade} anos`);
+
+console.log("2 + 3 * 10 =", 2 + 3 * 10);
+
+// experimente: descomente a linha abaixo
+// console.log(0.1 + 0.2);</textarea>
+      </div>
+
+      <div class="tip">
+        <span class="tip-icon">🎯</span>
+        <div class="tip-content">
+          <strong>Tente:</strong> mude o <code>nome</code> e a <code>idade</code>, crie um novo
+          <code>console.log</code>, e descomente a última linha pra ver o famoso bug do
+          <code>0.1 + 0.2</code> com seus próprios olhos. 👀
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ VARIÁVEIS ═══════════════ -->
+  <section class="step-section" id="variaveis">
+    <div class="step-header">
+      <div class="step-number sn-js">📦</div>
+      <div>
+        <div class="step-title">Variáveis: caixinhas com nome</div>
+        <div class="step-sub">let e const — onde você guarda as coisas</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="analogy">
+        <div class="analogy-title">📦 Caixas etiquetadas</div>
+        <p>Uma variável é uma <strong>caixinha com nome</strong> onde você guarda um valor pra usar
+        depois. Você dá um nome (a etiqueta) e coloca algo dentro.</p>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">variaveis.js</span><span class="lang-badge js">JavaScript</span></div>
+<pre><span class="kw">let</span> <span class="var">nome</span> <span class="op">=</span> <span class="st">"Maria"</span><span class="punc">;</span>      <span class="cm">// pode mudar depois</span>
+<span class="kw">let</span> <span class="var">idade</span> <span class="op">=</span> <span class="num">25</span><span class="punc">;</span>
+<span class="kw">const</span> <span class="var">pi</span> <span class="op">=</span> <span class="num">3.14</span><span class="punc">;</span>       <span class="cm">// const = NÃO muda mais</span>
+
+<span class="var">idade</span> <span class="op">=</span> <span class="num">26</span><span class="punc">;</span>             <span class="cm">// ok, idade era 'let'</span>
+<span class="bi">console</span>.<span class="fn">log</span>(<span class="var">nome</span>, <span class="var">idade</span>)<span class="punc">;</span> <span class="cm">// Maria 26</span></pre>
+      </div>
+
+      <div class="vbox-row">
+        <div class="vbox" data-motion="pop"><div class="vname">nome</div><div class="vval">"Maria"</div><div class="vtype">string</div></div>
+        <div class="vbox" data-motion="pop"><div class="vname">idade</div><div class="vval">26</div><div class="vtype">number</div></div>
+        <div class="vbox" data-motion="pop"><div class="vname">pi</div><div class="vval">3.14</div><div class="vtype">const</div></div>
+      </div>
+
+      <div class="concept">
+        <div class="concept-title">💡 let ou const?</div>
+        <p>Regra de bolso: <strong>use <code>const</code> por padrão</strong>. Só troque pra <code>let</code>
+        quando souber que o valor vai mudar. (Existe o <code>var</code> antigo — esqueça, ninguém usa mais.)</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ TIPOS ═══════════════ -->
+  <section class="step-section" id="tipos">
+    <div class="step-header">
+      <div class="step-number sn-js">🔤</div>
+      <div>
+        <div class="step-title">Tipos de dados</div>
+        <div class="step-sub">O que cabe dentro das caixinhas</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">tipos.js</span><span class="lang-badge js">JavaScript</span></div>
+<pre><span class="kw">const</span> <span class="var">texto</span>   <span class="op">=</span> <span class="st">"sou uma string"</span><span class="punc">;</span>  <span class="cm">// texto (entre aspas)</span>
+<span class="kw">const</span> <span class="var">numero</span>  <span class="op">=</span> <span class="num">42</span><span class="punc">;</span>               <span class="cm">// número (sem aspas)</span>
+<span class="kw">const</span> <span class="var">decimal</span> <span class="op">=</span> <span class="num">3.99</span><span class="punc">;</span>             <span class="cm">// número também</span>
+<span class="kw">const</span> <span class="var">ligado</span>  <span class="op">=</span> <span class="bool">true</span><span class="punc">;</span>             <span class="cm">// boolean: true ou false</span>
+
+<span class="cm">// template string: junta texto + variável com crase ` e ${ }</span>
+<span class="bi">console</span>.<span class="fn">log</span>(<span class="st">`Tenho ${numero} anos`</span>)<span class="punc">;</span>  <span class="cm">// Tenho 42 anos</span></pre>
+      </div>
+
+      <div class="tip">
+        <span class="tip-icon">✨</span>
+        <div class="tip-content">
+          A <strong>template string</strong> (com crase <code>`</code> e <code>${variavel}</code>) é a forma
+          moderna de montar textos com valores no meio. Esqueça concatenar com <code>+</code> — isso é a maravilha.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ CONDICIONAIS ═══════════════ -->
+  <section class="step-section" id="condicionais">
+    <div class="step-header">
+      <div class="step-number sn-blue">🔀</div>
+      <div>
+        <div class="step-title">Tomando decisões: if / else e o ===</div>
+        <div class="step-sub">E o meme mais famoso do JavaScript</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">decisao.js</span><span class="lang-badge js">JavaScript</span></div>
+<pre><span class="kw">const</span> <span class="var">media</span> <span class="op">=</span> <span class="num">7.5</span><span class="punc">;</span>
+
+<span class="kw">if</span> (<span class="var">media</span> <span class="op">&gt;=</span> <span class="num">7</span>) <span class="punc">{</span>
+  <span class="bi">console</span>.<span class="fn">log</span>(<span class="st">"Aprovado! 🎉"</span>)<span class="punc">;</span>
+<span class="punc">}</span> <span class="kw">else</span> <span class="punc">{</span>
+  <span class="bi">console</span>.<span class="fn">log</span>(<span class="st">"Ficou de recuperação 😬"</span>)<span class="punc">;</span>
+<span class="punc">}</span></pre>
+      </div>
+
+      <div class="warning">
+        <span class="warning-icon">⚖️</span>
+        <div class="warning-content">
+          <strong>Compare com <code>===</code> (três iguais), não com <code>==</code>.</strong>
+          O <code>===</code> compara valor <em>e</em> tipo, do jeito que você espera. O <code>==</code>
+          faz "conversões mágicas" que confundem (ex.: <code>0 == "" </code> dá <code>true</code>!).
+          Regra: <strong>sempre <code>===</code></strong>.
+        </div>
+      </div>
+
+      <figure style="margin:18px 0 0;text-align:center">
+        <img src="../../assets/memes/meme-js-soma.png"
+             alt="Meme: pessoa confusa olhando o console mostrar 0.1 + 0.2 = 0.30000000000000004"
+             style="max-width:420px;width:100%;border-radius:14px;border:1px solid rgba(255,255,255,0.08)"
+             onerror="this.closest('figure').style.display='none'">
+        <figcaption class="text-dim" style="font-size:0.78rem;margin-top:6px">sim, isso é real. bem-vindo ao JavaScript 😂</figcaption>
+      </figure>
+
+      <div class="concept" style="margin-top:14px">
+        <div class="concept-title">🤓 Por que 0.1 + 0.2 não dá 0.3?</div>
+        <p>Computadores guardam decimais em binário, e alguns números "não fecham" — sobra uma
+        casquinha (<code>0.30000000000000004</code>). Isso acontece em quase toda linguagem, não só JS.
+        Por enquanto, só saiba que <strong>existe</strong> — a gente lida com isso quando aparecer.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ OPERADORES ═══════════════ -->
+  <section class="step-section" id="operadores">
+    <div class="step-header">
+      <div class="step-number sn-blue">➗</div>
+      <div>
+        <div class="step-title">Operadores — as ferramentas de cálculo e comparação</div>
+        <div class="step-sub">Símbolos que fazem contas e comparações</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="compare-row" style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="concept" style="margin:0">
+          <div class="concept-title">🧮 Aritméticos (fazem conta)</div>
+          <p><code>+</code> soma · <code>-</code> subtrai · <code>*</code> multiplica · <code>/</code> divide ·
+          <code>%</code> resto da divisão (o "módulo")</p>
+        </div>
+        <div class="concept" style="margin:0">
+          <div class="concept-title">⚖️ Comparação (devolvem true/false)</div>
+          <p><code>===</code> igual · <code>!==</code> diferente · <code>&gt;</code> maior ·
+          <code>&lt;</code> menor · <code>&gt;=</code> maior ou igual · <code>&lt;=</code> menor ou igual</p>
+        </div>
+        <div class="concept" style="margin:0">
+          <div class="concept-title">🔗 Lógicos (combinam condições)</div>
+          <p><code>&amp;&amp;</code> "E" (as duas verdadeiras) · <code>||</code> "OU" (pelo menos uma) ·
+          <code>!</code> "NÃO" (inverte)</p>
+        </div>
+        <div class="concept" style="margin:0">
+          <div class="concept-title">📥 Atribuição (guardam valor)</div>
+          <p><code>=</code> guarda · <code>+=</code> soma e guarda (<code>x += 1</code> é <code>x = x + 1</code>)</p>
+        </div>
+      </div>
+
+      <div class="tip" style="margin-top:14px">
+        <span class="tip-icon">🤔</span>
+        <div class="tip-content">
+          <strong>O misterioso <code>%</code> (módulo):</strong> dá o <em>resto</em> de uma divisão.
+          <code>10 % 2</code> é <code>0</code> (par!), <code>7 % 2</code> é <code>1</code> (ímpar!).
+          É o truque pra saber se um número é par ou ímpar. Guarda essa. 😉
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ RASTREADOR DE CÓDIGO (animação viva) ═══════════════ -->
+  <style>
+    .tracer{background:linear-gradient(180deg,#0b1020,#0d0d1a);border:1px solid rgba(247,223,30,0.25);border-radius:16px;overflow:hidden;margin:12px 0}
+    .tracer-cols{display:grid;grid-template-columns:1.2fr 1fr;gap:0}
+    @media(max-width:700px){.tracer-cols{grid-template-columns:1fr}}
+    .tracer-col{padding:14px;border-right:1px solid rgba(255,255,255,0.06)}
+    .tracer-col:last-child{border-right:none}
+    .tc-title{font-size:0.66rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px}
+    .tcline{font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:#8b96b0;line-height:1.9;border-radius:5px;padding:1px 8px;transition:all .3s}
+    .tcline.lit{background:rgba(247,223,30,0.16);color:#fff}
+    .tvars{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px}
+    .tvar{background:var(--surface2);border:1px solid rgba(247,223,30,0.3);border-radius:10px;padding:8px 12px;text-align:center;min-width:74px;opacity:0.35;transition:all .3s}
+    .tvar.set{opacity:1;border-color:var(--js)}
+    .tvar .tvn{font-family:'JetBrains Mono',monospace;color:var(--js);font-weight:700;font-size:0.78rem}
+    .tvar .tvv{font-family:'JetBrains Mono',monospace;color:#fff;font-size:1rem;margin-top:2px}
+    .tconsole{background:#0b0b14;border-radius:8px;padding:10px 12px;font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:#cdd6f4;min-height:40px}
+    .tconsole .tl{padding:2px 0}.tconsole .tl::before{content:'› ';color:var(--accent5)}
+    .tracer-hud{display:flex;align-items:center;gap:10px;padding:12px;background:rgba(255,255,255,0.03);border-top:1px solid rgba(255,255,255,0.06)}
+  </style>
+  <section class="step-section" id="rastreador">
+    <div class="step-header">
+      <div class="step-number sn-js">🔬</div>
+      <div>
+        <div class="step-title">Rastreador de código — veja o JS "pensando"</div>
+        <div class="step-sub">Acompanhe as variáveis mudando, linha por linha</div>
+      </div>
+    </div>
+    <div class="card">
+      <p style="color:var(--text-dim);margin-bottom:8px">
+        Uma das coisas que mais ajuda iniciante é <strong>enxergar o código executando devagar</strong>.
+        Aperta o ▶ e veja cada linha rodar, as caixinhas se preenchendo e o console aparecendo:
+      </p>
+      <div class="tracer" id="tracer">
+        <div class="tracer-cols">
+          <div class="tracer-col">
+            <div class="tc-title">📄 Código</div>
+            <div id="tr-code"></div>
+          </div>
+          <div class="tracer-col">
+            <div class="tc-title">📦 Variáveis</div>
+            <div class="tvars" id="tr-vars"></div>
+            <div class="tc-title">🖥️ Console</div>
+            <div class="tconsole" id="tr-console"></div>
+          </div>
+        </div>
+        <div class="tracer-hud">
+          <button id="tr-play" style="background:linear-gradient(135deg,var(--js),#ffb300);color:#0a0a12;border:none;font-weight:800;padding:9px 18px;border-radius:10px;cursor:pointer">▶ Executar</button>
+          <span class="text-dim" id="tr-msg" style="font-size:0.78rem"></span>
+        </div>
+      </div>
+      <div class="concept">
+        <div class="concept-title">💡 É exatamente isso que o JS faz</div>
+        <p>De cima pra baixo, uma linha de cada vez. Quando você "ler" seu próprio código, faça igual:
+        finja que é o computador e vá anotando o valor de cada variável. <strong>Esse é o superpoder do
+        bom programador.</strong></p>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ FUNÇÕES ═══════════════ -->
+  <section class="step-section" id="funcoes">
+    <div class="step-header">
+      <div class="step-number sn-purple">⚙️</div>
+      <div>
+        <div class="step-title">Funções: empacotando código pra reusar</div>
+        <div class="step-sub">Inclui a "arrow function" — você vai ver MUITO ela no React</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="analogy">
+        <div class="analogy-title">🍳 Uma receita</div>
+        <p>Uma função é uma <strong>receita</strong>: você dá um nome, define os ingredientes
+        (<strong>parâmetros</strong>) e o que ela <strong>devolve</strong> (<code>return</code>).
+        Depois é só "chamar" quantas vezes quiser, sem reescrever tudo.</p>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">funcoes.js</span><span class="lang-badge js">JavaScript</span></div>
+<pre><span class="cm">// jeito clássico</span>
+<span class="kw">function</span> <span class="fn">saudacao</span>(<span class="var">nome</span>) <span class="punc">{</span>
+  <span class="kw">return</span> <span class="st">`Olá, ${nome}!`</span><span class="punc">;</span>
+<span class="punc">}</span>
+
+<span class="cm">// chamando a função</span>
+<span class="bi">console</span>.<span class="fn">log</span>(<span class="fn">saudacao</span>(<span class="st">"Maria"</span>))<span class="punc">;</span>  <span class="cm">// Olá, Maria!</span></pre>
+      </div>
+
+      <p style="color:var(--text-dim);margin:14px 0 6px">Existe uma forma mais curta, a <strong>arrow function</strong>
+      (função-seta). É a queridinha do React:</p>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">arrow.js</span><span class="lang-badge js">JavaScript</span></div>
+<pre><span class="kw">const</span> <span class="fn">saudacao</span> <span class="op">=</span> (<span class="var">nome</span>) <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">return</span> <span class="st">`Olá, ${nome}!`</span><span class="punc">;</span>
+<span class="punc">}</span><span class="punc">;</span>
+
+<span class="cm">// versão curtíssima (return implícito):</span>
+<span class="kw">const</span> <span class="fn">dobro</span> <span class="op">=</span> (<span class="var">n</span>) <span class="op">=&gt;</span> <span class="var">n</span> <span class="op">*</span> <span class="num">2</span><span class="punc">;</span>
+<span class="bi">console</span>.<span class="fn">log</span>(<span class="fn">dobro</span>(<span class="num">5</span>))<span class="punc">;</span>  <span class="cm">// 10</span></pre>
+      </div>
+
+      <div class="warning">
+        <span class="warning-icon">⌨️</span>
+        <div class="warning-content">
+          <strong>Atenção, isso é importante:</strong> aquela seta <code>=&gt;</code> é digitada com
+          <strong>dois caracteres</strong>: o sinal de igual <kbd>=</kbd> seguido do maior que <kbd>&gt;</kbd>.
+          A sua IDE (VSCode) pode <em>desenhar</em> isso como uma setinha bonita <code>⇒</code>, mas
+          <strong>você nunca digita o símbolo</strong> — sempre <kbd>=</kbd> e <kbd>&gt;</kbd>.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ ARRAYS E OBJETOS ═══════════════ -->
+  <section class="step-section" id="arrays">
+    <div class="step-header">
+      <div class="step-number sn-green">📋</div>
+      <div>
+        <div class="step-title">Arrays e Objetos</div>
+        <div class="step-sub">As duas estruturas que vão te seguir até o React</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p style="color:var(--text-dim);margin-bottom:6px">
+        <strong>Array</strong> = uma lista ordenada (uma fila de coisas). <strong>Objeto</strong> =
+        uma ficha com pares <strong>chave: valor</strong> (como o cadastro de uma pessoa).
+      </p>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">colecoes.js</span><span class="lang-badge js">JavaScript</span></div>
+<pre><span class="cm">// ARRAY: lista entre colchetes [ ]</span>
+<span class="kw">const</span> <span class="var">frutas</span> <span class="op">=</span> [<span class="st">"maçã"</span>, <span class="st">"uva"</span>, <span class="st">"manga"</span>]<span class="punc">;</span>
+<span class="bi">console</span>.<span class="fn">log</span>(<span class="var">frutas</span>[<span class="num">0</span>])<span class="punc">;</span>      <span class="cm">// maçã (começa no ZERO!)</span>
+<span class="var">frutas</span>.<span class="fn">push</span>(<span class="st">"pera"</span>)<span class="punc">;</span>       <span class="cm">// adiciona no fim</span>
+
+<span class="cm">// OBJETO: pares chave: valor entre chaves { }</span>
+<span class="kw">const</span> <span class="var">cliente</span> <span class="op">=</span> <span class="punc">{</span>
+  <span class="atr">nome</span>: <span class="st">"João"</span>,
+  <span class="atr">idade</span>: <span class="num">30</span>,
+  <span class="atr">ativo</span>: <span class="bool">true</span>
+<span class="punc">}</span><span class="punc">;</span>
+<span class="bi">console</span>.<span class="fn">log</span>(<span class="var">cliente</span>.<span class="attr">nome</span>)<span class="punc">;</span>    <span class="cm">// João</span></pre>
+      </div>
+
+      <div class="bug-box">
+        <span class="bug-icon">🐛</span>
+        <div class="bug-content">
+          <strong>Arrays começam no índice 0!</strong> O primeiro item é <code>frutas[0]</code>, o segundo
+          é <code>frutas[1]</code>... Isso confunde todo mundo no começo. <code>frutas[1]</code> NÃO é a
+          primeira fruta.
+        </div>
+      </div>
+
+      <div class="tip">
+        <span class="tip-icon">🔮</span>
+        <div class="tip-content">
+          <strong>Por que isso importa tanto?</strong> No React, a tela quase sempre é uma <strong>lista de
+          objetos</strong> virando elementos: uma lista de produtos, de clientes, de mensagens. Dominar
+          array + objeto agora é <strong>investir direto no seu eu do futuro</strong>. 🚀
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ BORA CODAR ═══════════════ -->
+  <section class="step-section" id="bora">
+    <div class="step-header">
+      <div class="step-number sn-blue">💻</div>
+      <div>
+        <div class="step-title">Bora codar — calculadora de média (com o prof)</div>
+        <div class="step-sub">Juntando variáveis + função + condição</div>
+      </div>
+    </div>
+
+    <div class="exercise guided">
+      <div class="exercise-header">
+        <span class="exercise-icon">👨‍🏫</span>
+        <div>
+          <div class="exercise-title">Crie media.js e rode no Console</div>
+          <div class="exercise-sub">Cole no Console do navegador (F12) e veja o resultado</div>
+        </div>
+      </div>
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">media.js</span><span class="lang-badge js">JavaScript</span></div>
+<pre><span class="kw">function</span> <span class="fn">calcularMedia</span>(<span class="var">n1</span>, <span class="var">n2</span>) <span class="punc">{</span>
+  <span class="kw">const</span> <span class="var">media</span> <span class="op">=</span> (<span class="var">n1</span> <span class="op">+</span> <span class="var">n2</span>) <span class="op">/</span> <span class="num">2</span><span class="punc">;</span>
+  <span class="kw">if</span> (<span class="var">media</span> <span class="op">&gt;=</span> <span class="num">7</span>) <span class="punc">{</span>
+    <span class="kw">return</span> <span class="st">`Média ${media}: Aprovado! 🎉`</span><span class="punc">;</span>
+  <span class="punc">}</span>
+  <span class="kw">return</span> <span class="st">`Média ${media}: Recuperação 😬`</span><span class="punc">;</span>
+<span class="punc">}</span>
+
+<span class="bi">console</span>.<span class="fn">log</span>(<span class="fn">calcularMedia</span>(<span class="num">8</span>, <span class="num">6</span>))<span class="punc">;</span>
+<span class="bi">console</span>.<span class="fn">log</span>(<span class="fn">calcularMedia</span>(<span class="num">5</span>, <span class="num">4</span>))<span class="punc">;</span></pre>
+      </div>
+      <div class="terminal" data-typewriter>
+        <div class="code-header" style="background:rgba(255,255,255,0.04);padding:8px 14px;border-radius:14px 14px 0 0">
+          <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+          <span class="filename">Console</span>
+        </div>
+        <div class="terminal-body">
+          <span class="prompt">&gt;</span> <span class="typed" data-text="calcularMedia(8, 6)"></span><span class="cursor"></span>
+          <br><span class="out">Média 7: Aprovado! 🎉</span>
+          <br><span class="prompt">&gt;</span> <span class="typed" data-text="calcularMedia(5, 4)"></span>
+          <br><span class="out">Média 4.5: Recuperação 😬</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ BUGZILLA ═══════════════ -->
+  <section class="step-section" id="bugzilla">
+    <div class="step-header">
+      <div class="step-number sn-red">🐛</div>
+      <div>
+        <div class="step-title">BugZilla ataca de novo!</div>
+        <div class="step-sub">Os tropeços clássicos de quem começa em JS</div>
+      </div>
+    </div>
+
+    <div class="bug-box">
+      <span class="bug-icon">🐛</span>
+      <div class="bug-content">
+        <strong>Bug 1 — chamar a função sem os parênteses.</strong>
+        <code>saudacao</code> (só o nome) devolve a "receita". <code>saudacao()</code> (com parênteses)
+        é que <em>executa</em>. Esqueceu o <code>()</code>? A função não roda.
+      </div>
+    </div>
+
+    <div class="bug-box" style="margin-top:14px">
+      <span class="bug-icon">🐛</span>
+      <div class="bug-content">
+        <strong>Bug 2 — usar <code>==</code> no lugar de <code>===</code>.</strong>
+        Comparações "mágicas" dão resultados bizarros. Use sempre os <strong>três iguais</strong>.
+      </div>
+    </div>
+
+    <div class="bug-box" style="margin-top:14px">
+      <span class="bug-icon">🐛</span>
+      <div class="bug-content">
+        <strong>Bug 3 — "undefined" apareceu.</strong> Quase sempre é uma variável que você usou antes de
+        criar, ou uma chave de objeto digitada errada (<code>cliente.nme</code> em vez de <code>cliente.nome</code>).
+        Leia a mensagem do console — ela quase sempre aponta a linha!
+      </div>
+    </div>
+
+    <figure style="margin:18px 0 0;text-align:center">
+      <img src="../../assets/memes/meme-funciona-maquina.png"
+           alt="Meme: dev dando de ombros dizendo 'funciona na minha máquina'"
+           style="max-width:400px;width:100%;border-radius:14px;border:1px solid rgba(255,255,255,0.08)"
+           onerror="this.closest('figure').style.display='none'">
+      <figcaption class="text-dim" style="font-size:0.78rem;margin-top:6px">a frase mais perigosa da programação 😬</figcaption>
+    </figure>
+
+    <div class="toggler" style="margin-top:14px">
+      <div class="toggler-header" onclick="toggleSection(this)">
+        <span>👀 Macete de ouro do BugZilla</span><span class="toggler-arrow">▼</span>
+      </div>
+      <div class="toggler-body">
+        <div class="tip" style="margin:0">
+          <span class="tip-icon">🔦</span>
+          <div class="tip-content">
+            Travou? Espalhe <code>console.log()</code> pelo código pra ver o valor de cada variável em cada
+            ponto. 90% dos bugs morrem quando você <strong>enxerga</strong> o que está dentro das caixinhas.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ DESAFIOS ═══════════════ -->
+  <section class="step-section" id="desafios">
+    <div class="step-header">
+      <div class="step-number sn-purple">💪</div>
+      <div>
+        <div class="step-title">Hora de voar sozinho(a)</div>
+        <div class="step-sub">Tente DE VERDADE antes do olhinho</div>
+      </div>
+    </div>
+
+    <div class="exercise solo">
+      <div class="exercise-header">
+        <span class="exercise-icon">🧑‍💻</span>
+        <div>
+          <div class="exercise-title">Desafio Individual — desconto.js</div>
+          <div class="exercise-sub">Função que aplica desconto a um preço</div>
+        </div>
+      </div>
+
+      <div class="concept">
+        <div class="concept-title">💡 Dica pra fazer sozinho(a)</div>
+        <p>Crie uma função <code>aplicarDesconto(preco, percentual)</code> que devolve o preço final.
+        Ex.: <code>aplicarDesconto(100, 10)</code> deve dar <code>90</code>. Pense: o valor do desconto é
+        <code>preco * percentual / 100</code>, e o final é <code>preco</code> menos isso. Teste no Console com
+        <code>console.log</code>.</p>
+      </div>
+
+      <div class="try-first">
+        <div class="try-first-icon">🚨</div>
+        <div class="try-first-content">
+          <strong>PARE! Tente sozinho(a) primeiro.</strong> Abra o Console, escreva, erre, ajuste.
+          <strong>O aprendizado mora na tentativa!</strong>
+        </div>
+      </div>
+
+      <div class="toggler">
+        <div class="toggler-header" onclick="toggleSection(this)">
+          <span>👀 Só clique aqui DEPOIS de tentar — Ver solução</span>
+          <span class="toggler-arrow">▼</span>
+        </div>
+        <div class="toggler-body">
+          <div class="code-block">
+            <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">desconto.js</span><span class="lang-badge js">JavaScript</span></div>
+<pre><span class="kw">function</span> <span class="fn">aplicarDesconto</span>(<span class="var">preco</span>, <span class="var">percentual</span>) <span class="punc">{</span>
+  <span class="kw">const</span> <span class="var">desconto</span> <span class="op">=</span> <span class="var">preco</span> <span class="op">*</span> <span class="var">percentual</span> <span class="op">/</span> <span class="num">100</span><span class="punc">;</span>
+  <span class="kw">return</span> <span class="var">preco</span> <span class="op">-</span> <span class="var">desconto</span><span class="punc">;</span>
+<span class="punc">}</span>
+
+<span class="bi">console</span>.<span class="fn">log</span>(<span class="fn">aplicarDesconto</span>(<span class="num">100</span>, <span class="num">10</span>))<span class="punc">;</span>  <span class="cm">// 90</span>
+<span class="bi">console</span>.<span class="fn">log</span>(<span class="fn">aplicarDesconto</span>(<span class="num">250</span>, <span class="num">20</span>))<span class="punc">;</span>  <span class="cm">// 200</span>
+
+<span class="cm">// versão arrow, pra treinar a setinha =&gt;</span>
+<span class="kw">const</span> <span class="fn">aplicarDesconto2</span> <span class="op">=</span> (<span class="var">preco</span>, <span class="var">pct</span>) <span class="op">=&gt;</span> <span class="var">preco</span> <span class="op">-</span> (<span class="var">preco</span> <span class="op">*</span> <span class="var">pct</span> <span class="op">/</span> <span class="num">100</span>)<span class="punc">;</span></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise home" style="margin-top:18px">
+      <div class="exercise-header">
+        <span class="exercise-icon">🏠</span>
+        <div>
+          <div class="exercise-title">Desafio para Casa — carrinho de compras</div>
+          <div class="exercise-sub">Junta array + objeto + função</div>
+        </div>
+      </div>
+      <div class="concept">
+        <div class="concept-title">💡 Missão</div>
+        <p>Crie um <strong>array de objetos</strong> chamado <code>carrinho</code>, com 3 produtos (cada um
+        com <code>nome</code> e <code>preco</code>). Depois faça uma função <code>total(carrinho)</code> que
+        soma todos os preços e devolve o valor. Dica: você vai precisar percorrer a lista somando — pesquise
+        sobre <code>for</code> ou <code>.reduce</code>. Traga no próximo sábado! 🛒</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ PROGRAMAÇÃO É PRÁTICA ═══════════════ -->
+  <section class="step-section">
+    <div class="card" style="text-align:center;background:linear-gradient(135deg,rgba(247,223,30,0.10),rgba(247,183,49,0.06));border-color:rgba(247,223,30,0.22)">
+      <div style="font-family:'Caveat',cursive;font-size:clamp(2rem,6vw,3rem);color:var(--js);font-weight:700;line-height:1.1">
+        PROGRAMAÇÃO É PRÁTICA 💪
+      </div>
+      <p class="text-dim" style="max-width:560px;margin:10px auto 0">
+        Você não aprende a andar de bike só lendo sobre bike. Abra o VSCode (ou o Console) e
+        <strong style="color:var(--text)">digite</strong> os treinos abaixo. Cair faz parte. 🚲
+      </p>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ TREINO JS NO VSCODE ═══════════════ -->
+  <section class="step-section" id="treino-js">
+    <div class="step-header">
+      <div class="step-number sn-js">⌨️</div>
+      <div>
+        <div class="step-title">Treino de JS — construindo UM boletim, passo a passo</div>
+        <div class="step-sub">Cada passo continua o anterior. Faça com o prof, depois voe sozinho(a)</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="warning">
+        <span class="warning-icon">▶️</span>
+        <div class="warning-content">
+          Crie a pasta <code>trabalhando_com_js</code> e um arquivo <code>boletim.js</code>. Vamos construir
+          ele <strong>aos pouquinhos</strong>, cada passo aproveitando o anterior. Pra rodar: extensão
+          <strong>Code Runner</strong> (<code>Ctrl/Cmd + Alt + N</code>) ou cole no Console (<kbd>F12</kbd>).
+          O 👀 mostra a solução e o <strong>console</strong> ao lado mostra a saída esperada.
+        </div>
+      </div>
+
+      <!-- trilha de progresso -->
+      <div class="arena-track">
+        <span class="at-dot lv1">1</span><span class="at-arrow">→</span>
+        <span class="at-dot lv1">2</span><span class="at-arrow">→</span>
+        <span class="at-dot lv2">3</span><span class="at-arrow">→</span>
+        <span class="at-dot lv2">4</span><span class="at-arrow">→</span>
+        <span class="at-dot lv2">5</span><span class="at-arrow">→</span>
+        <span class="at-dot lv3">6</span><span class="at-arrow">→</span>
+        <span class="at-dot lv3">★</span><span class="at-arrow">→</span>
+        <span class="at-dot lv3">🏆</span>
+      </div>
+
+      <!-- 1. guided — variáveis do aluno -->
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">👨‍🏫</span><div>
+          <div class="exercise-title">Passo 1 — os dados do aluno (com o prof)</div>
+          <div class="exercise-sub">Variáveis + template string</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>No <code>boletim.js</code>, crie <code>nome</code> e <code>curso</code> e imprima uma apresentação com template string.</p></div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">boletim.js</span><span class="lang-badge js">JavaScript</span></div>
+<pre><span class="kw">const</span> <span class="var">nome</span> <span class="op">=</span> <span class="st">"Maria"</span><span class="punc">;</span>
+<span class="kw">const</span> <span class="var">curso</span> <span class="op">=</span> <span class="st">"Fullstack"</span><span class="punc">;</span>
+
+<span class="bi">console</span>.<span class="fn">log</span>(<span class="st">`Aluna: ${nome} — curso ${curso}`</span>)<span class="punc">;</span></pre>
+        </div>
+        <p class="text-dim" style="font-size:0.82rem;margin:10px 0 4px">A saída no console 👇</p>
+        <div class="mini-browser console" data-url="Console">
+<script type="text/plain" data-mp="out">> node boletim.js
+Aluna: Maria — curso Fullstack</script>
+        </div>
+      </div>
+
+      <!-- 2. solo — adiciona mais dados (continua) -->
+      <div class="exercise solo">
+        <div class="exercise-header"><span class="exercise-icon">🧑‍💻</span><div>
+          <div class="exercise-title">Passo 2 — complete a ficha (sozinho/a)</div>
+          <div class="exercise-sub">Continua o MESMO arquivo</div></div>
+        </div>
+        <div class="drill-tags"><span class="drill-level lv1"><span class="stars">★</span> fácil</span><span class="drill-tag">const</span><span class="drill-tag">template string</span></div>
+        <div class="concept"><div class="concept-title">💡 Dica</div><p>Abaixo do passo 1, crie mais duas variáveis: <code>idade</code> e <code>cidade</code>. Depois imprima uma segunda linha: "Tem ___ anos e mora em ___".</p></div>
+        <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Tenta antes!</strong> É o mesmo molde do passo 1, com novas caixinhas.</div></div>
+        <div class="toggler">
+          <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — Ver solução + console</span><span class="toggler-arrow">▼</span></div>
+          <div class="toggler-body"><div class="code-block">
+            <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">boletim.js (adicionado abaixo)</span><span class="lang-badge js">JavaScript</span></div>
+<pre><span class="kw">const</span> <span class="var">idade</span> <span class="op">=</span> <span class="num">25</span><span class="punc">;</span>
+<span class="kw">const</span> <span class="var">cidade</span> <span class="op">=</span> <span class="st">"João Pessoa"</span><span class="punc">;</span>
+
+<span class="bi">console</span>.<span class="fn">log</span>(<span class="st">`Tem ${idade} anos e mora em ${cidade}`</span>)<span class="punc">;</span></pre>
+          </div>
+          <div class="mini-browser console" data-url="Console">
+<script type="text/plain" data-mp="out">> node boletim.js
+Aluna: Maria — curso Fullstack
+Tem 25 anos e mora em João Pessoa</script>
+          </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. guided — array de notas + média -->
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">👨‍🏫</span><div>
+          <div class="exercise-title">Passo 3 — as notas e a média (com o prof)</div>
+          <div class="exercise-sub">Array + conta</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>Ainda no mesmo arquivo, crie um array <code>notas</code> com 3 notas e calcule a <code>media</code>. Imprima.</p></div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">boletim.js (adicionado abaixo)</span><span class="lang-badge js">JavaScript</span></div>
+<pre><span class="kw">const</span> <span class="var">notas</span> <span class="op">=</span> [<span class="num">8</span>, <span class="num">6</span>, <span class="num">7</span>]<span class="punc">;</span>
+<span class="kw">const</span> <span class="var">media</span> <span class="op">=</span> (<span class="var">notas</span>[<span class="num">0</span>] <span class="op">+</span> <span class="var">notas</span>[<span class="num">1</span>] <span class="op">+</span> <span class="var">notas</span>[<span class="num">2</span>]) <span class="op">/</span> <span class="num">3</span><span class="punc">;</span>
+
+<span class="bi">console</span>.<span class="fn">log</span>(<span class="st">`Média: ${media}`</span>)<span class="punc">;</span></pre>
+        </div>
+        <div class="mini-browser console" data-url="Console">
+<script type="text/plain" data-mp="out">> node boletim.js
+Média: 7</script>
+        </div>
+      </div>
+
+      <!-- 4. solo — usa a media num if (continua) -->
+      <div class="exercise solo">
+        <div class="exercise-header"><span class="exercise-icon">🧑‍💻</span><div>
+          <div class="exercise-title">Passo 4 — aprovado ou recuperação? (sozinho/a)</div>
+          <div class="exercise-sub">Usa a <code>media</code> que você acabou de calcular</div></div>
+        </div>
+        <div class="drill-tags"><span class="drill-level lv2"><span class="stars">★★</span> médio</span><span class="drill-tag">if / else</span><span class="drill-tag">&gt;=</span><span class="drill-tag">===</span></div>
+        <div class="concept"><div class="concept-title">💡 Dica</div><p>Usando a variável <code>media</code> do passo 3, escreva um <code>if (media &gt;= 7)</code> que imprime "Aprovada! 🎉", senão "Recuperação 😬". Lembra: compare com <code>&gt;=</code> e use <code>===</code> quando for igualdade.</p></div>
+        <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Tenta primeiro!</strong> Você não cria a média de novo — reusa a que já existe no arquivo.</div></div>
+        <div class="toggler">
+          <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — Ver solução + console</span><span class="toggler-arrow">▼</span></div>
+          <div class="toggler-body"><div class="code-block">
+            <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">boletim.js (adicionado abaixo)</span><span class="lang-badge js">JavaScript</span></div>
+<pre><span class="kw">if</span> (<span class="var">media</span> <span class="op">&gt;=</span> <span class="num">7</span>) <span class="punc">{</span>
+  <span class="bi">console</span>.<span class="fn">log</span>(<span class="st">"Aprovada! 🎉"</span>)<span class="punc">;</span>
+<span class="punc">}</span> <span class="kw">else</span> <span class="punc">{</span>
+  <span class="bi">console</span>.<span class="fn">log</span>(<span class="st">"Recuperação 😬"</span>)<span class="punc">;</span>
+<span class="punc">}</span></pre>
+          </div>
+          <div class="mini-browser console" data-url="Console">
+<script type="text/plain" data-mp="out">> node boletim.js
+Média: 7
+Aprovada! 🎉</script>
+          </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. guided — vira função -->
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">👨‍🏫</span><div>
+          <div class="exercise-title">Passo 5 — empacote numa função (com o prof)</div>
+          <div class="exercise-sub">Função normal e arrow function</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>Repetir conta é chato. Transforme o cálculo numa <strong>função</strong> <code>calcularMedia(notas)</code> que você chama quantas vezes quiser. Veja as duas formas:</p></div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">boletim.js</span><span class="lang-badge js">JavaScript</span></div>
+<pre><span class="cm">// versão normal</span>
+<span class="kw">function</span> <span class="fn">calcularMedia</span>(<span class="var">notas</span>) <span class="punc">{</span>
+  <span class="kw">return</span> (<span class="var">notas</span>[<span class="num">0</span>] <span class="op">+</span> <span class="var">notas</span>[<span class="num">1</span>] <span class="op">+</span> <span class="var">notas</span>[<span class="num">2</span>]) <span class="op">/</span> <span class="num">3</span><span class="punc">;</span>
+<span class="punc">}</span>
+
+<span class="cm">// versão arrow ( =&gt; é = seguido de &gt; )</span>
+<span class="kw">const</span> <span class="fn">calcularMedia2</span> <span class="op">=</span> (<span class="var">notas</span>) <span class="op">=&gt;</span> (<span class="var">notas</span>[<span class="num">0</span>] <span class="op">+</span> <span class="var">notas</span>[<span class="num">1</span>] <span class="op">+</span> <span class="var">notas</span>[<span class="num">2</span>]) <span class="op">/</span> <span class="num">3</span><span class="punc">;</span>
+
+<span class="bi">console</span>.<span class="fn">log</span>(<span class="fn">calcularMedia</span>([<span class="num">8</span>, <span class="num">6</span>, <span class="num">7</span>]))<span class="punc">;</span></pre>
+        </div>
+        <div class="mini-browser console" data-url="Console">
+<script type="text/plain" data-mp="out">> node boletim.js
+7</script>
+        </div>
+      </div>
+
+      <!-- 6. solo — função boletim usando objeto -->
+      <div class="exercise solo">
+        <div class="exercise-header"><span class="exercise-icon">🧑‍💻</span><div>
+          <div class="exercise-title">Passo 6 — a função boletim() (sozinho/a)</div>
+          <div class="exercise-sub">Junta objeto + array + função — o fechamento</div></div>
+        </div>
+        <div class="drill-tags"><span class="drill-level lv3"><span class="stars">★★★</span> desafio</span><span class="drill-tag">objeto</span><span class="drill-tag">function</span><span class="drill-tag">.notas</span></div>
+        <div class="concept"><div class="concept-title">💡 Dica</div><p>Crie um objeto <code>aluna</code> com <code>nome</code>, <code>curso</code> e um array <code>notas</code>. Depois faça uma função <code>boletim(aluna)</code> que imprime o nome, o curso e a média (reusando <code>calcularMedia</code> do passo 5). Acesse os campos com <code>aluna.nome</code>, <code>aluna.notas</code>…</p></div>
+        <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Tenta antes de espiar!</strong> É a soma de tudo que você construiu hoje. Você consegue. 💪</div></div>
+        <div class="toggler">
+          <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — Ver solução + console</span><span class="toggler-arrow">▼</span></div>
+          <div class="toggler-body"><div class="code-block">
+            <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">boletim.js</span><span class="lang-badge js">JavaScript</span></div>
+<pre><span class="kw">const</span> <span class="var">aluna</span> <span class="op">=</span> <span class="punc">{</span>
+  <span class="atr">nome</span>: <span class="st">"Maria"</span>,
+  <span class="atr">curso</span>: <span class="st">"Fullstack"</span>,
+  <span class="atr">notas</span>: [<span class="num">8</span>, <span class="num">6</span>, <span class="num">7</span>]
+<span class="punc">}</span><span class="punc">;</span>
+
+<span class="kw">function</span> <span class="fn">boletim</span>(<span class="var">aluno</span>) <span class="punc">{</span>
+  <span class="kw">const</span> <span class="var">media</span> <span class="op">=</span> <span class="fn">calcularMedia</span>(<span class="var">aluno</span>.<span class="attr">notas</span>)<span class="punc">;</span>
+  <span class="bi">console</span>.<span class="fn">log</span>(<span class="st">`${aluno.nome} — ${aluno.curso}`</span>)<span class="punc">;</span>
+  <span class="bi">console</span>.<span class="fn">log</span>(<span class="st">`Média final: ${media}`</span>)<span class="punc">;</span>
+<span class="punc">}</span>
+
+<span class="fn">boletim</span>(<span class="var">aluna</span>)<span class="punc">;</span></pre>
+          </div>
+          <div class="mini-browser console" data-url="Console">
+<script type="text/plain" data-mp="out">> node boletim.js
+Maria — Fullstack
+Média final: 7</script>
+          </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- bônus — fizzbuzz (clássico, standalone) -->
+      <div class="exercise solo">
+        <div class="exercise-header"><span class="exercise-icon">⭐</span><div>
+          <div class="exercise-title">Bônus clássico — fizzbuzz.js 🏆</div>
+          <div class="exercise-sub">Um arquivo à parte — o exercício mais famoso de entrevista</div></div>
+        </div>
+        <div class="drill-tags"><span class="drill-level lv3"><span class="stars">★★★</span> desafio</span><span class="drill-tag">for</span><span class="drill-tag">%</span><span class="drill-tag">&amp;&amp;</span></div>
+        <div class="concept"><div class="concept-title">💡 Missão</div><p>Num arquivo novo <code>fizzbuzz.js</code>: imprima de 1 a 20, mas múltiplos de 3 viram "Fizz", de 5 viram "Buzz", e de 3 <strong>e</strong> 5 viram "FizzBuzz". Dica: use <code>for</code> e <code>%</code>. (Cai em entrevista de verdade! 😏)</p></div>
+        <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Quebra a cabeça primeiro!</strong> Pensa na ordem dos <code>if</code> — o "FizzBuzz" tem que vir antes.</div></div>
+        <div class="toggler">
+          <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — Ver solução + console</span><span class="toggler-arrow">▼</span></div>
+          <div class="toggler-body"><div class="code-block">
+            <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">fizzbuzz.js</span><span class="lang-badge js">JavaScript</span></div>
+<pre><span class="kw">for</span> (<span class="kw">let</span> <span class="var">i</span> <span class="op">=</span> <span class="num">1</span><span class="punc">;</span> <span class="var">i</span> <span class="op">&lt;=</span> <span class="num">20</span><span class="punc">;</span> <span class="var">i</span><span class="op">++</span>) <span class="punc">{</span>
+  <span class="kw">if</span> (<span class="var">i</span> <span class="op">%</span> <span class="num">3</span> <span class="op">===</span> <span class="num">0</span> <span class="op">&amp;&amp;</span> <span class="var">i</span> <span class="op">%</span> <span class="num">5</span> <span class="op">===</span> <span class="num">0</span>) <span class="punc">{</span>
+    <span class="bi">console</span>.<span class="fn">log</span>(<span class="st">"FizzBuzz"</span>)<span class="punc">;</span>
+  <span class="punc">}</span> <span class="kw">else</span> <span class="kw">if</span> (<span class="var">i</span> <span class="op">%</span> <span class="num">3</span> <span class="op">===</span> <span class="num">0</span>) <span class="punc">{</span>
+    <span class="bi">console</span>.<span class="fn">log</span>(<span class="st">"Fizz"</span>)<span class="punc">;</span>
+  <span class="punc">}</span> <span class="kw">else</span> <span class="kw">if</span> (<span class="var">i</span> <span class="op">%</span> <span class="num">5</span> <span class="op">===</span> <span class="num">0</span>) <span class="punc">{</span>
+    <span class="bi">console</span>.<span class="fn">log</span>(<span class="st">"Buzz"</span>)<span class="punc">;</span>
+  <span class="punc">}</span> <span class="kw">else</span> <span class="punc">{</span>
+    <span class="bi">console</span>.<span class="fn">log</span>(<span class="var">i</span>)<span class="punc">;</span>
+  <span class="punc">}</span>
+<span class="punc">}</span></pre>
+          </div>
+          <div class="mini-browser console" data-url="Console">
+<script type="text/plain" data-mp="out">> node fizzbuzz.js
+1
+2
+Fizz
+4
+Buzz
+Fizz
+7
+8
+Fizz
+Buzz
+11
+Fizz
+13
+14
+FizzBuzz</script>
+          </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- home — turma inteira -->
+      <div class="exercise home">
+        <div class="exercise-header"><span class="exercise-icon">🏠</span><div>
+          <div class="exercise-title">🎓 Desafio para casa — a turma inteira</div>
+          <div class="exercise-sub">Array de objetos + função</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">💡 Missão</div><p>Crie um array <code>turma</code> com 3 alunos (cada um um objeto com <code>nome</code>, <code>curso</code> e <code>notas</code>). Depois rode sua função <code>boletim()</code> para <strong>cada</strong> aluno da turma. (Dica: dá pra pesquisar sobre <code>for</code> ou <code>.forEach</code> pra repetir.) Traga no próximo sábado! 🎒</p></div>
+      </div>
+
+      <div class="tip" style="margin-top:8px">
+        <span class="tip-icon">🔮</span>
+        <div class="tip-content">
+          <strong>Spoiler do próximo capítulo:</strong> até agora o JS só falou com o Console.
+          No <strong style="color:var(--react)">Capítulo 03</strong> ele vai falar com a <strong>página</strong> —
+          mudar textos, reagir a cliques, esconder e mostrar coisas. Aí o site ganha vida de verdade! 🪄
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ RESUMO ═══════════════ -->
+  <section class="step-section" id="resumo">
+    <div class="step-header">
+      <div class="step-number sn-mint">🎒</div>
+      <div>
+        <div class="step-title">O que você leva deste capítulo</div>
+        <div class="step-sub">A base de JS que sustenta TODO o React</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <ul class="about-bullets">
+        <li><div><strong>JS</strong> é o cérebro da página. Roda no navegador (Console com <kbd>F12</kbd>).</div></li>
+        <li><div><strong>Variáveis:</strong> <code>const</code> por padrão, <code>let</code> quando muda.</div></li>
+        <li><div><strong>Tipos:</strong> string, number, boolean. Template string com <code>`${ }`</code>.</div></li>
+        <li><div><strong>Condições:</strong> <code>if/else</code> e sempre <code>===</code> (três iguais).</div></li>
+        <li><div><strong>Funções:</strong> clássica e arrow (<code>=&gt;</code> = <kbd>=</kbd> + <kbd>&gt;</kbd>).</div></li>
+        <li><div><strong>Arrays</strong> (lista, índice começa no 0) e <strong>objetos</strong> (chave: valor).</div></li>
+      </ul>
+
+      <div class="tip" style="margin-top:16px">
+        <span class="tip-icon">➡️</span>
+        <div class="tip-content">
+          <strong>No próximo capítulo:</strong> vamos tirar o JS do Console e jogar na página de verdade —
+          o <strong style="color:var(--react)">DOM</strong>: selecionar elementos, reagir a cliques e
+          mudar a tela em tempo real. É a ponte final antes do React.
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:22px">
+        <span style="display:inline-block;padding:14px 32px;background:rgba(255,255,255,0.06);color:var(--text-dim);font-weight:900;border-radius:50px;font-size:1rem;border:1px solid rgba(255,255,255,0.1)">
+          🔒 Capítulo 03 — JS no navegador · em breve
+        </span>
+        <p style="color:var(--text-dim);font-size:0.8rem;margin-top:10px">
+          Esse capítulo vem na próxima sessão. Por ora, volte ao
+          <a href="../../index.html" style="color:var(--accent4);text-decoration:none">hub</a> 👋
+        </p>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="footer">
+  Feito com <span class="heart">♥</span> pela <strong style="color:var(--text)">programa AI</strong> ·
+  <a href="../../index.html">Hub do curso</a> · Cap 02 — JavaScript
+</footer>
+
+<script src="../../shared/scripts.js" defer></script>
+<script src="../../shared/playground.js" defer></script>
+<script type="module" src="../../shared/motion-fx.js"></script>
+<script type="module">
+  // ── Rastreador de código ──
+  let animate=null;
+  try{ ({animate}=await import('https://cdn.jsdelivr.net/npm/motion@11/+esm')); }catch(e){}
+  const CODE=[
+    'let n1 = 8',
+    'let n2 = 6',
+    'let media = (n1 + n2) / 2',
+    'if (media >= 7) {',
+    '  console.log("Aprovado! 🎉")',
+    '}',
+  ];
+  const VARS=['n1','n2','media'];
+  const STEPS=[
+    {line:0, set:{n1:'8'}, msg:'guarda 8 na caixinha n1'},
+    {line:1, set:{n2:'6'}, msg:'guarda 6 na caixinha n2'},
+    {line:2, set:{media:'7'}, msg:'(8 + 6) / 2 = 7 → guarda em media'},
+    {line:3, set:{}, msg:'media >= 7 ? 7 >= 7 é VERDADEIRO ✓'},
+    {line:4, set:{}, log:'Aprovado! 🎉', msg:'condição verdadeira → imprime no console'},
+  ];
+  const codeBox=document.getElementById('tr-code');
+  const varsBox=document.getElementById('tr-vars');
+  const consoleBox=document.getElementById('tr-console');
+  CODE.forEach(c=>{const d=document.createElement('div');d.className='tcline';d.textContent=c;codeBox.appendChild(d);});
+  const codeEls=[...codeBox.children];
+  const varEls={};
+  VARS.forEach(v=>{const d=document.createElement('div');d.className='tvar';d.innerHTML=`<div class="tvn">${v}</div><div class="tvv">—</div>`;varsBox.appendChild(d);varEls[v]=d;});
+  let playing=false;
+  async function run(){
+    if(playing)return; playing=true;
+    codeEls.forEach(e=>e.classList.remove('lit'));
+    Object.values(varEls).forEach(e=>{e.classList.remove('set');e.querySelector('.tvv').textContent='—';});
+    consoleBox.innerHTML='';
+    const msg=document.getElementById('tr-msg');
+    for(const s of STEPS){
+      codeEls.forEach((e,i)=>e.classList.toggle('lit',i===s.line));
+      for(const k in s.set){ const ve=varEls[k]; ve.classList.add('set'); ve.querySelector('.tvv').textContent=s.set[k]; if(animate)animate(ve,{transform:['scale(1.15)','scale(1)']},{duration:.4}); }
+      if(s.log){ const l=document.createElement('div'); l.className='tl'; l.textContent=s.log; consoleBox.appendChild(l); if(animate)animate(l,{opacity:[0,1]},{duration:.3}); }
+      msg.textContent=s.msg;
+      await new Promise(r=>setTimeout(r,1150));
+    }
+    codeEls.forEach(e=>e.classList.remove('lit'));
+    playing=false;
+  }
+  document.getElementById('tr-play').onclick=run;
+  new IntersectionObserver((es,obs)=>{es.forEach(e=>{if(e.isIntersecting){run();obs.disconnect();}});},{threshold:.4})
+    .observe(document.getElementById('tracer'));
+</script>
+</body>
+</html>

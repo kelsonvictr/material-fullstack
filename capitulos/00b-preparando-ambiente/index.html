@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Preparando o ambiente (VSCode) | Curso Fullstack</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=JetBrains+Mono:wght@400;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../shared/styles.css">
+<link rel="stylesheet" href="../../shared/components.css">
+<link rel="stylesheet" href="../../shared/animations.css">
+<style>
+  .ext-card{display:flex;gap:14px;align-items:flex-start;background:var(--surface2);
+    border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:16px 18px;margin:10px 0;position:relative}
+  .ext-card .ext-ic{font-size:1.8rem;flex-shrink:0;width:40px;text-align:center}
+  .ext-card .ext-t{font-weight:800;font-size:1rem}
+  .ext-card .ext-by{font-size:0.72rem;color:var(--text-dim);font-family:'JetBrains Mono',monospace}
+  .ext-card .ext-d{font-size:0.88rem;color:var(--text-dim);margin-top:4px}
+  .ext-card .ext-n{position:absolute;top:14px;right:16px;font-family:'JetBrains Mono',monospace;
+    font-weight:900;color:rgba(255,255,255,0.1);font-size:1.6rem}
+  /* fake VSCode window */
+  .vsc{border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.1);margin:14px 0;background:#1e1e2e}
+  .vsc-bar{display:flex;align-items:center;gap:8px;padding:8px 12px;background:#181825}
+  .vsc-bar .d{width:11px;height:11px;border-radius:50%}
+  .vsc-bar .d.r{background:#ff5f57}.vsc-bar .d.y{background:#febc2e}.vsc-bar .d.g{background:#28c840}
+  .vsc-bar .t{margin-left:8px;font-size:0.74rem;color:#a6adc8;font-family:'JetBrains Mono',monospace}
+  .vsc-body{display:flex;min-height:120px}
+  .vsc-side{width:150px;background:#181825;padding:10px;font-size:0.74rem;color:#a6adc8;font-family:'JetBrains Mono',monospace}
+  .vsc-side .f{padding:2px 0}.vsc-side .dir{color:#89b4fa}
+  .vsc-main{flex:1;padding:12px;font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:#cdd6f4;line-height:1.7}
+  .check{display:flex;align-items:center;gap:10px;background:var(--surface2);border:1px solid rgba(255,255,255,0.06);
+    border-radius:10px;padding:10px 14px;margin:8px 0;cursor:pointer;user-select:none;transition:all .2s}
+  .check:hover{border-color:rgba(108,99,255,0.3)}
+  .check .box{width:22px;height:22px;border-radius:6px;border:2px solid var(--text-dim);flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;font-size:0.9rem;transition:all .2s}
+  .check.done .box{background:var(--accent7);border-color:var(--accent7);color:#06210f}
+  .check.done .lbl{color:var(--text-dim);text-decoration:line-through}
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-orbs"><div class="orb"></div><div class="orb"></div><div class="orb"></div></div>
+<div class="progress-track"><div class="progress-bar"></div></div>
+
+<button class="menu-toggle" onclick="openSidebar()" aria-label="Abrir menu">☰</button>
+<div class="sidebar-overlay"></div>
+<nav class="sidebar-nav">
+  <button class="sidebar-close" onclick="closeSidebar()" aria-label="Fechar">✕</button>
+  <div class="sidebar-header">
+    <h3>⚙️ Preparando o ambiente</h3>
+    <a class="sidebar-back" href="../../index.html">← Voltar ao hub</a>
+  </div>
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Neste capítulo</div>
+    <a class="sidebar-link" onclick="goTo('porque')"><span class="dot" style="background:var(--accent5)"></span> Por que isso importa</a>
+    <a class="sidebar-link" onclick="goTo('vscode')"><span class="dot" style="background:var(--css)"></span> Instalando o VSCode</a>
+    <a class="sidebar-link" onclick="goTo('workspace')"><span class="dot" style="background:var(--html)"></span> Organizando as pastas</a>
+    <a class="sidebar-link" onclick="goTo('extensoes')"><span class="dot" style="background:var(--react)"></span> As 5 extensões</a>
+    <a class="sidebar-link" onclick="goTo('teste')"><span class="dot" style="background:var(--accent4)"></span> Teste: primeira página</a>
+    <a class="sidebar-link" onclick="goTo('checklist')"><span class="dot" style="background:var(--accent7)"></span> Checklist final</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-icons" data-motion="float"><img src="../../assets/svg/vscode.svg" alt="VSCode" width="52" height="52" style="vertical-align:middle"> ⚙️</div>
+  <span class="hero-badge" style="background:linear-gradient(135deg,#2965f1,#61dafb);color:#0a0a12">Antes do Capítulo 01 · Setup</span>
+  <h1>Preparando o ambiente</h1>
+  <p style="font-family:'Caveat',cursive;font-size:clamp(1.5rem,4vw,2.2rem);color:var(--react);margin:-6px 0 18px;font-weight:700">
+    Toda obra começa pelas ferramentas certas 🛠️
+  </p>
+  <p class="subtitle">
+    Antes de escrever a primeira linha, vamos montar o seu "estúdio" de programação: instalar o
+    <strong style="color:var(--react)">VSCode</strong>, organizar as pastas e ativar as
+    <strong>extensões</strong> que vão deixar tudo mais fácil, bonito e rápido.
+  </p>
+</section>
+
+<div class="container">
+
+  <!-- POR QUE -->
+  <section class="step-section" id="porque">
+    <div class="step-header">
+      <div class="step-number sn-yellow">🧑‍🍳</div>
+      <div>
+        <div class="step-title">Por que perder tempo com isso?</div>
+        <div class="step-sub">Ferramenta boa é meio caminho andado</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="analogy">
+        <div class="analogy-title">A cozinha do chef 👨‍🍳</div>
+        <p>Nenhum chef começa a cozinhar com a cozinha bagunçada e sem facas afiadas. Ele
+        <strong>prepara o ambiente</strong> primeiro: organiza os ingredientes, separa as panelas, afia a faca.</p>
+        <p>Programar é igual. Um ambiente bem montado faz você <strong>codar mais rápido, errar menos e se
+        divertir mais</strong>. Vamos montar o seu agora — é rapidinho e vale pra todos os sábados que vêm.</p>
+      </div>
+      <div class="tip">
+        <span class="tip-icon">😌</span>
+        <div class="tip-content">
+          <strong>Calma, é tranquilo.</strong> Você faz isso <strong>uma vez só</strong> e está pronto pro
+          curso inteiro — front e back. Se travar em algo, chama o prof. 🙋
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- VSCODE -->
+  <section class="step-section" id="vscode">
+    <div class="step-header">
+      <div class="step-number sn-css"><img src="../../assets/svg/vscode.svg" alt="" width="26" height="26"></div>
+      <div>
+        <div class="step-title">1. Instalando o VSCode</div>
+        <div class="step-sub">Nosso editor de código — gratuito e o mais usado do mundo</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="concept">
+        <div class="concept-title">💡 O que é o VSCode?</div>
+        <p>É um <strong>editor de código</strong> — tipo um "Word" para programadores, mas muito mais
+        esperto: ele colore o código, avisa erros, completa o que você digita e roda extensões.
+        Feito pela Microsoft, gratuito, e o queridinho do mercado.</p>
+      </div>
+      <ol class="about-bullets" style="counter-reset:n">
+        <li><div><strong>Passo 1:</strong> acesse <strong style="color:var(--react)">code.visualstudio.com</strong></div></li>
+        <li><div><strong>Passo 2:</strong> clique no botão grande de download (ele detecta seu sistema: Windows, Mac ou Linux)</div></li>
+        <li><div><strong>Passo 3:</strong> instale como qualquer programa (next, next, finish 😄)</div></li>
+        <li><div><strong>Passo 4:</strong> abra o VSCode. Apareceu uma tela de boas-vindas? <strong>Deu certo!</strong> 🎉</div></li>
+      </ol>
+      <div class="warning">
+        <span class="warning-icon">⚠️</span>
+        <div class="warning-content">
+          <strong>Não confunda:</strong> "VSCode" (Visual Studio <em>Code</em>) é diferente de
+          "Visual Studio" (sem o Code). A gente quer o <strong>Code</strong> — o leve, azul-clarinho.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- WORKSPACE -->
+  <section class="step-section" id="workspace">
+    <div class="step-header">
+      <div class="step-number sn-html">📁</div>
+      <div>
+        <div class="step-title">2. Organizando as pastas do curso</div>
+        <div class="step-sub">Lugar pra cada coisa, cada coisa no seu lugar</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="analogy">
+        <div class="analogy-title">O armário organizado 🗄️</div>
+        <p>Imagina jogar todas as suas roupas numa pilha só. Caos, né? Com código é igual: a gente
+        cria <strong>pastas</strong> pra organizar. Vamos criar a estrutura do curso:</p>
+      </div>
+
+      <p style="color:var(--text-dim);margin:6px 0">Crie (no seu computador) uma pasta principal e, dentro dela, uma por aula:</p>
+      <div class="vsc">
+        <div class="vsc-bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="t">explorador de arquivos</span></div>
+        <div class="vsc-body">
+          <div class="vsc-side">
+            <div class="f dir">📁 curso_fullstack_em_sala</div>
+            <div class="f" style="padding-left:14px">📁 aula01</div>
+            <div class="f" style="padding-left:14px">📁 aula02</div>
+            <div class="f" style="padding-left:14px">📁 ...</div>
+          </div>
+          <div class="vsc-main">// uma pasta pra cada sábado<br>// tudo organizado e fácil de achar 👌</div>
+        </div>
+      </div>
+
+      <div class="concept">
+        <div class="concept-title">⌨️ O atalho mágico: <code>code .</code></div>
+        <p>Você pode abrir uma pasta no VSCode pelo terminal. Dentro da pasta da aula, digite
+        <code>code .</code> (o ponto significa "esta pasta aqui"). O VSCode abre já apontando pra ela.</p>
+        <p>Não curte terminal? Sem problema: <strong>VSCode → Arquivo → Abrir Pasta</strong> e escolha a pasta.
+        Dá no mesmo. 😉</p>
+      </div>
+      <div class="warning">
+        <span class="warning-icon">📛</span>
+        <div class="warning-content">
+          <strong>Nomes de pastas e arquivos:</strong> sem espaços, sem acento, tudo minúsculo, usando
+          <code>_</code> no lugar do espaço. <code>aula01</code> ✅ &nbsp; <code>Aula 01</code> ❌.
+          Programador evita dor de cabeça com nomes simples.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- EXTENSOES -->
+  <section class="step-section" id="extensoes">
+    <div class="step-header">
+      <div class="step-number sn-react">🧩</div>
+      <div>
+        <div class="step-title">3. As 5 extensões que eu recomendo</div>
+        <div class="step-sub">Pra abrir: ícone de "peças" 🧩 na barra lateral → busque pelo nome → Install</div>
+      </div>
+    </div>
+    <div class="card">
+      <p style="color:var(--text-dim);margin-bottom:6px">
+        Extensões são "plugins" que turbinam o VSCode. Essas 5 eu recomendo em <strong>todas as turmas</strong>:
+      </p>
+
+      <div class="ext-card">
+        <span class="ext-ic">🌐</span>
+        <div>
+          <div class="ext-t">Open Browser Preview</div>
+          <div class="ext-by">por Eno Yao</div>
+          <div class="ext-d">Mostra a pré-visualização da sua página HTML <strong>dentro do VSCode</strong>, sem precisar ficar trocando de janela. Essencial pro nosso começo com HTML/CSS.</div>
+        </div>
+        <span class="ext-n">1</span>
+      </div>
+
+      <div class="ext-card">
+        <span class="ext-ic">🎨</span>
+        <div>
+          <div class="ext-t">Material Icon Theme</div>
+          <div class="ext-by">por Philipp Kief</div>
+          <div class="ext-d">Coloca <strong>ícones bonitos</strong> em cada tipo de arquivo e pasta. Bate o olho e já sabe o que é HTML, CSS, JS, imagem… Deixa tudo mais fácil de achar.</div>
+        </div>
+        <span class="ext-n">2</span>
+      </div>
+
+      <div class="ext-card">
+        <span class="ext-ic">⚛️</span>
+        <div>
+          <div class="ext-t">ES7+ React/Redux/React-Native snippets</div>
+          <div class="ext-by">por dsznajder</div>
+          <div class="ext-d">Atalhos que escrevem código React pra você (digita <code>rafce</code> + Tab e nasce um componente inteiro). <strong>Vamos usar lá na frente</strong>, mas já deixa instalado.</div>
+        </div>
+        <span class="ext-n">3</span>
+      </div>
+
+      <div class="ext-card">
+        <span class="ext-ic">▶️</span>
+        <div>
+          <div class="ext-t">Code Runner</div>
+          <div class="ext-by">por Jun Han</div>
+          <div class="ext-d">Roda seu código com <strong>um clique</strong> (ou <code>Ctrl/Cmd + Alt + N</code>). Ótimo pra testar trechos de JavaScript rapidinho.</div>
+        </div>
+        <span class="ext-n">4</span>
+      </div>
+
+      <div class="ext-card">
+        <span class="ext-ic">🧛</span>
+        <div>
+          <div class="ext-t">Dracula Official (tema)</div>
+          <div class="ext-by">tema de cores — gosto pessoal</div>
+          <div class="ext-d">Um tema escuro roxinho que deixa o editor lindo e descansa a vista. <strong>Opcional!</strong> Use o tema que te deixar feliz — codar bonito anima. 🧛‍♂️</div>
+        </div>
+        <span class="ext-n">5</span>
+      </div>
+
+      <div class="tip">
+        <span class="tip-icon">💜</span>
+        <div class="tip-content">
+          Pra ativar um tema: <code>Ctrl/Cmd + K</code> e depois <code>Ctrl/Cmd + T</code>, escolha o Dracula.
+          Ou: <strong>Arquivo → Preferências → Tema de Cores</strong>.
+        </div>
+      </div>
+
+      <figure style="margin:16px 0 0;text-align:center">
+        <img src="../../assets/memes/meme-ambiente.png" alt="Meme: dev satisfeita depois de configurar o VSCode"
+          style="max-width:400px;width:100%;border-radius:14px;border:1px solid rgba(255,255,255,0.08)"
+          onerror="this.closest('figure').style.display='none'">
+      </figure>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- TESTE -->
+  <section class="step-section" id="teste">
+    <div class="step-header">
+      <div class="step-number sn-blue">🧪</div>
+      <div>
+        <div class="step-title">4. Teste relâmpago: sua primeira página</div>
+        <div class="step-sub">Só pra confirmar que tudo funciona (com o prof)</div>
+      </div>
+    </div>
+    <div class="exercise guided">
+      <div class="exercise-header">
+        <span class="exercise-icon">👨‍🏫</span>
+        <div>
+          <div class="exercise-title">Crie index.html e veja a mágica</div>
+          <div class="exercise-sub">Dentro da pasta aula01</div>
+        </div>
+      </div>
+      <ol class="about-bullets">
+        <li><div>No VSCode, com a pasta <code>aula01</code> aberta, crie um arquivo: <strong>botão de novo arquivo</strong> → nome <code>index.html</code></div></li>
+        <li><div>Clique dentro do arquivo, digite só <code>!</code> e aperte <kbd>Tab</kbd> — o VSCode cospe a estrutura HTML inteira (isso se chama <strong>Emmet</strong> 🪄)</div></li>
+        <li><div>Entre as tags <code>&lt;body&gt;</code>, escreva: <code>&lt;h1&gt;Funcionou! 🎉&lt;/h1&gt;</code></div></li>
+        <li><div>Salve com <kbd>Ctrl/Cmd</kbd>+<kbd>S</kbd></div></li>
+        <li><div>Clique direito no arquivo → <strong>"Open Browser Preview"</strong> (ou "Open with Live Server") e veja na tela!</div></li>
+      </ol>
+      <div class="tip">
+        <span class="tip-icon">✨</span>
+        <div class="tip-content">
+          Viu "Funcionou! 🎉" aparecer? <strong>Seu ambiente está pronto.</strong> A partir do próximo
+          capítulo, é só alegria (e código). 🚀
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- CHECKLIST -->
+  <section class="step-section" id="checklist">
+    <div class="step-header">
+      <div class="step-number sn-mint">✅</div>
+      <div>
+        <div class="step-title">Checklist final</div>
+        <div class="step-sub">Clique pra marcar. Tudo verde = bora pro HTML!</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="check" onclick="this.classList.toggle('done')"><span class="box">✓</span><span class="lbl">Instalei o VSCode e abri sem erros</span></div>
+      <div class="check" onclick="this.classList.toggle('done')"><span class="box">✓</span><span class="lbl">Criei a pasta <code>curso_fullstack_em_sala</code> com <code>aula01</code> dentro</span></div>
+      <div class="check" onclick="this.classList.toggle('done')"><span class="box">✓</span><span class="lbl">Instalei as extensões (pelo menos Open Browser Preview, Material Icon Theme e Code Runner)</span></div>
+      <div class="check" onclick="this.classList.toggle('done')"><span class="box">✓</span><span class="lbl">Criei o <code>index.html</code> e vi "Funcionou! 🎉" no preview</span></div>
+
+      <div style="text-align:center;margin-top:22px">
+        <a href="../01-html-css/" style="display:inline-block;padding:14px 34px;background:linear-gradient(135deg,var(--html),var(--accent5));color:var(--bg);text-decoration:none;font-weight:900;border-radius:50px;font-size:1.05rem">
+          🧱 Agora sim: Capítulo 01 — HTML &amp; CSS →
+        </a>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="footer">
+  Feito com <span class="heart">♥</span> pela <strong style="color:var(--text)">programa AI</strong> ·
+  <a href="../../index.html">Hub do curso</a> · Preparando o ambiente
+</footer>
+
+<script src="../../shared/scripts.js" defer></script>
+<script type="module" src="../../shared/motion-fx.js"></script>
+</body>
+</html>
+</content>
