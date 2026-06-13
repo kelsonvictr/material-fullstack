@@ -22,6 +22,10 @@ do backend** que o aluno já construiu (`../backend-fullstack` / `../projetos-fu
 
 Desafios consolidados podem entrar entre capítulos (ex.: `Nb-desafios`), como no iniciantes-v2.
 
+> **Sequência HTTP/fetch/axios travada (2026-06-12)** — ver `07-sequencia-http-fetch-axios.md`:
+> fetch só no Cap 3 (virando DOM), Caps 4–6 com mocks no shape do JSON da API do ERP,
+> fetch no `useEffect` no Cap 7, axios só no Cap 9 (com JWT). Não antecipar.
+
 ## Capítulos de abertura (criados)
 - **`capitulos/00-o-que-e-fullstack/`** — visão geral antes do código: analogia do restaurante,
   torre da stack, jogo "Dev Run", ciclo de requisição, hype de backend. (aula 00, surreal)
@@ -49,6 +53,9 @@ Dados: Pesquisa Código Fonte TV 2025 (citar fonte sempre).
       (substitui render-game), treino **encadeado** (`sobre-mim.html`), mini-browser em cada exercício
 - [x] Cap 2 — JavaScript (variáveis, tipos, ===, funções/arrow, arrays/objetos, terminal animado, meme 0.1+0.2)
       · **reforma 2026-05-30**: treino **encadeado** construindo `boletim.js` passo a passo + mini-browser console
+      · **máquinas didáticas 2026-06-12**: Detector de Tipos 🃏, Túnel do IF 🚦, Rastreador
+      com 2 programas (true E else), Máquina de Funções ⚙️, Trem do Array 🚂, +4 quizzes
+      (const, %, quiz de saída) — ver decisão em `05-decisoes.md`
 - [ ] Caps 3–9 (próximas sessões) — marcados como "🔒 em breve" no hub
 - [x] Memes gerados: `meme-intro-fullstack.png`, `meme-css-centralizar.png`, `meme-js-soma.png`
 

@@ -18,6 +18,144 @@
   .vbox .vval{font-family:'JetBrains Mono',monospace;color:var(--text);font-size:1.15rem;margin-top:4px}
   .vbox .vtype{font-size:0.66rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
   kbd{background:var(--surface3);border-radius:5px;padding:1px 6px;font-family:'JetBrains Mono',monospace;font-size:0.8rem}
+
+  /* ── mono didático: SEMPRE sem ligaduras (>= não pode virar ≥) ── */
+  .mono,.tcline,.tconsole,.fm-code,.fm-chip,.fm-sub,.tg-value,.wagon,.train-out,.ift-verdict,.tr-tab{
+    font-family:'JetBrains Mono',monospace;
+    font-variant-ligatures:none;font-feature-settings:"liga" 0,"clig" 0,"calt" 0}
+
+  /* ═══ 🃏 Detector de Tipos ═══ */
+  .typegame{background:linear-gradient(180deg,#0b1020,#0d0d1a);border:1px solid rgba(247,223,30,0.25);
+    border-radius:16px;padding:18px;margin:14px 0;text-align:center}
+  .tg-progress{display:flex;justify-content:center;gap:8px;margin-bottom:14px}
+  .tg-dot{width:10px;height:10px;border-radius:50%;background:var(--surface3);transition:all .3s}
+  .tg-dot.ok{background:#06d6a0}.tg-dot.err{background:#ff6b6b}.tg-dot.now{box-shadow:0 0 0 3px rgba(247,223,30,0.35);background:var(--js)}
+  .tg-card{display:inline-block;background:var(--surface2);border:2px solid rgba(247,223,30,0.4);border-radius:14px;
+    padding:18px 34px;margin-bottom:6px;min-width:170px;transition:transform .25s,border-color .25s}
+  .tg-card.shake{animation:tgshake .4s}
+  @keyframes tgshake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+  .tg-value{font-size:1.6rem;font-weight:700;color:#fff}
+  .tg-value .q{color:#ffa657}
+  .tg-hint{min-height:24px;font-size:0.82rem;color:var(--text-dim);margin:8px 0 12px}
+  .tg-btns{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+  .tg-btn{border:1px solid rgba(255,255,255,0.14);background:var(--surface2);color:var(--text);
+    font-family:'JetBrains Mono',monospace;font-weight:700;font-size:0.85rem;padding:10px 20px;border-radius:10px;cursor:pointer;transition:all .2s}
+  .tg-btn:hover:not(:disabled){transform:translateY(-2px);border-color:var(--js)}
+  .tg-btn:disabled{opacity:.55;cursor:default}
+  .tg-btn.hit{background:rgba(6,214,160,0.2);border-color:#06d6a0}
+  .tg-btn.miss{background:rgba(255,107,107,0.2);border-color:#ff6b6b}
+  .tg-restart{margin-top:12px;background:linear-gradient(135deg,var(--js),#ffb300);color:#0a0a12;border:none;
+    font-weight:800;padding:9px 20px;border-radius:10px;cursor:pointer;display:none}
+
+  /* ═══ 🚦 Túnel do IF ═══ */
+  .iftunnel{background:linear-gradient(180deg,#0b1020,#0d0d1a);border:1px solid rgba(247,223,30,0.25);
+    border-radius:16px;padding:16px;margin:14px 0}
+  .ift-stage{position:relative;min-height:250px}
+  .ift-wires{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+  .ift-wires path{stroke:rgba(255,255,255,0.16);stroke-width:2;fill:none;transition:stroke .4s}
+  .ift-wires path.hot{stroke:var(--js)}
+  .ift-wires path.hot.ok{stroke:#06d6a0}.ift-wires path.hot.nope{stroke:#ff6b6b}
+  .ift-node{position:relative;z-index:2;font-size:0.82rem}
+  .ift-var{width:max-content;margin:0 auto;background:var(--surface2);border:1px solid rgba(247,223,30,0.4);
+    border-radius:10px;padding:8px 16px}
+  .ift-cond{width:max-content;margin:46px auto 0;background:#1c1c10;border:2px solid var(--js);border-radius:12px;
+    padding:10px 20px;font-weight:700;transition:all .3s}
+  .ift-cond.true{border-color:#06d6a0;background:rgba(6,214,160,0.12);box-shadow:0 0 18px rgba(6,214,160,0.35)}
+  .ift-cond.false{border-color:#ff6b6b;background:rgba(255,107,107,0.12);box-shadow:0 0 18px rgba(255,107,107,0.35)}
+  .ift-row{display:flex;justify-content:space-around;gap:12px;margin-top:52px;flex-wrap:wrap}
+  .ift-leaf{background:var(--surface2);border:1px solid rgba(255,255,255,0.14);border-radius:10px;
+    padding:10px 14px;transition:all .35s;text-align:center}
+  .ift-leaf.win{transform:scale(1.12);border-color:#06d6a0;background:rgba(6,214,160,0.14);box-shadow:0 6px 22px rgba(6,214,160,0.3)}
+  .ift-leaf.no.win{border-color:#ff6b6b;background:rgba(255,107,107,0.14);box-shadow:0 6px 22px rgba(255,107,107,0.3)}
+  .ift-leaf.dim{opacity:.3;filter:grayscale(.7)}
+  .ift-ball{position:absolute;z-index:3;left:0;top:0;background:linear-gradient(135deg,var(--js),#ffb300);
+    color:#0a0a12;font-family:'JetBrains Mono',monospace;font-weight:800;font-size:0.8rem;border-radius:50px;
+    padding:6px 12px;opacity:0;box-shadow:0 4px 16px rgba(247,223,30,0.45);
+    transition:left .6s cubic-bezier(.45,.05,.35,1),top .6s cubic-bezier(.45,.05,.35,1),opacity .3s;will-change:left,top}
+  .ift-verdict{position:absolute;z-index:2;left:50%;transform:translateX(-50%);width:max-content;max-width:90%;
+    font-size:0.74rem;color:var(--text-dim);opacity:0;transition:opacity .3s;background:rgba(10,10,18,0.85);
+    padding:2px 10px;border-radius:8px}
+  .ift-verdict.show{opacity:1}
+  .ift-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px;font-size:0.82rem;color:var(--text-dim)}
+  .ift-controls button{border:1px solid rgba(247,223,30,0.4);background:var(--surface2);color:var(--js);
+    font-family:'JetBrains Mono',monospace;font-weight:700;font-size:0.8rem;padding:8px 14px;border-radius:10px;cursor:pointer;transition:all .2s}
+  .ift-controls button:hover:not(:disabled){transform:translateY(-2px);background:rgba(247,223,30,0.12)}
+  .ift-controls button:disabled{opacity:.45;cursor:default}
+  .iftunnel .tconsole{margin-top:12px}
+
+  /* ═══ ⚙️ Máquina de Funções ═══ */
+  .fmachine{position:relative;background:linear-gradient(180deg,#0b1020,#0d0d1a);border:1px solid rgba(167,139,250,0.3);
+    border-radius:16px;padding:18px;margin:14px 0;text-align:center;overflow:hidden}
+  .fm-hopper{width:120px;margin:0 auto;height:34px;background:linear-gradient(180deg,#2a2a44,#1a1a2e);
+    clip-path:polygon(0 0,100% 0,72% 100%,28% 100%);border-radius:6px 6px 0 0}
+  .fm-body{width:min(320px,90%);margin:0 auto;background:var(--surface2);border:2px solid rgba(167,139,250,0.5);
+    border-radius:14px;padding:12px;transition:transform .15s}
+  .fm-body.working{animation:fmshake .5s infinite}
+  @keyframes fmshake{0%,100%{transform:translateX(0) rotate(0)}25%{transform:translateX(-2px) rotate(-.4deg)}75%{transform:translateX(2px) rotate(.4deg)}}
+  .fm-gears{font-size:1.3rem;letter-spacing:14px;display:block}
+  .fm-body.working .fm-gears span{display:inline-block;animation:fmspin 1s linear infinite}
+  .fm-body.working .fm-gears span:nth-child(2){animation-direction:reverse}
+  @keyframes fmspin{to{transform:rotate(360deg)}}
+  .fm-code{font-size:0.82rem;color:#a78bfa;font-weight:700;margin-top:6px}
+  .fm-sub{min-height:22px;font-size:0.8rem;color:var(--js);margin-top:4px}
+  .fm-chute{width:54px;height:26px;margin:0 auto;background:linear-gradient(180deg,#1a1a2e,#2a2a44);
+    clip-path:polygon(20% 0,80% 0,100% 100%,0 100%)}
+  .fm-result{min-height:46px;display:flex;justify-content:center;align-items:flex-start;padding-top:6px}
+  .fm-chip{display:inline-block;background:linear-gradient(135deg,#a78bfa,#7c5cff);color:#fff;font-weight:800;
+    border-radius:50px;padding:6px 14px;font-size:0.85rem;box-shadow:0 4px 14px rgba(167,139,250,0.4)}
+  .fm-chip.in{position:absolute;z-index:3;background:linear-gradient(135deg,var(--js),#ffb300);color:#0a0a12;
+    transition:left .55s cubic-bezier(.5,0,.6,1),top .55s cubic-bezier(.5,0,.6,1),transform .55s,opacity .3s;will-change:left,top}
+  .fm-chip.out{animation:fmdrop .55s cubic-bezier(.22,1.4,.36,1)}
+  @keyframes fmdrop{0%{transform:translateY(-34px) scale(.6);opacity:0}100%{transform:translateY(0) scale(1);opacity:1}}
+  .fm-btns{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:14px 0 4px}
+  .fm-btn{border:1px solid rgba(167,139,250,0.45);background:var(--surface2);color:#cdb8ff;
+    font-family:'JetBrains Mono',monospace;font-weight:700;font-size:0.82rem;padding:9px 16px;border-radius:10px;cursor:pointer;transition:all .2s}
+  .fm-btn:hover:not(:disabled){transform:translateY(-2px);background:rgba(167,139,250,0.12)}
+  .fm-btn:disabled{opacity:.45;cursor:default}
+  .fmachine .tconsole{text-align:left;margin-top:10px}
+
+  /* ═══ 🚂 Trem do Array ═══ */
+  .trainyard{background:linear-gradient(180deg,#0b1020,#0d0d1a);border:1px solid rgba(78,205,196,0.3);
+    border-radius:16px;padding:16px;margin:14px 0;overflow:hidden}
+  .train-len{font-size:0.78rem;color:var(--text-dim);margin-bottom:10px}
+  .train-len strong{color:#4ecdc4;transition:transform .3s;display:inline-block}
+  .train-len strong.pulse{animation:tlpulse .5s}
+  @keyframes tlpulse{50%{transform:scale(1.5)}}
+  .train{display:flex;align-items:flex-end;gap:6px;padding:6px 2px 12px;overflow-x:auto;
+    border-bottom:3px dashed rgba(255,255,255,0.14)}
+  .train .loco{font-size:2rem;line-height:1;flex:0 0 auto;transform:scaleX(-1)}
+  .wagon{flex:0 0 auto;background:var(--surface2);border:2px solid rgba(78,205,196,0.45);border-radius:10px;
+    padding:8px 10px 6px;text-align:center;min-width:84px;transition:all .35s;position:relative}
+  .wagon .cargo{font-size:1.3rem;line-height:1.2}
+  .wagon .vname{font-size:0.72rem;color:#fff}
+  .wagon .plate{display:inline-block;margin-top:5px;background:#0b0b14;color:#4ecdc4;font-weight:800;
+    font-size:0.72rem;border-radius:6px;padding:1px 9px;border:1px solid rgba(78,205,196,0.4)}
+  .wagon.lit{border-color:var(--js);background:rgba(247,223,30,0.10);transform:translateY(-7px);
+    box-shadow:0 8px 20px rgba(247,223,30,0.25)}
+  .wagon.lit .plate{color:var(--js);border-color:var(--js)}
+  .wagon.ghost{border-style:dashed;border-color:rgba(255,255,255,0.25);background:transparent;opacity:.75}
+  .wagon.ghost .plate{color:var(--text-dim)}
+  .wagon.entering{transform:translateX(70px);opacity:0}
+  .train-btns{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 4px}
+  .train-btn{border:1px solid rgba(78,205,196,0.45);background:var(--surface2);color:#9be8e2;
+    font-family:'JetBrains Mono',monospace;font-weight:700;font-size:0.8rem;padding:8px 14px;border-radius:10px;cursor:pointer;transition:all .2s}
+  .train-btn:hover:not(:disabled){transform:translateY(-2px);background:rgba(78,205,196,0.12)}
+  .train-btn:disabled{opacity:.45;cursor:default}
+  .train-out{margin-top:10px;background:#0b0b14;border-radius:8px;padding:10px 12px;font-size:0.78rem;
+    color:#cdd6f4;min-height:38px}
+  .train-out .tl{padding:2px 0}.train-out .tl::before{content:'› ';color:#4ecdc4}
+  .train-out .tl.warn{color:#ffa657}
+
+  /* ═══ Rastreador: abas de programa ═══ */
+  .tracer-tabs{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+  .tr-tab{border:1px solid rgba(255,255,255,0.14);background:var(--surface2);color:var(--text-dim);
+    font-size:0.78rem;font-weight:700;padding:8px 14px;border-radius:10px;cursor:pointer;transition:all .2s}
+  .tr-tab.active{border-color:var(--js);color:var(--js);background:rgba(247,223,30,0.10)}
+
+  @media (prefers-reduced-motion: reduce){
+    .ift-ball,.fm-chip.in{transition:none}
+    .fm-body.working,.tg-card.shake,.fm-chip.out{animation:none}
+  }
 </style>
 </head>
 <body>
@@ -346,6 +484,17 @@ console.log("2 + 3 * 10 =", 2 + 3 * 10);
         <p>Regra de bolso: <strong>use <code>const</code> por padrão</strong>. Só troque pra <code>let</code>
         quando souber que o valor vai mudar. (Existe o <code>var</code> antigo — esqueça, ninguém usa mais.)</p>
       </div>
+
+      <div class="quiz" style="margin-top:14px">
+        <div class="quiz-q"><span class="q-emoji">🧠</span> Rapidinha: o que acontece aqui? <code>const pi = 3.14; pi = 3.15;</code></div>
+        <div class="quiz-options">
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">pi vira 3.15 normalmente</button>
+          <button class="quiz-opt" data-correct="true" onclick="checkQuiz(this,true)">Dá ERRO — const não muda</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">O JS cria um segundo pi</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">O pi vira let sozinho</button>
+        </div>
+        <div class="quiz-feedback" data-correct="Isso!" data-wrong="Opa!" data-explain="const é uma caixinha LACRADA: tentar trocar o valor dá 'TypeError: Assignment to constant variable'. Se o valor precisa mudar, nasce como let."></div>
+      </div>
     </div>
   </section>
 
@@ -380,6 +529,23 @@ console.log("2 + 3 * 10 =", 2 + 3 * 10);
           moderna de montar textos com valores no meio. Esqueça concatenar com <code>+</code> — isso é a maravilha.
         </div>
       </div>
+
+      <p style="color:var(--text-dim);margin:16px 0 6px">
+        Será que você já pegou o jeito? Joga o <strong>🃏 Detector de Tipos</strong>: aparece um valor,
+        você diz o tipo. Cuidado com as <strong>pegadinhas das aspas</strong>…
+      </p>
+
+      <div class="typegame" id="typegame">
+        <div class="tg-progress" id="tg-progress"></div>
+        <div class="tg-card" id="tg-card"><span class="tg-value" id="tg-value"></span></div>
+        <div class="tg-hint" id="tg-hint">Qual é o tipo desse valor?</div>
+        <div class="tg-btns">
+          <button class="tg-btn" data-tg="string">string</button>
+          <button class="tg-btn" data-tg="number">number</button>
+          <button class="tg-btn" data-tg="boolean">boolean</button>
+        </div>
+        <button class="tg-restart" id="tg-restart">🔄 Jogar de novo</button>
+      </div>
     </div>
   </section>
 
@@ -405,6 +571,41 @@ console.log("2 + 3 * 10 =", 2 + 3 * 10);
 <span class="punc">}</span> <span class="kw">else</span> <span class="punc">{</span>
   <span class="bi">console</span>.<span class="fn">log</span>(<span class="st">"Ficou de recuperação 😬"</span>)<span class="punc">;</span>
 <span class="punc">}</span></pre>
+      </div>
+
+      <p style="color:var(--text-dim);margin:16px 0 6px">
+        O <code>if</code> é uma <strong>bifurcação na estrada</strong>: o valor chega, a pergunta é feita,
+        e ele segue por <strong>um caminho só</strong>. Escolhe uma média aí embaixo e
+        <strong>veja a decisão acontecer</strong>: 🚦
+      </p>
+
+      <div class="iftunnel" id="iftunnel">
+        <div class="ift-stage" id="ift-stage">
+          <svg class="ift-wires" id="ift-wires" aria-hidden="true"></svg>
+          <div class="ift-node ift-var" id="ift-var"><span class="mono">media = ?</span></div>
+          <div class="ift-node ift-cond" id="ift-cond"><span class="mono">media &gt;= 7 ?</span></div>
+          <div class="ift-verdict" id="ift-verdict"></div>
+          <div class="ift-row">
+            <div class="ift-node ift-leaf yes" id="ift-yes">✅ <span class="mono">"Aprovado! 🎉"</span></div>
+            <div class="ift-node ift-leaf no" id="ift-no">⛔ <span class="mono">"Recuperação 😬"</span></div>
+          </div>
+          <div class="ift-ball" id="ift-ball">7.5</div>
+        </div>
+        <div class="ift-controls" id="ift-controls">
+          <span>👉 teste uma média:</span>
+          <button data-ift="9.5">media = 9.5</button>
+          <button data-ift="7">media = 7</button>
+          <button data-ift="4.2">media = 4.2</button>
+        </div>
+        <div class="tconsole" id="ift-console"></div>
+      </div>
+
+      <div class="tip">
+        <span class="tip-icon">🚦</span>
+        <div class="tip-content">
+          Reparou no <code>media = 7</code>? Deu <strong>Aprovado</strong>, porque <code>&gt;=</code> é
+          "maior <strong>ou igual</strong>" — o 7 em ponto passa raspando. Detalhe de operador muda o destino!
+        </div>
       </div>
 
       <div class="warning">
@@ -476,6 +677,17 @@ console.log("2 + 3 * 10 =", 2 + 3 * 10);
           É o truque pra saber se um número é par ou ímpar. Guarda essa. 😉
         </div>
       </div>
+
+      <div class="quiz" style="margin-top:14px">
+        <div class="quiz-q"><span class="q-emoji">➗</span> Então me diz: quanto dá <code>10 % 3</code>?</div>
+        <div class="quiz-options">
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">3</button>
+          <button class="quiz-opt" data-correct="true" onclick="checkQuiz(this,true)">1</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">0</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">3.33</button>
+        </div>
+        <div class="quiz-feedback" data-correct="Mandou bem!" data-wrong="Quase!" data-explain="10 dividido por 3 dá 3 inteiros (3 × 3 = 9)… e SOBRA 1. O % devolve só a sobra. Por isso 10 % 3 = 1."></div>
+      </div>
     </div>
   </section>
 
@@ -511,8 +723,14 @@ console.log("2 + 3 * 10 =", 2 + 3 * 10);
     <div class="card">
       <p style="color:var(--text-dim);margin-bottom:8px">
         Uma das coisas que mais ajuda iniciante é <strong>enxergar o código executando devagar</strong>.
-        Aperta o ▶ e veja cada linha rodar, as caixinhas se preenchendo e o console aparecendo:
+        Aperta o ▶ e veja cada linha rodar, as caixinhas se preenchendo e o console aparecendo.
+        Tem <strong>dois programas</strong> pra rastrear — no segundo, a condição dá <strong>falso</strong>
+        e você vê o código <strong>pulando pro else</strong>:
       </p>
+      <div class="tracer-tabs" id="tracer-tabs">
+        <button class="tr-tab active" data-prog="media">📊 aprovado.js</button>
+        <button class="tr-tab" data-prog="parimpar">➗ par_ou_impar.js</button>
+      </div>
       <div class="tracer" id="tracer">
         <div class="tracer-cols">
           <div class="tracer-col">
@@ -594,6 +812,37 @@ console.log("2 + 3 * 10 =", 2 + 3 * 10);
           <strong>você nunca digita o símbolo</strong> — sempre <kbd>=</kbd> e <kbd>&gt;</kbd>.
         </div>
       </div>
+
+      <p style="color:var(--text-dim);margin:16px 0 6px">
+        Pensa na função como uma <strong>máquina de fábrica</strong>: o valor entra pelo funil
+        (é o <strong>argumento</strong>), a máquina trabalha com ele (o <strong>parâmetro</strong> <code>n</code>),
+        e o resultado sai pela rampa (o <strong>return</strong>). Aperta um botão e olha o número viajar: 👇
+      </p>
+
+      <div class="fmachine" id="fmachine">
+        <div class="fm-hopper"></div>
+        <div class="fm-body" id="fm-body">
+          <span class="fm-gears"><span>⚙️</span><span>⚙️</span><span>⚙️</span></span>
+          <div class="fm-code">const dobro = (n) =&gt; n * 2</div>
+          <div class="fm-sub" id="fm-sub">&nbsp;</div>
+        </div>
+        <div class="fm-chute"></div>
+        <div class="fm-result" id="fm-result"></div>
+        <div class="fm-btns" id="fm-btns">
+          <button class="fm-btn" data-fm="5">dobro(5)</button>
+          <button class="fm-btn" data-fm="8">dobro(8)</button>
+          <button class="fm-btn" data-fm="50">dobro(50)</button>
+        </div>
+        <div class="tconsole" id="fm-console"></div>
+      </div>
+
+      <div class="concept">
+        <div class="concept-title">💡 Argumento × parâmetro × return</div>
+        <p>O <code>5</code> que você manda é o <strong>argumento</strong>. Dentro da máquina ele atende pelo
+        nome <code>n</code> — o <strong>parâmetro</strong>. E o que sai pela rampa é o <strong><code>return</code></strong>.
+        Mesma máquina, entradas diferentes, saídas diferentes — <strong>sem reescrever nada</strong>. Essa é a
+        graça das funções.</p>
+      </div>
     </div>
   </section>
 
@@ -629,6 +878,25 @@ console.log("2 + 3 * 10 =", 2 + 3 * 10);
   <span class="atr">ativo</span>: <span class="bool">true</span>
 <span class="punc">}</span><span class="punc">;</span>
 <span class="bi">console</span>.<span class="fn">log</span>(<span class="var">cliente</span>.<span class="attr">nome</span>)<span class="punc">;</span>    <span class="cm">// João</span></pre>
+      </div>
+
+      <p style="color:var(--text-dim);margin:16px 0 6px">
+        Um array é um <strong>trem de carga</strong> 🚂: cada vagão tem uma <strong>placa com o índice</strong>
+        — e a contagem <strong>começa no 0</strong>. Clica nos botões e observa o trem:
+      </p>
+
+      <div class="trainyard" id="trainyard">
+        <div class="train-len">frutas.length = <strong id="train-len">3</strong></div>
+        <div class="train" id="train">
+          <span class="loco" aria-hidden="true">🚂</span>
+        </div>
+        <div class="train-btns" id="train-btns">
+          <button class="train-btn" data-idx="0">frutas[0]</button>
+          <button class="train-btn" data-idx="2">frutas[2]</button>
+          <button class="train-btn" data-idx="5">frutas[5] 🤔</button>
+          <button class="train-btn" data-push="pera">frutas.push("pera")</button>
+        </div>
+        <div class="train-out" id="train-out"></div>
       </div>
 
       <div class="bug-box">
@@ -1134,6 +1402,18 @@ FizzBuzz</script>
         <li><div><strong>Arrays</strong> (lista, índice começa no 0) e <strong>objetos</strong> (chave: valor).</div></li>
       </ul>
 
+      <div class="quiz" style="margin-top:16px">
+        <div class="quiz-q"><span class="q-emoji">🎫</span> Quiz de saída — junta tudo: o que imprime
+          <code>const x = [10, 20, 30]; console.log(x[1]);</code></div>
+        <div class="quiz-options">
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">10</button>
+          <button class="quiz-opt" data-correct="true" onclick="checkQuiz(this,true)">20</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">30</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">undefined</button>
+        </div>
+        <div class="quiz-feedback" data-correct="Aí sim! Você saiu craque." data-wrong="Caiu na clássica!" data-explain="Índice começa no ZERO: x[0] é 10, x[1] é 20. Se respondeu 10, o trem 🚂 te explica — volta lá na seção de arrays."></div>
+      </div>
+
       <div class="tip" style="margin-top:16px">
         <span class="tip-icon">➡️</span>
         <div class="tip-content">
@@ -1166,52 +1446,311 @@ FizzBuzz</script>
 <script src="../../shared/playground.js" defer></script>
 <script type="module" src="../../shared/motion-fx.js"></script>
 <script type="module">
-  // ── Rastreador de código ──
+  // ── Motor das máquinas didáticas ──
+  // Motion (CDN) dá o tempero quando carrega; se a internet da sala falhar,
+  // TUDO continua funcionando (transições CSS + Web Animations nativas).
   let animate=null;
   try{ ({animate}=await import('https://cdn.jsdelivr.net/npm/motion@11/+esm')); }catch(e){}
-  const CODE=[
-    'let n1 = 8',
-    'let n2 = 6',
-    'let media = (n1 + n2) / 2',
-    'if (media >= 7) {',
-    '  console.log("Aprovado! 🎉")',
-    '}',
-  ];
-  const VARS=['n1','n2','media'];
-  const STEPS=[
-    {line:0, set:{n1:'8'}, msg:'guarda 8 na caixinha n1'},
-    {line:1, set:{n2:'6'}, msg:'guarda 6 na caixinha n2'},
-    {line:2, set:{media:'7'}, msg:'(8 + 6) / 2 = 7 → guarda em media'},
-    {line:3, set:{}, msg:'media >= 7 ? 7 >= 7 é VERDADEIRO ✓'},
-    {line:4, set:{}, log:'Aprovado! 🎉', msg:'condição verdadeira → imprime no console'},
-  ];
+  const sleep=(ms)=>new Promise(r=>setTimeout(r,ms));
+  const pop=(el)=>{ if(animate) animate(el,{transform:['scale(1.15)','scale(1)']},{duration:.4});
+    else el.animate?.([{transform:'scale(1.15)'},{transform:'scale(1)'}],{duration:400}); };
+
+  /* ════ 🔬 Rastreador de código — agora com 2 programas ════ */
+  const PROGRAMS={
+    media:{
+      code:['let n1 = 8','let n2 = 6','let media = (n1 + n2) / 2','if (media >= 7) {','  console.log("Aprovado! 🎉")','}'],
+      vars:['n1','n2','media'],
+      steps:[
+        {line:0,set:{n1:'8'},msg:'guarda 8 na caixinha n1'},
+        {line:1,set:{n2:'6'},msg:'guarda 6 na caixinha n2'},
+        {line:2,set:{media:'7'},msg:'(8 + 6) / 2 = 7 → guarda em media'},
+        {line:3,set:{},msg:'media >= 7 ? 7 >= 7 é VERDADEIRO ✓'},
+        {line:4,set:{},log:'Aprovado! 🎉',msg:'condição verdadeira → imprime no console'},
+      ]
+    },
+    parimpar:{
+      code:['let n = 7','let resto = n % 2','if (resto === 0) {','  console.log("Par")','} else {','  console.log("Ímpar 🎈")','}'],
+      vars:['n','resto'],
+      steps:[
+        {line:0,set:{n:'7'},msg:'guarda 7 na caixinha n'},
+        {line:1,set:{resto:'1'},msg:'7 % 2 → dividiu por 2, SOBROU 1'},
+        {line:2,set:{},msg:'resto === 0 ? 1 === 0 é FALSO ✗'},
+        {line:4,set:{},msg:'deu falso → o bloco do if é PULADO, cai no else'},
+        {line:5,set:{},log:'Ímpar 🎈',msg:'o else roda → imprime no console'},
+      ]
+    }
+  };
   const codeBox=document.getElementById('tr-code');
   const varsBox=document.getElementById('tr-vars');
   const consoleBox=document.getElementById('tr-console');
-  CODE.forEach(c=>{const d=document.createElement('div');d.className='tcline';d.textContent=c;codeBox.appendChild(d);});
-  const codeEls=[...codeBox.children];
-  const varEls={};
-  VARS.forEach(v=>{const d=document.createElement('div');d.className='tvar';d.innerHTML=`<div class="tvn">${v}</div><div class="tvv">—</div>`;varsBox.appendChild(d);varEls[v]=d;});
-  let playing=false;
-  async function run(){
-    if(playing)return; playing=true;
+  const msgEl=document.getElementById('tr-msg');
+  let trProg='media', codeEls=[], varEls={}, trBusy=false, trRun=0;
+
+  function buildTracer(name){
+    trProg=name;
+    const p=PROGRAMS[name];
+    codeBox.innerHTML=''; varsBox.innerHTML=''; consoleBox.innerHTML=''; msgEl.textContent='';
+    p.code.forEach(c=>{const d=document.createElement('div');d.className='tcline';d.textContent=c;codeBox.appendChild(d);});
+    codeEls=[...codeBox.children];
+    varEls={};
+    p.vars.forEach(v=>{const d=document.createElement('div');d.className='tvar';d.innerHTML=`<div class="tvn">${v}</div><div class="tvv">—</div>`;varsBox.appendChild(d);varEls[v]=d;});
+  }
+  async function runTracer(){
+    if(trBusy) return; trBusy=true;
+    const my=++trRun;
+    const p=PROGRAMS[trProg];
     codeEls.forEach(e=>e.classList.remove('lit'));
     Object.values(varEls).forEach(e=>{e.classList.remove('set');e.querySelector('.tvv').textContent='—';});
     consoleBox.innerHTML='';
-    const msg=document.getElementById('tr-msg');
-    for(const s of STEPS){
+    for(const s of p.steps){
+      if(my!==trRun) return;
       codeEls.forEach((e,i)=>e.classList.toggle('lit',i===s.line));
-      for(const k in s.set){ const ve=varEls[k]; ve.classList.add('set'); ve.querySelector('.tvv').textContent=s.set[k]; if(animate)animate(ve,{transform:['scale(1.15)','scale(1)']},{duration:.4}); }
-      if(s.log){ const l=document.createElement('div'); l.className='tl'; l.textContent=s.log; consoleBox.appendChild(l); if(animate)animate(l,{opacity:[0,1]},{duration:.3}); }
-      msg.textContent=s.msg;
-      await new Promise(r=>setTimeout(r,1150));
+      for(const k in s.set){const ve=varEls[k];ve.classList.add('set');ve.querySelector('.tvv').textContent=s.set[k];pop(ve);}
+      if(s.log){const l=document.createElement('div');l.className='tl';l.textContent=s.log;consoleBox.appendChild(l);}
+      msgEl.textContent=s.msg;
+      await sleep(1150);
     }
-    codeEls.forEach(e=>e.classList.remove('lit'));
-    playing=false;
+    if(my===trRun){ codeEls.forEach(e=>e.classList.remove('lit')); trBusy=false; }
   }
-  document.getElementById('tr-play').onclick=run;
-  new IntersectionObserver((es,obs)=>{es.forEach(e=>{if(e.isIntersecting){run();obs.disconnect();}});},{threshold:.4})
+  buildTracer('media');
+  document.getElementById('tr-play').onclick=runTracer;
+  document.querySelectorAll('#tracer-tabs .tr-tab').forEach(t=>{
+    t.onclick=()=>{
+      document.querySelectorAll('#tracer-tabs .tr-tab').forEach(x=>x.classList.toggle('active',x===t));
+      trRun++; trBusy=false;
+      buildTracer(t.dataset.prog);
+      runTracer();
+    };
+  });
+  new IntersectionObserver((es,obs)=>{es.forEach(e=>{if(e.isIntersecting){runTracer();obs.disconnect();}});},{threshold:.4})
     .observe(document.getElementById('tracer'));
+
+  /* ════ 🃏 Detector de Tipos ════ */
+  (function(){
+    const card=document.getElementById('tg-card');
+    if(!card) return;
+    const rounds=[
+      {show:'42',type:'number',why:'Sem aspas → é número.'},
+      {show:'"42"',type:'string',why:'Tem ASPAS → é texto, mesmo parecendo número!'},
+      {show:'true',type:'boolean',why:'true/false sem aspas → boolean.'},
+      {show:'"false"',type:'string',why:'Pegadinha suprema: as aspas mandam — "false" é STRING.'},
+      {show:'7.5',type:'number',why:'Decimal também é number (não existe um tipo separado).'},
+    ];
+    const valEl=document.getElementById('tg-value');
+    const hint=document.getElementById('tg-hint');
+    const prog=document.getElementById('tg-progress');
+    const btns=[...document.querySelectorAll('#typegame .tg-btn')];
+    const restart=document.getElementById('tg-restart');
+    let i=0,score=0,lock=false;
+    rounds.forEach(()=>{const d=document.createElement('span');d.className='tg-dot';prog.appendChild(d);});
+    const dots=[...prog.children];
+    function show(){
+      const r=rounds[i];
+      valEl.innerHTML='';
+      [...r.show].forEach(ch=>{const s=document.createElement('span');if(ch==='"')s.className='q';s.textContent=ch;valEl.appendChild(s);});
+      dots.forEach((d,k)=>d.classList.toggle('now',k===i));
+      hint.textContent='Qual é o tipo desse valor?';
+      btns.forEach(b=>{b.disabled=false;b.classList.remove('hit','miss');});
+      pop(card);
+    }
+    function answer(btn){
+      if(lock) return; lock=true;
+      const r=rounds[i];
+      const right=btn.dataset.tg===r.type;
+      btns.forEach(b=>{b.disabled=true; if(b.dataset.tg===r.type)b.classList.add('hit');});
+      if(right){score++;dots[i].classList.add('ok');hint.textContent='✅ '+r.why;window.confettiAt?.(btn);}
+      else{btn.classList.add('miss');dots[i].classList.add('err');hint.textContent='❌ Era '+r.type+'! '+r.why;
+        card.classList.add('shake');setTimeout(()=>card.classList.remove('shake'),450);}
+      dots[i].classList.remove('now');
+      setTimeout(()=>{
+        i++;
+        if(i<rounds.length){lock=false;show();}
+        else{
+          valEl.textContent= score===rounds.length ? '🏆' : score+' / '+rounds.length;
+          hint.textContent= score===rounds.length
+            ? 'PERFEITO! Você detectou até as pegadinhas. Tipo no sangue. 🏆'
+            : 'Fechou! As pegadinhas das aspas pegam todo mundo — joga de novo e gabarita!';
+          btns.forEach(b=>b.disabled=true);
+          restart.style.display='inline-block';
+          if(score===rounds.length) window.confettiAt?.(card);
+        }
+      }, right?1100:2200);
+    }
+    btns.forEach(b=>b.onclick=()=>answer(b));
+    restart.onclick=()=>{i=0;score=0;lock=false;restart.style.display='none';dots.forEach(d=>d.className='tg-dot');show();};
+    show();
+  })();
+
+  /* ════ 🚦 Túnel do IF ════ */
+  (function(){
+    const stage=document.getElementById('ift-stage');
+    if(!stage) return;
+    const wires=document.getElementById('ift-wires');
+    const nVar=document.getElementById('ift-var'), nCond=document.getElementById('ift-cond');
+    const nYes=document.getElementById('ift-yes'), nNo=document.getElementById('ift-no');
+    const ball=document.getElementById('ift-ball'), verdict=document.getElementById('ift-verdict');
+    const cons=document.getElementById('ift-console');
+    const btns=[...document.querySelectorAll('#ift-controls button')];
+    const center=(el)=>{const r=el.getBoundingClientRect(),s=stage.getBoundingClientRect();
+      return {x:r.left-s.left+r.width/2, y:r.top-s.top+r.height/2};};
+    function drawWires(){
+      const W=stage.clientWidth,H=stage.clientHeight;
+      wires.setAttribute('viewBox','0 0 '+W+' '+H);
+      const v=center(nVar),c=center(nCond),y=center(nYes),n=center(nNo);
+      const my=(c.y+y.y)/2;
+      wires.innerHTML=
+        '<path id="w-down" d="M '+v.x+' '+v.y+' L '+c.x+' '+c.y+'"/>'+
+        '<path id="w-yes" d="M '+c.x+' '+c.y+' L '+c.x+' '+my+' L '+y.x+' '+my+' L '+y.x+' '+y.y+'"/>'+
+        '<path id="w-no" d="M '+c.x+' '+c.y+' L '+c.x+' '+my+' L '+n.x+' '+my+' L '+n.x+' '+n.y+'"/>';
+    }
+    drawWires();
+    addEventListener('resize',drawWires);
+    const put=(p)=>{ball.style.left=(p.x-ball.offsetWidth/2)+'px';ball.style.top=(p.y-ball.offsetHeight/2)+'px';};
+    let busy=false;
+    async function run(val){
+      if(busy) return; busy=true;
+      btns.forEach(b=>b.disabled=true);
+      drawWires();
+      nCond.classList.remove('true','false');
+      [nYes,nNo].forEach(x=>x.classList.remove('win','dim'));
+      verdict.classList.remove('show');
+      wires.querySelectorAll('path').forEach(p=>p.classList.remove('hot','ok','nope'));
+      nVar.querySelector('.mono').textContent='media = '+val;
+      ball.textContent=val;
+      ball.style.transition='none'; put(center(nVar)); void ball.offsetWidth; ball.style.transition='';
+      ball.style.opacity='1';
+      await sleep(450);
+      wires.querySelector('#w-down')?.classList.add('hot');
+      put(center(nCond));
+      await sleep(750);
+      const ok = val>=7;
+      nCond.classList.add(ok?'true':'false');
+      verdict.textContent=val+' >= 7  →  '+(ok?'true ✓':'false ✗');
+      verdict.style.top=(center(nCond).y+24)+'px';
+      verdict.classList.add('show');
+      await sleep(950);
+      wires.querySelector(ok?'#w-yes':'#w-no')?.classList.add('hot',ok?'ok':'nope');
+      put(center(ok?nYes:nNo));
+      await sleep(750);
+      (ok?nYes:nNo).classList.add('win');
+      (ok?nNo:nYes).classList.add('dim');
+      const l=document.createElement('div'); l.className='tl';
+      l.textContent= ok ? 'Aprovado! 🎉' : 'Recuperação 😬';
+      cons.appendChild(l); pop(l);
+      while(cons.children.length>3) cons.removeChild(cons.firstChild);
+      await sleep(500);
+      ball.style.opacity='0';
+      btns.forEach(b=>b.disabled=false);
+      busy=false;
+    }
+    btns.forEach(b=>b.onclick=()=>run(parseFloat(b.dataset.ift)));
+    new IntersectionObserver((es,o)=>{es.forEach(e=>{if(e.isIntersecting){run(9.5);o.disconnect();}});},{threshold:.5}).observe(stage);
+  })();
+
+  /* ════ ⚙️ Máquina de Funções ════ */
+  (function(){
+    const box=document.getElementById('fmachine');
+    if(!box) return;
+    const body=document.getElementById('fm-body');
+    const sub=document.getElementById('fm-sub');
+    const result=document.getElementById('fm-result');
+    const cons=document.getElementById('fm-console');
+    const btns=[...document.querySelectorAll('#fm-btns .fm-btn')];
+    const hopper=box.querySelector('.fm-hopper');
+    let busy=false;
+    async function run(btn){
+      if(busy) return; busy=true;
+      btns.forEach(b=>b.disabled=true);
+      const n=parseInt(btn.dataset.fm,10);
+      result.innerHTML=''; sub.innerHTML='&nbsp;';
+      const chip=document.createElement('span');
+      chip.className='fm-chip in'; chip.textContent=n;
+      box.appendChild(chip);
+      const b=btn.getBoundingClientRect(), k=box.getBoundingClientRect(), h=hopper.getBoundingClientRect();
+      chip.style.left=(b.left-k.left+b.width/2-16)+'px';
+      chip.style.top=(b.top-k.top)+'px';
+      void chip.offsetWidth;
+      chip.style.left=(h.left-k.left+h.width/2-16)+'px';
+      chip.style.top=(h.top-k.top+4)+'px';
+      chip.style.transform='scale(.55)';
+      await sleep(600);
+      chip.remove();
+      body.classList.add('working');
+      sub.textContent='o argumento chegou: n = '+n;
+      await sleep(700);
+      sub.textContent='n * 2  ➜  '+(n*2);
+      await sleep(750);
+      body.classList.remove('working');
+      const out=document.createElement('span');
+      out.className='fm-chip out'; out.textContent=n*2;
+      result.appendChild(out);
+      const l=document.createElement('div'); l.className='tl';
+      l.textContent='dobro('+n+')  devolveu  '+(n*2);
+      cons.appendChild(l);
+      while(cons.children.length>3) cons.removeChild(cons.firstChild);
+      await sleep(400);
+      btns.forEach(x=>x.disabled=false);
+      busy=false;
+    }
+    btns.forEach(b=>b.onclick=()=>run(b));
+  })();
+
+  /* ════ 🚂 Trem do Array ════ */
+  (function(){
+    const train=document.getElementById('train');
+    if(!train) return;
+    const lenEl=document.getElementById('train-len');
+    const out=document.getElementById('train-out');
+    const btnsBox=document.getElementById('train-btns');
+    let frutas=[['maçã','🍎'],['uva','🍇'],['manga','🥭']];
+    function wagonEl(i,f){
+      const w=document.createElement('div');
+      w.className='wagon';
+      w.innerHTML='<div class="cargo">'+f[1]+'</div><div class="vname">"'+f[0]+'"</div><span class="plate">'+i+'</span>';
+      return w;
+    }
+    function say(txt,warn){
+      const l=document.createElement('div');
+      l.className='tl'+(warn?' warn':'');
+      l.textContent=txt;
+      out.appendChild(l);
+      while(out.children.length>3) out.removeChild(out.firstChild);
+    }
+    frutas.forEach((f,i)=>train.appendChild(wagonEl(i,f)));
+    btnsBox.addEventListener('click',(ev)=>{
+      const btn=ev.target.closest('.train-btn'); if(!btn) return;
+      const wagons=[...train.querySelectorAll('.wagon:not(.ghost)')];
+      wagons.forEach(w=>w.classList.remove('lit'));
+      train.querySelectorAll('.ghost').forEach(g=>g.remove());
+      if(btn.dataset.idx!==undefined){
+        const i=parseInt(btn.dataset.idx,10);
+        if(i<frutas.length){
+          wagons[i].classList.add('lit'); pop(wagons[i]);
+          say('frutas['+i+']  →  "'+frutas[i][0]+'"');
+        } else {
+          const g=document.createElement('div');
+          g.className='wagon ghost';
+          g.innerHTML='<div class="cargo">👻</div><div class="vname">undefined</div><span class="plate">'+i+'</span>';
+          train.appendChild(g); pop(g);
+          say('frutas['+i+']  →  undefined  (esse vagão NÃO existe! Só temos índices 0 a '+(frutas.length-1)+')',true);
+          setTimeout(()=>g.remove(),2800);
+        }
+      } else if(btn.dataset.push){
+        const nome=btn.dataset.push;
+        frutas.push([nome,'🍐']);
+        const w=wagonEl(frutas.length-1,frutas[frutas.length-1]);
+        w.classList.add('entering');
+        train.appendChild(w);
+        void w.offsetWidth;
+        w.classList.remove('entering');
+        w.classList.add('lit');
+        lenEl.textContent=frutas.length;
+        lenEl.classList.add('pulse'); setTimeout(()=>lenEl.classList.remove('pulse'),550);
+        say('frutas.push("'+nome+'")  →  entrou no índice '+(frutas.length-1)+' · length agora é '+frutas.length);
+        btn.disabled=true; btn.textContent='push("pera") ✓';
+      }
+    });
+  })();
 </script>
 </body>
 </html>

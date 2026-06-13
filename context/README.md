@@ -16,6 +16,7 @@ A ideia (Spec-Driven Development) é simples: **nunca perder o contexto** — qu
 | [04-conteudo-curso.md](04-conteudo-curso.md) | Mapa de capítulos do front (o arco completo) |
 | [05-decisoes.md](05-decisoes.md) | Log de decisões de arquitetura/didática (com datas) |
 | [06-imagens-e-memes.md](06-imagens-e-memes.md) | Política de imagens, memes aprovados e como gerar via OpenAI |
+| [07-sequencia-http-fetch-axios.md](07-sequencia-http-fetch-axios.md) | Quando HTTP/fetch/axios entram no arco (e por que não antecipar) |
 
 ## Regra de ouro
 
