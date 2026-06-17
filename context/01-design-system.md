@@ -65,7 +65,11 @@ Front: `.tag` (`<div>`), `.atr` (atributo HTML), `.sel` (seletor CSS), `.prop` (
 
 ## Animações
 - **Motion (motion.dev)** via CDN como motor principal de animações de fluxo/entrada.
-- **Remotion** pontual para videoclipes (ex.: "como o fetch viaja até o backend").
+- **Remotion** para videoclipes pré-renderizados (estreou no Cap 3, 2026-06-17). Projeto Node em
+  `tooling/remotion/` (`node_modules` gitignorado) que renderiza **`.mp4` + `.png` poster** para
+  `assets/video/` (versionados); o HTML só embute `<video>`. Paleta em `src/theme.ts` (espelha os
+  tokens daqui). Comandos: `npm run render:fetch | render:click | still:fetch | still:click`.
+  Clipes atuais: `jornada-fetch.mp4`, `clique-dom.mp4`. Mantém o site 100% estático (sem build no deploy).
 - Base já traz `@keyframes` em `animations.css` e o motor `data-seq` (sequências autoplay
   que disparam quando entram na viewport — o aluno nunca precisa "achar" um botão).
 

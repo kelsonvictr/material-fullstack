@@ -30,6 +30,11 @@ curl -s https://api.openai.com/v1/images/generations \
    console. Clássico do JS.
 Logos oficiais em SVG: HTML5, CSS3, JavaScript, React (e depois Vite, Node, json-server).
 
+## Memes aprovados (2026-06-17)
+4. **DOM / Cap 3** — `meme-dom-mudei-tela.png`: dev empolgado apontando pro navegador (contador que
+   subiu pra 1) gritando **"EU MUDEI A TELA COM CÓDIGO"**. A euforia da primeira vez que o JS mexe na
+   página. Usado no fim da seção "Juntando tudo" do Cap 3. (gpt-image-1, fotorrealista.)
+
 ## Convenções de arquivo
 - Memes: `assets/memes/meme-NN-slug.png`
 - Logos/SVGs: `assets/svg/` ou `assets/logos-empresas/` (logos de empresas do "sobre").

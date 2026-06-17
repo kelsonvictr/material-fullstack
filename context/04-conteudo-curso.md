@@ -56,8 +56,15 @@ Dados: Pesquisa Código Fonte TV 2025 (citar fonte sempre).
       · **máquinas didáticas 2026-06-12**: Detector de Tipos 🃏, Túnel do IF 🚦, Rastreador
       com 2 programas (true E else), Máquina de Funções ⚙️, Trem do Array 🚂, +4 quizzes
       (const, %, quiz de saída) — ver decisão em `05-decisoes.md`
-- [ ] Caps 3–9 (próximas sessões) — marcados como "🔒 em breve" no hub
-- [x] Memes gerados: `meme-intro-fullstack.png`, `meme-css-centralizar.png`, `meme-js-soma.png`
+- [x] Cap 3 — JS no navegador (DOM) — ponte HTML↔JS, DOM (árvore), seletores, mudar a página
+      (textContent/style/classList), eventos (addEventListener), primeiro `fetch` (só `.then()`),
+      treino encadeado **Painel de Produtos** (ponte ERP, "vira fetch no Cap 7"), BugZilla do DOM.
+      · **3 máquinas didáticas:** 🌳 Árvore do DOM, 🎯 Seletor ao vivo, 🖱️ Detector de Eventos.
+      · **2 videoclipes Remotion** embutidos (ver decisão 2026-06-17): `jornada-fetch.mp4`, `clique-dom.mp4`.
+      · Decisões travadas: fetch só `.then()` (async/await fica pra frente); hub e link do Cap 2 religados.
+- [ ] Caps 4–9 (próximas sessões) — marcados como "🔒 em breve" no hub
+- [x] Memes gerados: `meme-intro-fullstack.png`, `meme-css-centralizar.png`, `meme-js-soma.png`,
+      `meme-dom-mudei-tela.png` (Cap 3 — "EU MUDEI A TELA COM CÓDIGO")
 
 ## React — escopo confirmado pelo professor
 Domínio: componentes, JSX, imagens public/assets, CSS Modules, json-server, useState,

@@ -8,3 +8,8 @@
 
 # logs / temporários
 *.log
+
+# dependências / build do Remotion (tooling) — o vídeo renderizado em assets/video/ É versionado
+node_modules/
+tooling/remotion/out/
+.remotion/

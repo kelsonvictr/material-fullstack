@@ -89,6 +89,32 @@
 4. Verificação: HTML balanceado (parser), `node --check` no módulo, render headless Chrome
    sem erros de console, screenshots de cada widget conferidos.
 
+## 2026-06-17 — Cap 3 (DOM & eventos) + Remotion reativado
+1. **Cap 3 construído** seguindo o padrão ouro do Cap 2 (analogia → código → visual → bora codar →
+   BugZilla → treino encadeado → resumo). Fluxo: aquecimento → ponte HTML↔JS → DOM (árvore) →
+   selecionar (`querySelector`) → mudar (`textContent`/`style`/`classList`) → eventos
+   (`addEventListener`) → juntando tudo → primeiro `fetch` → BugZilla → treino → resumo (gancho React).
+2. **Escopo do fetch travado em "só `.then()`"** (pedido do prof: "apenas JS básico pra chegar bem no
+   React"). `async/await` é só citado ("a gente vê com calma mais pra frente"), não ensinado — coerente
+   com a regra "cada ferramenta chega com sua razão de existir" (`07-…md`).
+3. **3 máquinas didáticas novas** (mesmo padrão do Cap 2, page-local, fallback 100% sem internet):
+   🌳 **Árvore do DOM** (`#domtree`, monta a árvore nó a nó; hover/clique acende a tag↔nó),
+   🎯 **Seletor ao vivo** (`#selector`, escolhe `#id`/`.classe`/`tag`, acende os elementos numa página
+   de mentira; o caso de ERRO `.preco` → 0 elementos é visível), 🖱️ **Detector de Eventos**
+   (`#events`, botão real incrementa contador + input ecoa ao vivo, console simulado registra cada evento).
+4. **⚠️ Remotion REATIVADO** (reverte o "descartado" de 2026-05-30). Reconciliação com o site estático:
+   o Remotion roda em `tooling/remotion/` (projeto Node à parte, `node_modules` no `.gitignore`) e
+   **renderiza `.mp4` + `.png` (poster) pré-prontos** em `assets/video/` — versionados. O HTML só consome
+   `<video>`. Dois clipes: **`jornada-fetch.mp4`** (pacote navegador → sua API Spring → volta JSON → cards)
+   e **`clique-dom.mp4`** (clique → `addEventListener` escuta → DOM muda). Render:
+   `cd tooling/remotion && npm i && npm run render:fetch && npm run render:click` (+ `still:*` p/ posters).
+   Paleta espelhada em `src/theme.ts`. Pipeline verificado (render headless, exit 0, posters conferidos).
+5. **Meme aprovado e gerado:** `meme-dom-mudei-tela.png` ("EU MUDEI A TELA COM CÓDIGO", dev apontando pro
+   navegador com contador). Colocado no fim da seção "Juntando tudo".
+6. **Hub religado** (tirado `em-breve` do card Cap 3) e o rodapé do Cap 2 virou link real pro Cap 3.
+7. Verificação: HTML balanceado (`<pre>` 14/14), ligaduras conferidas (nenhum `→`/`⇒`/`≥` em código;
+   o único `⇒` é o aviso didático proposital), screenshots de todos os widgets/vídeos via Chrome headless.
+
 ## Pendências reconhecidas
 - Sessão dedicada para planejar a fatia de React (caps 4–9) em detalhe.
 - Sem busca full-text / sem progresso salvo (localStorage) — futuro, se necessário.

@@ -1,0 +1,18 @@
+{
+  "name": "remotion-cap03",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Videoclipes Remotion do Cap 03 (DOM & eventos) — material Frontend Fullstack",
+  "scripts": {
+    "render:fetch": "remotion render src/index.ts FetchJourney ../../assets/video/jornada-fetch.mp4",
+    "render:click": "remotion render src/index.ts ClickToDom ../../assets/video/clique-dom.mp4",
+    "still:fetch": "remotion still src/index.ts FetchJourney ../../assets/video/jornada-fetch.png --frame=80",
+    "still:click": "remotion still src/index.ts ClickToDom ../../assets/video/clique-dom.png --frame=70"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.290",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "remotion": "4.0.290"
+  }
+}

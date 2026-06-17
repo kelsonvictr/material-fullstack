@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cap 03 — JS no navegador (DOM) | Curso Fullstack</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=JetBrains+Mono:wght@400;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../shared/styles.css">
+<link rel="stylesheet" href="../../shared/components.css">
+<link rel="stylesheet" href="../../shared/animations.css">
+<link rel="stylesheet" href="../../shared/playground.css">
+<style>
+  /* ── mono didático: SEMPRE sem ligaduras (=> não pode virar ⇒, >= não vira ≥) ── */
+  .mono,.dt-line,.dt-node,.sel-chip,.sel-console,.ev-console,.ev-count,.ev-echo,.sel-el[data-tag]{
+    font-family:'JetBrains Mono',monospace;
+    font-variant-ligatures:none;font-feature-settings:"liga" 0,"clig" 0,"calt" 0}
+
+  /* ── videoclipes (Remotion) ── */
+  .clip{margin:18px 0 4px}
+  .clip video{width:100%;border-radius:14px;border:1px solid rgba(97,218,251,0.25);
+    box-shadow:0 18px 50px rgba(0,0,0,0.45);display:block;background:#0a0a12}
+  .clip figcaption{font-size:0.78rem;color:var(--text-dim);text-align:center;margin-top:8px}
+
+  /* ═══ 🌳 Árvore do DOM ═══ */
+  .domtree{background:linear-gradient(180deg,#0b1020,#0d0d1a);border:1px solid rgba(97,218,251,0.25);
+    border-radius:16px;padding:18px;margin:14px 0}
+  .dt-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+  @media (max-width:640px){.dt-grid{grid-template-columns:1fr}}
+  .dt-code{background:#0b0b14;border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:12px;font-size:0.82rem}
+  .dt-line{color:#cdd6f4;white-space:pre;padding:3px 8px;border-radius:6px;cursor:pointer;transition:all .2s}
+  .dt-line .tag{color:#61dafb}
+  .dt-line.lit{background:rgba(97,218,251,0.16);box-shadow:inset 0 0 0 1px rgba(97,218,251,0.5)}
+  .dt-tree{display:flex;flex-direction:column;align-items:center;gap:6px;padding-top:6px}
+  .dt-node{position:relative;background:var(--surface2);border:2px solid rgba(97,218,251,0.4);
+    border-radius:10px;padding:6px 16px;color:#fff;font-weight:700;font-size:0.82rem;cursor:pointer;
+    transition:transform .25s,border-color .25s,background .25s,opacity .35s}
+  .dt-node.pre{opacity:0;transform:translateY(-12px) scale(.85)}
+  .dt-node.lit{border-color:var(--js);background:rgba(247,223,30,0.12);transform:scale(1.08)}
+  .dt-children{display:flex;gap:10px;margin-top:6px;position:relative}
+  .dt-children::before{content:'';position:absolute;top:-6px;left:50%;width:2px;height:6px;background:rgba(97,218,251,0.4)}
+  .dt-controls{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:14px;font-size:0.8rem;color:var(--text-dim)}
+  .dt-controls button{border:1px solid rgba(97,218,251,0.4);background:var(--surface2);color:#61dafb;
+    font-family:'JetBrains Mono',monospace;font-weight:700;font-size:0.8rem;padding:8px 14px;border-radius:10px;cursor:pointer;transition:all .2s}
+  .dt-controls button:hover{transform:translateY(-2px);background:rgba(97,218,251,0.12)}
+
+  /* ═══ 🎯 Seletor ao vivo ═══ */
+  .selector{background:linear-gradient(180deg,#0b1020,#0d0d1a);border:1px solid rgba(70,211,154,0.28);
+    border-radius:16px;padding:18px;margin:14px 0}
+  .sel-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+  @media (max-width:640px){.sel-grid{grid-template-columns:1fr}}
+  .sel-page{background:#fff;border-radius:12px;padding:16px;color:#1a1a2e;font-family:'Nunito',sans-serif}
+  .sel-page h3{margin:0 0 10px;font-size:1.2rem;color:#0a0a12}
+  .sel-el{margin:6px 0;padding:6px 10px;border-radius:8px;transition:all .2s;border:2px solid transparent}
+  .sel-page button.sel-el{background:#46d39a;color:#06281c;font-weight:800;border:none;cursor:default;font-size:0.9rem}
+  .sel-el.lit{background:rgba(247,223,30,0.55);border-color:#f7b731;box-shadow:0 0 0 3px rgba(247,183,49,0.4)}
+  .sel-page button.sel-el.lit{outline:3px solid #f7b731;background:#ffe066;color:#06281c}
+  .sel-side{display:flex;flex-direction:column;gap:8px}
+  .sel-chips{display:flex;gap:8px;flex-wrap:wrap}
+  .sel-chip{border:1px solid rgba(70,211,154,0.45);background:var(--surface2);color:#7ef0c4;
+    font-weight:700;font-size:0.82rem;padding:8px 14px;border-radius:10px;cursor:pointer;transition:all .2s}
+  .sel-chip:hover{transform:translateY(-2px);background:rgba(70,211,154,0.12)}
+  .sel-chip.active{border-color:var(--js);color:var(--js);background:rgba(247,223,30,0.10)}
+  .sel-console{margin-top:6px;background:#0b0b14;border:1px solid rgba(255,255,255,0.1);border-radius:10px;
+    padding:10px 12px;font-size:0.8rem;color:#cdd6f4;min-height:40px}
+  .sel-console .ok{color:#46d39a}.sel-console .zero{color:#ff6b6b}
+
+  /* ═══ 🖱️ Detector de Eventos ═══ */
+  .events{background:linear-gradient(180deg,#0b1020,#0d0d1a);border:1px solid rgba(97,218,251,0.28);
+    border-radius:16px;padding:18px;margin:14px 0}
+  .ev-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media (max-width:640px){.ev-grid{grid-template-columns:1fr}}
+  .ev-demo{background:var(--surface2);border:1px solid rgba(255,255,255,0.1);border-radius:12px;
+    padding:18px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px}
+  .ev-count{font-size:2.6rem;font-weight:900;color:var(--js);line-height:1;transition:transform .25s}
+  .ev-count.pulse{transform:scale(1.3)}
+  .ev-lbl{font-size:0.78rem;color:var(--text-dim);margin-top:-6px}
+  .ev-btn{border:none;background:#61dafb;color:#06222b;font-weight:800;font-size:1rem;
+    padding:12px 24px;border-radius:12px;cursor:pointer;transition:transform .15s;box-shadow:0 8px 22px rgba(97,218,251,0.35)}
+  .ev-btn:active{transform:scale(0.93)}
+  .ev-input{width:100%;background:#0b0b14;border:1px solid rgba(255,255,255,0.16);border-radius:10px;
+    padding:10px 12px;color:#fff;font-family:'Nunito',sans-serif;font-size:0.95rem}
+  .ev-input:focus{outline:none;border-color:#61dafb}
+  .ev-echo{color:var(--js);font-weight:700}
+  .ev-console{margin-top:14px;background:#0b0b14;border:1px solid rgba(255,255,255,0.1);border-radius:10px;
+    padding:10px 12px;font-size:0.78rem;color:#cdd6f4;min-height:40px;max-height:120px;overflow:auto}
+  .ev-console .el{padding:2px 0}.ev-console .el::before{content:'› ';color:#61dafb}
+
+  @media (prefers-reduced-motion: reduce){
+    .dt-node,.ev-count{transition:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-orbs"><div class="orb"></div><div class="orb"></div><div class="orb"></div></div>
+<div class="progress-track"><div class="progress-bar"></div></div>
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<button class="menu-toggle" onclick="openSidebar()" aria-label="Abrir menu">☰</button>
+<div class="sidebar-overlay"></div>
+<nav class="sidebar-nav">
+  <button class="sidebar-close" onclick="closeSidebar()" aria-label="Fechar">✕</button>
+  <div class="sidebar-header">
+    <h3>🖱️ Cap 03 · DOM &amp; eventos</h3>
+    <a class="sidebar-back" href="../../index.html">← Voltar ao hub</a>
+  </div>
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Neste capítulo</div>
+    <a class="sidebar-link" onclick="goTo('aquecimento')"><span class="dot" style="background:var(--accent5)"></span> Aquecimento</a>
+    <a class="sidebar-link" onclick="goTo('ponte')"><span class="dot" style="background:var(--react)"></span> A ponte HTML ↔ JS</a>
+    <a class="sidebar-link" onclick="goTo('dom')"><span class="dot" style="background:var(--react)"></span> 🌳 O que é o DOM</a>
+    <a class="sidebar-link" onclick="goTo('selecionar')"><span class="dot" style="background:var(--accent7)"></span> 🎯 Selecionar elementos</a>
+    <a class="sidebar-link" onclick="goTo('mudar')"><span class="dot" style="background:var(--js)"></span> ✏️ Mudar a página</a>
+    <a class="sidebar-link" onclick="goTo('eventos')"><span class="dot" style="background:var(--react)"></span> 🖱️ Eventos (cliques)</a>
+    <a class="sidebar-link" onclick="goTo('juntando')"><span class="dot" style="background:var(--accent4)"></span> 🧩 Juntando tudo</a>
+    <a class="sidebar-link" onclick="goTo('fetch')"><span class="dot" style="background:var(--json)"></span> 🍽️ Seu primeiro fetch</a>
+    <a class="sidebar-link" onclick="goTo('bugzilla')"><span class="dot" style="background:var(--bug)"></span> BugZilla 🐛</a>
+    <a class="sidebar-link" onclick="goTo('treino')"><span class="dot" style="background:var(--js)"></span> ⌨️ Treino no VSCode</a>
+    <a class="sidebar-link" onclick="goTo('resumo')"><span class="dot" style="background:var(--accent7)"></span> Resumo</a>
+  </div>
+</nav>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section class="hero">
+  <div class="hero-icons" data-motion="float"><img src="../../assets/svg/javascript.svg" alt="JavaScript" width="46" height="46" style="vertical-align:middle;border-radius:8px"> 🤝 🖱️</div>
+  <span class="hero-badge react">Capítulo 03 · Curso Fullstack</span>
+  <h1>JS no navegador <span style="color:var(--react)">(DOM)</span></h1>
+  <p class="subtitle">
+    Até agora o JavaScript só conversava com o <strong>Console</strong>. Chegou a hora de ele
+    <strong style="color:var(--react)">tocar a página</strong>: selecionar elementos, reagir a cliques
+    e mudar a tela em tempo real. É a última ponte antes do <strong style="color:var(--react)">React</strong>.
+  </p>
+  <div class="hero-stack">
+    <span class="stack-chip react">🌳 DOM</span>
+    <span class="stack-chip react">🎯 seletores</span>
+    <span class="stack-chip js">🖱️ eventos</span>
+    <span class="stack-chip node">🍽️ fetch</span>
+  </div>
+</section>
+
+<div class="container">
+
+  <!-- ═══════════════ AQUECIMENTO ═══════════════ -->
+  <section class="step-section" id="aquecimento">
+    <div class="step-header">
+      <div class="step-number sn-yellow">🤔</div>
+      <div>
+        <div class="step-title">Aquecimento</div>
+        <div class="step-sub">Uma perguntinha antes de começar</div>
+      </div>
+    </div>
+    <div class="quiz">
+      <div class="quiz-q"><span class="q-emoji">1️⃣</span> Quando você clica num botão e um número na tela aumenta, quem fez isso acontecer?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz(this,false)">O HTML, que se reescreve sozinho</button>
+        <button class="quiz-opt" onclick="checkQuiz(this,false)">O CSS, que tem uma regra pra isso</button>
+        <button class="quiz-opt" data-correct="true" onclick="checkQuiz(this,true)">O JavaScript, que ouviu o clique e mudou a página</button>
+        <button class="quiz-opt" onclick="checkQuiz(this,false)">O navegador, sem ninguém programar</button>
+      </div>
+      <div class="quiz-feedback" data-correct="Exato!" data-wrong="Quase!" data-explain="HTML é a estrutura (fica parada) e CSS é a aparência. Quem ESCUTA o clique e MUDA o que está na tela é o JavaScript — e é justamente isso que você vai aprender a fazer aqui."></div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ A PONTE ═══════════════ -->
+  <section class="step-section" id="ponte">
+    <div class="step-header">
+      <div class="step-number sn-react">🌉</div>
+      <div>
+        <div class="step-title">A ponte: HTML + JS finalmente se falando</div>
+        <div class="step-sub">Saindo do Console, entrando na página</div>
+      </div>
+    </div>
+    <div class="card">
+      <p>No <strong>Cap 1</strong> você montou a <strong style="color:var(--html)">estrutura</strong> (HTML).
+      No <strong>Cap 2</strong> você aprendeu a <strong style="color:var(--js)">lógica</strong> (JavaScript),
+      mas tudo aparecia só no <code>console.log</code>. Funcionava… só que ninguém vê o Console no dia a dia.</p>
+
+      <div class="analogy">
+        <div class="analogy-title">🎭 O roteiro e o palco</div>
+        <p>Pense no HTML como o <strong>palco montado</strong>: cenário, objetos, atores parados.
+        O JavaScript é o <strong>diretor</strong> que entra, aponta para um ator ("você!"), e manda ele
+        fazer algo ("levante a placa!"). Neste capítulo o JS sai dos bastidores (Console) e <strong>dirige o palco</strong> (a página).</p>
+      </div>
+
+      <p style="margin-bottom:0">Para o diretor dirigir, ele precisa de duas coisas: <strong>enxergar</strong> os atores
+      (o <strong style="color:var(--react)">DOM</strong>) e <strong>achar</strong> o ator certo
+      (os <strong style="color:var(--accent7)">seletores</strong>). Vamos por partes.</p>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ O DOM ═══════════════ -->
+  <section class="step-section" id="dom">
+    <div class="step-header">
+      <div class="step-number sn-react">🌳</div>
+      <div>
+        <div class="step-title">O DOM: sua página virou uma árvore</div>
+        <div class="step-sub">A ponte que o navegador monta entre o HTML e o JS</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="analogy">
+        <div class="analogy-title">🌳 Uma árvore genealógica da página</div>
+        <p>Quando o navegador lê seu HTML, ele não guarda um texto: ele monta uma <strong>árvore de
+        objetos vivos</strong> — um para cada tag. O <code>&lt;body&gt;</code> é o tronco; dentro dele nascem
+        os galhos (<code>&lt;h1&gt;</code>, <code>&lt;ul&gt;</code>), e dos galhos saem as folhas
+        (<code>&lt;li&gt;</code>). Essa árvore tem um nome: <strong style="color:var(--react)">DOM</strong>
+        (Document Object Model). É <em>ela</em> que o JavaScript consegue pegar e mexer.</p>
+      </div>
+
+      <p style="color:var(--text-dim);margin:6px 0 4px">Aperte <strong>montar a árvore</strong> e veja o mesmo
+      HTML virar nós. Passe o mouse (ou clique) num nó para ver a tag correspondente acender 👇</p>
+
+      <div class="domtree" id="domtree">
+        <div class="dt-grid">
+          <div class="dt-code">
+            <div class="dt-line" data-node="body"><span class="tag">&lt;body&gt;</span></div>
+            <div class="dt-line" data-node="h1">  <span class="tag">&lt;h1&gt;</span>Loja&lt;/h1&gt;</div>
+            <div class="dt-line" data-node="ul">  <span class="tag">&lt;ul&gt;</span></div>
+            <div class="dt-line" data-node="li">    <span class="tag">&lt;li&gt;</span>Camiseta&lt;/li&gt;</div>
+            <div class="dt-line" data-node="ul">  &lt;/ul&gt;</div>
+            <div class="dt-line" data-node="body">&lt;/body&gt;</div>
+          </div>
+          <div class="dt-tree">
+            <div class="dt-node pre root" data-node="body" data-i="0">body</div>
+            <div class="dt-children">
+              <div class="dt-node pre" data-node="h1" data-i="1">h1</div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+                <div class="dt-node pre" data-node="ul" data-i="2">ul</div>
+                <div class="dt-children">
+                  <div class="dt-node pre" data-node="li" data-i="3">li</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="dt-controls">
+          <button id="dt-build">▶ montar a árvore</button>
+          <span>cada caixinha é um <strong>nó</strong> que o JS consegue pegar</span>
+        </div>
+      </div>
+
+      <div class="concept">
+        <div class="concept-title">💡 A palavra mágica: document</div>
+        <p>O JavaScript já vem com uma variável pronta chamada <code>document</code> — é a porta de entrada
+        para essa árvore. Tudo que você vai fazer com a página começa em <code>document.algumaCoisa</code>.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ SELECIONAR ═══════════════ -->
+  <section class="step-section" id="selecionar">
+    <div class="step-header">
+      <div class="step-number sn-green">🎯</div>
+      <div>
+        <div class="step-title">Selecionar: apontar para um elemento</div>
+        <div class="step-sub">document.querySelector — achar o ator certo</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="analogy">
+        <div class="analogy-title">🎯 "Você, de camiseta vermelha!"</div>
+        <p>Antes de mandar alguém fazer algo, o diretor precisa <strong>apontar</strong> para a pessoa certa.
+        No DOM, apontar é <strong>selecionar</strong>. E você aponta usando os mesmos endereços que já
+        aprendeu no CSS: <code>#id</code> para um elemento único e <code>.classe</code> para um grupo.</p>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">selecionar.js</span><span class="lang-badge js">JavaScript</span></div>
+<pre><span class="cm">// querySelector pega o PRIMEIRO que casar com o endereço</span>
+<span class="kw">const</span> <span class="var">titulo</span> <span class="op">=</span> <span class="bi">document</span>.<span class="fn">querySelector</span>(<span class="st">"#titulo"</span>)<span class="punc">;</span>  <span class="cm">// pelo id</span>
+<span class="kw">const</span> <span class="var">primeiroItem</span> <span class="op">=</span> <span class="bi">document</span>.<span class="fn">querySelector</span>(<span class="st">".item"</span>)<span class="punc">;</span> <span class="cm">// pela classe</span>
+
+<span class="cm">// querySelectorAll pega TODOS numa lista</span>
+<span class="kw">const</span> <span class="var">itens</span> <span class="op">=</span> <span class="bi">document</span>.<span class="fn">querySelectorAll</span>(<span class="st">".item"</span>)<span class="punc">;</span>
+
+<span class="bi">console</span>.<span class="fn">log</span>(<span class="var">titulo</span>)<span class="punc">;</span>      <span class="cm">// o elemento &lt;h1&gt;</span>
+<span class="bi">console</span>.<span class="fn">log</span>(<span class="var">itens</span>.<span class="var">length</span>)<span class="punc">;</span> <span class="cm">// quantos casaram</span></pre>
+      </div>
+
+      <p style="color:var(--text-dim);margin:6px 0 4px">Escolha um endereço e veja o que ele <strong>seleciona</strong>
+      na página de mentira. Repare no que acontece com <code>.preco</code> (que não existe ali) 👇</p>
+
+      <div class="selector" id="selector">
+        <div class="sel-grid">
+          <div class="sel-page">
+            <h3 class="sel-el" data-id="titulo" data-tag="h1">Loja do Kelson</h3>
+            <div class="sel-el" data-cls="item" data-tag="p">Camiseta</div>
+            <div class="sel-el" data-cls="item" data-tag="p">Boné</div>
+            <button class="sel-el" data-tag="button">Comprar</button>
+          </div>
+          <div class="sel-side">
+            <div class="sel-chips">
+              <button class="sel-chip" data-sel="#titulo">#titulo</button>
+              <button class="sel-chip" data-sel=".item">.item</button>
+              <button class="sel-chip" data-sel="button">button</button>
+              <button class="sel-chip" data-sel=".preco">.preco</button>
+            </div>
+            <div class="sel-console" id="sel-console">Clique num endereço acima…</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tip">
+        <span class="tip-icon">✨</span>
+        <div class="tip-content">
+          <strong>querySelector</strong> = o primeiro (um só). <strong>querySelectorAll</strong> = todos
+          (uma lista que você percorre depois). E o endereço que não casa com ninguém devolve
+          <code>null</code> (ou uma lista vazia) — guarde isso, o BugZilla adora essa.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ MUDAR A PÁGINA ═══════════════ -->
+  <section class="step-section" id="mudar">
+    <div class="step-header">
+      <div class="step-number sn-js">✏️</div>
+      <div>
+        <div class="step-title">Mudar a página: agora o JS escreve na tela</div>
+        <div class="step-sub">textContent, style e classList</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p>Selecionou o elemento? Agora é só dar ordens a ele. As três ordens que você mais vai usar:</p>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">mudar.js</span><span class="lang-badge js">JavaScript</span></div>
+<pre><span class="kw">const</span> <span class="var">titulo</span> <span class="op">=</span> <span class="bi">document</span>.<span class="fn">querySelector</span>(<span class="st">"#titulo"</span>)<span class="punc">;</span>
+
+<span class="cm">// 1) trocar o TEXTO de dentro</span>
+<span class="var">titulo</span>.<span class="var">textContent</span> <span class="op">=</span> <span class="st">"Bem-vindo!"</span><span class="punc">;</span>
+
+<span class="cm">// 2) mudar o ESTILO (CSS pelo JS)</span>
+<span class="var">titulo</span>.<span class="var">style</span>.<span class="var">color</span> <span class="op">=</span> <span class="st">"crimson"</span><span class="punc">;</span>
+
+<span class="cm">// 3) ligar/desligar uma CLASSE do CSS</span>
+<span class="var">titulo</span>.<span class="var">classList</span>.<span class="fn">add</span>(<span class="st">"destaque"</span>)<span class="punc">;</span></pre>
+      </div>
+
+      <div class="tip">
+        <span class="tip-icon">🧠</span>
+        <div class="tip-content">
+          <strong>textContent</strong> troca só o texto, com segurança. Existe também o <code>innerHTML</code>,
+          que aceita tags HTML dentro — poderoso, mas perigoso (BugZilla explica). Comece pelo
+          <code>textContent</code>; ele resolve 90% dos casos.
+        </div>
+      </div>
+
+      <div class="concept">
+        <div class="concept-title">💡 Por que classList é tão usado?</div>
+        <p>Em vez de empilhar <code>.style.cor</code>, <code>.style.fundo</code>, <code>.style.borda</code> no
+        JS, você cria <strong>uma classe</strong> bonita no CSS (ex.: <code>.destaque</code>) e só liga ela com
+        <code>classList.add("destaque")</code> ou alterna com <code>classList.toggle("destaque")</code>.
+        CSS cuida da aparência, JS cuida de <em>quando</em>. Cada um no seu quadrado.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ EVENTOS ═══════════════ -->
+  <section class="step-section" id="eventos">
+    <div class="step-header">
+      <div class="step-number sn-react">🖱️</div>
+      <div>
+        <div class="step-title">Eventos: reagir ao que o usuário faz</div>
+        <div class="step-sub">addEventListener — o JS fica "de ouvido em pé"</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="analogy">
+        <div class="analogy-title">🔔 A campainha da casa</div>
+        <p>Você não fica encarando a porta o dia todo esperando visita. Você instala uma
+        <strong>campainha</strong>: quando alguém aperta, ela <em>te avisa</em> e aí você age.
+        Um <strong>evento</strong> é isso — o clique é a campainha tocando, e o
+        <code>addEventListener</code> é você dizendo "quando tocar, faça isto".</p>
+      </div>
+
+      <div class="warning">
+        <span class="warning-icon">⌨️</span>
+        <div class="warning-content">
+          Vem aí a <strong>arrow function</strong> <code>() =&gt; { }</code> que você viu no Cap 2. Lembre:
+          a setinha <code>=&gt;</code> é o <kbd>=</kbd> seguido de <kbd>&gt;</kbd>. Sua IDE (IntelliJ/VSCode)
+          pode <strong>desenhar</strong> <code>⇒</code>, mas você digita os dois caracteres separados.
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">eventos.js</span><span class="lang-badge js">JavaScript</span></div>
+<pre><span class="kw">const</span> <span class="var">botao</span> <span class="op">=</span> <span class="bi">document</span>.<span class="fn">querySelector</span>(<span class="st">"#curtir"</span>)<span class="punc">;</span>
+<span class="kw">let</span> <span class="var">contador</span> <span class="op">=</span> <span class="num">0</span><span class="punc">;</span>
+
+<span class="cm">// "quando o botão receber um clique, rode esta função"</span>
+<span class="var">botao</span>.<span class="fn">addEventListener</span>(<span class="st">"click"</span>, () <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="var">contador</span><span class="op">++</span><span class="punc">;</span>
+  <span class="var">botao</span>.<span class="var">textContent</span> <span class="op">=</span> <span class="st">`Curtidas: ${contador}`</span><span class="punc">;</span>
+<span class="punc">}</span>)<span class="punc">;</span></pre>
+      </div>
+
+      <p style="color:var(--text-dim);margin:6px 0 4px">Esses dois aqui <strong>funcionam de verdade</strong> —
+      clique no botão e digite no campo. Veja o console embaixo registrar cada evento 👇</p>
+
+      <div class="events" id="events">
+        <div class="ev-grid">
+          <div class="ev-demo">
+            <div class="ev-count" id="ev-count">0</div>
+            <div class="ev-lbl">curtidas</div>
+            <button class="ev-btn" id="ev-like">Curtir ❤</button>
+          </div>
+          <div class="ev-demo">
+            <input class="ev-input" id="ev-input" placeholder="digite seu nome…" maxlength="20" aria-label="digite seu nome">
+            <div style="font-size:1.05rem">Olá, <span class="ev-echo" id="ev-echo">___</span>!</div>
+            <div class="ev-lbl">evento "input": dispara a cada tecla</div>
+          </div>
+        </div>
+        <div class="ev-console" id="ev-console"></div>
+      </div>
+
+      <div class="tip">
+        <span class="tip-icon">📋</span>
+        <div class="tip-content">
+          Os eventos mais comuns: <code>"click"</code> (clique), <code>"input"</code> (digitar num campo),
+          <code>"submit"</code> (enviar um formulário). É sempre o mesmo molde:
+          <code>elemento.addEventListener("evento", () =&gt; { ... })</code>.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ JUNTANDO TUDO ═══════════════ -->
+  <section class="step-section" id="juntando">
+    <div class="step-header">
+      <div class="step-number sn-blue">🧩</div>
+      <div>
+        <div class="step-title">Bora codar — o ciclo completo (com o prof)</div>
+        <div class="step-sub">Selecionar → escutar o evento → mudar o DOM</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p>Os três passos sempre andam juntos. Veja o ciclo inteiro num clipe e depois no código:</p>
+
+      <figure class="clip">
+        <video controls preload="none" playsinline poster="../../assets/video/clique-dom.png">
+          <source src="../../assets/video/clique-dom.mp4" type="video/mp4">
+          Seu navegador não reproduz o vídeo. <a href="../../assets/video/clique-dom.mp4">Baixe o clipe aqui.</a>
+        </video>
+        <figcaption>🖱️ você clica → o <code>addEventListener</code> escuta → o JS muda o DOM (o número sobe)</figcaption>
+      </figure>
+
+      <div class="exercise guided">
+        <div class="exercise-header">
+          <span class="exercise-icon">👨‍🏫</span>
+          <div>
+            <div class="exercise-title">Crie contador.html e abra no navegador</div>
+            <div class="exercise-sub">Um HTML pequeno + um script no fim do body</div>
+          </div>
+        </div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">contador.html</span><span class="lang-badge html">HTML</span></div>
+<pre><span class="tag">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;html</span> <span class="atr">lang</span>=<span class="st">"pt-BR"</span><span class="tag">&gt;</span>
+<span class="tag">&lt;body&gt;</span>
+  <span class="tag">&lt;h1</span> <span class="atr">id</span>=<span class="st">"placar"</span><span class="tag">&gt;</span>Curtidas: 0<span class="tag">&lt;/h1&gt;</span>
+  <span class="tag">&lt;button</span> <span class="atr">id</span>=<span class="st">"curtir"</span><span class="tag">&gt;</span>Curtir ❤<span class="tag">&lt;/button&gt;</span>
+
+  <span class="cm">&lt;!-- o script vai no FIM: aí os elementos já existem --&gt;</span>
+  <span class="tag">&lt;script&gt;</span>
+    <span class="kw">const</span> <span class="var">placar</span> <span class="op">=</span> <span class="bi">document</span>.<span class="fn">querySelector</span>(<span class="st">"#placar"</span>)<span class="punc">;</span>
+    <span class="kw">const</span> <span class="var">botao</span> <span class="op">=</span> <span class="bi">document</span>.<span class="fn">querySelector</span>(<span class="st">"#curtir"</span>)<span class="punc">;</span>
+    <span class="kw">let</span> <span class="var">curtidas</span> <span class="op">=</span> <span class="num">0</span><span class="punc">;</span>
+
+    <span class="var">botao</span>.<span class="fn">addEventListener</span>(<span class="st">"click"</span>, () <span class="op">=&gt;</span> <span class="punc">{</span>
+      <span class="var">curtidas</span><span class="op">++</span><span class="punc">;</span>
+      <span class="var">placar</span>.<span class="var">textContent</span> <span class="op">=</span> <span class="st">`Curtidas: ${curtidas}`</span><span class="punc">;</span>
+    <span class="punc">}</span>)<span class="punc">;</span>
+  <span class="tag">&lt;/script&gt;</span>
+<span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span></pre>
+        </div>
+        <p class="text-dim" style="font-size:0.82rem;margin:10px 0 4px">Depois de clicar 3 vezes, a página fica assim 👇</p>
+        <div class="mini-browser" data-url="contador.html">
+<script type="text/html" data-mp="html">
+  <h1 style="font-family:sans-serif">Curtidas: 3</h1>
+  <button style="font-size:15px;padding:8px 16px;border-radius:8px;border:1px solid #ccc;cursor:pointer">Curtir ❤</button>
+</script>
+        </div>
+      </div>
+
+      <figure style="margin:18px 0 0;text-align:center">
+        <img src="../../assets/memes/meme-dom-mudei-tela.png"
+             alt="Meme: dev apontando para o navegador gritando 'eu mudei a tela com código'"
+             style="max-width:360px;width:100%;border-radius:14px;border:1px solid rgba(255,255,255,0.08)"
+             onerror="this.closest('figure').style.display='none'">
+        <figcaption class="text-dim" style="font-size:0.78rem;margin-top:6px">a primeira vez que o clique mexe na tela bate diferente 😂</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ PRIMEIRO FETCH ═══════════════ -->
+  <section class="step-section" id="fetch">
+    <div class="step-header">
+      <div class="step-number sn-mint">🍽️</div>
+      <div>
+        <div class="step-title">Seu primeiro fetch — buscar dados da API</div>
+        <div class="step-sub">Do outro lado do balcão que você mesmo construiu</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="analogy">
+        <div class="analogy-title">🍽️ Você agora está do lado do cliente</div>
+        <p>Lembra da analogia do restaurante? No <strong>backend</strong> você foi a <strong>cozinha</strong>:
+        escreveu <code>@GetMapping("/produtos")</code> e devolvia a comida (os dados). Agora, no front, você
+        está na <strong>mesa</strong>: faz o <strong>pedido</strong> e espera o prato chegar. Esse pedido
+        tem nome em JavaScript: <code>fetch</code>.</p>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">produtos.js</span><span class="lang-badge js">JavaScript</span></div>
+<pre><span class="cm">// 1) faz o pedido para a SUA API (a mesma do backend)</span>
+<span class="fn">fetch</span>(<span class="st">"http://localhost:8080/produtos"</span>)
+  <span class="cm">// 2) quando a resposta chegar, vira objeto JS</span>
+  .<span class="fn">then</span>((<span class="var">resposta</span>) <span class="op">=&gt;</span> <span class="var">resposta</span>.<span class="fn">json</span>())
+  <span class="cm">// 3) agora sim: com os dados na mão, mexe no DOM</span>
+  .<span class="fn">then</span>((<span class="var">produtos</span>) <span class="op">=&gt;</span> <span class="punc">{</span>
+    <span class="bi">console</span>.<span class="fn">log</span>(<span class="var">produtos</span>)<span class="punc">;</span> <span class="cm">// uma lista de objetos</span>
+  <span class="punc">}</span>)<span class="punc">;</span></pre>
+      </div>
+
+      <div class="tip">
+        <span class="tip-icon">⏳</span>
+        <div class="tip-content">
+          O pedido <strong>demora</strong> (a comida não chega na hora). Por isso o <code>.then()</code>:
+          ele quer dizer <em>"quando a resposta voltar, ENTÃO faça…"</em>. Você não trava a página esperando —
+          o JS avisa quando chegar. (Existe uma forma mais nova de escrever isso, o <code>async/await</code>;
+          a gente vê com calma mais pra frente. Por enquanto, <code>.then()</code> já resolve.)
+        </div>
+      </div>
+
+      <p>E o prato que chega é um <strong>JSON</strong> com a cara exata do que sua API devolve. A gente
+      percorre essa lista e cria um card para cada produto:</p>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">produtos.js (a parte que desenha)</span><span class="lang-badge js">JavaScript</span></div>
+<pre><span class="kw">const</span> <span class="var">lista</span> <span class="op">=</span> <span class="bi">document</span>.<span class="fn">querySelector</span>(<span class="st">"#lista"</span>)<span class="punc">;</span>
+
+<span class="var">produtos</span>.<span class="fn">forEach</span>((<span class="var">p</span>) <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">const</span> <span class="var">item</span> <span class="op">=</span> <span class="bi">document</span>.<span class="fn">createElement</span>(<span class="st">"li"</span>)<span class="punc">;</span>
+  <span class="var">item</span>.<span class="var">textContent</span> <span class="op">=</span> <span class="st">`${p.nome} — R$ ${p.preco}`</span><span class="punc">;</span>
+  <span class="var">lista</span>.<span class="fn">appendChild</span>(<span class="var">item</span>)<span class="punc">;</span>
+<span class="punc">}</span>)<span class="punc">;</span></pre>
+      </div>
+
+      <figure class="clip">
+        <video controls preload="none" playsinline poster="../../assets/video/jornada-fetch.png">
+          <source src="../../assets/video/jornada-fetch.mp4" type="video/mp4">
+          Seu navegador não reproduz o vídeo. <a href="../../assets/video/jornada-fetch.mp4">Baixe o clipe aqui.</a>
+        </video>
+        <figcaption>🍃 o pedido sai do navegador → bate na <strong>sua API</strong> Spring → volta como JSON → vira cards na tela</figcaption>
+      </figure>
+
+      <div class="concept">
+        <div class="concept-title">💡 Esse é o grande encontro</div>
+        <p>É aqui que o front e o back que você construiu se dão as mãos: o <code>fetch</code> chama o mesmo
+        endpoint que você programou em Java. Nos próximos capítulos a gente faz isso <strong>dentro do React</strong>
+        e, lá no fim, conectado de verdade na sua API com login. Você acabou de ver o curso inteiro caber numa página. 🚀</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ BUGZILLA ═══════════════ -->
+  <section class="step-section" id="bugzilla">
+    <div class="step-header">
+      <div class="step-number sn-red">🐛</div>
+      <div>
+        <div class="step-title">BugZilla ataca o DOM!</div>
+        <div class="step-sub">Os tropeços clássicos de quem começa com a página</div>
+      </div>
+    </div>
+
+    <div class="bug-box">
+      <span class="bug-icon">🐛</span>
+      <div class="bug-content">
+        <strong>Bug 1 — o script rodou antes do elemento existir.</strong>
+        Se o <code>&lt;script&gt;</code> vem <em>antes</em> do HTML, o <code>querySelector</code> não acha nada
+        (vem <code>null</code>). <strong>Conserto:</strong> ponha o script no <strong>fim do body</strong>, ou
+        use <code>&lt;script src="app.js" <span style="color:var(--js)">defer</span>&gt;&lt;/script&gt;</code> no
+        <code>&lt;head&gt;</code> — o <code>defer</code> segura o JS até a página carregar.
+      </div>
+    </div>
+
+    <div class="bug-box" style="margin-top:14px">
+      <span class="bug-icon">🐛</span>
+      <div class="bug-content">
+        <strong>Bug 2 — "Cannot read properties of null".</strong> O terror do iniciante! Quase sempre é o
+        seletor digitado errado: você escreveu <code>querySelector("titulo")</code> sem o <code>#</code>, ou
+        errou o nome. Sem <code>#</code>/<code>.</code> ele procura uma <em>tag</em> chamada "titulo" — que não
+        existe — e devolve <code>null</code>.
+      </div>
+    </div>
+
+    <div class="bug-box" style="margin-top:14px">
+      <span class="bug-icon">🐛</span>
+      <div class="bug-content">
+        <strong>Bug 3 — esqueceu o <code>.value</code> do input.</strong> Para ler o que a pessoa digitou,
+        é <code>input.value</code> (não o elemento direto). <code>campo.value</code> = o texto;
+        <code>campo</code> sozinho = a caixinha inteira.
+      </div>
+    </div>
+
+    <div class="toggler" style="margin-top:14px">
+      <div class="toggler-header" onclick="toggleSection(this)">
+        <span>👀 Macete de ouro do BugZilla</span><span class="toggler-arrow">▼</span>
+      </div>
+      <div class="toggler-body">
+        <div class="tip" style="margin:0">
+          <span class="tip-icon">🔦</span>
+          <div class="tip-content">
+            Travou? Abra o Console (<kbd>F12</kbd>) e <strong>leia a mensagem vermelha</strong> — ela diz a
+            linha e o que deu errado. Depois faça <code>console.log(meuElemento)</code>: se aparecer
+            <code>null</code>, o problema é o <em>seletor</em>; se aparecer o elemento, o problema é o que
+            você fez <em>depois</em>. 90% dos bugs de DOM são uma dessas duas coisas.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ PROGRAMAÇÃO É PRÁTICA ═══════════════ -->
+  <section class="step-section">
+    <div class="card" style="text-align:center;background:linear-gradient(135deg,rgba(97,218,251,0.10),rgba(70,211,154,0.06));border-color:rgba(97,218,251,0.22)">
+      <div style="font-family:'Caveat',cursive;font-size:clamp(2rem,6vw,3rem);color:var(--react);font-weight:700;line-height:1.1">
+        PROGRAMAÇÃO É PRÁTICA 💪
+      </div>
+      <p class="text-dim" style="max-width:560px;margin:10px auto 0">
+        Ler sobre clique não faz a tela mudar. Abra o VSCode e <strong style="color:var(--text)">digite</strong>
+        o treino abaixo — você vai construir um <strong>Painel de Produtos</strong> de verdade, do zero. 🛒
+      </p>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ TREINO ENCADEADO ═══════════════ -->
+  <section class="step-section" id="treino">
+    <div class="step-header">
+      <div class="step-number sn-js">⌨️</div>
+      <div>
+        <div class="step-title">Treino — construindo um Painel de Produtos, passo a passo</div>
+        <div class="step-sub">Cada passo continua o anterior. Faça com o prof, depois voe sozinho(a)</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="warning">
+        <span class="warning-icon">▶️</span>
+        <div class="warning-content">
+          Crie a pasta <code>painel_produtos</code> com <strong>dois arquivos</strong>:
+          <code>index.html</code> e <code>app.js</code>. Abra o <code>index.html</code> com o
+          <strong>Live Server</strong> e deixe o Console (<kbd>F12</kbd>) aberto. Vamos crescer o
+          <code>app.js</code> aos pouquinhos — cada passo aproveita o anterior. O 👀 mostra a solução e o
+          <strong>mini-navegador</strong> ao lado mostra o resultado.
+        </div>
+      </div>
+
+      <!-- trilha de progresso -->
+      <div class="arena-track">
+        <span class="at-dot lv1">1</span><span class="at-arrow">→</span>
+        <span class="at-dot lv1">2</span><span class="at-arrow">→</span>
+        <span class="at-dot lv2">3</span><span class="at-arrow">→</span>
+        <span class="at-dot lv2">4</span><span class="at-arrow">→</span>
+        <span class="at-dot lv3">5</span><span class="at-arrow">→</span>
+        <span class="at-dot lv3">🏆</span>
+      </div>
+
+      <!-- 1. guided — HTML base + selecionar + textContent -->
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">👨‍🏫</span><div>
+          <div class="exercise-title">Passo 1 — o esqueleto e o primeiro toque (com o prof)</div>
+          <div class="exercise-sub">HTML base + selecionar + textContent</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>Monte o <code>index.html</code> com um título e uma lista vazia, ligando o <code>app.js</code> com <code>defer</code>. No <code>app.js</code>, selecione o título e troque o texto dele.</p></div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">index.html</span><span class="lang-badge html">HTML</span></div>
+<pre><span class="tag">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;html</span> <span class="atr">lang</span>=<span class="st">"pt-BR"</span><span class="tag">&gt;</span>
+<span class="tag">&lt;head&gt;</span>
+  <span class="tag">&lt;meta</span> <span class="atr">charset</span>=<span class="st">"UTF-8"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;script</span> <span class="atr">src</span>=<span class="st">"app.js"</span> <span class="atr">defer</span><span class="tag">&gt;&lt;/script&gt;</span>
+<span class="tag">&lt;/head&gt;</span>
+<span class="tag">&lt;body&gt;</span>
+  <span class="tag">&lt;h1</span> <span class="atr">id</span>=<span class="st">"titulo"</span><span class="tag">&gt;</span>Painel<span class="tag">&lt;/h1&gt;</span>
+  <span class="tag">&lt;ul</span> <span class="atr">id</span>=<span class="st">"lista"</span><span class="tag">&gt;&lt;/ul&gt;</span>
+<span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span></pre>
+        </div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">app.js</span><span class="lang-badge js">JavaScript</span></div>
+<pre><span class="kw">const</span> <span class="var">titulo</span> <span class="op">=</span> <span class="bi">document</span>.<span class="fn">querySelector</span>(<span class="st">"#titulo"</span>)<span class="punc">;</span>
+<span class="var">titulo</span>.<span class="var">textContent</span> <span class="op">=</span> <span class="st">"Painel de Produtos 🛒"</span><span class="punc">;</span></pre>
+        </div>
+        <p class="text-dim" style="font-size:0.82rem;margin:10px 0 4px">No navegador 👇</p>
+        <div class="mini-browser" data-url="index.html">
+<script type="text/html" data-mp="html">
+  <h1 style="font-family:sans-serif">Painel de Produtos 🛒</h1>
+</script>
+        </div>
+      </div>
+
+      <!-- 2. solo — style no título -->
+      <div class="exercise solo">
+        <div class="exercise-header"><span class="exercise-icon">🧑‍💻</span><div>
+          <div class="exercise-title">Passo 2 — dê uma cor ao título (sozinho/a)</div>
+          <div class="exercise-sub">Continua o MESMO app.js</div></div>
+        </div>
+        <div class="drill-tags"><span class="drill-level lv1"><span class="stars">★</span> fácil</span><span class="drill-tag">.style</span></div>
+        <div class="concept"><div class="concept-title">💡 Dica</div><p>Logo abaixo do passo 1, reusando a variável <code>titulo</code> que já existe, mude a cor dele para <code>"teal"</code> (ou a cor que quiser) com <code>.style.color</code>.</p></div>
+        <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Tenta antes!</strong> É uma linha só, e você já viu o molde na seção "Mudar a página".</div></div>
+        <div class="toggler">
+          <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — Ver solução</span><span class="toggler-arrow">▼</span></div>
+          <div class="toggler-body"><div class="code-block">
+            <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">app.js (adicionado abaixo)</span><span class="lang-badge js">JavaScript</span></div>
+<pre><span class="var">titulo</span>.<span class="var">style</span>.<span class="var">color</span> <span class="op">=</span> <span class="st">"teal"</span><span class="punc">;</span></pre>
+          </div>
+          <div class="mini-browser" data-url="index.html">
+<script type="text/html" data-mp="html">
+  <h1 style="font-family:sans-serif;color:teal">Painel de Produtos 🛒</h1>
+</script>
+          </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. guided — botão + evento que adiciona li -->
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">👨‍🏫</span><div>
+          <div class="exercise-title">Passo 3 — um botão que adiciona itens (com o prof)</div>
+          <div class="exercise-sub">addEventListener + createElement + appendChild</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>Adicione um <code>&lt;button id="add"&gt;</code> no HTML. No <code>app.js</code>, ao clicar, crie um <code>&lt;li&gt;</code> novo e coloque na lista.</p></div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">index.html (dentro do body)</span><span class="lang-badge html">HTML</span></div>
+<pre><span class="tag">&lt;button</span> <span class="atr">id</span>=<span class="st">"add"</span><span class="tag">&gt;</span>Adicionar produto<span class="tag">&lt;/button&gt;</span></pre>
+        </div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">app.js (adicionado abaixo)</span><span class="lang-badge js">JavaScript</span></div>
+<pre><span class="kw">const</span> <span class="var">lista</span> <span class="op">=</span> <span class="bi">document</span>.<span class="fn">querySelector</span>(<span class="st">"#lista"</span>)<span class="punc">;</span>
+<span class="kw">const</span> <span class="var">botao</span> <span class="op">=</span> <span class="bi">document</span>.<span class="fn">querySelector</span>(<span class="st">"#add"</span>)<span class="punc">;</span>
+
+<span class="var">botao</span>.<span class="fn">addEventListener</span>(<span class="st">"click"</span>, () <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">const</span> <span class="var">item</span> <span class="op">=</span> <span class="bi">document</span>.<span class="fn">createElement</span>(<span class="st">"li"</span>)<span class="punc">;</span>
+  <span class="var">item</span>.<span class="var">textContent</span> <span class="op">=</span> <span class="st">"Produto novo"</span><span class="punc">;</span>
+  <span class="var">lista</span>.<span class="fn">appendChild</span>(<span class="var">item</span>)<span class="punc">;</span>
+<span class="punc">}</span>)<span class="punc">;</span></pre>
+        </div>
+        <p class="text-dim" style="font-size:0.82rem;margin:10px 0 4px">Depois de clicar 2 vezes 👇</p>
+        <div class="mini-browser" data-url="index.html">
+<script type="text/html" data-mp="html">
+  <h1 style="font-family:sans-serif;color:teal">Painel de Produtos 🛒</h1>
+  <ul style="font-family:sans-serif"><li>Produto novo</li><li>Produto novo</li></ul>
+  <button style="padding:8px 16px;border-radius:8px;border:1px solid #ccc;cursor:pointer">Adicionar produto</button>
+</script>
+        </div>
+      </div>
+
+      <!-- 4. solo — input + value -->
+      <div class="exercise solo">
+        <div class="exercise-header"><span class="exercise-icon">🧑‍💻</span><div>
+          <div class="exercise-title">Passo 4 — adicionar o que o usuário digitar (sozinho/a)</div>
+          <div class="exercise-sub">Usa o input.value que o BugZilla avisou</div></div>
+        </div>
+        <div class="drill-tags"><span class="drill-level lv2"><span class="stars">★★</span> médio</span><span class="drill-tag">input.value</span><span class="drill-tag">evento</span></div>
+        <div class="concept"><div class="concept-title">💡 Dica</div><p>Adicione um <code>&lt;input id="nome"&gt;</code> no HTML. No clique do botão (do passo 3), em vez do texto fixo "Produto novo", use o que a pessoa digitou: <code>document.querySelector("#nome").value</code>. Lembre do <code>.value</code>!</p></div>
+        <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Tenta primeiro!</strong> Você só troca a linha do <code>textContent</code> do passo 3 para ler o input.</div></div>
+        <div class="toggler">
+          <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — Ver solução</span><span class="toggler-arrow">▼</span></div>
+          <div class="toggler-body"><div class="code-block">
+            <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">index.html (dentro do body, antes do botão)</span><span class="lang-badge html">HTML</span></div>
+<pre><span class="tag">&lt;input</span> <span class="atr">id</span>=<span class="st">"nome"</span> <span class="atr">placeholder</span>=<span class="st">"nome do produto"</span><span class="tag">&gt;</span></pre>
+          </div>
+          <div class="code-block">
+            <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">app.js (dentro do addEventListener)</span><span class="lang-badge js">JavaScript</span></div>
+<pre><span class="kw">const</span> <span class="var">campo</span> <span class="op">=</span> <span class="bi">document</span>.<span class="fn">querySelector</span>(<span class="st">"#nome"</span>)<span class="punc">;</span>
+<span class="var">item</span>.<span class="var">textContent</span> <span class="op">=</span> <span class="var">campo</span>.<span class="var">value</span><span class="punc">;</span>  <span class="cm">// o texto digitado</span></pre>
+          </div>
+          <div class="mini-browser" data-url="index.html">
+<script type="text/html" data-mp="html">
+  <h1 style="font-family:sans-serif;color:teal">Painel de Produtos 🛒</h1>
+  <ul style="font-family:sans-serif"><li>Teclado</li><li>Monitor</li></ul>
+  <input value="" placeholder="nome do produto" style="padding:6px 8px">
+  <button style="padding:8px 16px;border-radius:8px;border:1px solid #ccc;cursor:pointer">Adicionar produto</button>
+</script>
+          </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. guided — array ERP + forEach (teaser fetch) -->
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">👨‍🏫</span><div>
+          <div class="exercise-title">Passo 5 — listar produtos de verdade (com o prof)</div>
+          <div class="exercise-sub">Array no formato da API + forEach</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>Em cima do arquivo, crie um array <code>produtos</code> com a <strong>cara exata</strong> do JSON da sua API do ERP (campos <code>id</code>, <code>nome</code>, <code>preco</code>). Percorra com <code>forEach</code> e desenhe um <code>&lt;li&gt;</code> por produto.</p></div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">app.js (no topo)</span><span class="lang-badge js">JavaScript</span></div>
+<pre><span class="cm">// 👉 este array é temporário. No Cap 7 ele vira um fetch na SUA API!</span>
+<span class="kw">const</span> <span class="var">produtos</span> <span class="op">=</span> [
+  <span class="punc">{</span> <span class="var">id</span><span class="punc">:</span> <span class="num">1</span>, <span class="var">nome</span><span class="punc">:</span> <span class="st">"Teclado Mecânico"</span>, <span class="var">preco</span><span class="punc">:</span> <span class="num">320</span> <span class="punc">}</span>,
+  <span class="punc">{</span> <span class="var">id</span><span class="punc">:</span> <span class="num">2</span>, <span class="var">nome</span><span class="punc">:</span> <span class="st">"Monitor 27 polegadas"</span>, <span class="var">preco</span><span class="punc">:</span> <span class="num">1450</span> <span class="punc">}</span>,
+  <span class="punc">{</span> <span class="var">id</span><span class="punc">:</span> <span class="num">3</span>, <span class="var">nome</span><span class="punc">:</span> <span class="st">"Cadeira Gamer"</span>, <span class="var">preco</span><span class="punc">:</span> <span class="num">980</span> <span class="punc">}</span>,
+]<span class="punc">;</span>
+
+<span class="var">produtos</span>.<span class="fn">forEach</span>((<span class="var">p</span>) <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">const</span> <span class="var">item</span> <span class="op">=</span> <span class="bi">document</span>.<span class="fn">createElement</span>(<span class="st">"li"</span>)<span class="punc">;</span>
+  <span class="var">item</span>.<span class="var">textContent</span> <span class="op">=</span> <span class="st">`${p.nome} — R$ ${p.preco}`</span><span class="punc">;</span>
+  <span class="var">lista</span>.<span class="fn">appendChild</span>(<span class="var">item</span>)<span class="punc">;</span>
+<span class="punc">}</span>)<span class="punc">;</span></pre>
+        </div>
+        <div class="mini-browser" data-url="index.html">
+<script type="text/html" data-mp="html">
+  <h1 style="font-family:sans-serif;color:teal">Painel de Produtos 🛒</h1>
+  <ul style="font-family:sans-serif">
+    <li>Teclado Mecânico — R$ 320</li>
+    <li>Monitor 27 polegadas — R$ 1450</li>
+    <li>Cadeira Gamer — R$ 980</li>
+  </ul>
+</script>
+        </div>
+        <div class="tip" style="margin-top:12px">
+          <span class="tip-icon">🔮</span>
+          <div class="tip-content">
+            Guarde bem este array. Lá no <strong>Cap 7</strong> a gente vai <strong>apagar o <code>const produtos = [...]</code></strong>
+            e trocar por um <code>fetch</code> na sua API — três linhas, e a lista passa a vir do banco de dados de verdade.
+          </div>
+        </div>
+      </div>
+
+      <!-- desafio para casa -->
+      <div class="exercise home" style="margin-top:18px">
+        <div class="exercise-header"><span class="exercise-icon">🏠</span><div>
+          <div class="exercise-title">Desafio para Casa — destaque os produtos caros</div>
+          <div class="exercise-sub">Junta condição + classList</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">💡 Missão</div><p>Reusando o <code>forEach</code> do passo 5, faça um <code>if (p.preco &gt;= 1000)</code> e, quando for caro, ligue uma classe no item: <code>item.classList.add("caro")</code>. No HTML/CSS, crie a regra <code>.caro { color: crimson; font-weight: bold; }</code>. Traga no próximo sábado! 💸</p></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ RESUMO ═══════════════ -->
+  <section class="step-section" id="resumo">
+    <div class="step-header">
+      <div class="step-number sn-mint">🎒</div>
+      <div>
+        <div class="step-title">O que você leva deste capítulo</div>
+        <div class="step-sub">A base que faz o React fazer sentido</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <ul class="about-bullets">
+        <li><div><strong>DOM:</strong> o navegador transforma seu HTML numa árvore de objetos vivos. A porta é <code>document</code>.</div></li>
+        <li><div><strong>Selecionar:</strong> <code>querySelector("#id")</code> (o primeiro) e <code>querySelectorAll(".classe")</code> (todos).</div></li>
+        <li><div><strong>Mudar:</strong> <code>.textContent</code>, <code>.style</code> e <code>.classList</code>.</div></li>
+        <li><div><strong>Eventos:</strong> <code>elemento.addEventListener("click", () =&gt; { ... })</code>.</div></li>
+        <li><div><strong>fetch:</strong> pedir dados à sua API com <code>fetch(url).then(...)</code> e desenhar na tela.</div></li>
+      </ul>
+
+      <div class="quiz" style="margin-top:16px">
+        <div class="quiz-q"><span class="q-emoji">🎫</span> Quiz de saída: qual o conserto do erro
+          <code>Cannot read properties of null</code> ao usar <code>querySelector</code>?</div>
+        <div class="quiz-options">
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">Reiniciar o navegador</button>
+          <button class="quiz-opt" data-correct="true" onclick="checkQuiz(this,true)">Conferir o seletor (#/.) e rodar o script depois do elemento existir</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">Trocar textContent por innerHTML</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">Usar var em vez de const</button>
+        </div>
+        <div class="quiz-feedback" data-correct="Isso! Você já pensa como dev." data-wrong="Lembra do BugZilla!" data-explain="null = o querySelector não achou nada. Ou o endereço está errado (faltou # ou .), ou o script rodou antes do HTML existir (use defer ou ponha o script no fim do body)."></div>
+      </div>
+
+      <div class="tip" style="margin-top:16px">
+        <span class="tip-icon">➡️</span>
+        <div class="tip-content">
+          <strong>No próximo capítulo (React!):</strong> você acabou de mexer no DOM <em>na mão</em> — selecionar,
+          criar <code>&lt;li&gt;</code>, dar <code>appendChild</code> a cada mudança. Imagine fazer isso numa tela
+          cheia. O <strong style="color:var(--react)">React</strong> nasceu pra isso: você descreve <em>como</em>
+          a tela deve ser, e ele mexe no DOM por você. Agora você vai entender <strong>por que</strong> ele existe. 🚀
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:22px">
+        <a href="../../index.html" style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg,var(--react),#2aa9c9);color:#06222b;font-weight:900;border-radius:50px;font-size:1rem;text-decoration:none;box-shadow:0 10px 28px rgba(97,218,251,0.35)">
+          ✅ Capítulo concluído — voltar ao hub
+        </a>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="footer">
+  Feito com <span class="heart">♥</span> pela <strong style="color:var(--text)">programa AI</strong> ·
+  <a href="../../index.html">Hub do curso</a> · Cap 03 — JS no navegador (DOM)
+</footer>
+
+<script src="../../shared/scripts.js" defer></script>
+<script src="../../shared/playground.js" defer></script>
+<script type="module" src="../../shared/motion-fx.js"></script>
+<script type="module">
+  // ── Motor das máquinas didáticas do Cap 03 ──
+  // Motion (CDN) dá o tempero quando carrega; se a internet da sala falhar,
+  // TUDO continua funcionando (transições CSS + Web Animations nativas).
+  let animate=null;
+  try{ ({animate}=await import('https://cdn.jsdelivr.net/npm/motion@11/+esm')); }catch(e){}
+  const onView=(el,fn)=>{ if(!el) return;
+    const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){fn();io.disconnect();}})},{threshold:.35});
+    io.observe(el); };
+
+  /* ════ 🌳 Árvore do DOM ════ */
+  (()=>{
+    const root=document.getElementById('domtree'); if(!root) return;
+    const nodes=[...root.querySelectorAll('.dt-node')];
+    const lines=[...root.querySelectorAll('.dt-line')];
+    const btn=root.querySelector('#dt-build');
+    const litFor=(name,on)=>{
+      nodes.forEach(n=>{ if(n.dataset.node===name) n.classList.toggle('lit',on); });
+      lines.forEach(l=>{ if(l.dataset.node===name) l.classList.toggle('lit',on); });
+    };
+    const build=()=>{
+      nodes.forEach((n,i)=>{
+        setTimeout(()=>{
+          n.classList.remove('pre');
+          if(animate){ animate(n,{opacity:[0,1],transform:['translateY(-12px) scale(.85)','translateY(0) scale(1)']},{duration:.4}); }
+        }, i*180);
+      });
+    };
+    // interação nó <-> linha
+    nodes.forEach(n=>{
+      n.addEventListener('mouseenter',()=>litFor(n.dataset.node,true));
+      n.addEventListener('mouseleave',()=>litFor(n.dataset.node,false));
+      n.addEventListener('click',()=>{ const on=!n.classList.contains('lit'); litFor(n.dataset.node,on); });
+    });
+    lines.forEach(l=>{
+      l.addEventListener('mouseenter',()=>litFor(l.dataset.node,true));
+      l.addEventListener('mouseleave',()=>litFor(l.dataset.node,false));
+    });
+    btn.addEventListener('click',()=>{ nodes.forEach(n=>n.classList.add('pre')); build(); });
+    onView(root,build);
+  })();
+
+  /* ════ 🎯 Seletor ao vivo ════ */
+  (()=>{
+    const root=document.getElementById('selector'); if(!root) return;
+    const els=[...root.querySelectorAll('.sel-el')];
+    const chips=[...root.querySelectorAll('.sel-chip')];
+    const out=root.querySelector('#sel-console');
+    const matches=(sel)=>{
+      if(sel.startsWith('#')) return els.filter(e=>e.dataset.id===sel.slice(1));
+      if(sel.startsWith('.')) return els.filter(e=>(e.dataset.cls||'').split(' ').includes(sel.slice(1)));
+      return els.filter(e=>e.dataset.tag===sel);
+    };
+    const run=(chip)=>{
+      const sel=chip.dataset.sel;
+      chips.forEach(c=>c.classList.toggle('active',c===chip));
+      els.forEach(e=>e.classList.remove('lit'));
+      const hit=matches(sel);
+      hit.forEach(e=>e.classList.add('lit'));
+      const n=hit.length;
+      if(n===0){
+        out.innerHTML='document.querySelectorAll(<span class="ok">"'+sel+'"</span>) → <span class="zero">0 elementos</span> 😬 (esse endereço não existe na página)';
+      }else{
+        out.innerHTML='document.querySelectorAll(<span class="ok">"'+sel+'"</span>) → <span class="ok">'+n+' elemento'+(n>1?'s':'')+'</span> ✅';
+      }
+    };
+    chips.forEach(c=>c.addEventListener('click',()=>run(c)));
+    onView(root,()=>run(chips[1])); // mostra .item de cara
+  })();
+
+  /* ════ 🖱️ Detector de Eventos ════ */
+  (()=>{
+    const root=document.getElementById('events'); if(!root) return;
+    const countEl=root.querySelector('#ev-count');
+    const likeBtn=root.querySelector('#ev-like');
+    const input=root.querySelector('#ev-input');
+    const echo=root.querySelector('#ev-echo');
+    const con=root.querySelector('#ev-console');
+    let count=0;
+    const log=(txt)=>{
+      const line=document.createElement('div'); line.className='el'; line.textContent=txt;
+      con.appendChild(line); con.scrollTop=con.scrollHeight;
+      while(con.children.length>6) con.removeChild(con.firstChild);
+    };
+    likeBtn.addEventListener('click',()=>{
+      count++; countEl.textContent=count;
+      countEl.classList.add('pulse'); setTimeout(()=>countEl.classList.remove('pulse'),250);
+      log('evento "click" → contador = '+count);
+    });
+    input.addEventListener('input',()=>{
+      const v=input.value.trim();
+      echo.textContent = v===''?'___':v;
+      log('evento "input" → "'+input.value+'"');
+    });
+  })();
+</script>
+</body>
+</html>
