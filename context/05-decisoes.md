@@ -115,8 +115,54 @@
 7. Verificação: HTML balanceado (`<pre>` 14/14), ligaduras conferidas (nenhum `→`/`⇒`/`≥` em código;
    o único `⇒` é o aviso didático proposital), screenshots de todos os widgets/vídeos via Chrome headless.
 
+## 2026-06-20 — Cap 4 (React: o início) + arranque do arco React
+1. **Cap 4 construído** no padrão ouro. Fluxo: aquecimento → por que React (imperativo×declarativo,
+   SPA) → Vite mão-na-massa → componentes → JSX → props → BugZilla → treino encadeado **Mini-loja**
+   → resumo (gancho Cap 5). Decisões de escopo escolhidas pelo prof nesta sessão:
+   - **Props ENTRA no Cap 4** (não fica só pro Cap 5). Logo o Cap 5 = `.map()` + imagens + CSS Modules.
+   - **Setup Vite completo, mão na massa** (`npm create vite@latest` → React/JS → `npm install` →
+     `npm run dev` → tour de `src/main.jsx`/`App.jsx`/`index.html` → limpar boilerplate). O 00b cobre
+     só o VSCode; o Vite mora aqui e vira a base de TODOS os caps de React.
+   - **Treino = Mini-loja em componentes** (Cabecalho + CartaoProduto, depois props). O array do
+     passo 5 está no **shape exato da API do ERP**, rotulado "vira `.map()` no Cap 5 e `fetch` no Cap 7"
+     (coerente com `07-…md`: mock no shape real, dor antes do remédio).
+2. **3 máquinas didáticas novas** (page-local, fallback 100% sem internet, padrão Cap 2/3):
+   ⚖️ **Na mão×React** (`#vsreact`, chips 1/5/20/50 produtos → linhas escritas na mão `n*3` vs "1
+   descrição"; barras comparativas — motiva o declarativo), 🌳 **Árvore de componentes** (`#comptree`,
+   monta App→Cabecalho/CartaoProduto, hover acende código↔nó; adaptada do domtree do Cap 3),
+   🧪 **HTML ou JSX?** (`#jsxgame`, 5 rodadas classificando snippets: `class`→🚫, `className`→✅,
+   `for`→🚫, `{expr}`→✅, `style="..."`→🚫; placar + reinício; reforça os 🐛 do BugZilla).
+3. **Sem arrow functions no código do aluno** (props/componentes não exigem) — evita o `=>`→`⇒` da
+   IDE neste cap; eventos/handlers (com arrow) só no Cap 6 (useState). JSX `=>` não aparece.
+4. **Sem Remotion e sem memes** neste cap (nenhum aprovado/gerado). Candidatos futuros se o prof quiser.
+5. **Hub religado** (tirado `em-breve` do card c04) e o resumo do **Cap 3 ganhou botão "Próximo: Cap 04 →"**.
+6. Verificação: `<pre>` 18/18, sem `</content>`, sem `<` não-escapado, `node --check` no módulo OK,
+   render headless Chrome confirmou os 3 widgets (`#vsreact`/`#comptree`/`#jsxgame`). Ligaduras: os
+   únicos `→` são comentário CSS, setas decorativas da `.arena-track` (padrão Cap 3) e 1 em prosa.
+
+## 2026-06-20 (continuação) — Cap 5 (Listas & estilo)
+1. **Cap 5 construído** no padrão ouro, continuando a Mini-loja do Cap 4. Como props foi pro Cap 4,
+   o Cap 5 ficou = **`.map()` + `key` + imagens + CSS Modules**. Fluxo: aquecimento → `.map()` →
+   `key` → imagens → CSS Modules → BugZilla → treino encadeado → resumo (gancho Cap 6 useState).
+2. **3 máquinas didáticas novas** (page-local, fallback sem internet):
+   🏭 **Fábrica do `.map()`** (`#mapfactory`, array entra → cards saem; botão "+ produto" prova que o
+   código não muda — paga a dor do "repetir na mão" do Cap 4), 🖼️ **Onde mora a imagem?** (`#imgwhere`,
+   chips public/ × import × **sem import (erro visível)**), 🎨 **Escopo do CSS Module** (`#cssscope`,
+   global colide `.titulo` × module vira `.titulo_a1b2` isolado).
+3. **Arrow `=>` reaparece** (corpo do `.map()`) ⇒ **aviso de IDE reativado** (igual Cap 3): a fonte/IDE
+   pode desenhar `⇒`, digite `=`+`>`. Todo `=>` em `<pre>` escapado como `=&gt;` (10 ocorrências); os
+   `=>` crus do arquivo (24) são as arrow functions reais do `<script type="module">` — não escapar.
+4. **Hub: card 05 retematizado.** Era "Props & estilo" / pills props·map()·CSS Modules; virou
+   **"Listas & estilo"** / pills map()·imagens·CSS Modules (props agora é Cap 4). Pasta mantida
+   `05-react-props-css/` (não renomear — quebra href). `em-breve` removido; Cap 4 ganhou botão "Próximo: Cap 05".
+5. **Imagens no mini-browser** usam emoji (⌨️🖥️🪑) como placeholder — não há imagens de produto reais
+   versionadas; o código didático referencia caminhos plausíveis (`/teclado.jpg`, `./assets/...`).
+6. Verificação: `<pre>` 13/13, sem `=>` cru nem `<` não-escapado dentro de `<pre>`, sem `</content>`,
+   `node --check` OK, render headless confirmou os 3 widgets. Sem Remotion/memes neste cap.
+
 ## Pendências reconhecidas
-- Sessão dedicada para planejar a fatia de React (caps 4–9) em detalhe.
+- Planejar em detalhe os **Caps 6–9** (React: state → efeitos/dados → router → integração).
+  Caps 4 e 5 já fixaram o tom, o setup Vite base e a Mini-loja como artefato contínuo do arco React.
 - Sem busca full-text / sem progresso salvo (localStorage) — futuro, se necessário.
 - Avaliar quando o Remotion realmente compensa (custo de pipeline vs. ganho didático).
 </content>

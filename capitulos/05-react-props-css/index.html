@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cap 05 — Listas & estilo | Curso Fullstack</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=JetBrains+Mono:wght@400;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../shared/styles.css">
+<link rel="stylesheet" href="../../shared/components.css">
+<link rel="stylesheet" href="../../shared/animations.css">
+<link rel="stylesheet" href="../../shared/playground.css">
+<style>
+  /* ── mono didático: SEMPRE sem ligaduras (=> não vira ⇒, >= não vira ≥) ── */
+  .mono,.mf-pill,.mf-card,.iw-code,.iw-code pre,.cs-cls,.cs-hash{
+    font-family:'JetBrains Mono',monospace;
+    font-variant-ligatures:none;font-feature-settings:"liga" 0,"clig" 0,"calt" 0}
+
+  /* nome de componente dentro do JSX (sempre Maiúsculo) */
+  .cmp{color:var(--react);font-weight:600}
+
+  /* ═══ 🏭 Fábrica do .map() ═══ */
+  .mapfac{background:linear-gradient(180deg,#0b1020,#0d0d1a);border:1px solid rgba(97,218,251,0.25);
+    border-radius:16px;padding:18px;margin:14px 0}
+  .mf-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center}
+  @media (max-width:640px){.mf-grid{grid-template-columns:1fr}.mf-arrow{transform:rotate(90deg);justify-self:center}}
+  .mf-col{min-width:0}
+  .mf-label{font-size:0.74rem;color:var(--text-dim);margin-bottom:8px;font-weight:700}
+  .mf-in,.mf-out{display:flex;flex-direction:column;gap:8px}
+  .mf-pill{background:#0b0b14;border:1px solid rgba(255,255,255,0.12);border-radius:8px;
+    padding:8px 10px;font-size:0.76rem;color:#cdd6f4}
+  .mf-pill .k{color:#7ef0c4}.mf-pill .s{color:#f7b731}
+  .mf-card{background:#0b0b14;border:1px solid rgba(97,218,251,0.35);border-radius:10px;
+    padding:10px 12px;color:#fff}
+  .mf-card.enter{opacity:0;transform:translateX(-10px)}
+  .mf-card h4{margin:0;font-size:0.9rem}
+  .mf-card p{margin:2px 0 0;font-size:0.8rem;color:#7ef0c4}
+  .mf-card .key{display:block;font-size:0.62rem;color:var(--text-dim);margin-bottom:4px}
+  .mf-arrow{font-size:0.85rem;font-weight:800;color:var(--react);text-align:center;white-space:nowrap}
+  .mf-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px;font-size:0.78rem;color:var(--text-dim)}
+  .mf-controls button{border:1px solid rgba(97,218,251,0.4);background:var(--surface2);color:#61dafb;
+    font-family:'JetBrains Mono',monospace;font-weight:700;font-size:0.78rem;padding:8px 14px;border-radius:10px;cursor:pointer;transition:all .2s}
+  .mf-controls button:hover{transform:translateY(-2px);background:rgba(97,218,251,0.12)}
+
+  /* ═══ 🖼️ Onde mora a imagem? ═══ */
+  .imgwhere{background:linear-gradient(180deg,#0b1020,#0d0d1a);border:1px solid rgba(247,183,49,0.28);
+    border-radius:16px;padding:18px;margin:14px 0}
+  .iw-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+  .iw-chip{border:1px solid rgba(247,183,49,0.4);background:var(--surface2);color:#f7b731;
+    font-weight:700;font-size:0.78rem;padding:8px 14px;border-radius:10px;cursor:pointer;transition:all .2s}
+  .iw-chip:hover{transform:translateY(-2px);background:rgba(247,183,49,0.1)}
+  .iw-chip.active{border-color:var(--js);color:var(--js);background:rgba(247,223,30,0.1)}
+  .iw-body{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+  @media (max-width:640px){.iw-body{grid-template-columns:1fr}}
+  .iw-code{background:#0b0b14;border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px;font-size:0.78rem;color:#cdd6f4;white-space:pre-wrap;line-height:1.6}
+  .iw-code .cm{color:#6b7394}.iw-code .st{color:#f7b731}.iw-code .kw{color:#ff79c6}.iw-code .atr{color:#7ef0c4}
+  .iw-result{background:#0b0b14;border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:14px;text-align:center}
+  .iw-shot{font-size:2.4rem;line-height:1;margin-bottom:8px}
+  .iw-verd{font-size:0.85rem;font-weight:800}
+  .iw-verd.ok{color:#46d39a}.iw-verd.bad{color:#ff6b6b}
+  .iw-exp{font-size:0.78rem;color:var(--text-dim);margin-top:6px}
+
+  /* ═══ 🎨 Escopo do CSS Module ═══ */
+  .cssscope{background:linear-gradient(180deg,#0b1020,#0d0d1a);border:1px solid rgba(100,108,255,0.3);
+    border-radius:16px;padding:18px;margin:14px 0}
+  .cs-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+  .cs-chip{border:1px solid rgba(100,108,255,0.45);background:var(--surface2);color:#a9adff;
+    font-weight:700;font-size:0.8rem;padding:8px 16px;border-radius:10px;cursor:pointer;transition:all .2s}
+  .cs-chip.active{border-color:var(--js);color:var(--js);background:rgba(247,223,30,0.1)}
+  .cs-stage{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .cs-card{background:#0b0b14;border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:14px;text-align:center}
+  .cs-cls{font-size:0.82rem;color:#a9adff;margin-bottom:10px;transition:color .3s}
+  .cs-hash{color:#46d39a}
+  .cs-demo{font-weight:800;font-size:1.1rem;padding:10px;border-radius:8px;background:rgba(255,255,255,0.04);transition:color .4s,background .4s}
+  .cs-note{margin-top:14px;background:#0b0b14;border:1px solid rgba(255,255,255,0.1);border-radius:10px;
+    padding:10px 12px;font-size:0.82rem;color:#cdd6f4;text-align:center;min-height:42px}
+
+  @media (prefers-reduced-motion: reduce){
+    .mf-card,.cs-demo,.cs-cls{transition:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-orbs"><div class="orb"></div><div class="orb"></div><div class="orb"></div></div>
+<div class="progress-track"><div class="progress-bar"></div></div>
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<button class="menu-toggle" onclick="openSidebar()" aria-label="Abrir menu">☰</button>
+<div class="sidebar-overlay"></div>
+<nav class="sidebar-nav">
+  <button class="sidebar-close" onclick="closeSidebar()" aria-label="Fechar">✕</button>
+  <div class="sidebar-header">
+    <h3>🎨 Cap 05 · Listas & estilo</h3>
+    <a class="sidebar-back" href="../../index.html">← Voltar ao hub</a>
+  </div>
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Neste capítulo</div>
+    <a class="sidebar-link" onclick="goTo('aquecimento')"><span class="dot" style="background:var(--accent5)"></span> Aquecimento</a>
+    <a class="sidebar-link" onclick="goTo('map')"><span class="dot" style="background:var(--react)"></span> 🏭 Listas com .map()</a>
+    <a class="sidebar-link" onclick="goTo('key')"><span class="dot" style="background:var(--js)"></span> 🔑 A prop key</a>
+    <a class="sidebar-link" onclick="goTo('imagens')"><span class="dot" style="background:var(--json)"></span> 🖼️ Imagens em React</a>
+    <a class="sidebar-link" onclick="goTo('css')"><span class="dot" style="background:var(--vite)"></span> 🎨 CSS Modules</a>
+    <a class="sidebar-link" onclick="goTo('bugzilla')"><span class="dot" style="background:var(--bug)"></span> BugZilla 🐛</a>
+    <a class="sidebar-link" onclick="goTo('treino')"><span class="dot" style="background:var(--react)"></span> ⌨️ Treino: Mini-loja</a>
+    <a class="sidebar-link" onclick="goTo('resumo')"><span class="dot" style="background:var(--accent7)"></span> Resumo</a>
+  </div>
+</nav>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section class="hero">
+  <div class="hero-icons" data-motion="float"><img src="../../assets/svg/react.svg" alt="React" width="46" height="46" style="vertical-align:middle"> 🏭 🎨</div>
+  <span class="hero-badge react">Capítulo 05 · Curso Fullstack</span>
+  <h1>Listas <span style="color:var(--react)">&amp; estilo</span></h1>
+  <p class="subtitle">
+    No Cap 4 você repetiu <code>&lt;CartaoProduto /&gt;</code> na mão pra cada produto. Agora você vai
+    gerar a lista inteira com <strong style="color:var(--react)">uma linha</strong> (<code>.map()</code>),
+    colocar <strong>imagens</strong> e deixar tudo bonito com <strong style="color:var(--vite)">CSS Modules</strong>.
+  </p>
+  <div class="hero-stack">
+    <span class="stack-chip react">🏭 .map()</span>
+    <span class="stack-chip js">🔑 key</span>
+    <span class="stack-chip node">🖼️ imagens</span>
+    <span class="stack-chip react">🎨 CSS Modules</span>
+  </div>
+</section>
+
+<div class="container">
+
+  <!-- ═══════════════ AQUECIMENTO ═══════════════ -->
+  <section class="step-section" id="aquecimento">
+    <div class="step-header">
+      <div class="step-number sn-yellow">🤔</div>
+      <div>
+        <div class="step-title">Aquecimento</div>
+        <div class="step-sub">Retomando a Mini-loja do Cap 4</div>
+      </div>
+    </div>
+    <div class="quiz">
+      <div class="quiz-q"><span class="q-emoji">1️⃣</span> No fim do Cap 4 você tinha um array <code>produtos</code> e escrevia um <code>&lt;CartaoProduto /&gt;</code> na mão por item. Se chegarem 50 produtos da API, qual o melhor jeito?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz(this,false)">Copiar e colar &lt;CartaoProduto /&gt; 50 vezes</button>
+        <button class="quiz-opt" data-correct="true" onclick="checkQuiz(this,true)">Uma instrução que gera um card para cada item da lista</button>
+        <button class="quiz-opt" onclick="checkQuiz(this,false)">Criar 50 componentes diferentes</button>
+        <button class="quiz-opt" onclick="checkQuiz(this,false)">Não dá, React não faz listas</button>
+      </div>
+      <div class="quiz-feedback" data-correct="Exato! Isso tem nome: .map()" data-wrong="Pensa em automatizar…" data-explain="Copiar e colar não escala — e os dados vêm da API, você nem sabe quantos são. O React renderiza listas transformando o array em JSX com o método .map(), que você já conhece do Cap 2. É o tema central deste capítulo."></div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ MAP ═══════════════ -->
+  <section class="step-section" id="map">
+    <div class="step-header">
+      <div class="step-number sn-react">🏭</div>
+      <div>
+        <div class="step-title">Listas com .map() — um card por item</div>
+        <div class="step-sub">O array vira JSX automaticamente</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="analogy">
+        <div class="analogy-title">🏭 A fábrica de carimbos</div>
+        <p>Você já tem o <strong>molde</strong> (o componente <code>CartaoProduto</code>) e a <strong>lista
+        de pedidos</strong> (o array <code>produtos</code>). O <code>.map()</code> é a <strong>esteira</strong>:
+        ele passa item por item da lista pelo molde e cospe um card pronto pra cada um. 3 produtos? 3 cards.
+        50 produtos? 50 cards. <strong>O mesmo código.</strong></p>
+      </div>
+
+      <p>Você já viu o <code>.map()</code> no Cap 2: ele <strong>transforma cada item</strong> de um array e
+      devolve um array novo. A novidade é que, em React, cada item é transformado em <strong>JSX</strong>:</p>
+
+      <div class="warning">
+        <span class="warning-icon">⌨️</span>
+        <div class="warning-content">
+          Volta a aparecer a <strong>arrow function</strong> <code>(p) =&gt; ...</code> do Cap 2. Lembre: a
+          setinha <code>=&gt;</code> é o <kbd>=</kbd> seguido de <kbd>&gt;</kbd>. Sua IDE pode
+          <strong>desenhar</strong> <code>⇒</code>, mas você digita os dois caracteres separados.
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">import</span> <span class="var">CartaoProduto</span> <span class="kw">from</span> <span class="st">"./CartaoProduto"</span>
+
+<span class="kw">const</span> <span class="var">produtos</span> <span class="op">=</span> [
+  <span class="punc">{</span> <span class="var">id</span><span class="punc">:</span> <span class="num">1</span>, <span class="var">nome</span><span class="punc">:</span> <span class="st">"Teclado Mecânico"</span>, <span class="var">preco</span><span class="punc">:</span> <span class="num">320</span> <span class="punc">}</span>,
+  <span class="punc">{</span> <span class="var">id</span><span class="punc">:</span> <span class="num">2</span>, <span class="var">nome</span><span class="punc">:</span> <span class="st">"Monitor 27 pol"</span>, <span class="var">preco</span><span class="punc">:</span> <span class="num">1450</span> <span class="punc">}</span>,
+  <span class="punc">{</span> <span class="var">id</span><span class="punc">:</span> <span class="num">3</span>, <span class="var">nome</span><span class="punc">:</span> <span class="st">"Cadeira Gamer"</span>, <span class="var">preco</span><span class="punc">:</span> <span class="num">980</span> <span class="punc">}</span>,
+]<span class="punc">;</span>
+
+<span class="kw">function</span> <span class="fn">App</span>() <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span>
+      {<span class="var">produtos</span>.<span class="fn">map</span>((<span class="var">p</span>) <span class="op">=&gt;</span> (
+        <span class="tag">&lt;</span><span class="cmp">CartaoProduto</span> <span class="atr">key</span><span class="op">=</span>{<span class="var">p</span>.<span class="var">id</span>} <span class="atr">nome</span><span class="op">=</span>{<span class="var">p</span>.<span class="var">nome</span>} <span class="atr">preco</span><span class="op">=</span>{<span class="var">p</span>.<span class="var">preco</span>} <span class="tag">/&gt;</span>
+      ))}
+    <span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">App</span></pre>
+      </div>
+
+      <div class="tip">
+        <span class="tip-icon">🧠</span>
+        <div class="tip-content">
+          Leia em voz alta: "<em>para cada produto <code>p</code> da lista, devolva um
+          <code>&lt;CartaoProduto&gt;</code> com os dados dele</em>". O <code>{ }</code> em volta do
+          <code>.map()</code> é o de sempre: "aqui dentro tem JavaScript". E note que passamos as props
+          (<code>nome</code>, <code>preco</code>) pegando de cada <code>p</code>.
+        </div>
+      </div>
+
+      <p style="color:var(--text-dim);margin:6px 0 4px">Veja a esteira rodando: o array entra, e sai um card
+      por item. Aperte <strong>+ adicionar produto</strong> e repare que o <strong>código não muda</strong> 👇</p>
+
+      <div class="mapfac" id="mapfactory">
+        <div class="mf-grid">
+          <div class="mf-col">
+            <div class="mf-label">📦 array produtos (entra)</div>
+            <div class="mf-in" id="mf-in"></div>
+          </div>
+          <div class="mf-arrow">⚙️ .map() ➡️</div>
+          <div class="mf-col">
+            <div class="mf-label">🖼️ cards na tela (sai)</div>
+            <div class="mf-out" id="mf-out"></div>
+          </div>
+        </div>
+        <div class="mf-controls">
+          <button id="mf-add">+ adicionar produto</button>
+          <button id="mf-run">↻ rodar .map()</button>
+          <span id="mf-note">1 item entra = 1 card sai. A lista cresce, seu código continua o mesmo.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ KEY ═══════════════ -->
+  <section class="step-section" id="key">
+    <div class="step-header">
+      <div class="step-number sn-js">🔑</div>
+      <div>
+        <div class="step-title">A prop key — a etiqueta de cada item</div>
+        <div class="step-sub">Por que o React pede uma e o que acontece sem ela</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="analogy">
+        <div class="analogy-title">🔑 As plaquinhas do guarda-volumes</div>
+        <p>Quando você renderiza uma lista, o React precisa <strong>identificar cada item</strong> pra saber
+        quem é quem quando a lista muda (um produto sai, outro entra). A <code>key</code> é a
+        <strong>plaquinha</strong> de cada card — única e estável. Sem ela, o React se atrapalha e fica lento
+        (e te avisa no console com um aviso amarelo).</p>
+      </div>
+
+      <ul class="about-bullets">
+        <li><div>Use sempre um <strong>id único</strong> do próprio dado: <code>key={p.id}</code>. É o <code>id</code> que veio do banco/API — perfeito pra isso.</div></li>
+        <li><div>A <code>key</code> fica no <strong>elemento de fora</strong> do <code>.map()</code> (o <code>&lt;CartaoProduto&gt;</code>), não dentro do componente.</div></li>
+        <li><div><strong>Evite</strong> usar a posição (o índice) como key quando a lista pode mudar de ordem — dá bugs sutis. Prefira o <code>id</code>.</div></li>
+      </ul>
+
+      <div class="tip">
+        <span class="tip-icon">⚠️</span>
+        <div class="tip-content">
+          "Warning: Each child in a list should have a unique key prop." é <strong>o</strong> aviso mais
+          comum de quem começa com listas em React. Não é um erro que quebra a tela, mas conserte sempre:
+          adicione <code>key={p.id}</code>. O BugZilla volta nisso.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ IMAGENS ═══════════════ -->
+  <section class="step-section" id="imagens">
+    <div class="step-header">
+      <div class="step-number sn-mint">🖼️</div>
+      <div>
+        <div class="step-title">Imagens em React — onde colocar o arquivo</div>
+        <div class="step-sub">A pasta public/ × importar de src/assets</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p>Mostrar uma imagem é <code>&lt;img src=... alt=... /&gt;</code>, como no HTML. A pergunta é:
+      <strong>onde fica o arquivo</strong>? Em projeto Vite você tem dois caminhos:</p>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">Caminho A — pasta public/</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="cm">// arquivo em: public/teclado.jpg</span>
+<span class="cm">// referência pelo caminho absoluto (começa com /)</span>
+<span class="tag">&lt;img</span> <span class="atr">src</span><span class="op">=</span><span class="st">"/teclado.jpg"</span> <span class="atr">alt</span><span class="op">=</span><span class="st">"Teclado"</span> <span class="tag">/&gt;</span></pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">Caminho B — importar de src/assets</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="cm">// arquivo em: src/assets/teclado.jpg</span>
+<span class="kw">import</span> <span class="var">teclado</span> <span class="kw">from</span> <span class="st">"./assets/teclado.jpg"</span>
+
+<span class="cm">// usa a variável importada entre chaves</span>
+<span class="tag">&lt;img</span> <span class="atr">src</span><span class="op">=</span>{<span class="var">teclado</span>} <span class="atr">alt</span><span class="op">=</span><span class="st">"Teclado"</span> <span class="tag">/&gt;</span></pre>
+      </div>
+
+      <div class="concept">
+        <div class="concept-title">💡 Qual usar?</div>
+        <p><strong>public/</strong> é mais simples e bom para poucas imagens fixas (logo, favicon).
+        <strong>importar de src/assets</strong> deixa o Vite cuidar do arquivo (otimiza e avisa se você
+        apagar a imagem por engano) — é o preferido pra imagens do seu app. E quando a imagem vier
+        <strong>da API</strong> (Cap 7), o <code>src</code> será só a URL que veio nos dados:
+        <code>&lt;img src={p.imagem} /&gt;</code>.</p>
+      </div>
+
+      <p style="color:var(--text-dim);margin:6px 0 4px">Escolha onde você colocou o arquivo e veja se o
+      <code>&lt;img&gt;</code> <strong>acha</strong> a imagem 👇</p>
+
+      <div class="imgwhere" id="imgwhere">
+        <div class="iw-chips">
+          <button class="iw-chip" data-k="public">📁 public/</button>
+          <button class="iw-chip" data-k="import">📁 src/assets + import</button>
+          <button class="iw-chip" data-k="noimport">⚠️ src/assets SEM import</button>
+        </div>
+        <div class="iw-body">
+          <div class="iw-code" id="iw-code"></div>
+          <div class="iw-result" id="iw-result"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ CSS MODULES ═══════════════ -->
+  <section class="step-section" id="css">
+    <div class="step-header">
+      <div class="step-number sn-react" style="background:linear-gradient(135deg,var(--vite),#8b91ff)">🎨</div>
+      <div>
+        <div class="step-title">CSS Modules — estilo que não vaza</div>
+        <div class="step-sub">Cada componente com seu CSS, sem um bagunçar o outro</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="analogy">
+        <div class="analogy-title">🏷️ Nomes que viram únicos sozinhos</div>
+        <p>Num CSS comum, se dois arquivos têm <code>.cartao</code>, eles <strong>colidem</strong> — o último
+        a carregar vence e bagunça o outro. O <strong style="color:var(--vite)">CSS Module</strong> resolve
+        isso: você escreve <code>.cartao</code> normal, mas o Vite <strong>renomeia pra um nome único</strong>
+        nos bastidores (tipo <code>cartao_a1b2</code>). Cada componente fica na sua bolha.</p>
+      </div>
+
+      <p>É só seguir duas convenções: o arquivo termina em <code>.module.css</code> e você
+      <strong>importa</strong> ele como um objeto:</p>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/CartaoProduto.module.css</span><span class="lang-badge css">CSS</span></div>
+<pre><span class="sel">.cartao</span> <span class="punc">{</span>
+  <span class="prop">border</span><span class="punc">:</span> <span class="num">1</span><span class="unit">px</span> <span class="val">solid</span> <span class="val">#e2e8f0</span><span class="punc">;</span>
+  <span class="prop">border-radius</span><span class="punc">:</span> <span class="num">12</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">padding</span><span class="punc">:</span> <span class="num">14</span><span class="unit">px</span><span class="punc">;</span>
+<span class="punc">}</span>
+<span class="sel">.preco</span> <span class="punc">{</span>
+  <span class="prop">color</span><span class="punc">:</span> <span class="val">#16a34a</span><span class="punc">;</span>
+  <span class="prop">font-weight</span><span class="punc">:</span> <span class="num">700</span><span class="punc">;</span>
+<span class="punc">}</span></pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/CartaoProduto.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">import</span> <span class="var">styles</span> <span class="kw">from</span> <span class="st">"./CartaoProduto.module.css"</span>
+
+<span class="kw">function</span> <span class="fn">CartaoProduto</span>(<span class="punc">{</span> <span class="var">nome</span>, <span class="var">preco</span> <span class="punc">}</span>) <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div</span> <span class="atr">className</span><span class="op">=</span>{<span class="var">styles</span>.<span class="var">cartao</span>}<span class="tag">&gt;</span>
+      <span class="tag">&lt;h2&gt;</span>{<span class="var">nome</span>}<span class="tag">&lt;/h2&gt;</span>
+      <span class="tag">&lt;p</span> <span class="atr">className</span><span class="op">=</span>{<span class="var">styles</span>.<span class="var">preco</span>}<span class="tag">&gt;</span>R$ {<span class="var">preco</span>}<span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">CartaoProduto</span></pre>
+      </div>
+
+      <div class="warning">
+        <span class="warning-icon">🔤</span>
+        <div class="warning-content">
+          Repare na mudança: não é mais <code>className="cartao"</code> (texto), e sim
+          <code>className={styles.cartao}</code> (JavaScript entre chaves — você pega a classe do objeto
+          <code>styles</code> que importou). Esquecer as chaves aqui é tropeço clássico.
+        </div>
+      </div>
+
+      <p style="color:var(--text-dim);margin:6px 0 4px">Dois componentes diferentes, ambos com a classe
+      <code>.titulo</code>. Veja o que acontece com CSS comum × CSS Module 👇</p>
+
+      <div class="cssscope" id="cssscope">
+        <div class="cs-chips">
+          <button class="cs-chip" data-mode="global">CSS global (comum)</button>
+          <button class="cs-chip" data-mode="module">CSS Module</button>
+        </div>
+        <div class="cs-stage">
+          <div class="cs-card">
+            <div class="cs-cls" id="cs-cls-a">.titulo</div>
+            <div class="cs-demo" id="cs-demo-a">Cabeçalho</div>
+          </div>
+          <div class="cs-card">
+            <div class="cs-cls" id="cs-cls-b">.titulo</div>
+            <div class="cs-demo" id="cs-demo-b">Card</div>
+          </div>
+        </div>
+        <div class="cs-note" id="cs-note">Escolha um modo acima…</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ BUGZILLA ═══════════════ -->
+  <section class="step-section" id="bugzilla">
+    <div class="step-header">
+      <div class="step-number sn-red">🐛</div>
+      <div>
+        <div class="step-title">BugZilla ataca as listas!</div>
+        <div class="step-sub">Os tropeços de quem está aprendendo .map() e estilo</div>
+      </div>
+    </div>
+
+    <div class="bug-box">
+      <span class="bug-icon">🐛</span>
+      <div class="bug-content">
+        <strong>Bug 1 — esqueceu a <code>key</code>.</strong> "Each child in a list should have a unique key
+        prop." <strong>Conserto:</strong> ponha <code>key={p.id}</code> no elemento de fora do
+        <code>.map()</code>.
+      </div>
+    </div>
+
+    <div class="bug-box" style="margin-top:14px">
+      <span class="bug-icon">🐛</span>
+      <div class="bug-content">
+        <strong>Bug 2 — o <code>.map()</code> não devolve nada.</strong> Usando <code>{ }</code> com chaves no
+        corpo da função, você precisa do <code>return</code>: <code>p =&gt; { return &lt;Card /&gt; }</code>.
+        Sem ele, sai a lista vazia. <strong>Macete:</strong> use parênteses <code>p =&gt; ( &lt;Card /&gt; )</code>
+        — eles já "retornam" o que está dentro.
+      </div>
+    </div>
+
+    <div class="bug-box" style="margin-top:14px">
+      <span class="bug-icon">🐛</span>
+      <div class="bug-content">
+        <strong>Bug 3 — <code>className="styles.cartao"</code> (com aspas).</strong> Aí vira o texto literal
+        "styles.cartao", e o estilo não aplica. <strong>Conserto:</strong> é JavaScript, então chaves:
+        <code>className={styles.cartao}</code>.
+      </div>
+    </div>
+
+    <div class="bug-box" style="margin-top:14px">
+      <span class="bug-icon">🐛</span>
+      <div class="bug-content">
+        <strong>Bug 4 — imagem não aparece (caminho errado).</strong> Em <code>src/assets</code> você
+        <strong>precisa importar</strong> (<code>import x from "./assets/x.jpg"</code>); só escrever
+        <code>src="./assets/x.jpg"</code> costuma quebrar depois do build. Em <code>public/</code>, o caminho
+        começa na raiz: <code>src="/x.jpg"</code>.
+      </div>
+    </div>
+
+    <div class="toggler" style="margin-top:14px">
+      <div class="toggler-header" onclick="toggleSection(this)">
+        <span>👀 Macete de ouro do BugZilla</span><span class="toggler-arrow">▼</span>
+      </div>
+      <div class="toggler-body">
+        <div class="tip" style="margin:0">
+          <span class="tip-icon">🔦</span>
+          <div class="tip-content">
+            Lista vazia ou sem estilo? Faça <code>console.log(produtos)</code> (a lista chegou mesmo?) e
+            <code>console.log(styles)</code> (saiu um objeto com suas classes?). E leia o
+            <strong>aviso amarelo</strong> do console — o da <code>key</code> aponta o caminho. Quase todo
+            bug de lista é uma das quatro coisas acima.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ PROGRAMAÇÃO É PRÁTICA ═══════════════ -->
+  <section class="step-section">
+    <div class="card" style="text-align:center;background:linear-gradient(135deg,rgba(97,218,251,0.10),rgba(100,108,255,0.06));border-color:rgba(97,218,251,0.22)">
+      <div style="font-family:'Caveat',cursive;font-size:clamp(2rem,6vw,3rem);color:var(--react);font-weight:700;line-height:1.1">
+        PROGRAMAÇÃO É PRÁTICA 💪
+      </div>
+      <p class="text-dim" style="max-width:560px;margin:10px auto 0">
+        Abra a sua Mini-loja do Cap 4 no VSCode (com o <code>npm run dev</code> rodando) e
+        <strong style="color:var(--text)">evolua</strong> ela: lista com <code>.map()</code>, imagem nos
+        cards e um visual de loja de verdade com CSS Modules. 🛒
+      </p>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ TREINO ENCADEADO ═══════════════ -->
+  <section class="step-section" id="treino">
+    <div class="step-header">
+      <div class="step-number sn-react">⌨️</div>
+      <div>
+        <div class="step-title">Treino — a Mini-loja ganha lista, imagem e estilo</div>
+        <div class="step-sub">Continua o projeto do Cap 4. Faça com o prof, depois voe sozinho(a)</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="warning">
+        <span class="warning-icon">▶️</span>
+        <div class="warning-content">
+          Use a <strong>mesma pasta</strong> <code>mini-loja</code> do Cap 4 (com <code>npm run dev</code>
+          rodando). Vamos partir do array de produtos no <code>App.jsx</code> e do componente
+          <code>CartaoProduto</code> com props. O 👀 mostra a solução e o <strong>mini-navegador</strong> o resultado.
+        </div>
+      </div>
+
+      <!-- trilha de progresso -->
+      <div class="arena-track">
+        <span class="at-dot lv1">1</span><span class="at-arrow">→</span>
+        <span class="at-dot lv1">2</span><span class="at-arrow">→</span>
+        <span class="at-dot lv2">3</span><span class="at-arrow">→</span>
+        <span class="at-dot lv2">4</span><span class="at-arrow">→</span>
+        <span class="at-dot lv3">5</span><span class="at-arrow">→</span>
+        <span class="at-dot lv3">🏆</span>
+      </div>
+
+      <!-- 1. guided — trocar cards na mão por .map() -->
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">👨‍🏫</span><div>
+          <div class="exercise-title">Passo 1 — apague os cards na mão, use .map() (com o prof)</div>
+          <div class="exercise-sub">A recompensa do Cap 4: uma linha no lugar de várias</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>No <code>App.jsx</code>, apague os <code>&lt;CartaoProduto /&gt;</code> escritos um a um e gere a lista com <code>produtos.map(...)</code>. Não esqueça da <code>key</code>!</p></div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">function</span> <span class="fn">App</span>() <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span>
+      <span class="tag">&lt;</span><span class="cmp">Cabecalho</span> <span class="tag">/&gt;</span>
+      {<span class="var">produtos</span>.<span class="fn">map</span>((<span class="var">p</span>) <span class="op">=&gt;</span> (
+        <span class="tag">&lt;</span><span class="cmp">CartaoProduto</span> <span class="atr">key</span><span class="op">=</span>{<span class="var">p</span>.<span class="var">id</span>} <span class="atr">nome</span><span class="op">=</span>{<span class="var">p</span>.<span class="var">nome</span>} <span class="atr">preco</span><span class="op">=</span>{<span class="var">p</span>.<span class="var">preco</span>} <span class="tag">/&gt;</span>
+      ))}
+    <span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span></pre>
+        </div>
+        <p class="text-dim" style="font-size:0.82rem;margin:10px 0 4px">No navegador 👇</p>
+        <div class="mini-browser" data-url="localhost:5173">
+<script type="text/html" data-mp="html">
+  <header style="font-family:sans-serif"><h1>Mini-loja 🛒</h1></header>
+  <div style="font-family:sans-serif;display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+    <div style="border:1px solid #ddd;border-radius:10px;padding:12px"><h2 style="margin:0 0 4px">Teclado Mecânico</h2><p style="margin:0">R$ 320</p></div>
+    <div style="border:1px solid #ddd;border-radius:10px;padding:12px"><h2 style="margin:0 0 4px">Monitor 27 pol</h2><p style="margin:0">R$ 1450</p></div>
+    <div style="border:1px solid #ddd;border-radius:10px;padding:12px"><h2 style="margin:0 0 4px">Cadeira Gamer</h2><p style="margin:0">R$ 980</p></div>
+  </div>
+</script>
+        </div>
+      </div>
+
+      <!-- 2. solo — adicionar mais produtos ao array -->
+      <div class="exercise solo">
+        <div class="exercise-header"><span class="exercise-icon">🧑‍💻</span><div>
+          <div class="exercise-title">Passo 2 — cresça a lista (sozinho/a)</div>
+          <div class="exercise-sub">Prove que o .map() faz o trabalho</div></div>
+        </div>
+        <div class="drill-tags"><span class="drill-level lv1"><span class="stars">★</span> fácil</span><span class="drill-tag">array</span></div>
+        <div class="concept"><div class="concept-title">💡 Dica</div><p>Adicione mais <strong>2 produtos</strong> ao array <code>produtos</code> (com <code>id</code> únicos!). Não toque no JSX — só no array. Salve e veja os cards aparecerem sozinhos.</p></div>
+        <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Tenta antes!</strong> Esse é o ponto: você muda só os dados, o <code>.map()</code> cuida da tela.</div></div>
+        <div class="toggler">
+          <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — Ver solução</span><span class="toggler-arrow">▼</span></div>
+          <div class="toggler-body"><div class="code-block">
+            <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx (só o array)</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">const</span> <span class="var">produtos</span> <span class="op">=</span> [
+  <span class="punc">{</span> <span class="var">id</span><span class="punc">:</span> <span class="num">1</span>, <span class="var">nome</span><span class="punc">:</span> <span class="st">"Teclado Mecânico"</span>, <span class="var">preco</span><span class="punc">:</span> <span class="num">320</span> <span class="punc">}</span>,
+  <span class="punc">{</span> <span class="var">id</span><span class="punc">:</span> <span class="num">2</span>, <span class="var">nome</span><span class="punc">:</span> <span class="st">"Monitor 27 pol"</span>, <span class="var">preco</span><span class="punc">:</span> <span class="num">1450</span> <span class="punc">}</span>,
+  <span class="punc">{</span> <span class="var">id</span><span class="punc">:</span> <span class="num">3</span>, <span class="var">nome</span><span class="punc">:</span> <span class="st">"Cadeira Gamer"</span>, <span class="var">preco</span><span class="punc">:</span> <span class="num">980</span> <span class="punc">}</span>,
+  <span class="punc">{</span> <span class="var">id</span><span class="punc">:</span> <span class="num">4</span>, <span class="var">nome</span><span class="punc">:</span> <span class="st">"Mouse Gamer"</span>, <span class="var">preco</span><span class="punc">:</span> <span class="num">180</span> <span class="punc">}</span>,
+  <span class="punc">{</span> <span class="var">id</span><span class="punc">:</span> <span class="num">5</span>, <span class="var">nome</span><span class="punc">:</span> <span class="st">"Headset"</span>, <span class="var">preco</span><span class="punc">:</span> <span class="num">250</span> <span class="punc">}</span>,
+]<span class="punc">;</span></pre>
+          </div></div>
+        </div>
+      </div>
+
+      <!-- 3. guided — imagem no card -->
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">👨‍🏫</span><div>
+          <div class="exercise-title">Passo 3 — uma imagem em cada card (com o prof)</div>
+          <div class="exercise-sub">Prop nova + img + dados da lista</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>Adicione um campo <code>imagem</code> (uma URL) em cada produto do array, receba a prop <code>imagem</code> no <code>CartaoProduto</code> e mostre com <code>&lt;img&gt;</code>. Passe a prop no <code>.map()</code>.</p></div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/CartaoProduto.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">function</span> <span class="fn">CartaoProduto</span>(<span class="punc">{</span> <span class="var">nome</span>, <span class="var">preco</span>, <span class="var">imagem</span> <span class="punc">}</span>) <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div</span> <span class="atr">className</span><span class="op">=</span><span class="st">"cartao"</span><span class="tag">&gt;</span>
+      <span class="tag">&lt;img</span> <span class="atr">src</span><span class="op">=</span>{<span class="var">imagem</span>} <span class="atr">alt</span><span class="op">=</span>{<span class="var">nome</span>} <span class="atr">width</span><span class="op">=</span><span class="st">"120"</span> <span class="tag">/&gt;</span>
+      <span class="tag">&lt;h2&gt;</span>{<span class="var">nome</span>}<span class="tag">&lt;/h2&gt;</span>
+      <span class="tag">&lt;p&gt;</span>R$ {<span class="var">preco</span>}<span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span></pre>
+        </div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx (no .map e no array)</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="cm">// no array, cada produto ganha um campo imagem:</span>
+<span class="punc">{</span> <span class="var">id</span><span class="punc">:</span> <span class="num">1</span>, <span class="var">nome</span><span class="punc">:</span> <span class="st">"Teclado Mecânico"</span>, <span class="var">preco</span><span class="punc">:</span> <span class="num">320</span>, <span class="var">imagem</span><span class="punc">:</span> <span class="st">"/teclado.jpg"</span> <span class="punc">}</span>,
+
+<span class="cm">// no .map, passe a prop imagem também:</span>
+<span class="tag">&lt;</span><span class="cmp">CartaoProduto</span> <span class="atr">key</span><span class="op">=</span>{<span class="var">p</span>.<span class="var">id</span>} <span class="atr">nome</span><span class="op">=</span>{<span class="var">p</span>.<span class="var">nome</span>} <span class="atr">preco</span><span class="op">=</span>{<span class="var">p</span>.<span class="var">preco</span>} <span class="atr">imagem</span><span class="op">=</span>{<span class="var">p</span>.<span class="var">imagem</span>} <span class="tag">/&gt;</span></pre>
+        </div>
+        <p class="text-dim" style="font-size:0.82rem;margin:10px 0 4px">No navegador 👇</p>
+        <div class="mini-browser" data-url="localhost:5173">
+<script type="text/html" data-mp="html">
+  <div style="font-family:sans-serif;display:flex;gap:8px;flex-wrap:wrap">
+    <div style="border:1px solid #ddd;border-radius:10px;padding:12px;text-align:center"><div style="font-size:40px">⌨️</div><h2 style="margin:4px 0">Teclado Mecânico</h2><p style="margin:0">R$ 320</p></div>
+    <div style="border:1px solid #ddd;border-radius:10px;padding:12px;text-align:center"><div style="font-size:40px">🖥️</div><h2 style="margin:4px 0">Monitor 27 pol</h2><p style="margin:0">R$ 1450</p></div>
+  </div>
+</script>
+        </div>
+      </div>
+
+      <!-- 4. solo — CSS Module -->
+      <div class="exercise solo">
+        <div class="exercise-header"><span class="exercise-icon">🧑‍💻</span><div>
+          <div class="exercise-title">Passo 4 — deixe o card bonito com CSS Module (sozinho/a)</div>
+          <div class="exercise-sub">Cria o .module.css e liga no componente</div></div>
+        </div>
+        <div class="drill-tags"><span class="drill-level lv2"><span class="stars">★★</span> médio</span><span class="drill-tag">CSS Modules</span><span class="drill-tag">className={ }</span></div>
+        <div class="concept"><div class="concept-title">💡 Dica</div><p>Crie <code>src/CartaoProduto.module.css</code> com a classe <code>.cartao</code> (borda, cantos arredondados, padding). No <code>CartaoProduto.jsx</code>, importe <code>styles</code> e troque <code>className="cartao"</code> por <code>className={styles.cartao}</code>.</p></div>
+        <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Tenta primeiro!</strong> Você viu o molde inteiro na seção "CSS Modules" — adapte pro seu card.</div></div>
+        <div class="toggler">
+          <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — Ver solução</span><span class="toggler-arrow">▼</span></div>
+          <div class="toggler-body">
+            <div class="code-block">
+              <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/CartaoProduto.module.css</span><span class="lang-badge css">CSS</span></div>
+<pre><span class="sel">.cartao</span> <span class="punc">{</span>
+  <span class="prop">border</span><span class="punc">:</span> <span class="num">1</span><span class="unit">px</span> <span class="val">solid</span> <span class="val">#e2e8f0</span><span class="punc">;</span>
+  <span class="prop">border-radius</span><span class="punc">:</span> <span class="num">12</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">padding</span><span class="punc">:</span> <span class="num">14</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">text-align</span><span class="punc">:</span> <span class="val">center</span><span class="punc">;</span>
+<span class="punc">}</span></pre>
+            </div>
+            <div class="code-block">
+              <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/CartaoProduto.jsx (topo + div)</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">import</span> <span class="var">styles</span> <span class="kw">from</span> <span class="st">"./CartaoProduto.module.css"</span>
+<span class="cm">// ...</span>
+<span class="tag">&lt;div</span> <span class="atr">className</span><span class="op">=</span>{<span class="var">styles</span>.<span class="var">cartao</span>}<span class="tag">&gt;</span></pre>
+            </div>
+            <div class="mini-browser" data-url="localhost:5173">
+<script type="text/html" data-mp="html">
+  <div style="font-family:sans-serif;display:flex;gap:10px;flex-wrap:wrap">
+    <div style="border:1px solid #e2e8f0;border-radius:12px;padding:14px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.06)"><div style="font-size:40px">⌨️</div><h2 style="margin:4px 0">Teclado Mecânico</h2><p style="margin:0;color:#16a34a;font-weight:700">R$ 320</p></div>
+    <div style="border:1px solid #e2e8f0;border-radius:12px;padding:14px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.06)"><div style="font-size:40px">🖥️</div><h2 style="margin:4px 0">Monitor 27 pol</h2><p style="margin:0;color:#16a34a;font-weight:700">R$ 1450</p></div>
+  </div>
+</script>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. guided — grid na loja -->
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">👨‍🏫</span><div>
+          <div class="exercise-title">Passo 5 — vitrine de verdade (com o prof)</div>
+          <div class="exercise-sub">Um CSS Module no App pra alinhar os cards</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>Crie <code>src/App.module.css</code> com uma classe <code>.vitrine</code> usando <code>display: flex</code> e <code>gap</code>. No <code>App.jsx</code>, importe e ponha a <code>&lt;div className={styles.vitrine}&gt;</code> em volta do <code>.map()</code>.</p></div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.module.css</span><span class="lang-badge css">CSS</span></div>
+<pre><span class="sel">.vitrine</span> <span class="punc">{</span>
+  <span class="prop">display</span><span class="punc">:</span> <span class="val">flex</span><span class="punc">;</span>
+  <span class="prop">flex-wrap</span><span class="punc">:</span> <span class="val">wrap</span><span class="punc">;</span>
+  <span class="prop">gap</span><span class="punc">:</span> <span class="num">16</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">justify-content</span><span class="punc">:</span> <span class="val">center</span><span class="punc">;</span>
+<span class="punc">}</span></pre>
+        </div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">import</span> <span class="var">styles</span> <span class="kw">from</span> <span class="st">"./App.module.css"</span>
+<span class="cm">// ...</span>
+<span class="tag">&lt;div</span> <span class="atr">className</span><span class="op">=</span>{<span class="var">styles</span>.<span class="var">vitrine</span>}<span class="tag">&gt;</span>
+  {<span class="var">produtos</span>.<span class="fn">map</span>((<span class="var">p</span>) <span class="op">=&gt;</span> (
+    <span class="tag">&lt;</span><span class="cmp">CartaoProduto</span> <span class="atr">key</span><span class="op">=</span>{<span class="var">p</span>.<span class="var">id</span>} <span class="atr">nome</span><span class="op">=</span>{<span class="var">p</span>.<span class="var">nome</span>} <span class="atr">preco</span><span class="op">=</span>{<span class="var">p</span>.<span class="var">preco</span>} <span class="atr">imagem</span><span class="op">=</span>{<span class="var">p</span>.<span class="var">imagem</span>} <span class="tag">/&gt;</span>
+  ))}
+<span class="tag">&lt;/div&gt;</span></pre>
+        </div>
+        <div class="mini-browser" data-url="localhost:5173">
+<script type="text/html" data-mp="html">
+  <header style="font-family:sans-serif;text-align:center"><h1>Mini-loja 🛒</h1></header>
+  <div style="font-family:sans-serif;display:flex;flex-wrap:wrap;gap:16px;justify-content:center">
+    <div style="border:1px solid #e2e8f0;border-radius:12px;padding:14px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.06)"><div style="font-size:40px">⌨️</div><h2 style="margin:4px 0">Teclado Mecânico</h2><p style="margin:0;color:#16a34a;font-weight:700">R$ 320</p></div>
+    <div style="border:1px solid #e2e8f0;border-radius:12px;padding:14px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.06)"><div style="font-size:40px">🖥️</div><h2 style="margin:4px 0">Monitor 27 pol</h2><p style="margin:0;color:#16a34a;font-weight:700">R$ 1450</p></div>
+    <div style="border:1px solid #e2e8f0;border-radius:12px;padding:14px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.06)"><div style="font-size:40px">🪑</div><h2 style="margin:4px 0">Cadeira Gamer</h2><p style="margin:0;color:#16a34a;font-weight:700">R$ 980</p></div>
+  </div>
+</script>
+        </div>
+        <div class="tip" style="margin-top:12px">
+          <span class="tip-icon">🔮</span>
+          <div class="tip-content">
+            Sua loja já tem cara de loja! Mas os dados ainda estão num array fixo no código. No
+            <strong>Cap 7</strong> a gente apaga o <code>const produtos = [...]</code> e busca tudo da
+            <strong>sua API</strong> com <code>fetch</code> dentro do <code>useEffect</code>. Antes disso, no
+            <strong>Cap 6</strong>, sua loja vai ganhar <strong>interatividade</strong> (botões que mudam a tela). 🚀
+          </div>
+        </div>
+      </div>
+
+      <!-- desafio para casa -->
+      <div class="exercise home" style="margin-top:18px">
+        <div class="exercise-header"><span class="exercise-icon">🏠</span><div>
+          <div class="exercise-title">Desafio para Casa — selo de "caro"</div>
+          <div class="exercise-sub">Junta CSS Module + condição no JSX</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">💡 Missão</div><p>No <code>CartaoProduto</code>, quando <code>preco &gt;= 1000</code>, mostre um selo <code>💎 Premium</code>. Dica: dá pra fazer com <code>{preco &gt;= 1000 &amp;&amp; &lt;span&gt;💎 Premium&lt;/span&gt;}</code> dentro do JSX. Crie uma classe no CSS Module pro selo. Traga no próximo sábado! 💸</p></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ RESUMO ═══════════════ -->
+  <section class="step-section" id="resumo">
+    <div class="step-header">
+      <div class="step-number sn-mint">🎒</div>
+      <div>
+        <div class="step-title">O que você leva deste capítulo</div>
+        <div class="step-sub">Sua loja já mostra muitos produtos, com estilo</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <ul class="about-bullets">
+        <li><div><strong>.map():</strong> transforma o array em JSX — <code>{produtos.map((p) =&gt; &lt;Card ... /&gt;)}</code>. Uma linha gera a lista toda.</div></li>
+        <li><div><strong>key:</strong> a etiqueta única de cada item — <code>key={p.id}</code>, sempre no elemento de fora do <code>.map()</code>.</div></li>
+        <li><div><strong>Imagens:</strong> <code>public/</code> (caminho <code>"/img.jpg"</code>) ou <code>import</code> de <code>src/assets</code> (<code>src={img}</code>).</div></li>
+        <li><div><strong>CSS Modules:</strong> arquivo <code>.module.css</code> + <code>import styles</code> + <code>className={styles.classe}</code> — estilo que não vaza.</div></li>
+      </ul>
+
+      <div class="quiz" style="margin-top:16px">
+        <div class="quiz-q"><span class="q-emoji">🎫</span> Quiz de saída: qual está <strong>certo</strong> pra renderizar a lista?</div>
+        <div class="quiz-options">
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">{produtos.map((p) =&gt; &lt;Card /&gt;)} sem key</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">className="styles.cartao"</button>
+          <button class="quiz-opt" data-correct="true" onclick="checkQuiz(this,true)">{produtos.map((p) =&gt; &lt;Card key={p.id} nome={p.nome} /&gt;)}</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">Copiar &lt;Card /&gt; uma vez por produto</button>
+        </div>
+        <div class="quiz-feedback" data-correct="Mandou bem! key + props vindas do .map()." data-wrong="Olha os 🐛 do BugZilla!" data-explain="O jeito certo combina .map() (gera um por item), key={p.id} (a etiqueta única) e as props pegando de cada p. className de Module vai entre chaves, nunca entre aspas."></div>
+      </div>
+
+      <div class="tip" style="margin-top:16px">
+        <span class="tip-icon">➡️</span>
+        <div class="tip-content">
+          <strong>No próximo capítulo (Cap 6):</strong> sua loja é linda, mas <em>parada</em> — nada
+          acontece quando você clica. Você vai aprender o <code>useState</code>: a memória do React que faz
+          a tela <strong>reagir</strong> (um carrinho que conta itens, um filtro que esconde produtos). É a
+          interatividade que você fazia na mão no Cap 3, agora do jeito React. 🚀
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:22px;display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+        <a href="../../index.html" style="display:inline-block;padding:14px 28px;background:var(--surface2);color:var(--text);font-weight:800;border-radius:50px;font-size:1rem;text-decoration:none;border:1px solid rgba(255,255,255,0.12)">
+          ← voltar ao hub
+        </a>
+        <a href="../06-react-state/index.html" style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg,var(--react),#2aa9c9);color:#06222b;font-weight:900;border-radius:50px;font-size:1rem;text-decoration:none;box-shadow:0 10px 28px rgba(97,218,251,0.35)">
+          Próximo: Cap 06 — useState ⚡ →
+        </a>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="footer">
+  Feito com <span class="heart">♥</span> pela <strong style="color:var(--text)">programa AI</strong> ·
+  <a href="../../index.html">Hub do curso</a> · Cap 05 — Listas & estilo
+</footer>
+
+<script src="../../shared/scripts.js" defer></script>
+<script src="../../shared/playground.js" defer></script>
+<script type="module" src="../../shared/motion-fx.js"></script>
+<script type="module">
+  // ── Motor das máquinas didáticas do Cap 05 ──
+  // Motion (CDN) dá o tempero quando carrega; se a internet da sala falhar,
+  // TUDO continua funcionando (transições CSS + Web Animations nativas).
+  let animate=null;
+  try{ ({animate}=await import('https://cdn.jsdelivr.net/npm/motion@11/+esm')); }catch(e){}
+  const onView=(el,fn)=>{ if(!el) return;
+    const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){fn();io.disconnect();}})},{threshold:.3});
+    io.observe(el); };
+
+  /* ════ 🏭 Fábrica do .map() ════ */
+  (()=>{
+    const root=document.getElementById('mapfactory'); if(!root) return;
+    const inEl=root.querySelector('#mf-in');
+    const outEl=root.querySelector('#mf-out');
+    const note=root.querySelector('#mf-note');
+    const addBtn=root.querySelector('#mf-add');
+    const runBtn=root.querySelector('#mf-run');
+    const base=[
+      {id:1,nome:'Teclado',preco:320},
+      {id:2,nome:'Monitor',preco:1450},
+      {id:3,nome:'Cadeira',preco:980},
+    ];
+    const extras=[
+      {id:4,nome:'Mouse',preco:180},
+      {id:5,nome:'Headset',preco:250},
+      {id:6,nome:'Webcam',preco:300},
+    ];
+    let prods=base.slice();
+    const renderIn=()=>{
+      inEl.innerHTML='';
+      prods.forEach(p=>{
+        const d=document.createElement('div'); d.className='mf-pill';
+        d.innerHTML='{ <span class="k">id</span>:'+p.id+', <span class="k">nome</span>:<span class="s">"'+p.nome+'"</span> }';
+        inEl.appendChild(d);
+      });
+    };
+    const renderOut=()=>{
+      outEl.innerHTML='';
+      prods.forEach((p,i)=>{
+        const c=document.createElement('div'); c.className='mf-card enter';
+        c.innerHTML='<span class="key">key='+p.id+'</span><h4>'+p.nome+'</h4><p>R$ '+p.preco+'</p>';
+        outEl.appendChild(c);
+        setTimeout(()=>{
+          c.classList.remove('enter');
+          if(animate){ animate(c,{opacity:[0,1],transform:['translateX(-10px)','translateX(0)']},{duration:.35}); }
+        }, i*150);
+      });
+    };
+    const sync=()=>{ renderIn(); renderOut();
+      note.innerHTML='<strong>'+prods.length+' itens</strong> entram = <strong>'+prods.length+' cards</strong> saem. O código do <code>.map()</code> é o mesmo.';
+    };
+    addBtn.addEventListener('click',()=>{
+      const next=extras[(prods.length-base.length)%extras.length];
+      prods.push({...next, id: prods.length+1});
+      sync();
+    });
+    runBtn.addEventListener('click',sync);
+    onView(root,sync);
+  })();
+
+  /* ════ 🖼️ Onde mora a imagem? ════ */
+  (()=>{
+    const root=document.getElementById('imgwhere'); if(!root) return;
+    const chips=[...root.querySelectorAll('.iw-chip')];
+    const codeEl=root.querySelector('#iw-code');
+    const resEl=root.querySelector('#iw-result');
+    const data={
+      public:{
+        code:'<span class="cm">// arquivo em: public/teclado.jpg</span>\n<span class="atr">src</span>=<span class="st">"/teclado.jpg"</span>',
+        shot:'⌨️', verd:'ok', vtxt:'Imagem encontrada ✓',
+        exp:'O caminho começa na raiz (/). Simples e direto pra poucas imagens fixas.'
+      },
+      import:{
+        code:'<span class="cm">// arquivo em: src/assets/teclado.jpg</span>\n<span class="kw">import</span> teclado <span class="kw">from</span> <span class="st">"./assets/teclado.jpg"</span>\n<span class="atr">src</span>={teclado}',
+        shot:'⌨️', verd:'ok', vtxt:'Imagem encontrada ✓',
+        exp:'Você importou o arquivo: o Vite cuida dele (otimiza e avisa se sumir). Jeito preferido.'
+      },
+      noimport:{
+        code:'<span class="cm">// arquivo em: src/assets/teclado.jpg</span>\n<span class="cm">// (sem import!)</span>\n<span class="atr">src</span>=<span class="st">"./assets/teclado.jpg"</span>',
+        shot:'🚫', verd:'bad', vtxt:'Imagem quebrada ✗',
+        exp:'Em src/assets sem import, o caminho costuma quebrar depois do build. Importe o arquivo!'
+      },
+    };
+    const run=(k)=>{
+      chips.forEach(c=>c.classList.toggle('active',c.dataset.k===k));
+      const d=data[k];
+      codeEl.innerHTML=d.code;
+      resEl.innerHTML='<div class="iw-shot">'+d.shot+'</div><div class="iw-verd '+d.verd+'">'+d.vtxt+'</div><div class="iw-exp">'+d.exp+'</div>';
+      if(animate){ animate(resEl,{opacity:[0.3,1]},{duration:.3}); }
+    };
+    chips.forEach(c=>c.addEventListener('click',()=>run(c.dataset.k)));
+    onView(root,()=>run('public'));
+  })();
+
+  /* ════ 🎨 Escopo do CSS Module ════ */
+  (()=>{
+    const root=document.getElementById('cssscope'); if(!root) return;
+    const chips=[...root.querySelectorAll('.cs-chip')];
+    const clsA=root.querySelector('#cs-cls-a');
+    const clsB=root.querySelector('#cs-cls-b');
+    const demoA=root.querySelector('#cs-demo-a');
+    const demoB=root.querySelector('#cs-demo-b');
+    const note=root.querySelector('#cs-note');
+    const run=(mode)=>{
+      chips.forEach(c=>c.classList.toggle('active',c.dataset.mode===mode));
+      if(mode==='global'){
+        clsA.innerHTML='.titulo';
+        clsB.innerHTML='.titulo';
+        // colisão: o último .titulo vence, os dois ficam roxos
+        demoA.style.color='#a9adff'; demoB.style.color='#a9adff';
+        demoA.style.background=demoB.style.background='rgba(169,173,255,0.12)';
+        note.innerHTML='💥 <strong>Colisão!</strong> Os dois usam <code>.titulo</code>: o segundo CSS venceu e <strong>bagunçou</strong> o primeiro. Os dois ficaram iguais.';
+      }else{
+        clsA.innerHTML='.titulo<span class="cs-hash">_a1b2</span>';
+        clsB.innerHTML='.titulo<span class="cs-hash">_c3d4</span>';
+        // hashes diferentes: cada um mantém sua cor
+        demoA.style.color='#61dafb'; demoA.style.background='rgba(97,218,251,0.12)';
+        demoB.style.color='#46d39a'; demoB.style.background='rgba(70,211,154,0.12)';
+        note.innerHTML='✅ <strong>Isolado!</strong> O Vite deu um <strong>nome único</strong> (hash) pra cada arquivo. Mesmo nome no código, sem colisão na tela.';
+      }
+    };
+    chips.forEach(c=>c.addEventListener('click',()=>run(c.dataset.mode)));
+    onView(root,()=>run('global'));
+  })();
+</script>
+</body>
+</html>

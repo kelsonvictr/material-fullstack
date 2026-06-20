@@ -62,7 +62,29 @@ Dados: Pesquisa Código Fonte TV 2025 (citar fonte sempre).
       · **3 máquinas didáticas:** 🌳 Árvore do DOM, 🎯 Seletor ao vivo, 🖱️ Detector de Eventos.
       · **2 videoclipes Remotion** embutidos (ver decisão 2026-06-17): `jornada-fetch.mp4`, `clique-dom.mp4`.
       · Decisões travadas: fetch só `.then()` (async/await fica pra frente); hub e link do Cap 2 religados.
-- [ ] Caps 4–9 (próximas sessões) — marcados como "🔒 em breve" no hub
+- [x] Cap 4 — React: o início (2026-06-20) — por que React (imperativo×declarativo) + SPA, setup
+      Vite mão-na-massa (`npm create vite` → tour `src/` → limpar boilerplate), componentes (função
+      Maiúscula que retorna JSX + `export default`), JSX (4 regras: 1 pai, `className`, tag fecha,
+      `{ }`), **props já no Cap 4** (incl. desestruturação; texto `" "` × número `{ }`), BugZilla do
+      React, treino encadeado **Mini-loja** (Vite → Cabecalho → CartaoProduto → props → array shape API).
+      · **3 máquinas didáticas:** ⚖️ Na mão×React (linhas na mão vs 1 descrição), 🌳 Árvore de
+      componentes, 🧪 HTML ou JSX? (5 rodadas: class/className, for/htmlFor, `{}`, style-objeto).
+      · Decisões travadas: props entra no Cap 4 (Cap 5 = `.map()`+imagens+CSS Modules); array do
+      passo 5 no shape da API "vira `.map()` no Cap 5, `fetch` no Cap 7". Sem Remotion/memes (ainda).
+      · Hub religado (tirado `em-breve` do c04) e Cap 3 ganhou botão "Próximo: Cap 04".
+- [x] Cap 5 — Listas & estilo (2026-06-20) — continua a Mini-loja do Cap 4. `.map()` (array→JSX, um
+      card por item), prop **`key`** (`key={p.id}`, por que e o caso sem ela), **imagens** (public/ com
+      `"/x.jpg"` × import de src/assets × o erro "sem import"), **CSS Modules** (`.module.css` +
+      `import styles` + `className={styles.x}`, escopo/hash). BugZilla (key, map sem return, className
+      com aspas, caminho de imagem). Treino encadeado: cards na mão→`.map()` → crescer array → imagem →
+      CSS Module → grid vitrine; casa = selo `preco>=1000` (condicional `&&`).
+      · **3 máquinas didáticas:** 🏭 Fábrica do `.map()` (array entra, cards saem; "+ produto" mostra
+      código imutável), 🖼️ Onde mora a imagem? (public/import/sem-import com caso de erro visível),
+      🎨 Escopo do CSS Module (global colide × module com hash isola).
+      · Reintroduz a arrow `=>` (no `.map()`) ⇒ **aviso de IDE voltou** (`=>` pode virar `⇒`). NOTA: o
+      título/pills do card 05 no hub foram trocados de "Props & estilo/props" para "Listas & estilo/
+      map()/imagens" (props migrou pro Cap 4). Pasta segue `05-react-props-css/`. Sem Remotion/memes.
+- [ ] Caps 6–9 (próximas sessões) — marcados como "🔒 em breve" no hub
 - [x] Memes gerados: `meme-intro-fullstack.png`, `meme-css-centralizar.png`, `meme-js-soma.png`,
       `meme-dom-mudei-tela.png` (Cap 3 — "EU MUDEI A TELA COM CÓDIGO")
 

@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cap 04 — React: o início | Curso Fullstack</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=JetBrains+Mono:wght@400;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../shared/styles.css">
+<link rel="stylesheet" href="../../shared/components.css">
+<link rel="stylesheet" href="../../shared/animations.css">
+<link rel="stylesheet" href="../../shared/playground.css">
+<style>
+  /* ── mono didático: SEMPRE sem ligaduras (=> não vira ⇒, >= não vira ≥) ── */
+  .mono,.vr-num,.vr-code,.ct-line,.ct-node,.jx-snippet,.jx-tag{
+    font-family:'JetBrains Mono',monospace;
+    font-variant-ligatures:none;font-feature-settings:"liga" 0,"clig" 0,"calt" 0}
+
+  /* nome de componente dentro do JSX (sempre Maiúsculo) */
+  .cmp{color:var(--react);font-weight:600}
+
+  /* ═══ ⚖️ Na mão × React ═══ */
+  .vsreact{background:linear-gradient(180deg,#0b1020,#0d0d1a);border:1px solid rgba(97,218,251,0.25);
+    border-radius:16px;padding:18px;margin:14px 0}
+  .vr-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+  .vr-chip{border:1px solid rgba(97,218,251,0.4);background:var(--surface2);color:#61dafb;
+    font-family:'JetBrains Mono',monospace;font-weight:700;font-size:0.8rem;padding:8px 14px;border-radius:10px;cursor:pointer;transition:all .2s}
+  .vr-chip:hover{transform:translateY(-2px);background:rgba(97,218,251,0.12)}
+  .vr-chip.active{border-color:var(--js);color:var(--js);background:rgba(247,223,30,0.10)}
+  .vr-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media (max-width:640px){.vr-grid{grid-template-columns:1fr}}
+  .vr-panel{background:#0b0b14;border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:14px}
+  .vr-panel.hand{border-color:rgba(255,107,107,0.35)}
+  .vr-panel.react{border-color:rgba(70,211,154,0.35)}
+  .vr-title{font-size:0.85rem;font-weight:800;margin-bottom:6px}
+  .vr-panel.hand .vr-title{color:#ff8b8b}
+  .vr-panel.react .vr-title{color:#7ef0c4}
+  .vr-num{font-size:2.4rem;font-weight:900;line-height:1;color:#fff;transition:transform .25s}
+  .vr-num.pulse{transform:scale(1.18)}
+  .vr-unit{font-size:0.72rem;color:var(--text-dim);margin-top:2px}
+  .vr-track{height:10px;background:rgba(255,255,255,0.06);border-radius:6px;margin-top:10px;overflow:hidden}
+  .vr-fill{height:100%;width:6%;border-radius:6px;transition:width .5s cubic-bezier(.2,.8,.2,1)}
+  .vr-panel.hand .vr-fill{background:linear-gradient(90deg,#ff6b6b,#ff8b8b)}
+  .vr-panel.react .vr-fill{background:linear-gradient(90deg,#46d39a,#7ef0c4)}
+  .vr-punch{margin-top:14px;background:#0b0b14;border:1px solid rgba(255,255,255,0.1);border-radius:10px;
+    padding:10px 12px;font-size:0.85rem;color:#cdd6f4;text-align:center}
+
+  /* ═══ 🌳 Árvore de componentes ═══ */
+  .comptree{background:linear-gradient(180deg,#0b1020,#0d0d1a);border:1px solid rgba(97,218,251,0.25);
+    border-radius:16px;padding:18px;margin:14px 0}
+  .ct-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+  @media (max-width:640px){.ct-grid{grid-template-columns:1fr}}
+  .ct-code{background:#0b0b14;border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:12px;font-size:0.8rem}
+  .ct-line{color:#cdd6f4;white-space:pre;padding:3px 8px;border-radius:6px;cursor:pointer;transition:all .2s}
+  .ct-line.lit{background:rgba(97,218,251,0.16);box-shadow:inset 0 0 0 1px rgba(97,218,251,0.5)}
+  .ct-tree{display:flex;flex-direction:column;align-items:center;gap:6px;padding-top:6px}
+  .ct-node{position:relative;background:var(--surface2);border:2px solid rgba(97,218,251,0.4);
+    border-radius:10px;padding:6px 16px;color:#fff;font-weight:700;font-size:0.82rem;cursor:pointer;
+    transition:transform .25s,border-color .25s,background .25s,opacity .35s}
+  .ct-node.pre{opacity:0;transform:translateY(-12px) scale(.85)}
+  .ct-node.lit{border-color:var(--js);background:rgba(247,223,30,0.12);transform:scale(1.08)}
+  .ct-node small{display:block;font-weight:600;font-size:0.62rem;color:var(--text-dim)}
+  .ct-children{display:flex;gap:10px;margin-top:6px;position:relative}
+  .ct-children::before{content:'';position:absolute;top:-6px;left:50%;width:2px;height:6px;background:rgba(97,218,251,0.4)}
+  .ct-controls{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:14px;font-size:0.8rem;color:var(--text-dim)}
+  .ct-controls button{border:1px solid rgba(97,218,251,0.4);background:var(--surface2);color:#61dafb;
+    font-family:'JetBrains Mono',monospace;font-weight:700;font-size:0.8rem;padding:8px 14px;border-radius:10px;cursor:pointer;transition:all .2s}
+  .ct-controls button:hover{transform:translateY(-2px);background:rgba(97,218,251,0.12)}
+
+  /* ═══ 🧪 HTML ou JSX? ═══ */
+  .jsxgame{background:linear-gradient(180deg,#0b1020,#0d0d1a);border:1px solid rgba(100,108,255,0.3);
+    border-radius:16px;padding:18px;margin:14px 0}
+  .jx-top{display:flex;justify-content:space-between;align-items:center;font-size:0.78rem;color:var(--text-dim);margin-bottom:10px}
+  .jx-score{font-weight:800;color:var(--react)}
+  .jx-stage{background:#0b0b14;border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:22px 16px;text-align:center}
+  .jx-q{font-size:0.82rem;color:var(--text-dim);margin-bottom:10px}
+  .jx-snippet{font-size:1.05rem;color:#fff;background:#06060c;border:1px solid rgba(255,255,255,0.1);
+    border-radius:10px;padding:12px 14px;display:inline-block;min-width:60%}
+  .jx-snippet .atr{color:#7ef0c4}.jx-snippet .st{color:#f7b731}.jx-snippet .punc{color:#8892b0}
+  .jx-buttons{display:flex;gap:10px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+  .jx-btn{border:none;font-family:'Nunito',sans-serif;font-weight:800;font-size:0.95rem;
+    padding:12px 22px;border-radius:12px;cursor:pointer;transition:transform .15s}
+  .jx-btn:active{transform:scale(0.94)}
+  .jx-yes{background:#46d39a;color:#06281c}.jx-no{background:#ff6b6b;color:#2b0606}
+  .jx-feedback{margin-top:14px;font-size:0.85rem;min-height:42px;color:#cdd6f4}
+  .jx-feedback .ok{color:#46d39a;font-weight:800}.jx-feedback .bad{color:#ff6b6b;font-weight:800}
+  .jx-restart{margin-top:8px;border:1px solid rgba(97,218,251,0.4);background:var(--surface2);color:#61dafb;
+    font-family:'JetBrains Mono',monospace;font-weight:700;font-size:0.8rem;padding:8px 16px;border-radius:10px;cursor:pointer}
+
+  @media (prefers-reduced-motion: reduce){
+    .ct-node,.vr-num,.vr-fill{transition:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-orbs"><div class="orb"></div><div class="orb"></div><div class="orb"></div></div>
+<div class="progress-track"><div class="progress-bar"></div></div>
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<button class="menu-toggle" onclick="openSidebar()" aria-label="Abrir menu">☰</button>
+<div class="sidebar-overlay"></div>
+<nav class="sidebar-nav">
+  <button class="sidebar-close" onclick="closeSidebar()" aria-label="Fechar">✕</button>
+  <div class="sidebar-header">
+    <h3>⚛️ Cap 04 · React: o início</h3>
+    <a class="sidebar-back" href="../../index.html">← Voltar ao hub</a>
+  </div>
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Neste capítulo</div>
+    <a class="sidebar-link" onclick="goTo('aquecimento')"><span class="dot" style="background:var(--accent5)"></span> Aquecimento</a>
+    <a class="sidebar-link" onclick="goTo('porque')"><span class="dot" style="background:var(--react)"></span> ⚖️ Por que React</a>
+    <a class="sidebar-link" onclick="goTo('vite')"><span class="dot" style="background:var(--vite)"></span> ⚡ Criando com Vite</a>
+    <a class="sidebar-link" onclick="goTo('componentes')"><span class="dot" style="background:var(--react)"></span> 🧩 Componentes</a>
+    <a class="sidebar-link" onclick="goTo('jsx')"><span class="dot" style="background:var(--js)"></span> 📝 JSX</a>
+    <a class="sidebar-link" onclick="goTo('props')"><span class="dot" style="background:var(--accent7)"></span> 🎁 Props</a>
+    <a class="sidebar-link" onclick="goTo('bugzilla')"><span class="dot" style="background:var(--bug)"></span> BugZilla 🐛</a>
+    <a class="sidebar-link" onclick="goTo('treino')"><span class="dot" style="background:var(--react)"></span> ⌨️ Treino: Mini-loja</a>
+    <a class="sidebar-link" onclick="goTo('resumo')"><span class="dot" style="background:var(--accent7)"></span> Resumo</a>
+  </div>
+</nav>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section class="hero">
+  <div class="hero-icons" data-motion="float"><img src="../../assets/svg/react.svg" alt="React" width="48" height="48" style="vertical-align:middle"> ⚛️ <img src="../../assets/svg/vitejs.svg" alt="Vite" width="40" height="40" style="vertical-align:middle"></div>
+  <span class="hero-badge react">Capítulo 04 · Curso Fullstack</span>
+  <h1>React: <span style="color:var(--react)">o início</span></h1>
+  <p class="subtitle">
+    No Cap 3 você mexeu na página <strong>na mão</strong> — <code>createElement</code>, <code>appendChild</code>,
+    pedaço por pedaço. Agora você vai conhecer o <strong style="color:var(--react)">React</strong>: em vez de
+    dizer o <em>como</em>, você descreve <strong>o que</strong> a tela deve ser, e ele cuida do resto.
+  </p>
+  <div class="hero-stack">
+    <span class="stack-chip react">⚡ Vite</span>
+    <span class="stack-chip react">🧩 componentes</span>
+    <span class="stack-chip js">📝 JSX</span>
+    <span class="stack-chip node">🎁 props</span>
+  </div>
+</section>
+
+<div class="container">
+
+  <!-- ═══════════════ AQUECIMENTO ═══════════════ -->
+  <section class="step-section" id="aquecimento">
+    <div class="step-header">
+      <div class="step-number sn-yellow">🤔</div>
+      <div>
+        <div class="step-title">Aquecimento</div>
+        <div class="step-sub">Uma lembrança do Cap 3 antes de começar</div>
+      </div>
+    </div>
+    <div class="quiz">
+      <div class="quiz-q"><span class="q-emoji">1️⃣</span> No Cap 3, para colocar 3 produtos na tela você usou <code>createElement</code> + <code>appendChild</code> dentro de um <code>forEach</code>. E se a tela tivesse 50 produtos, com botão, preço e imagem em cada um?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz(this,false)">Ficaria igualzinho, é rapidinho</button>
+        <button class="quiz-opt" data-correct="true" onclick="checkQuiz(this,true)">Viraria um monte de código repetitivo e fácil de bagunçar</button>
+        <button class="quiz-opt" onclick="checkQuiz(this,false)">O navegador faria sozinho</button>
+        <button class="quiz-opt" onclick="checkQuiz(this,false)">Seria impossível fazer</button>
+      </div>
+      <div class="quiz-feedback" data-correct="Isso mesmo!" data-wrong="Pensa de novo…" data-explain="Mexer no DOM na mão funciona, mas não ESCALA: cada elemento vira várias linhas, e manter tudo sincronizado quando os dados mudam é onde os bugs nascem. O React foi criado exatamente para essa dor — é o que você vai sentir e resolver agora."></div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ POR QUE REACT ═══════════════ -->
+  <section class="step-section" id="porque">
+    <div class="step-header">
+      <div class="step-number sn-react">⚖️</div>
+      <div>
+        <div class="step-title">Por que React existe</div>
+        <div class="step-sub">Da página "na mão" para a página que se descreve sozinha</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="analogy">
+        <div class="analogy-title">🛠️ O pedreiro × o arquiteto</div>
+        <p>No Cap 3 você foi o <strong>pedreiro</strong>: colocou cada tijolo na mão — "cria o
+        <code>&lt;li&gt;</code>, põe o texto, gruda na lista" — repetindo passo a passo. O React te
+        promove a <strong>arquiteto</strong>: você entrega a <strong>planta</strong> ("a tela tem um
+        cabeçalho e uma lista de cards") e ele constrói (e <em>reconstrói</em>, quando os dados mudam) por você.</p>
+      </div>
+
+      <p>É a diferença entre programação <strong>imperativa</strong> (você dá o passo a passo) e
+      <strong>declarativa</strong> (você descreve o resultado). Veja a mesma ideia dos dois jeitos:</p>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">na mão (Cap 3)</span><span class="lang-badge js">JavaScript</span></div>
+<pre><span class="cm">// você manda cada passo, um por um</span>
+<span class="kw">const</span> <span class="var">item</span> <span class="op">=</span> <span class="bi">document</span>.<span class="fn">createElement</span>(<span class="st">"li"</span>)<span class="punc">;</span>
+<span class="var">item</span>.<span class="var">textContent</span> <span class="op">=</span> <span class="st">"Teclado"</span><span class="punc">;</span>
+<span class="var">lista</span>.<span class="fn">appendChild</span>(<span class="var">item</span>)<span class="punc">;</span></pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">com React</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="cm">// você descreve o que quer ver — o React monta</span>
+<span class="tag">&lt;li&gt;</span>Teclado<span class="tag">&lt;/li&gt;</span></pre>
+      </div>
+
+      <p style="color:var(--text-dim);margin:6px 0 4px">A conta fica óbvia quando o número de produtos
+      cresce. Escolha uma quantidade e compare quantas linhas <strong>você</strong> escreve em cada mundo 👇</p>
+
+      <div class="vsreact" id="vsreact">
+        <div class="vr-chips">
+          <button class="vr-chip" data-n="1">1 produto</button>
+          <button class="vr-chip" data-n="5">5 produtos</button>
+          <button class="vr-chip" data-n="20">20 produtos</button>
+          <button class="vr-chip" data-n="50">50 produtos</button>
+        </div>
+        <div class="vr-grid">
+          <div class="vr-panel hand">
+            <div class="vr-title">🛠️ Na mão (imperativo)</div>
+            <div class="vr-num" id="vr-manual">15</div>
+            <div class="vr-unit">linhas que VOCÊ escreve</div>
+            <div class="vr-track"><div class="vr-fill" id="vr-manual-bar"></div></div>
+          </div>
+          <div class="vr-panel react">
+            <div class="vr-title">⚛️ Com React (declarativo)</div>
+            <div class="vr-num" id="vr-react">1</div>
+            <div class="vr-unit">descrição que se repete sozinha</div>
+            <div class="vr-track"><div class="vr-fill" id="vr-react-bar"></div></div>
+          </div>
+        </div>
+        <div class="vr-punch" id="vr-punch">Escolha uma quantidade acima…</div>
+      </div>
+
+      <div class="concept">
+        <div class="concept-title">💡 E o "SPA"?</div>
+        <p>React é a peça central de uma <strong>SPA</strong> (Single Page Application — aplicação de
+        página única). Em vez do navegador <em>recarregar a página inteira</em> a cada clique (a tela
+        pisca em branco), a SPA carrega <strong>uma vez</strong> e o JavaScript troca só os pedaços que
+        mudam — rápido e fluido, como um app de celular. Sites como Instagram e Gmail são assim.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ VITE ═══════════════ -->
+  <section class="step-section" id="vite">
+    <div class="step-header">
+      <div class="step-number sn-react" style="background:linear-gradient(135deg,var(--vite),#8b91ff)">⚡</div>
+      <div>
+        <div class="step-title">Criando o projeto com Vite (com o prof)</div>
+        <div class="step-sub">A ferramenta que monta e roda seu app React</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="analogy">
+        <div class="analogy-title">⚡ O tradutor com motor turbo</div>
+        <p>Tem um detalhe: o navegador <strong>não entende JSX</strong> direto (aquele HTML dentro do JS
+        que você vai escrever). Alguém precisa <strong>traduzir</strong> seu código para JS puro antes.
+        Esse alguém é o <strong style="color:var(--vite)">Vite</strong> — ele traduz na hora, sobe um
+        servidor de desenvolvimento e <strong>atualiza a tela sozinho</strong> quando você salva
+        (hot reload). É o substituto moderno (e muito mais rápido) do Live Server pra projetos React.</p>
+      </div>
+
+      <p>No terminal do VSCode, dentro da pasta onde você guarda as aulas, rode:</p>
+
+      <div class="terminal" data-typewriter>
+        <div class="code-header" style="background:rgba(255,255,255,0.04);padding:8px 14px;border-radius:14px 14px 0 0">
+          <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+          <span class="filename">Terminal do VSCode</span>
+        </div>
+        <div class="terminal-body">
+          <span class="prompt">$</span> <span class="typed" data-text="npm create vite@latest minha-loja"></span><span class="cursor"></span>
+          <br><span class="out">✔ Select a framework: » React</span>
+          <br><span class="out">✔ Select a variant:   » JavaScript</span>
+          <br><span class="prompt">$</span> <span class="typed" data-text="cd minha-loja"></span>
+          <br><span class="prompt">$</span> <span class="typed" data-text="npm install"></span>
+          <br><span class="out">added 270 packages ✓</span>
+          <br><span class="prompt">$</span> <span class="typed" data-text="npm run dev"></span>
+          <br><span class="out">➜  Local:  http://localhost:5173/</span>
+        </div>
+      </div>
+
+      <div class="tip">
+        <span class="tip-icon">🌐</span>
+        <div class="tip-content">
+          <code>npm run dev</code> liga o servidor. Segure <kbd>Ctrl</kbd> e clique no link
+          <code>http://localhost:5173</code> (ou abra no navegador). Deixe esse terminal <strong>rodando</strong>
+          enquanto programa — ele recarrega sozinho a cada <kbd>Ctrl</kbd>+<kbd>S</kbd>. Para parar: <kbd>Ctrl</kbd>+<kbd>C</kbd>.
+        </div>
+      </div>
+
+      <p style="margin-top:14px">O Vite criou uma pasta pronta. Os arquivos que importam pra você agora:</p>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">estrutura do projeto</span><span class="lang-badge bash">pastas</span></div>
+<pre>minha-loja/
+├── index.html        <span class="cm"># a única página de verdade (a "S" de SPA)</span>
+├── package.json      <span class="cm"># lista as dependências do projeto</span>
+└── src/
+    ├── main.jsx      <span class="cm"># liga o React no index.html (não mexa por enquanto)</span>
+    ├── App.jsx       <span class="cm"># 👈 SEU primeiro componente — é aqui que você trabalha</span>
+    └── index.css     <span class="cm"># estilos globais</span></pre>
+      </div>
+
+      <div class="concept">
+        <div class="concept-title">🧹 Limpe o boilerplate</div>
+        <p>O Vite vem com uma tela de exemplo (logos girando). Abra <code>src/App.jsx</code>, apague
+        <strong>tudo</strong> que está dentro dele e deixe só isto — esse é o "ponto zero" do seu app:</p>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">function</span> <span class="fn">App</span>() <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;h1&gt;</span>Minha Loja 🛒<span class="tag">&lt;/h1&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">App</span></pre>
+      </div>
+
+      <p style="color:var(--text-dim);font-size:0.82rem;margin:10px 0 4px">Salve e olhe o navegador 👇</p>
+      <div class="mini-browser" data-url="localhost:5173">
+<script type="text/html" data-mp="html">
+  <h1 style="font-family:sans-serif">Minha Loja 🛒</h1>
+</script>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ COMPONENTES ═══════════════ -->
+  <section class="step-section" id="componentes">
+    <div class="step-header">
+      <div class="step-number sn-react">🧩</div>
+      <div>
+        <div class="step-title">Componentes: a grande ideia do React</div>
+        <div class="step-sub">Pedaços de tela que você cria uma vez e reusa</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="analogy">
+        <div class="analogy-title">🧱 Peças de Lego</div>
+        <p>Um <strong>componente</strong> é um pedaço da tela embrulhado num bloco com nome — um
+        <code>Cabecalho</code>, um <code>CartaoProduto</code>, um <code>Rodape</code>. Você monta a peça
+        <strong>uma vez</strong> e encaixa onde quiser, quantas vezes quiser. A tela inteira vira uma
+        montagem de blocos, igual Lego.</p>
+      </div>
+
+      <p>Na prática, um componente é só uma <strong>função JavaScript</strong> (do Cap 2!) que
+      <strong>retorna o pedaço de tela</strong> (em JSX). Duas regras de ouro:</p>
+
+      <ul class="about-bullets">
+        <li><div><strong>Nome em Maiúscula</strong> (PascalCase): <code>Cabecalho</code>, <code>CartaoProduto</code>. É assim que o React sabe que é um componente seu, e não uma tag HTML comum.</div></li>
+        <li><div><strong>Retorna JSX</strong> e termina com <code>export default</code> pra outros arquivos poderem usar.</div></li>
+      </ul>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/Cabecalho.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">function</span> <span class="fn">Cabecalho</span>() <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;header&gt;</span>
+      <span class="tag">&lt;h1&gt;</span>Minha Loja 🛒<span class="tag">&lt;/h1&gt;</span>
+    <span class="tag">&lt;/header&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">Cabecalho</span></pre>
+      </div>
+
+      <p>Pra <strong>usar</strong> esse bloco dentro do <code>App</code>, você o <strong>importa</strong> e o
+      escreve como se fosse uma tag — só que com a inicial maiúscula:</p>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">import</span> <span class="var">Cabecalho</span> <span class="kw">from</span> <span class="st">"./Cabecalho"</span>
+
+<span class="kw">function</span> <span class="fn">App</span>() <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span>
+      <span class="tag">&lt;</span><span class="cmp">Cabecalho</span> <span class="tag">/&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">App</span></pre>
+      </div>
+
+      <p style="color:var(--text-dim);margin:6px 0 4px">A tela vira uma <strong>árvore de componentes</strong>:
+      o <code>App</code> é o tronco, e dentro dele encaixam os blocos. Monte a árvore e passe o mouse para ver
+      cada componente acender no código 👇</p>
+
+      <div class="comptree" id="comptree">
+        <div class="ct-grid">
+          <div class="ct-code">
+            <div class="ct-line" data-node="app"><span class="kw">function</span> <span class="fn">App</span>() {</div>
+            <div class="ct-line" data-node="app">  <span class="kw">return</span> (</div>
+            <div class="ct-line" data-node="app">    &lt;div&gt;</div>
+            <div class="ct-line" data-node="cabecalho">      &lt;<span class="cmp">Cabecalho</span> /&gt;</div>
+            <div class="ct-line" data-node="cartao">      &lt;<span class="cmp">CartaoProduto</span> /&gt;</div>
+            <div class="ct-line" data-node="app">    &lt;/div&gt;</div>
+            <div class="ct-line" data-node="app">  )</div>
+            <div class="ct-line" data-node="app">}</div>
+          </div>
+          <div class="ct-tree">
+            <div class="ct-node pre root" data-node="app" data-i="0">App<small>o tronco</small></div>
+            <div class="ct-children">
+              <div class="ct-node pre" data-node="cabecalho" data-i="1">Cabecalho<small>bloco</small></div>
+              <div class="ct-node pre" data-node="cartao" data-i="2">CartaoProduto<small>bloco</small></div>
+            </div>
+          </div>
+        </div>
+        <div class="ct-controls">
+          <button id="ct-build">▶ montar a árvore</button>
+          <span>cada caixinha é um <strong>componente</strong> que você criou</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ JSX ═══════════════ -->
+  <section class="step-section" id="jsx">
+    <div class="step-header">
+      <div class="step-number sn-js">📝</div>
+      <div>
+        <div class="step-title">JSX: HTML morando dentro do JavaScript</div>
+        <div class="step-sub">Parece HTML, mas tem algumas regrinhas próprias</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p>Aquele HTML que aparece dentro do <code>return</code> tem nome: <strong style="color:var(--js)">JSX</strong>.
+      É HTML com superpoderes — dá pra <strong>injetar JavaScript</strong> no meio dele. Mas vem com
+      <strong>quatro regrinhas</strong> que pegam todo iniciante:</p>
+
+      <ul class="about-bullets">
+        <li><div><strong>1. Um só elemento "pai".</strong> O <code>return</code> precisa devolver <em>um</em> elemento que abraça o resto. Se tiver vários soltos, embrulhe num <code>&lt;div&gt;</code> ou num <strong>fragmento</strong> vazio <code>&lt;&gt;...&lt;/&gt;</code>.</div></li>
+        <li><div><strong>2. É <code>className</code>, não <code>class</code>.</strong> Porque <code>class</code> já é palavra reservada do JavaScript.</div></li>
+        <li><div><strong>3. Toda tag fecha.</strong> Tags sozinhas precisam da barra: <code>&lt;img /&gt;</code>, <code>&lt;br /&gt;</code>, <code>&lt;input /&gt;</code>.</div></li>
+        <li><div><strong>4. JavaScript vai entre <code>{ }</code>.</strong> Quer mostrar uma variável ou uma conta no meio do JSX? Põe entre chaves.</div></li>
+      </ul>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/Cabecalho.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">function</span> <span class="fn">Cabecalho</span>() <span class="punc">{</span>
+  <span class="kw">const</span> <span class="var">nomeLoja</span> <span class="op">=</span> <span class="st">"Loja do Kelson"</span><span class="punc">;</span>
+
+  <span class="kw">return</span> (
+    <span class="tag">&lt;header</span> <span class="atr">className</span><span class="op">=</span><span class="st">"topo"</span><span class="tag">&gt;</span>
+      <span class="tag">&lt;h1&gt;</span>{<span class="var">nomeLoja</span>} 🛒<span class="tag">&lt;/h1&gt;</span>      <span class="cm">{<span class="cm">/* JS entre chaves */</span>}</span>
+      <span class="tag">&lt;p&gt;</span>Temos {<span class="num">2</span> <span class="op">+</span> <span class="num">1</span>} categorias<span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;/header&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">Cabecalho</span></pre>
+      </div>
+
+      <div class="tip">
+        <span class="tip-icon">🧠</span>
+        <div class="tip-content">
+          Dentro das <code>{ }</code> vale qualquer JavaScript que <strong>vira um valor</strong>: uma
+          variável (<code>{nomeLoja}</code>), uma conta (<code>{2 + 1}</code>), um campo de objeto
+          (<code>{produto.preco}</code>). É a ponte entre a lógica do Cap 2 e a tela.
+        </div>
+      </div>
+
+      <p style="color:var(--text-dim);margin:14px 0 4px">Treine o olho: cada cartão abaixo mostra um
+      trecho. Ele <strong>funciona no JSX</strong> ou é HTML que o React não aceita? 👇</p>
+
+      <div class="jsxgame" id="jsxgame">
+        <div class="jx-top">
+          <span>🧪 HTML ou JSX?</span>
+          <span class="jx-score" id="jx-score">0 / 5</span>
+        </div>
+        <div class="jx-stage">
+          <div class="jx-q" id="jx-q">Isso funciona dentro do JSX?</div>
+          <div class="jx-snippet" id="jx-snippet">…</div>
+          <div class="jx-buttons">
+            <button class="jx-btn jx-yes" id="jx-yes">✅ Funciona</button>
+            <button class="jx-btn jx-no" id="jx-no">🚫 Não vale</button>
+          </div>
+          <div class="jx-feedback" id="jx-feedback"></div>
+          <button class="jx-restart" id="jx-restart" style="display:none">↻ jogar de novo</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ PROPS ═══════════════ -->
+  <section class="step-section" id="props">
+    <div class="step-header">
+      <div class="step-number sn-green">🎁</div>
+      <div>
+        <div class="step-title">Props: entregando dados pro componente</div>
+        <div class="step-sub">O mesmo bloco, com conteúdo diferente cada vez</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="analogy">
+        <div class="analogy-title">🎁 A etiqueta da encomenda</div>
+        <p>Um <code>CartaoProduto</code> vazio não serve de muita coisa — você quer um pra cada produto,
+        cada um com seu nome e preço. As <strong>props</strong> (de <em>properties</em>, propriedades) são
+        as <strong>etiquetas</strong> que você cola no bloco ao usá-lo: "este card é o <em>Teclado</em>, R$
+        320". O mesmo componente, recheios diferentes.</p>
+      </div>
+
+      <p>Lembra que componente é uma <strong>função</strong>? As props são o <strong>argumento</strong> que
+      ela recebe (Cap 2!). Você lê as props lá dentro:</p>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/CartaoProduto.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">function</span> <span class="fn">CartaoProduto</span>(<span class="var">props</span>) <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div</span> <span class="atr">className</span><span class="op">=</span><span class="st">"cartao"</span><span class="tag">&gt;</span>
+      <span class="tag">&lt;h2&gt;</span>{<span class="var">props</span>.<span class="var">nome</span>}<span class="tag">&lt;/h2&gt;</span>
+      <span class="tag">&lt;p&gt;</span>R$ {<span class="var">props</span>.<span class="var">preco</span>}<span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">CartaoProduto</span></pre>
+      </div>
+
+      <p>E você <strong>passa</strong> as props na hora de usar o componente, como se fossem atributos HTML:</p>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="tag">&lt;</span><span class="cmp">CartaoProduto</span> <span class="atr">nome</span><span class="op">=</span><span class="st">"Teclado Mecânico"</span> <span class="atr">preco</span><span class="op">=</span>{<span class="num">320</span>} <span class="tag">/&gt;</span>
+<span class="tag">&lt;</span><span class="cmp">CartaoProduto</span> <span class="atr">nome</span><span class="op">=</span><span class="st">"Monitor 27 pol"</span> <span class="atr">preco</span><span class="op">=</span>{<span class="num">1450</span>} <span class="tag">/&gt;</span></pre>
+      </div>
+
+      <div class="warning">
+        <span class="warning-icon">🔤</span>
+        <div class="warning-content">
+          Repare: texto vai entre <strong>aspas</strong> (<code>nome="Teclado"</code>), mas número (ou
+          qualquer JavaScript) vai entre <strong>chaves</strong> (<code>preco={320}</code>). Se você escrever
+          <code>preco="320"</code>, o <code>320</code> chega como <em>texto</em>, não como número — e contas
+          quebram depois. O BugZilla adora essa.
+        </div>
+      </div>
+
+      <div class="concept">
+        <div class="concept-title">✨ Atalho: desestruturar as props</div>
+        <p>Escrever <code>props.nome</code>, <code>props.preco</code> o tempo todo cansa. Dá pra "abrir" as
+        props já no argumento e usar os nomes direto:</p>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/CartaoProduto.jsx (versão limpa)</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="cm">// abre nome e preco direto no argumento</span>
+<span class="kw">function</span> <span class="fn">CartaoProduto</span>(<span class="punc">{</span> <span class="var">nome</span>, <span class="var">preco</span> <span class="punc">}</span>) <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div</span> <span class="atr">className</span><span class="op">=</span><span class="st">"cartao"</span><span class="tag">&gt;</span>
+      <span class="tag">&lt;h2&gt;</span>{<span class="var">nome</span>}<span class="tag">&lt;/h2&gt;</span>
+      <span class="tag">&lt;p&gt;</span>R$ {<span class="var">preco</span>}<span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">CartaoProduto</span></pre>
+      </div>
+
+      <div class="tip">
+        <span class="tip-icon">🔮</span>
+        <div class="tip-content">
+          Aqui você está repetindo <code>&lt;CartaoProduto /&gt;</code> na mão pra cada produto. E quando os
+          dados vierem numa <strong>lista</strong> (como o array do Cap 3, no shape da sua API)? No
+          <strong>Cap 5</strong> você aprende o <code>.map()</code> — uma linha que gera um card por item
+          automaticamente. Guarde essa vontade. 😉
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ BUGZILLA ═══════════════ -->
+  <section class="step-section" id="bugzilla">
+    <div class="step-header">
+      <div class="step-number sn-red">🐛</div>
+      <div>
+        <div class="step-title">BugZilla ataca o React!</div>
+        <div class="step-sub">Os tropeços clássicos do primeiro dia de React</div>
+      </div>
+    </div>
+
+    <div class="bug-box">
+      <span class="bug-icon">🐛</span>
+      <div class="bug-content">
+        <strong>Bug 1 — escreveu <code>class</code> em vez de <code>className</code>.</strong> Costume do
+        HTML puro. O React avisa no console. <strong>Conserto:</strong> em JSX é sempre
+        <code>className="..."</code>.
+      </div>
+    </div>
+
+    <div class="bug-box" style="margin-top:14px">
+      <span class="bug-icon">🐛</span>
+      <div class="bug-content">
+        <strong>Bug 2 — componente em letra minúscula.</strong> <code>&lt;cartaoProduto /&gt;</code> o React
+        trata como tag HTML desconhecida e <strong>não renderiza</strong>. <strong>Conserto:</strong> componente
+        SEMPRE começa em Maiúscula — <code>&lt;CartaoProduto /&gt;</code>.
+      </div>
+    </div>
+
+    <div class="bug-box" style="margin-top:14px">
+      <span class="bug-icon">🐛</span>
+      <div class="bug-content">
+        <strong>Bug 3 — "Adjacent JSX elements must be wrapped...".</strong> Você retornou dois elementos
+        soltos. <strong>Conserto:</strong> embrulhe num <code>&lt;div&gt;</code> ou num fragmento
+        <code>&lt;&gt;...&lt;/&gt;</code> — o <code>return</code> só devolve UM pai.
+      </div>
+    </div>
+
+    <div class="bug-box" style="margin-top:14px">
+      <span class="bug-icon">🐛</span>
+      <div class="bug-content">
+        <strong>Bug 4 — número da prop sem chaves.</strong> <code>preco="320"</code> manda
+        <strong>texto</strong>; o certo pra número é <code>preco={320}</code>. E pra mostrar uma variável no
+        JSX, lembre das <code>{ }</code> — sem elas, aparece o texto literal <code>props.nome</code> na tela.
+      </div>
+    </div>
+
+    <div class="toggler" style="margin-top:14px">
+      <div class="toggler-header" onclick="toggleSection(this)">
+        <span>👀 Macete de ouro do BugZilla</span><span class="toggler-arrow">▼</span>
+      </div>
+      <div class="toggler-body">
+        <div class="tip" style="margin:0">
+          <span class="tip-icon">🔦</span>
+          <div class="tip-content">
+            Tela em branco? Abra o <strong>Console</strong> (<kbd>F12</kbd>) <em>e</em> olhe o
+            <strong>terminal do <code>npm run dev</code></strong> — no React, os erros mais úteis aparecem
+            nos dois lugares, com o nome do arquivo e a linha. 90% dos bugs do primeiro dia são uma das
+            quatro coisas acima.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ PROGRAMAÇÃO É PRÁTICA ═══════════════ -->
+  <section class="step-section">
+    <div class="card" style="text-align:center;background:linear-gradient(135deg,rgba(97,218,251,0.10),rgba(100,108,255,0.06));border-color:rgba(97,218,251,0.22)">
+      <div style="font-family:'Caveat',cursive;font-size:clamp(2rem,6vw,3rem);color:var(--react);font-weight:700;line-height:1.1">
+        PROGRAMAÇÃO É PRÁTICA 💪
+      </div>
+      <p class="text-dim" style="max-width:560px;margin:10px auto 0">
+        Ler sobre componente não cria componente. Abra o VSCode, crie o projeto Vite de verdade e
+        <strong style="color:var(--text)">monte</strong> o treino abaixo — sua primeira
+        <strong>Mini-loja em React</strong>, bloco por bloco. 🛒
+      </p>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ TREINO ENCADEADO ═══════════════ -->
+  <section class="step-section" id="treino">
+    <div class="step-header">
+      <div class="step-number sn-react">⌨️</div>
+      <div>
+        <div class="step-title">Treino — montando a Mini-loja em React, passo a passo</div>
+        <div class="step-sub">Cada passo continua o anterior. Faça com o prof, depois voe sozinho(a)</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="warning">
+        <span class="warning-icon">▶️</span>
+        <div class="warning-content">
+          Crie o projeto com <code>npm create vite@latest mini-loja</code> (React + JavaScript), rode
+          <code>npm install</code> e deixe o <code>npm run dev</code> <strong>rodando</strong>. Todo o
+          trabalho é dentro da pasta <code>src/</code>. O 👀 mostra a solução e o <strong>mini-navegador</strong>
+          ao lado mostra o resultado.
+        </div>
+      </div>
+
+      <!-- trilha de progresso -->
+      <div class="arena-track">
+        <span class="at-dot lv1">1</span><span class="at-arrow">→</span>
+        <span class="at-dot lv1">2</span><span class="at-arrow">→</span>
+        <span class="at-dot lv2">3</span><span class="at-arrow">→</span>
+        <span class="at-dot lv2">4</span><span class="at-arrow">→</span>
+        <span class="at-dot lv3">5</span><span class="at-arrow">→</span>
+        <span class="at-dot lv3">🏆</span>
+      </div>
+
+      <!-- 1. guided — limpar App.jsx -->
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">👨‍🏫</span><div>
+          <div class="exercise-title">Passo 1 — o ponto zero (com o prof)</div>
+          <div class="exercise-sub">Limpar o App.jsx e ver sua própria tela</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>Depois de criar e rodar o projeto, abra <code>src/App.jsx</code>, apague o conteúdo de exemplo e deixe só um título seu.</p></div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">function</span> <span class="fn">App</span>() <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;h1&gt;</span>Mini-loja 🛒<span class="tag">&lt;/h1&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">App</span></pre>
+        </div>
+        <p class="text-dim" style="font-size:0.82rem;margin:10px 0 4px">No navegador 👇</p>
+        <div class="mini-browser" data-url="localhost:5173">
+<script type="text/html" data-mp="html">
+  <h1 style="font-family:sans-serif">Mini-loja 🛒</h1>
+</script>
+        </div>
+      </div>
+
+      <!-- 2. solo — criar Cabecalho -->
+      <div class="exercise solo">
+        <div class="exercise-header"><span class="exercise-icon">🧑‍💻</span><div>
+          <div class="exercise-title">Passo 2 — seu primeiro componente (sozinho/a)</div>
+          <div class="exercise-sub">Criar Cabecalho.jsx e usar no App</div></div>
+        </div>
+        <div class="drill-tags"><span class="drill-level lv1"><span class="stars">★</span> fácil</span><span class="drill-tag">componente</span><span class="drill-tag">import</span></div>
+        <div class="concept"><div class="concept-title">💡 Dica</div><p>Crie <code>src/Cabecalho.jsx</code> com uma função <code>Cabecalho</code> que retorna um <code>&lt;header&gt;</code> com o título. Não esqueça do <code>export default</code>. No <code>App.jsx</code>, <strong>importe</strong> e use <code>&lt;Cabecalho /&gt;</code> (com M maiúsculo!).</p></div>
+        <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Tenta antes!</strong> Você já viu o molde inteiro na seção "Componentes".</div></div>
+        <div class="toggler">
+          <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — Ver solução</span><span class="toggler-arrow">▼</span></div>
+          <div class="toggler-body">
+            <div class="code-block">
+              <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/Cabecalho.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">function</span> <span class="fn">Cabecalho</span>() <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;header&gt;</span>
+      <span class="tag">&lt;h1&gt;</span>Mini-loja 🛒<span class="tag">&lt;/h1&gt;</span>
+    <span class="tag">&lt;/header&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">Cabecalho</span></pre>
+            </div>
+            <div class="code-block">
+              <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">import</span> <span class="var">Cabecalho</span> <span class="kw">from</span> <span class="st">"./Cabecalho"</span>
+
+<span class="kw">function</span> <span class="fn">App</span>() <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span>
+      <span class="tag">&lt;</span><span class="cmp">Cabecalho</span> <span class="tag">/&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">App</span></pre>
+            </div>
+            <div class="mini-browser" data-url="localhost:5173">
+<script type="text/html" data-mp="html">
+  <header style="font-family:sans-serif"><h1>Mini-loja 🛒</h1></header>
+</script>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. guided — CartaoProduto fixo -->
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">👨‍🏫</span><div>
+          <div class="exercise-title">Passo 3 — o cartão de produto (com o prof)</div>
+          <div class="exercise-sub">Um componente com JSX e className</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>Crie <code>src/CartaoProduto.jsx</code> com um produto fixo (ainda sem props). Use <code>className</code> e mostre nome e preço. Importe e use no <code>App</code>, abaixo do <code>&lt;Cabecalho /&gt;</code>.</p></div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/CartaoProduto.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">function</span> <span class="fn">CartaoProduto</span>() <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div</span> <span class="atr">className</span><span class="op">=</span><span class="st">"cartao"</span><span class="tag">&gt;</span>
+      <span class="tag">&lt;h2&gt;</span>Teclado Mecânico<span class="tag">&lt;/h2&gt;</span>
+      <span class="tag">&lt;p&gt;</span>R$ 320<span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">CartaoProduto</span></pre>
+        </div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx (atualizado)</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">import</span> <span class="var">Cabecalho</span> <span class="kw">from</span> <span class="st">"./Cabecalho"</span>
+<span class="kw">import</span> <span class="var">CartaoProduto</span> <span class="kw">from</span> <span class="st">"./CartaoProduto"</span>
+
+<span class="kw">function</span> <span class="fn">App</span>() <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span>
+      <span class="tag">&lt;</span><span class="cmp">Cabecalho</span> <span class="tag">/&gt;</span>
+      <span class="tag">&lt;</span><span class="cmp">CartaoProduto</span> <span class="tag">/&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">App</span></pre>
+        </div>
+        <p class="text-dim" style="font-size:0.82rem;margin:10px 0 4px">No navegador 👇</p>
+        <div class="mini-browser" data-url="localhost:5173">
+<script type="text/html" data-mp="html">
+  <header style="font-family:sans-serif"><h1>Mini-loja 🛒</h1></header>
+  <div style="font-family:sans-serif;border:1px solid #ddd;border-radius:10px;padding:12px;display:inline-block;margin-top:8px">
+    <h2 style="margin:0 0 4px">Teclado Mecânico</h2>
+    <p style="margin:0">R$ 320</p>
+  </div>
+</script>
+        </div>
+      </div>
+
+      <!-- 4. solo — props -->
+      <div class="exercise solo">
+        <div class="exercise-header"><span class="exercise-icon">🧑‍💻</span><div>
+          <div class="exercise-title">Passo 4 — o mesmo cartão, produtos diferentes (sozinho/a)</div>
+          <div class="exercise-sub">Transformar em props e reusar</div></div>
+        </div>
+        <div class="drill-tags"><span class="drill-level lv2"><span class="stars">★★</span> médio</span><span class="drill-tag">props</span><span class="drill-tag">reuso</span></div>
+        <div class="concept"><div class="concept-title">💡 Dica</div><p>Faça o <code>CartaoProduto</code> receber <code>{ nome, preco }</code> e usar <code>{nome}</code> e <code>{preco}</code> no JSX. No <code>App</code>, use o <strong>mesmo</strong> componente duas vezes, passando produtos diferentes. Lembre: texto entre <code>" "</code>, número entre <code>{ }</code>.</p></div>
+        <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Tenta primeiro!</strong> É exatamente o que você viu na seção "Props" — adapte pro seu cartão.</div></div>
+        <div class="toggler">
+          <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — Ver solução</span><span class="toggler-arrow">▼</span></div>
+          <div class="toggler-body">
+            <div class="code-block">
+              <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/CartaoProduto.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">function</span> <span class="fn">CartaoProduto</span>(<span class="punc">{</span> <span class="var">nome</span>, <span class="var">preco</span> <span class="punc">}</span>) <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div</span> <span class="atr">className</span><span class="op">=</span><span class="st">"cartao"</span><span class="tag">&gt;</span>
+      <span class="tag">&lt;h2&gt;</span>{<span class="var">nome</span>}<span class="tag">&lt;/h2&gt;</span>
+      <span class="tag">&lt;p&gt;</span>R$ {<span class="var">preco</span>}<span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">CartaoProduto</span></pre>
+            </div>
+            <div class="code-block">
+              <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx (dentro do &lt;div&gt;)</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="tag">&lt;</span><span class="cmp">Cabecalho</span> <span class="tag">/&gt;</span>
+<span class="tag">&lt;</span><span class="cmp">CartaoProduto</span> <span class="atr">nome</span><span class="op">=</span><span class="st">"Teclado Mecânico"</span> <span class="atr">preco</span><span class="op">=</span>{<span class="num">320</span>} <span class="tag">/&gt;</span>
+<span class="tag">&lt;</span><span class="cmp">CartaoProduto</span> <span class="atr">nome</span><span class="op">=</span><span class="st">"Monitor 27 pol"</span> <span class="atr">preco</span><span class="op">=</span>{<span class="num">1450</span>} <span class="tag">/&gt;</span></pre>
+            </div>
+            <div class="mini-browser" data-url="localhost:5173">
+<script type="text/html" data-mp="html">
+  <header style="font-family:sans-serif"><h1>Mini-loja 🛒</h1></header>
+  <div style="font-family:sans-serif;border:1px solid #ddd;border-radius:10px;padding:12px;display:inline-block;margin:8px 8px 0 0">
+    <h2 style="margin:0 0 4px">Teclado Mecânico</h2><p style="margin:0">R$ 320</p>
+  </div>
+  <div style="font-family:sans-serif;border:1px solid #ddd;border-radius:10px;padding:12px;display:inline-block;margin-top:8px">
+    <h2 style="margin:0 0 4px">Monitor 27 pol</h2><p style="margin:0">R$ 1450</p>
+  </div>
+</script>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. guided — array shape API (teaser map) -->
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">👨‍🏫</span><div>
+          <div class="exercise-title">Passo 5 — os dados no formato da sua API (com o prof)</div>
+          <div class="exercise-sub">Preparar o array que o Cap 5 vai transformar</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>No topo do <code>App.jsx</code>, crie o array <code>produtos</code> com a <strong>cara exata</strong> do JSON da sua API do ERP. Por enquanto, ligue um card a cada item <strong>na mão</strong> (<code>produtos[0]</code>, <code>produtos[1]</code>…). No próximo capítulo isso vira uma linha só.</p></div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="cm">// 👉 mesmo formato do endpoint /produtos do seu backend</span>
+<span class="kw">const</span> <span class="var">produtos</span> <span class="op">=</span> [
+  <span class="punc">{</span> <span class="var">id</span><span class="punc">:</span> <span class="num">1</span>, <span class="var">nome</span><span class="punc">:</span> <span class="st">"Teclado Mecânico"</span>, <span class="var">preco</span><span class="punc">:</span> <span class="num">320</span> <span class="punc">}</span>,
+  <span class="punc">{</span> <span class="var">id</span><span class="punc">:</span> <span class="num">2</span>, <span class="var">nome</span><span class="punc">:</span> <span class="st">"Monitor 27 pol"</span>, <span class="var">preco</span><span class="punc">:</span> <span class="num">1450</span> <span class="punc">}</span>,
+]<span class="punc">;</span>
+
+<span class="kw">function</span> <span class="fn">App</span>() <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span>
+      <span class="tag">&lt;</span><span class="cmp">Cabecalho</span> <span class="tag">/&gt;</span>
+      <span class="tag">&lt;</span><span class="cmp">CartaoProduto</span> <span class="atr">nome</span><span class="op">=</span>{<span class="var">produtos</span>[<span class="num">0</span>].<span class="var">nome</span>} <span class="atr">preco</span><span class="op">=</span>{<span class="var">produtos</span>[<span class="num">0</span>].<span class="var">preco</span>} <span class="tag">/&gt;</span>
+      <span class="tag">&lt;</span><span class="cmp">CartaoProduto</span> <span class="atr">nome</span><span class="op">=</span>{<span class="var">produtos</span>[<span class="num">1</span>].<span class="var">nome</span>} <span class="atr">preco</span><span class="op">=</span>{<span class="var">produtos</span>[<span class="num">1</span>].<span class="var">preco</span>} <span class="tag">/&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">App</span></pre>
+        </div>
+        <div class="tip" style="margin-top:12px">
+          <span class="tip-icon">🔮</span>
+          <div class="tip-content">
+            Repare como já está repetitivo com 2 produtos — imagine 20. No <strong>Cap 5</strong> a gente
+            apaga essas linhas na mão e troca por <code>produtos.map(...)</code>: <strong>um</strong> card
+            por item, automaticamente. E no <strong>Cap 7</strong> esse array vira um <code>fetch</code> na
+            sua API de verdade. O caminho está montado. 🚀
+          </div>
+        </div>
+      </div>
+
+      <!-- desafio para casa -->
+      <div class="exercise home" style="margin-top:18px">
+        <div class="exercise-header"><span class="exercise-icon">🏠</span><div>
+          <div class="exercise-title">Desafio para Casa — um componente de saudação</div>
+          <div class="exercise-sub">Pratica props do zero, sozinho(a)</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">💡 Missão</div><p>Crie um componente <code>Saudacao</code> que recebe uma prop <code>nome</code> e mostra <code>"Bem-vindo(a), Fulano!"</code>. Use ele no topo do <code>App</code> passando o seu nome. Bônus: faça um <code>Rodape</code> com o ano. Traga no próximo sábado! 👋</p></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ RESUMO ═══════════════ -->
+  <section class="step-section" id="resumo">
+    <div class="step-header">
+      <div class="step-number sn-mint">🎒</div>
+      <div>
+        <div class="step-title">O que você leva deste capítulo</div>
+        <div class="step-sub">A fundação de tudo que vem pela frente em React</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <ul class="about-bullets">
+        <li><div><strong>Por que React:</strong> você <em>descreve</em> a tela (declarativo) em vez de montá-la passo a passo (imperativo). Base de uma SPA.</div></li>
+        <li><div><strong>Vite:</strong> cria e roda o projeto (<code>npm create vite@latest</code> → <code>npm run dev</code>), traduz o JSX e recarrega sozinho.</div></li>
+        <li><div><strong>Componente:</strong> uma função em <strong>Maiúscula</strong> que retorna JSX, fechada com <code>export default</code>.</div></li>
+        <li><div><strong>JSX:</strong> um pai só, <code>className</code> (não <code>class</code>), toda tag fecha, e JavaScript entre <code>{ }</code>.</div></li>
+        <li><div><strong>Props:</strong> dados que você passa pro componente como atributos — texto entre <code>" "</code>, número/JS entre <code>{ }</code>.</div></li>
+      </ul>
+
+      <div class="quiz" style="margin-top:16px">
+        <div class="quiz-q"><span class="q-emoji">🎫</span> Quiz de saída: qual destes está <strong>certo</strong> em JSX?</div>
+        <div class="quiz-options">
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">&lt;div class="cartao"&gt;</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">&lt;cartaoProduto /&gt;</button>
+          <button class="quiz-opt" data-correct="true" onclick="checkQuiz(this,true)">&lt;CartaoProduto nome="Teclado" preco={320} /&gt;</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">&lt;CartaoProduto preco="320" /&gt; para um número</button>
+        </div>
+        <div class="quiz-feedback" data-correct="Você já pensa em React!" data-wrong="Lembra do BugZilla!" data-explain="Componente em Maiúscula, className (não class), e número da prop entre chaves: preco={320}. As outras opções caem direto nos bugs clássicos do primeiro dia."></div>
+      </div>
+
+      <div class="tip" style="margin-top:16px">
+        <span class="tip-icon">➡️</span>
+        <div class="tip-content">
+          <strong>No próximo capítulo (Cap 5):</strong> você repetiu <code>&lt;CartaoProduto /&gt;</code> na
+          mão pra cada produto. E quando forem 50, vindos de uma lista? Você vai aprender o
+          <code>.map()</code> (um card por item, automático), imagens em React e <strong>CSS Modules</strong>
+          pra deixar a Mini-loja bonita de verdade. 🎨
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:22px;display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+        <a href="../../index.html" style="display:inline-block;padding:14px 28px;background:var(--surface2);color:var(--text);font-weight:800;border-radius:50px;font-size:1rem;text-decoration:none;border:1px solid rgba(255,255,255,0.12)">
+          ← voltar ao hub
+        </a>
+        <a href="../05-react-props-css/index.html" style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg,var(--react),#2aa9c9);color:#06222b;font-weight:900;border-radius:50px;font-size:1rem;text-decoration:none;box-shadow:0 10px 28px rgba(97,218,251,0.35)">
+          Próximo: Cap 05 — Listas & estilo 🎨 →
+        </a>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="footer">
+  Feito com <span class="heart">♥</span> pela <strong style="color:var(--text)">programa AI</strong> ·
+  <a href="../../index.html">Hub do curso</a> · Cap 04 — React: o início
+</footer>
+
+<script src="../../shared/scripts.js" defer></script>
+<script src="../../shared/playground.js" defer></script>
+<script type="module" src="../../shared/motion-fx.js"></script>
+<script type="module">
+  // ── Motor das máquinas didáticas do Cap 04 ──
+  // Motion (CDN) dá o tempero quando carrega; se a internet da sala falhar,
+  // TUDO continua funcionando (transições CSS + Web Animations nativas).
+  let animate=null;
+  try{ ({animate}=await import('https://cdn.jsdelivr.net/npm/motion@11/+esm')); }catch(e){}
+  const onView=(el,fn)=>{ if(!el) return;
+    const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){fn();io.disconnect();}})},{threshold:.3});
+    io.observe(el); };
+
+  /* ════ ⚖️ Na mão × React ════ */
+  (()=>{
+    const root=document.getElementById('vsreact'); if(!root) return;
+    const chips=[...root.querySelectorAll('.vr-chip')];
+    const manualNum=root.querySelector('#vr-manual');
+    const reactNum=root.querySelector('#vr-react');
+    const manualBar=root.querySelector('#vr-manual-bar');
+    const reactBar=root.querySelector('#vr-react-bar');
+    const punch=root.querySelector('#vr-punch');
+    const MAX=50*3;
+    const run=(n)=>{
+      const linhas=n*3;
+      manualNum.textContent=linhas;
+      reactNum.textContent='1';
+      manualNum.classList.add('pulse'); setTimeout(()=>manualNum.classList.remove('pulse'),250);
+      manualBar.style.width=Math.max(5,(linhas/MAX)*100)+'%';
+      reactBar.style.width='5%';
+      if(n===1){
+        punch.innerHTML='Com <strong>1 produto</strong> quase empata. Mas e quando forem muitos? 👇';
+      }else{
+        punch.innerHTML='<strong>'+n+' produtos</strong> = <strong>'+linhas+' linhas</strong> escritas na mão (e '+linhas+' chances de errar) &nbsp;×&nbsp; <strong>1 descrição</strong> no React.';
+      }
+    };
+    chips.forEach(c=>c.addEventListener('click',()=>{
+      chips.forEach(x=>x.classList.toggle('active',x===c));
+      run(parseInt(c.dataset.n,10));
+    }));
+    onView(root,()=>{ chips[1].classList.add('active'); run(5); });
+  })();
+
+  /* ════ 🌳 Árvore de componentes ════ */
+  (()=>{
+    const root=document.getElementById('comptree'); if(!root) return;
+    const nodes=[...root.querySelectorAll('.ct-node')];
+    const lines=[...root.querySelectorAll('.ct-line')];
+    const btn=root.querySelector('#ct-build');
+    const litFor=(name,on)=>{
+      nodes.forEach(n=>{ if(n.dataset.node===name) n.classList.toggle('lit',on); });
+      lines.forEach(l=>{ if(l.dataset.node===name) l.classList.toggle('lit',on); });
+    };
+    const build=()=>{
+      nodes.forEach((n,i)=>{
+        setTimeout(()=>{
+          n.classList.remove('pre');
+          if(animate){ animate(n,{opacity:[0,1],transform:['translateY(-12px) scale(.85)','translateY(0) scale(1)']},{duration:.4}); }
+        }, i*200);
+      });
+    };
+    nodes.forEach(n=>{
+      n.addEventListener('mouseenter',()=>litFor(n.dataset.node,true));
+      n.addEventListener('mouseleave',()=>litFor(n.dataset.node,false));
+      n.addEventListener('click',()=>{ const on=!n.classList.contains('lit'); litFor(n.dataset.node,on); });
+    });
+    lines.forEach(l=>{
+      l.addEventListener('mouseenter',()=>litFor(l.dataset.node,true));
+      l.addEventListener('mouseleave',()=>litFor(l.dataset.node,false));
+    });
+    btn.addEventListener('click',()=>{ nodes.forEach(n=>n.classList.add('pre')); build(); });
+    onView(root,build);
+  })();
+
+  /* ════ 🧪 HTML ou JSX? ════ */
+  (()=>{
+    const root=document.getElementById('jsxgame'); if(!root) return;
+    const rounds=[
+      { code:'class="cartao"',      ok:false, why:'Em JSX é <b>className</b> — <code>class</code> é palavra reservada do JavaScript.' },
+      { code:'className="cartao"',  ok:true,  why:'Esse é o jeito certo de dar classe em JSX. ✅' },
+      { code:'for="email"',         ok:false, why:'Em JSX o atributo de label é <b>htmlFor</b>, não <code>for</code>.' },
+      { code:'{produto.nome}',      ok:true,  why:'Chaves = JavaScript dentro do JSX. Mostra o valor da variável. ✅' },
+      { code:'style="color:red"',   ok:false, why:'Em JSX, style recebe um <b>objeto</b>: <code>style={{ color: "red" }}</code>.' },
+    ];
+    const snippet=root.querySelector('#jx-snippet');
+    const fb=root.querySelector('#jx-feedback');
+    const scoreEl=root.querySelector('#jx-score');
+    const yes=root.querySelector('#jx-yes');
+    const no=root.querySelector('#jx-no');
+    const restart=root.querySelector('#jx-restart');
+    let i=0, score=0, answered=false;
+    const show=()=>{
+      answered=false;
+      snippet.textContent=rounds[i].code;
+      fb.innerHTML='';
+      yes.disabled=false; no.disabled=false;
+      yes.style.opacity=no.style.opacity='1';
+      scoreEl.textContent=score+' / '+rounds.length;
+    };
+    const answer=(said)=>{
+      if(answered) return; answered=true;
+      yes.disabled=true; no.disabled=true;
+      const r=rounds[i];
+      const acertou=(said===r.ok);
+      if(acertou){ score++; fb.innerHTML='<span class="ok">Certo!</span> '+r.why; }
+      else{ fb.innerHTML='<span class="bad">Quase…</span> '+r.why; }
+      scoreEl.textContent=score+' / '+rounds.length;
+      if(snippet && animate){ animate(snippet,{transform:['scale(1)','scale(1.05)','scale(1)']},{duration:.35}); }
+      setTimeout(()=>{
+        i++;
+        if(i<rounds.length){ show(); }
+        else{
+          snippet.textContent='🏁';
+          fb.innerHTML='Fim! Você acertou <strong>'+score+' de '+rounds.length+'</strong>. '+(score===rounds.length?'Olho de águia pra JSX! 🦅':'Revise os 🐛 do BugZilla e jogue de novo.');
+          yes.style.opacity=no.style.opacity='.4';
+          yes.disabled=no.disabled=true;
+          restart.style.display='inline-block';
+        }
+      }, 1500);
+    };
+    yes.addEventListener('click',()=>answer(true));
+    no.addEventListener('click',()=>answer(false));
+    restart.addEventListener('click',()=>{ i=0; score=0; restart.style.display='none'; show(); });
+    onView(root,show);
+  })();
+</script>
+</body>
+</html>
