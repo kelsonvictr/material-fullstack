@@ -300,14 +300,36 @@
       </div>
 
       <div class="concept">
-        <div class="concept-title">🧹 Limpe o boilerplate</div>
+        <div class="concept-title">🧹 Limpe o boilerplate — com a ajuda do rafce</div>
         <p>O Vite vem com uma tela de exemplo (logos girando). Abra <code>src/App.jsx</code>, apague
-        <strong>tudo</strong> que está dentro dele e deixe só isto — esse é o "ponto zero" do seu app:</p>
+        <strong>tudo</strong>. Agora, em vez de digitar o esqueleto na mão, use o atalho que você instalou
+        no Cap 00b: digite <code>rafce</code> e aperte <kbd>Tab</kbd>. Nasce um componente inteiro, já
+        nomeado igual ao arquivo e com <code>export default</code> pronto. Troque o conteúdo por um título:</p>
+      </div>
+
+      <div class="tip">
+        <span class="tip-icon">⚡</span>
+        <div class="tip-content">
+          <strong>rafce</strong> = <strong>R</strong>eact <strong>A</strong>rrow
+          <strong>F</strong>unction <strong>C</strong>omponent <strong>E</strong>xport. (Macete do prof:
+          pensa no <strong>Rafael do Ceará</strong> — assim você nunca esquece a ordem das letras. 😄)
+          Vem da extensão <em>ES7+ React snippets</em>. Se ele colocar um <code>import React from "react"</code>
+          no topo, pode apagar: com Vite moderno você não precisa.
+        </div>
+      </div>
+
+      <div class="warning">
+        <span class="warning-icon">⌨️</span>
+        <div class="warning-content">
+          O rafce escreve uma <strong>arrow function</strong>: <code>const App = () =&gt; { }</code> (a mesma
+          seta do Cap 2). Lembre que <code>=&gt;</code> é o <kbd>=</kbd> seguido de <kbd>&gt;</kbd> — sua IDE
+          pode <strong>desenhar</strong> <code>⇒</code>, mas são dois caracteres separados que você digita.
+        </div>
       </div>
 
       <div class="code-block">
         <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx</span><span class="lang-badge jsx">JSX</span></div>
-<pre><span class="kw">function</span> <span class="fn">App</span>() <span class="punc">{</span>
+<pre><span class="kw">const</span> <span class="fn">App</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
   <span class="kw">return</span> (
     <span class="tag">&lt;h1&gt;</span>Minha Loja 🛒<span class="tag">&lt;/h1&gt;</span>
   )
@@ -346,17 +368,19 @@
         montagem de blocos, igual Lego.</p>
       </div>
 
-      <p>Na prática, um componente é só uma <strong>função JavaScript</strong> (do Cap 2!) que
-      <strong>retorna o pedaço de tela</strong> (em JSX). Duas regras de ouro:</p>
+      <p>Na prática, um componente é só uma <strong>função JavaScript</strong> (do Cap 2!) — em React a gente
+      escreve como <strong>arrow function</strong> — que <strong>retorna o pedaço de tela</strong> (em JSX).
+      Pra criar um, faça um arquivo novo (ex.: <code>src/Cabecalho.jsx</code>) e use o <code>rafce</code> +
+      <kbd>Tab</kbd> de novo. Duas regras de ouro:</p>
 
       <ul class="about-bullets">
-        <li><div><strong>Nome em Maiúscula</strong> (PascalCase): <code>Cabecalho</code>, <code>CartaoProduto</code>. É assim que o React sabe que é um componente seu, e não uma tag HTML comum.</div></li>
-        <li><div><strong>Retorna JSX</strong> e termina com <code>export default</code> pra outros arquivos poderem usar.</div></li>
+        <li><div><strong>Nome em Maiúscula</strong> (PascalCase): <code>Cabecalho</code>, <code>CartaoProduto</code>. É assim que o React sabe que é um componente seu, e não uma tag HTML comum. O rafce já nomeia igual ao arquivo — por isso o nome do arquivo também começa em Maiúscula.</div></li>
+        <li><div><strong>Retorna JSX</strong> e termina com <code>export default</code> pra outros arquivos poderem usar. (O rafce já põe os dois pra você.)</div></li>
       </ul>
 
       <div class="code-block">
         <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/Cabecalho.jsx</span><span class="lang-badge jsx">JSX</span></div>
-<pre><span class="kw">function</span> <span class="fn">Cabecalho</span>() <span class="punc">{</span>
+<pre><span class="kw">const</span> <span class="fn">Cabecalho</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
   <span class="kw">return</span> (
     <span class="tag">&lt;header&gt;</span>
       <span class="tag">&lt;h1&gt;</span>Minha Loja 🛒<span class="tag">&lt;/h1&gt;</span>
@@ -374,7 +398,7 @@
         <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx</span><span class="lang-badge jsx">JSX</span></div>
 <pre><span class="kw">import</span> <span class="var">Cabecalho</span> <span class="kw">from</span> <span class="st">"./Cabecalho"</span>
 
-<span class="kw">function</span> <span class="fn">App</span>() <span class="punc">{</span>
+<span class="kw">const</span> <span class="fn">App</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
   <span class="kw">return</span> (
     <span class="tag">&lt;div&gt;</span>
       <span class="tag">&lt;</span><span class="cmp">Cabecalho</span> <span class="tag">/&gt;</span>
@@ -392,7 +416,7 @@
       <div class="comptree" id="comptree">
         <div class="ct-grid">
           <div class="ct-code">
-            <div class="ct-line" data-node="app"><span class="kw">function</span> <span class="fn">App</span>() {</div>
+            <div class="ct-line" data-node="app"><span class="kw">const</span> <span class="fn">App</span> <span class="op">=</span> () <span class="op">=&gt;</span> {</div>
             <div class="ct-line" data-node="app">  <span class="kw">return</span> (</div>
             <div class="ct-line" data-node="app">    &lt;div&gt;</div>
             <div class="ct-line" data-node="cabecalho">      &lt;<span class="cmp">Cabecalho</span> /&gt;</div>
@@ -443,7 +467,7 @@
 
       <div class="code-block">
         <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/Cabecalho.jsx</span><span class="lang-badge jsx">JSX</span></div>
-<pre><span class="kw">function</span> <span class="fn">Cabecalho</span>() <span class="punc">{</span>
+<pre><span class="kw">const</span> <span class="fn">Cabecalho</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
   <span class="kw">const</span> <span class="var">nomeLoja</span> <span class="op">=</span> <span class="st">"Loja do Kelson"</span><span class="punc">;</span>
 
   <span class="kw">return</span> (
@@ -514,7 +538,7 @@
 
       <div class="code-block">
         <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/CartaoProduto.jsx</span><span class="lang-badge jsx">JSX</span></div>
-<pre><span class="kw">function</span> <span class="fn">CartaoProduto</span>(<span class="var">props</span>) <span class="punc">{</span>
+<pre><span class="kw">const</span> <span class="fn">CartaoProduto</span> <span class="op">=</span> (<span class="var">props</span>) <span class="op">=&gt;</span> <span class="punc">{</span>
   <span class="kw">return</span> (
     <span class="tag">&lt;div</span> <span class="atr">className</span><span class="op">=</span><span class="st">"cartao"</span><span class="tag">&gt;</span>
       <span class="tag">&lt;h2&gt;</span>{<span class="var">props</span>.<span class="var">nome</span>}<span class="tag">&lt;/h2&gt;</span>
@@ -553,7 +577,7 @@
       <div class="code-block">
         <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/CartaoProduto.jsx (versão limpa)</span><span class="lang-badge jsx">JSX</span></div>
 <pre><span class="cm">// abre nome e preco direto no argumento</span>
-<span class="kw">function</span> <span class="fn">CartaoProduto</span>(<span class="punc">{</span> <span class="var">nome</span>, <span class="var">preco</span> <span class="punc">}</span>) <span class="punc">{</span>
+<span class="kw">const</span> <span class="fn">CartaoProduto</span> <span class="op">=</span> (<span class="punc">{</span> <span class="var">nome</span>, <span class="var">preco</span> <span class="punc">}</span>) <span class="op">=&gt;</span> <span class="punc">{</span>
   <span class="kw">return</span> (
     <span class="tag">&lt;div</span> <span class="atr">className</span><span class="op">=</span><span class="st">"cartao"</span><span class="tag">&gt;</span>
       <span class="tag">&lt;h2&gt;</span>{<span class="var">nome</span>}<span class="tag">&lt;/h2&gt;</span>
@@ -700,7 +724,7 @@
         <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>Depois de criar e rodar o projeto, abra <code>src/App.jsx</code>, apague o conteúdo de exemplo e deixe só um título seu.</p></div>
         <div class="code-block">
           <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx</span><span class="lang-badge jsx">JSX</span></div>
-<pre><span class="kw">function</span> <span class="fn">App</span>() <span class="punc">{</span>
+<pre><span class="kw">const</span> <span class="fn">App</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
   <span class="kw">return</span> (
     <span class="tag">&lt;h1&gt;</span>Mini-loja 🛒<span class="tag">&lt;/h1&gt;</span>
   )
@@ -723,14 +747,14 @@
           <div class="exercise-sub">Criar Cabecalho.jsx e usar no App</div></div>
         </div>
         <div class="drill-tags"><span class="drill-level lv1"><span class="stars">★</span> fácil</span><span class="drill-tag">componente</span><span class="drill-tag">import</span></div>
-        <div class="concept"><div class="concept-title">💡 Dica</div><p>Crie <code>src/Cabecalho.jsx</code> com uma função <code>Cabecalho</code> que retorna um <code>&lt;header&gt;</code> com o título. Não esqueça do <code>export default</code>. No <code>App.jsx</code>, <strong>importe</strong> e use <code>&lt;Cabecalho /&gt;</code> (com M maiúsculo!).</p></div>
+        <div class="concept"><div class="concept-title">💡 Dica</div><p>Crie <code>src/Cabecalho.jsx</code>, digite <code>rafce</code> + <kbd>Tab</kbd> e troque o conteúdo por um <code>&lt;header&gt;</code> com o título. O <code>export default</code> o rafce já põe. No <code>App.jsx</code>, <strong>importe</strong> e use <code>&lt;Cabecalho /&gt;</code> (com M maiúsculo!).</p></div>
         <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Tenta antes!</strong> Você já viu o molde inteiro na seção "Componentes".</div></div>
         <div class="toggler">
           <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — Ver solução</span><span class="toggler-arrow">▼</span></div>
           <div class="toggler-body">
             <div class="code-block">
               <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/Cabecalho.jsx</span><span class="lang-badge jsx">JSX</span></div>
-<pre><span class="kw">function</span> <span class="fn">Cabecalho</span>() <span class="punc">{</span>
+<pre><span class="kw">const</span> <span class="fn">Cabecalho</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
   <span class="kw">return</span> (
     <span class="tag">&lt;header&gt;</span>
       <span class="tag">&lt;h1&gt;</span>Mini-loja 🛒<span class="tag">&lt;/h1&gt;</span>
@@ -744,7 +768,7 @@
               <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx</span><span class="lang-badge jsx">JSX</span></div>
 <pre><span class="kw">import</span> <span class="var">Cabecalho</span> <span class="kw">from</span> <span class="st">"./Cabecalho"</span>
 
-<span class="kw">function</span> <span class="fn">App</span>() <span class="punc">{</span>
+<span class="kw">const</span> <span class="fn">App</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
   <span class="kw">return</span> (
     <span class="tag">&lt;div&gt;</span>
       <span class="tag">&lt;</span><span class="cmp">Cabecalho</span> <span class="tag">/&gt;</span>
@@ -769,10 +793,10 @@
           <div class="exercise-title">Passo 3 — o cartão de produto (com o prof)</div>
           <div class="exercise-sub">Um componente com JSX e className</div></div>
         </div>
-        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>Crie <code>src/CartaoProduto.jsx</code> com um produto fixo (ainda sem props). Use <code>className</code> e mostre nome e preço. Importe e use no <code>App</code>, abaixo do <code>&lt;Cabecalho /&gt;</code>.</p></div>
+        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>Crie <code>src/CartaoProduto.jsx</code> (de novo: <code>rafce</code> + <kbd>Tab</kbd>) com um produto fixo (ainda sem props). Use <code>className</code> e mostre nome e preço. Importe e use no <code>App</code>, abaixo do <code>&lt;Cabecalho /&gt;</code>.</p></div>
         <div class="code-block">
           <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/CartaoProduto.jsx</span><span class="lang-badge jsx">JSX</span></div>
-<pre><span class="kw">function</span> <span class="fn">CartaoProduto</span>() <span class="punc">{</span>
+<pre><span class="kw">const</span> <span class="fn">CartaoProduto</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
   <span class="kw">return</span> (
     <span class="tag">&lt;div</span> <span class="atr">className</span><span class="op">=</span><span class="st">"cartao"</span><span class="tag">&gt;</span>
       <span class="tag">&lt;h2&gt;</span>Teclado Mecânico<span class="tag">&lt;/h2&gt;</span>
@@ -788,7 +812,7 @@
 <pre><span class="kw">import</span> <span class="var">Cabecalho</span> <span class="kw">from</span> <span class="st">"./Cabecalho"</span>
 <span class="kw">import</span> <span class="var">CartaoProduto</span> <span class="kw">from</span> <span class="st">"./CartaoProduto"</span>
 
-<span class="kw">function</span> <span class="fn">App</span>() <span class="punc">{</span>
+<span class="kw">const</span> <span class="fn">App</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
   <span class="kw">return</span> (
     <span class="tag">&lt;div&gt;</span>
       <span class="tag">&lt;</span><span class="cmp">Cabecalho</span> <span class="tag">/&gt;</span>
@@ -825,7 +849,7 @@
           <div class="toggler-body">
             <div class="code-block">
               <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/CartaoProduto.jsx</span><span class="lang-badge jsx">JSX</span></div>
-<pre><span class="kw">function</span> <span class="fn">CartaoProduto</span>(<span class="punc">{</span> <span class="var">nome</span>, <span class="var">preco</span> <span class="punc">}</span>) <span class="punc">{</span>
+<pre><span class="kw">const</span> <span class="fn">CartaoProduto</span> <span class="op">=</span> (<span class="punc">{</span> <span class="var">nome</span>, <span class="var">preco</span> <span class="punc">}</span>) <span class="op">=&gt;</span> <span class="punc">{</span>
   <span class="kw">return</span> (
     <span class="tag">&lt;div</span> <span class="atr">className</span><span class="op">=</span><span class="st">"cartao"</span><span class="tag">&gt;</span>
       <span class="tag">&lt;h2&gt;</span>{<span class="var">nome</span>}<span class="tag">&lt;/h2&gt;</span>
@@ -872,7 +896,7 @@
   <span class="punc">{</span> <span class="var">id</span><span class="punc">:</span> <span class="num">2</span>, <span class="var">nome</span><span class="punc">:</span> <span class="st">"Monitor 27 pol"</span>, <span class="var">preco</span><span class="punc">:</span> <span class="num">1450</span> <span class="punc">}</span>,
 ]<span class="punc">;</span>
 
-<span class="kw">function</span> <span class="fn">App</span>() <span class="punc">{</span>
+<span class="kw">const</span> <span class="fn">App</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
   <span class="kw">return</span> (
     <span class="tag">&lt;div&gt;</span>
       <span class="tag">&lt;</span><span class="cmp">Cabecalho</span> <span class="tag">/&gt;</span>
@@ -922,7 +946,7 @@
       <ul class="about-bullets">
         <li><div><strong>Por que React:</strong> você <em>descreve</em> a tela (declarativo) em vez de montá-la passo a passo (imperativo). Base de uma SPA.</div></li>
         <li><div><strong>Vite:</strong> cria e roda o projeto (<code>npm create vite@latest</code> → <code>npm run dev</code>), traduz o JSX e recarrega sozinho.</div></li>
-        <li><div><strong>Componente:</strong> uma função em <strong>Maiúscula</strong> que retorna JSX, fechada com <code>export default</code>.</div></li>
+        <li><div><strong>Componente:</strong> uma <strong>arrow function</strong> em <strong>Maiúscula</strong> que retorna JSX, fechada com <code>export default</code>. Atalho pra criar: <code>rafce</code> + <kbd>Tab</kbd> (o "Rafael do Ceará" 😄).</div></li>
         <li><div><strong>JSX:</strong> um pai só, <code>className</code> (não <code>class</code>), toda tag fecha, e JavaScript entre <code>{ }</code>.</div></li>
         <li><div><strong>Props:</strong> dados que você passa pro componente como atributos — texto entre <code>" "</code>, número/JS entre <code>{ }</code>.</div></li>
       </ul>

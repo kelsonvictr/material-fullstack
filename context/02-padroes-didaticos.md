@@ -28,6 +28,14 @@ código aparece **estático** + o padrão olhinho 👀 para a solução (ver `03
 5. **Desafios** — 3 níveis (ver abaixo).
 6. **Resumo** — o que fixou + gancho pro próximo capítulo.
 
+## Convenção React: componentes = arrow function via RAFCE (2026-06-20)
+Nos caps de React (4+), todo componente é **arrow function** (`const X = () => { return (...) }`),
+nunca `function X() {}`. O aluno usa o snippet **`rafce`** (extensão *ES7+ React snippets*, instalada
+no Cap 00b): num `.jsx` vazio, digita `rafce` + Tab e nasce o componente (arrow + nome do arquivo +
+`export default`). Mnemônico do prof: rafce = "**Rafael do Ceará**". Como a arrow `=>` aparece, manter
+o **aviso de IDE** (`=>` pode virar `⇒`; digite `=`+`>`). Se o rafce inserir `import React`, orientar a
+apagar (Vite moderno dispensa). Detalhe em `05-decisoes.md` (2026-06-20, "Convenção RAFCE / arrow").
+
 ## Exercícios — 3 níveis
 - **Bora Codar (com o prof)** — `.exercise.guided`, código visível, passo a passo junto.
 - **Desafio Individual (sozinho)** — `.exercise.solo`, dica + 🚨 PARE! + olhinho com a solução.

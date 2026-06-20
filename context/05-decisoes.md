@@ -132,8 +132,8 @@
    monta App→Cabecalho/CartaoProduto, hover acende código↔nó; adaptada do domtree do Cap 3),
    🧪 **HTML ou JSX?** (`#jsxgame`, 5 rodadas classificando snippets: `class`→🚫, `className`→✅,
    `for`→🚫, `{expr}`→✅, `style="..."`→🚫; placar + reinício; reforça os 🐛 do BugZilla).
-3. **Sem arrow functions no código do aluno** (props/componentes não exigem) — evita o `=>`→`⇒` da
-   IDE neste cap; eventos/handlers (com arrow) só no Cap 6 (useState). JSX `=>` não aparece.
+3. ~~Sem arrow functions no código do aluno~~ **REVISTO (ver "RAFCE/arrow" abaixo)** — componentes
+   passaram a ser arrow functions (`const X = () => {}`) escritas via snippet rafce.
 4. **Sem Remotion e sem memes** neste cap (nenhum aprovado/gerado). Candidatos futuros se o prof quiser.
 5. **Hub religado** (tirado `em-breve` do card c04) e o resumo do **Cap 3 ganhou botão "Próximo: Cap 04 →"**.
 6. Verificação: `<pre>` 18/18, sem `</content>`, sem `<` não-escapado, `node --check` no módulo OK,
@@ -189,9 +189,24 @@
    fakestoreapi confirmada (200 + CORS). **Não rebaixar** o reframe se a turma seguinte já tiver backend
    — basta o enquadramento futuro virar "lembra que você construiu" de novo (1 passada de texto).
 
+## 2026-06-20 — Convenção RAFCE / arrow functions (todo o arco React)
+1. **Componentes React = arrow functions** (`const X = () => { return (...) }`), NÃO `function X() {}`.
+   Decisão do prof: usar o snippet **`rafce`** da extensão *ES7+ React snippets* (já listada no Cap 00b)
+   pra scaffold do componente — ele gera arrow + nome igual ao arquivo + `export default`. Vale Caps 4, 5
+   e **todos os próximos** de React. (Reverte o item 3 da decisão do Cap 4 — "sem arrow no Cap 4".)
+2. **Piada-mnemônico do prof:** rafce = **R**eact **A**rrow **F**unction **C**omponent **E**xport, "o
+   **Rafael do Ceará**". Usar esse gancho ao apresentar o atalho (está no Cap 4, seção Vite + treino).
+3. **Cap 4 reintroduz a arrow `=>`** (antes evitava) ⇒ **aviso de IDE devolvido** ao Cap 4 (a fonte/IDE
+   pode desenhar `⇒`; digite `=`+`>`). Cap 5 já tinha o aviso (por causa do `.map()`).
+4. **Nota sobre `import React`:** rafce pode inserir `import React from "react"` no topo; com Vite/React
+   moderno é dispensável — material orienta a apagar (1 linha de tip, sem alarde).
+5. Implementação: 14 defs convertidas no Cap 4 + 4 no Cap 5 (inclui a linha da máquina comptree).
+   Verificado: `<pre>` 18/18 (cap4) e 13/13 (cap5), zero `=>`/`<` crus em `<pre>`, `⇒` só em aviso, widgets ok.
+
 ## Pendências reconhecidas
 - Planejar em detalhe os **Caps 6–9** (React: state → efeitos/dados → router → integração).
   Caps 4 e 5 já fixaram o tom, o setup Vite base e a Mini-loja como artefato contínuo do arco React.
+  **Seguir a convenção RAFCE/arrow** (acima) em todos eles.
 - Sem busca full-text / sem progresso salvo (localStorage) — futuro, se necessário.
 - Avaliar quando o Remotion realmente compensa (custo de pipeline vs. ganho didático).
 </content>

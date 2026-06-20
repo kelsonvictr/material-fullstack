@@ -191,7 +191,7 @@
   <span class="punc">{</span> <span class="var">id</span><span class="punc">:</span> <span class="num">3</span>, <span class="var">nome</span><span class="punc">:</span> <span class="st">"Cadeira Gamer"</span>, <span class="var">preco</span><span class="punc">:</span> <span class="num">980</span> <span class="punc">}</span>,
 ]<span class="punc">;</span>
 
-<span class="kw">function</span> <span class="fn">App</span>() <span class="punc">{</span>
+<span class="kw">const</span> <span class="fn">App</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
   <span class="kw">return</span> (
     <span class="tag">&lt;div&gt;</span>
       {<span class="var">produtos</span>.<span class="fn">map</span>((<span class="var">p</span>) <span class="op">=&gt;</span> (
@@ -375,7 +375,7 @@
         <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/CartaoProduto.jsx</span><span class="lang-badge jsx">JSX</span></div>
 <pre><span class="kw">import</span> <span class="var">styles</span> <span class="kw">from</span> <span class="st">"./CartaoProduto.module.css"</span>
 
-<span class="kw">function</span> <span class="fn">CartaoProduto</span>(<span class="punc">{</span> <span class="var">nome</span>, <span class="var">preco</span> <span class="punc">}</span>) <span class="punc">{</span>
+<span class="kw">const</span> <span class="fn">CartaoProduto</span> <span class="op">=</span> (<span class="punc">{</span> <span class="var">nome</span>, <span class="var">preco</span> <span class="punc">}</span>) <span class="op">=&gt;</span> <span class="punc">{</span>
   <span class="kw">return</span> (
     <span class="tag">&lt;div</span> <span class="atr">className</span><span class="op">=</span>{<span class="var">styles</span>.<span class="var">cartao</span>}<span class="tag">&gt;</span>
       <span class="tag">&lt;h2&gt;</span>{<span class="var">nome</span>}<span class="tag">&lt;/h2&gt;</span>
@@ -543,7 +543,7 @@
         <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>No <code>App.jsx</code>, apague os <code>&lt;CartaoProduto /&gt;</code> escritos um a um e gere a lista com <code>produtos.map(...)</code>. Não esqueça da <code>key</code>!</p></div>
         <div class="code-block">
           <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx</span><span class="lang-badge jsx">JSX</span></div>
-<pre><span class="kw">function</span> <span class="fn">App</span>() <span class="punc">{</span>
+<pre><span class="kw">const</span> <span class="fn">App</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
   <span class="kw">return</span> (
     <span class="tag">&lt;div&gt;</span>
       <span class="tag">&lt;</span><span class="cmp">Cabecalho</span> <span class="tag">/&gt;</span>
@@ -600,7 +600,7 @@
         <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>Adicione um campo <code>imagem</code> (uma URL) em cada produto do array, receba a prop <code>imagem</code> no <code>CartaoProduto</code> e mostre com <code>&lt;img&gt;</code>. Passe a prop no <code>.map()</code>.</p></div>
         <div class="code-block">
           <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/CartaoProduto.jsx</span><span class="lang-badge jsx">JSX</span></div>
-<pre><span class="kw">function</span> <span class="fn">CartaoProduto</span>(<span class="punc">{</span> <span class="var">nome</span>, <span class="var">preco</span>, <span class="var">imagem</span> <span class="punc">}</span>) <span class="punc">{</span>
+<pre><span class="kw">const</span> <span class="fn">CartaoProduto</span> <span class="op">=</span> (<span class="punc">{</span> <span class="var">nome</span>, <span class="var">preco</span>, <span class="var">imagem</span> <span class="punc">}</span>) <span class="op">=&gt;</span> <span class="punc">{</span>
   <span class="kw">return</span> (
     <span class="tag">&lt;div</span> <span class="atr">className</span><span class="op">=</span><span class="st">"cartao"</span><span class="tag">&gt;</span>
       <span class="tag">&lt;img</span> <span class="atr">src</span><span class="op">=</span>{<span class="var">imagem</span>} <span class="atr">alt</span><span class="op">=</span>{<span class="var">nome</span>} <span class="atr">width</span><span class="op">=</span><span class="st">"120"</span> <span class="tag">/&gt;</span>
