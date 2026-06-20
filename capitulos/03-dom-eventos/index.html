@@ -85,8 +85,43 @@
     padding:10px 12px;font-size:0.78rem;color:#cdd6f4;min-height:40px;max-height:120px;overflow:auto}
   .ev-console .el{padding:2px 0}.ev-console .el::before{content:'› ';color:#61dafb}
 
+  /* ═══ 🧪 API ao vivo (fetch de verdade) ═══ */
+  .apilab{background:linear-gradient(180deg,#0b1020,#0d0d1a);border:1px solid rgba(70,211,154,0.28);border-radius:16px;padding:18px;margin:16px 0}
+  .apilab-steps{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+  .apilab-step{display:flex;align-items:center;gap:8px;font-size:0.82rem;font-weight:700;color:var(--text-dim);
+    background:var(--surface2);border:1px solid rgba(255,255,255,0.1);border-radius:999px;padding:7px 14px;transition:all .25s}
+  .apilab-step .aps-num{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;
+    background:#0b0b14;color:var(--text-dim);font-size:0.78rem;border:1px solid rgba(255,255,255,0.15)}
+  .apilab-step.lit{color:#06281c;background:#46d39a;border-color:#46d39a;box-shadow:0 0 0 3px rgba(70,211,154,0.25);transform:translateY(-1px)}
+  .apilab-step.lit .aps-num{background:#06281c;color:#7ef0c4;border-color:transparent}
+  .apilab-arrow{color:var(--text-dim);font-family:'JetBrains Mono',monospace}
+  .apilab-bar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+  .apilab-btn{border:none;background:#46d39a;color:#06281c;font-weight:800;font-size:0.95rem;padding:11px 20px;border-radius:12px;
+    cursor:pointer;transition:transform .15s,box-shadow .2s;box-shadow:0 8px 22px rgba(70,211,154,0.3)}
+  .apilab-btn:hover{transform:translateY(-2px)}
+  .apilab-btn:active{transform:scale(0.95)}
+  .apilab-btn[disabled]{opacity:0.6;cursor:wait;transform:none}
+  .apilab-url{font-family:'JetBrains Mono',monospace;font-size:0.74rem;color:#7ef0c4;background:#0b0b14;
+    border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:6px 10px}
+  .apilab-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media (max-width:640px){.apilab-grid{grid-template-columns:1fr}}
+  .apilab-pane{background:#0b0b14;border:1px solid rgba(255,255,255,0.1);border-radius:12px;overflow:hidden}
+  .apilab-pane-h{font-size:0.78rem;font-weight:700;color:var(--text-dim);padding:9px 12px;
+    border-bottom:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.02)}
+  .apilab-json{margin:0;padding:12px;font-size:0.74rem;line-height:1.55;color:#cdd6f4;max-height:240px;overflow:auto;white-space:pre}
+  .apilab-cards{list-style:none;margin:0;padding:12px;display:flex;flex-direction:column;gap:8px;max-height:240px;overflow:auto}
+  .apilab-cards li{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--surface2);
+    border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 12px;font-size:0.85rem;color:#fff;animation:apIn .35s ease both}
+  .apilab-cards li .ap-price{font-family:'JetBrains Mono',monospace;color:var(--js);font-size:0.82rem;white-space:nowrap}
+  .apilab-cards li.apilab-empty{justify-content:center;color:var(--text-dim);background:transparent;
+    border:1px dashed rgba(255,255,255,0.12);animation:none}
+  @keyframes apIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .apilab-note{margin-top:12px;font-size:0.8rem;color:var(--text-dim);min-height:18px}
+  .apilab-note .ok{color:#46d39a}.apilab-note .warn{color:#f7b731}
+
   @media (prefers-reduced-motion: reduce){
-    .dt-node,.ev-count{transition:none}
+    .dt-node,.ev-count,.apilab-step{transition:none}
+    .apilab-cards li{animation:none}
   }
 </style>
 </head>
@@ -456,7 +491,7 @@
       <p>Os três passos sempre andam juntos. Veja o ciclo inteiro num clipe e depois no código:</p>
 
       <figure class="clip">
-        <video controls preload="none" playsinline poster="../../assets/video/clique-dom.png">
+        <video controls autoplay loop muted playsinline poster="../../assets/video/clique-dom.png">
           <source src="../../assets/video/clique-dom.mp4" type="video/mp4">
           Seu navegador não reproduz o vídeo. <a href="../../assets/video/clique-dom.mp4">Baixe o clipe aqui.</a>
         </video>
@@ -519,25 +554,57 @@
     <div class="step-header">
       <div class="step-number sn-mint">🍽️</div>
       <div>
-        <div class="step-title">Seu primeiro fetch — buscar dados da API</div>
-        <div class="step-sub">Do outro lado do balcão que você mesmo construiu</div>
+        <div class="step-title">Seu primeiro fetch — buscar dados da internet</div>
+        <div class="step-sub">Trazer pra sua página dados que moram em outro computador</div>
       </div>
     </div>
 
     <div class="card">
+      <p>Até agora, todo dado que apareceu nas suas páginas <strong>você digitou na mão</strong> — o título, o
+      texto, os itens da lista. Mas e quando os dados são <strong>milhares</strong> e mudam toda hora (os produtos
+      de uma loja, os posts de uma rede social, as mensagens de um chat)? Eles não cabem — nem ficam — dentro do
+      seu arquivo. Eles moram em <strong>outro computador</strong>, ligado na internet o tempo todo.</p>
+
       <div class="analogy">
-        <div class="analogy-title">🍽️ Você agora está do lado do cliente</div>
-        <p>Lembra da analogia do restaurante? No <strong>backend</strong> você foi a <strong>cozinha</strong>:
-        escreveu <code>@GetMapping("/produtos")</code> e devolvia a comida (os dados). Agora, no front, você
-        está na <strong>mesa</strong>: faz o <strong>pedido</strong> e espera o prato chegar. Esse pedido
-        tem nome em JavaScript: <code>fetch</code>.</p>
+        <div class="analogy-title">🍽️ Imagine um restaurante</div>
+        <p>Você senta na mesa — essa mesa é o <strong>seu navegador</strong>. Você faz um <strong>pedido</strong>
+        ao garçom; o pedido viaja até a <strong>cozinha</strong> (um computador lá longe), que prepara e te manda
+        o <strong>prato</strong> de volta. Você não precisa saber cozinhar, nem entrar na cozinha — só
+        <strong>pedir</strong> e <strong>receber</strong>.</p>
+        <p style="margin-bottom:0">Essa cozinha que atende pedidos pela internet tem um nome:
+        <strong style="color:var(--json)">API</strong>. E o computador onde ela roda é o
+        <strong style="color:var(--accent7)">servidor</strong>. Por enquanto a gente só vai
+        <strong>sentar na mesa e pedir</strong>. 🍽️ <em>(Lá na frente, no módulo de back-end, é
+        <strong>você</strong> que vai construir uma cozinha dessas — a sua própria API.)</em></p>
       </div>
+
+      <figure class="clip">
+        <video controls autoplay loop muted playsinline poster="../../assets/video/o-que-e-api.png">
+          <source src="../../assets/video/o-que-e-api.mp4" type="video/mp4">
+          Seu navegador não reproduz o vídeo. <a href="../../assets/video/o-que-e-api.mp4">Baixe o clipe aqui.</a>
+        </video>
+        <figcaption>🍽️ seu navegador faz uma <strong>requisição</strong> (o pedido) → a <strong>API</strong> responde com os <strong>dados</strong> (o prato)</figcaption>
+      </figure>
+
+      <div class="concept">
+        <div class="concept-title">💡 Quatro palavras que todo dev fala o dia inteiro</div>
+        <ul class="about-bullets" style="margin:6px 0 0">
+          <li><div><strong>Servidor</strong> 🌐 — um computador na internet que fica ligado esperando pedidos (a cozinha).</div></li>
+          <li><div><strong>API</strong> 📖 — o "cardápio" desse servidor: a lista de coisas que você pode pedir a ele.</div></li>
+          <li><div><strong>Requisição</strong> (request) ➡️ — o pedido que seu navegador manda. <strong>Resposta</strong> (response) ⬅️ — o que volta.</div></li>
+          <li><div><strong>Endpoint</strong> 📍 — o endereço de UM pedido específico, como um item do cardápio (ex.: <code>/produtos</code>).</div></li>
+        </ul>
+      </div>
+
+      <p>Para fazer esse pedido, o JavaScript tem uma palavra pronta: <code>fetch</code> (em inglês, "buscar").
+      Você dá a ela o <strong>endereço</strong> (a URL da API) e ela vai lá buscar pra você. Vamos pedir de uma
+      API pública <strong>de verdade</strong>, que devolve uma lista de produtos:</p>
 
       <div class="code-block">
         <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">produtos.js</span><span class="lang-badge js">JavaScript</span></div>
-<pre><span class="cm">// 1) faz o pedido para a SUA API (a mesma do backend)</span>
-<span class="fn">fetch</span>(<span class="st">"http://localhost:8080/produtos"</span>)
-  <span class="cm">// 2) quando a resposta chegar, vira objeto JS</span>
+<pre><span class="cm">// 1) faz o pedido a uma API pública (você pode abrir essa URL no navegador!)</span>
+<span class="fn">fetch</span>(<span class="st">"https://fakestoreapi.com/products"</span>)
+  <span class="cm">// 2) quando a resposta chegar, transforma o JSON em lista de objetos JS</span>
   .<span class="fn">then</span>((<span class="var">resposta</span>) <span class="op">=&gt;</span> <span class="var">resposta</span>.<span class="fn">json</span>())
   <span class="cm">// 3) agora sim: com os dados na mão, mexe no DOM</span>
   .<span class="fn">then</span>((<span class="var">produtos</span>) <span class="op">=&gt;</span> <span class="punc">{</span>
@@ -555,33 +622,90 @@
         </div>
       </div>
 
-      <p>E o prato que chega é um <strong>JSON</strong> com a cara exata do que sua API devolve. A gente
-      percorre essa lista e cria um card para cada produto:</p>
+      <p>Mas em que <strong>formato</strong> o prato chega? Quase toda API do mundo responde no mesmo idioma:
+      <strong style="color:var(--json)">JSON</strong>. Boa notícia: ele é <em>igualzinho</em> aos objetos e
+      arrays que você já viu no Cap 2 — uma lista <code>[ ]</code> de objetos <code>{ }</code>, cada um com
+      <code>"campo": valor</code>. Olha a anatomia dele com calma 👇</p>
+
+      <figure class="clip">
+        <video controls autoplay loop muted playsinline poster="../../assets/video/anatomia-json.png">
+          <source src="../../assets/video/anatomia-json.mp4" type="video/mp4">
+          Seu navegador não reproduz o vídeo. <a href="../../assets/video/anatomia-json.mp4">Baixe o clipe aqui.</a>
+        </video>
+        <figcaption>🔬 <code>[ ]</code> é a lista · <code>{ }</code> é um item · <code>"campo"</code> é a etiqueta · depois do <code>:</code> vem o valor</figcaption>
+      </figure>
+
+      <div class="tip">
+        <span class="tip-icon">🕵️</span>
+        <div class="tip-content">
+          Quer ver JSON de verdade <strong>agora</strong>? Abra
+          <code>https://fakestoreapi.com/products</code> direto na barra do navegador. Aquele monte de
+          <code>{ }</code> e <code>[ ]</code> é exatamente o que o <code>fetch</code> vai te trazer. Cada API
+          escolhe os nomes dos seus campos — <strong>nesta</strong> aqui eles são <code>title</code> (nome) e
+          <code>price</code> (preço), e vêm em inglês porque é uma API de exemplo gringa. Tudo bem: o que
+          importa é o <em>formato</em>.
+        </div>
+      </div>
+
+      <p>Com a lista na mão, é o mesmo <code>forEach</code> do Cap 2: a gente percorre e cria um
+      <code>&lt;li&gt;</code> para cada produto.</p>
 
       <div class="code-block">
         <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">produtos.js (a parte que desenha)</span><span class="lang-badge js">JavaScript</span></div>
 <pre><span class="kw">const</span> <span class="var">lista</span> <span class="op">=</span> <span class="bi">document</span>.<span class="fn">querySelector</span>(<span class="st">"#lista"</span>)<span class="punc">;</span>
 
+<span class="cm">// nesta API os campos se chamam title e price (cada API tem os seus)</span>
 <span class="var">produtos</span>.<span class="fn">forEach</span>((<span class="var">p</span>) <span class="op">=&gt;</span> <span class="punc">{</span>
   <span class="kw">const</span> <span class="var">item</span> <span class="op">=</span> <span class="bi">document</span>.<span class="fn">createElement</span>(<span class="st">"li"</span>)<span class="punc">;</span>
-  <span class="var">item</span>.<span class="var">textContent</span> <span class="op">=</span> <span class="st">`${p.nome} — R$ ${p.preco}`</span><span class="punc">;</span>
+  <span class="var">item</span>.<span class="var">textContent</span> <span class="op">=</span> <span class="st">`${p.title} — US$ ${p.price}`</span><span class="punc">;</span>
   <span class="var">lista</span>.<span class="fn">appendChild</span>(<span class="var">item</span>)<span class="punc">;</span>
 <span class="punc">}</span>)<span class="punc">;</span></pre>
       </div>
 
+      <p style="color:var(--text-dim);margin:14px 0 4px">Chega de teoria — <strong>aperte o botão</strong> e veja
+      um <code>fetch</code> de verdade acontecer: o pedido sai pela internet, o JSON volta e vira cards, aqui
+      mesmo nesta página 👇</p>
+
+      <div class="apilab" id="apilab">
+        <div class="apilab-steps">
+          <div class="apilab-step" data-step="1"><span class="aps-num">1</span> navegador pede</div>
+          <div class="apilab-arrow">→</div>
+          <div class="apilab-step" data-step="2"><span class="aps-num">2</span> API responde (JSON)</div>
+          <div class="apilab-arrow">→</div>
+          <div class="apilab-step" data-step="3"><span class="aps-num">3</span> vira cards</div>
+        </div>
+        <div class="apilab-bar">
+          <button class="apilab-btn" id="apilab-go">▶ fazer o pedido (fetch)</button>
+          <code class="apilab-url">GET https://fakestoreapi.com/products?limit=5</code>
+        </div>
+        <div class="apilab-grid">
+          <div class="apilab-pane">
+            <div class="apilab-pane-h">📦 a resposta que chegou (JSON)</div>
+            <pre class="apilab-json mono" id="apilab-json">aperte o botão pra fazer o pedido…</pre>
+          </div>
+          <div class="apilab-pane">
+            <div class="apilab-pane-h">🛒 o JSON virou tela (cards)</div>
+            <ul class="apilab-cards" id="apilab-cards"><li class="apilab-empty">…ainda nada aqui</li></ul>
+          </div>
+        </div>
+        <div class="apilab-note" id="apilab-note"></div>
+      </div>
+
       <figure class="clip">
-        <video controls preload="none" playsinline poster="../../assets/video/jornada-fetch.png">
+        <video controls autoplay loop muted playsinline poster="../../assets/video/jornada-fetch.png">
           <source src="../../assets/video/jornada-fetch.mp4" type="video/mp4">
           Seu navegador não reproduz o vídeo. <a href="../../assets/video/jornada-fetch.mp4">Baixe o clipe aqui.</a>
         </video>
-        <figcaption>🍃 o pedido sai do navegador → bate na <strong>sua API</strong> Spring → volta como JSON → vira cards na tela</figcaption>
+        <figcaption>🍃 o pedido sai do navegador → bate na <strong>API</strong> → volta como JSON → vira cards na tela</figcaption>
       </figure>
 
       <div class="concept">
-        <div class="concept-title">💡 Esse é o grande encontro</div>
-        <p>É aqui que o front e o back que você construiu se dão as mãos: o <code>fetch</code> chama o mesmo
-        endpoint que você programou em Java. Nos próximos capítulos a gente faz isso <strong>dentro do React</strong>
-        e, lá no fim, conectado de verdade na sua API com login. Você acabou de ver o curso inteiro caber numa página. 🚀</p>
+        <div class="concept-title">💡 Onde isso vai dar</div>
+        <p>Você acabou de aprender o lado <strong>cliente</strong>: pedir dados com <code>fetch</code> e jogar na
+        tela. Nos próximos capítulos a gente faz exatamente isso <strong>dentro do React</strong>. E lá na frente,
+        no módulo de <strong>back-end</strong>, você vai aprender o outro lado — vai <strong>construir a sua
+        própria API</strong> (a sua cozinha!) e aí o <code>fetch</code> vai pedir os dados pra ela, não mais pra
+        uma API gringa de exemplo. Quando os dois lados se encontram, você é <strong>fullstack</strong>. 🚀</p>
       </div>
     </div>
   </section>
@@ -816,16 +940,16 @@
         </div>
       </div>
 
-      <!-- 5. guided — array ERP + forEach (teaser fetch) -->
+      <!-- 5. guided — array no shape de uma API + forEach (teaser fetch) -->
       <div class="exercise guided">
         <div class="exercise-header"><span class="exercise-icon">👨‍🏫</span><div>
           <div class="exercise-title">Passo 5 — listar produtos de verdade (com o prof)</div>
           <div class="exercise-sub">Array no formato da API + forEach</div></div>
         </div>
-        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>Em cima do arquivo, crie um array <code>produtos</code> com a <strong>cara exata</strong> do JSON da sua API do ERP (campos <code>id</code>, <code>nome</code>, <code>preco</code>). Percorra com <code>forEach</code> e desenhe um <code>&lt;li&gt;</code> por produto.</p></div>
+        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>Em cima do arquivo, crie um array <code>produtos</code> no <strong>mesmo formato</strong> que uma API devolveria (objetos com <code>id</code>, <code>nome</code>, <code>preco</code>). Repare: como esse array é <strong>seu</strong>, você escolhe os nomes dos campos — aqui em português. Percorra com <code>forEach</code> e desenhe um <code>&lt;li&gt;</code> por produto.</p></div>
         <div class="code-block">
           <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">app.js (no topo)</span><span class="lang-badge js">JavaScript</span></div>
-<pre><span class="cm">// 👉 este array é temporário. No Cap 7 ele vira um fetch na SUA API!</span>
+<pre><span class="cm">// 👉 este array é temporário. Quando você aprender back-end, ele vira um fetch numa API de verdade!</span>
 <span class="kw">const</span> <span class="var">produtos</span> <span class="op">=</span> [
   <span class="punc">{</span> <span class="var">id</span><span class="punc">:</span> <span class="num">1</span>, <span class="var">nome</span><span class="punc">:</span> <span class="st">"Teclado Mecânico"</span>, <span class="var">preco</span><span class="punc">:</span> <span class="num">320</span> <span class="punc">}</span>,
   <span class="punc">{</span> <span class="var">id</span><span class="punc">:</span> <span class="num">2</span>, <span class="var">nome</span><span class="punc">:</span> <span class="st">"Monitor 27 polegadas"</span>, <span class="var">preco</span><span class="punc">:</span> <span class="num">1450</span> <span class="punc">}</span>,
@@ -851,8 +975,9 @@
         <div class="tip" style="margin-top:12px">
           <span class="tip-icon">🔮</span>
           <div class="tip-content">
-            Guarde bem este array. Lá no <strong>Cap 7</strong> a gente vai <strong>apagar o <code>const produtos = [...]</code></strong>
-            e trocar por um <code>fetch</code> na sua API — três linhas, e a lista passa a vir do banco de dados de verdade.
+            Guarde bem este array. Mais pra frente, quando você souber buscar dados, a gente vai
+            <strong>apagar o <code>const produtos = [...]</code></strong> e trocar por um <code>fetch</code> —
+            três linhas, e a lista passa a vir de uma API de verdade, sem você digitar produto nenhum na mão.
           </div>
         </div>
       </div>
@@ -886,7 +1011,7 @@
         <li><div><strong>Selecionar:</strong> <code>querySelector("#id")</code> (o primeiro) e <code>querySelectorAll(".classe")</code> (todos).</div></li>
         <li><div><strong>Mudar:</strong> <code>.textContent</code>, <code>.style</code> e <code>.classList</code>.</div></li>
         <li><div><strong>Eventos:</strong> <code>elemento.addEventListener("click", () =&gt; { ... })</code>.</div></li>
-        <li><div><strong>fetch:</strong> pedir dados à sua API com <code>fetch(url).then(...)</code> e desenhar na tela.</div></li>
+        <li><div><strong>API, requisição, resposta, JSON:</strong> pedir dados a um servidor na internet — e o <code>fetch(url).then(...)</code> que traz esses dados pra dentro da tela.</div></li>
       </ul>
 
       <div class="quiz" style="margin-top:16px">
@@ -1026,6 +1151,72 @@
       echo.textContent = v===''?'___':v;
       log('evento "input" → "'+input.value+'"');
     });
+  })();
+
+  /* ════ 🧪 API ao vivo — um fetch DE VERDADE na página ════ */
+  (()=>{
+    const root=document.getElementById('apilab'); if(!root) return;
+    const btn=root.querySelector('#apilab-go');
+    const steps=[...root.querySelectorAll('.apilab-step')];
+    const jsonOut=root.querySelector('#apilab-json');
+    const cardsOut=root.querySelector('#apilab-cards');
+    const note=root.querySelector('#apilab-note');
+    const URL='https://fakestoreapi.com/products?limit=5';
+    // exemplo gravado: usado só se a internet da sala falhar
+    const SAMPLE=[
+      {id:1,title:"Fjallraven Backpack",price:109.95},
+      {id:2,title:"Mens Casual T-Shirt",price:22.3},
+      {id:3,title:"Mens Cotton Jacket",price:55.99},
+      {id:4,title:"Casual Slim Fit Shirt",price:15.99},
+      {id:5,title:"Gold Bracelet",price:695}
+    ];
+    const esc=(s)=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+    const setStep=(n)=>steps.forEach((s,k)=>s.classList.toggle('lit',k<n));
+    const reset=()=>{
+      setStep(0);
+      cardsOut.innerHTML='<li class="apilab-empty">…desenhando…</li>';
+      jsonOut.textContent='enviando o pedido para a API…';
+      note.innerHTML='';
+    };
+    const render=(produtos,fromSample)=>{
+      const slim=produtos.map(p=>({id:p.id,title:p.title,price:p.price}));
+      jsonOut.textContent=JSON.stringify(slim,null,2);
+      cardsOut.innerHTML='';
+      produtos.forEach((p,i)=>{
+        const li=document.createElement('li');
+        li.style.animationDelay=(i*70)+'ms';
+        li.innerHTML='<span>'+esc(p.title)+'</span><span class="ap-price">US$ '+p.price+'</span>';
+        cardsOut.appendChild(li);
+      });
+      note.innerHTML=fromSample
+        ? '<span class="warn">⚠ sem internet agora — mostrei um exemplo gravado. Com internet, esses dados chegam da API de verdade.</span>'
+        : '<span class="ok">✅ esses '+produtos.length+' produtos chegaram AGORA da internet, via fetch — ninguém digitou na mão.</span>';
+    };
+    const run=()=>{
+      btn.disabled=true; reset();
+      setTimeout(()=>setStep(1),260);
+      fetch(URL)
+        .then((r)=>{ if(!r.ok) throw new Error('http '+r.status); return r.json(); })
+        .then((data)=>{ setStep(2); return new Promise((res)=>setTimeout(()=>res(data),550)); })
+        .then((data)=>{ setStep(3); render(data,false); })
+        .catch(()=>{ setStep(3); render(SAMPLE,true); })
+        .finally(()=>{ btn.disabled=false; });
+    };
+    btn.addEventListener('click',run);
+  })();
+
+  /* ════ ▶️ vídeos: dão play sozinhos ao aparecer e pausam ao sair da tela ════ */
+  (()=>{
+    const vids=[...document.querySelectorAll('.clip video')];
+    if(!vids.length || !('IntersectionObserver' in window)) return;
+    const io=new IntersectionObserver((es)=>{
+      es.forEach((e)=>{
+        const v=e.target;
+        if(e.isIntersecting){ const p=v.play(); if(p&&p.catch) p.catch(()=>{}); }
+        else { v.pause(); }
+      });
+    },{threshold:0.4});
+    vids.forEach((v)=>io.observe(v));
   })();
 </script>
 </body>

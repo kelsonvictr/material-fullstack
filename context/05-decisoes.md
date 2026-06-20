@@ -160,6 +160,35 @@
 6. Verificação: `<pre>` 13/13, sem `=>` cru nem `<` não-escapado dentro de `<pre>`, sem `</content>`,
    `node --check` OK, render headless confirmou os 3 widgets. Sem Remotion/memes neste cap.
 
+## 2026-06-20 — Turma NOVA não viu backend: fetch do Cap 3 ficou autossuficiente
+> Pedido do prof: a turma atual é **nova** e **ainda não viu nada de backend** (a premissa
+> "o aluno já construiu uma API Spring", base do `07-sequencia-http-fetch-axios.md`, **não vale**
+> para ela). A seção de fetch do Cap 3 falava como se já tivessem visto API/REST/`@GetMapping`.
+
+1. **Fetch agora explica tudo do zero**, sem assumir backend: novas peças didáticas para
+   **API, servidor, requisição, resposta, endpoint e JSON** (analogia do restaurante reescrita —
+   a cozinha é de outra pessoa; o aluno só "senta e pede").
+2. **Enquadramento no FUTURO, não no passado.** Onde dizia "a SUA API que você construiu",
+   "`@GetMapping`", "no backend você foi a cozinha", "no Cap 7 vira fetch na SUA API" → virou
+   "**lá na frente, no módulo de back-end, VOCÊ vai construir** a sua própria API". Mantém o arco
+   (o encontro front↔back continua sendo o clímax), só em tempo futuro.
+3. **API pública REAL** no exemplo: `https://fakestoreapi.com/products` (CORS `*`, devolve array
+   `[{id,title,price,...}]`). O aluno pode **abrir a URL e ver o JSON**. Campos `title`/`price`
+   (inglês) — vira ponto didático ("cada API escolhe os nomes dos campos"; o array do treino é
+   *seu*, então usa `nome`/`preco` em português).
+4. **"Use e abuse de animações" (pedido do prof):** +2 clipes Remotion novos — **`o-que-e-api.mp4`**
+   (WhatIsApi: requisição→servidor→resposta com vocabulário) e **`anatomia-json.mp4`** (JsonAnatomy:
+   `[ ] { } "campo": valor` destacados um a um). + **máquina interativa "API ao vivo"** (`.apilab`):
+   botão que faz um **fetch real** na fakestoreapi, acende os 3 passos, mostra o JSON e desenha cards
+   (fallback gravado se a sala estiver sem internet).
+5. **Player: autoplay + loop.** Todos os `.clip video` agora `autoplay loop muted playsinline`
+   (+ IntersectionObserver: dão play ao aparecer, pausam ao sair da tela). Some o "ficar dando play".
+6. **Remotion espelha o reframe:** `Browser.tsx` `ServerBox` deixou de ser "SUA API / Spring Boot /
+   `@GetMapping`" → "🌐 SERVIDOR / uma API na internet / `GET /produtos`"; `FetchJourney` re-renderizado.
+7. Verificação: `node --check` do módulo OK; `<pre>` 15/15 sem `=>`/`<` crus; tags balanceadas;
+   fakestoreapi confirmada (200 + CORS). **Não rebaixar** o reframe se a turma seguinte já tiver backend
+   — basta o enquadramento futuro virar "lembra que você construiu" de novo (1 passada de texto).
+
 ## Pendências reconhecidas
 - Planejar em detalhe os **Caps 6–9** (React: state → efeitos/dados → router → integração).
   Caps 4 e 5 já fixaram o tom, o setup Vite base e a Mini-loja como artefato contínuo do arco React.

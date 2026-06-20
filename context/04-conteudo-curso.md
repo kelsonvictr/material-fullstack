@@ -58,9 +58,18 @@ Dados: Pesquisa Código Fonte TV 2025 (citar fonte sempre).
       (const, %, quiz de saída) — ver decisão em `05-decisoes.md`
 - [x] Cap 3 — JS no navegador (DOM) — ponte HTML↔JS, DOM (árvore), seletores, mudar a página
       (textContent/style/classList), eventos (addEventListener), primeiro `fetch` (só `.then()`),
-      treino encadeado **Painel de Produtos** (ponte ERP, "vira fetch no Cap 7"), BugZilla do DOM.
-      · **3 máquinas didáticas:** 🌳 Árvore do DOM, 🎯 Seletor ao vivo, 🖱️ Detector de Eventos.
-      · **2 videoclipes Remotion** embutidos (ver decisão 2026-06-17): `jornada-fetch.mp4`, `clique-dom.mp4`.
+      treino encadeado **Painel de Produtos**, BugZilla do DOM.
+      · **reforma 2026-06-20 (turma nova, SEM backend prévio):** seção de fetch reescrita do zero —
+      explica **API/servidor/requisição/resposta/endpoint/JSON** com a analogia do restaurante (a
+      cozinha é de outra pessoa); usa **API pública real** `fakestoreapi.com` (não `localhost:8080`);
+      backend enquadrado no **futuro** ("você vai construir"). Treino: "vira fetch **quando aprender
+      back-end**" (não "Cap 7 / SUA API do ERP"). Ver decisão 2026-06-20 em `05-decisoes.md`.
+      · **4 máquinas didáticas:** 🌳 Árvore do DOM, 🎯 Seletor ao vivo, 🖱️ Detector de Eventos,
+      🧪 **API ao vivo** (`.apilab` — botão faz `fetch` REAL na fakestoreapi → acende 3 passos →
+      mostra JSON → desenha cards; fallback gravado offline).
+      · **4 videoclipes Remotion** embutidos: `jornada-fetch.mp4` (re-render s/ "SUA API"),
+      `clique-dom.mp4`, **`o-que-e-api.mp4`** (WhatIsApi) e **`anatomia-json.mp4`** (JsonAnatomy).
+      Player: **autoplay + loop + muted** (+ IO play/pause ao entrar/sair da tela).
       · Decisões travadas: fetch só `.then()` (async/await fica pra frente); hub e link do Cap 2 religados.
 - [x] Cap 4 — React: o início (2026-06-20) — por que React (imperativo×declarativo) + SPA, setup
       Vite mão-na-massa (`npm create vite` → tour `src/` → limpar boilerplate), componentes (função

@@ -65,7 +65,8 @@ export const Browser: React.FC<{
   </div>
 );
 
-// Servidor (sua API Spring) — bloco do lado direito do clipe de fetch.
+// Servidor (uma API na internet) — bloco do lado direito do clipe de fetch.
+// Reframe 2026-06-20: turma nova não viu backend; nada de "SUA API"/Spring/@GetMapping.
 export const ServerBox: React.FC<{ width: number; height: number; lit: boolean }> = ({
   width,
   height,
@@ -88,9 +89,9 @@ export const ServerBox: React.FC<{ width: number; height: number; lit: boolean }
       transition: "all 0.2s",
     }}
   >
-    <div style={{ fontSize: 52 }}>🍃</div>
-    <div style={{ color: C.text, fontWeight: 800, fontSize: 26 }}>SUA API</div>
-    <div style={{ color: C.dim, fontSize: 18 }}>Spring Boot</div>
+    <div style={{ fontSize: 52 }}>🌐</div>
+    <div style={{ color: C.text, fontWeight: 800, fontSize: 26 }}>SERVIDOR</div>
+    <div style={{ color: C.dim, fontSize: 18 }}>uma API na internet</div>
     <div
       style={{
         fontFamily: MONO,
@@ -102,7 +103,7 @@ export const ServerBox: React.FC<{ width: number; height: number; lit: boolean }
         border: `1px solid ${C.line}`,
       }}
     >
-      @GetMapping("/produtos")
+      GET /produtos
     </div>
   </div>
 );

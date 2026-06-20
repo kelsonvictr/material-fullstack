@@ -196,7 +196,7 @@ export const FetchJourney: React.FC = () => {
       <div style={{ position: "absolute", left: serverX, top: 150, opacity: intro }}>
         <ServerBox width={serverW} height={340} lit={lit} />
         <div style={{ textAlign: "center", color: C.dim, marginTop: 12, fontSize: 18 }}>
-          ☕ back-end (você construiu!)
+          🌐 um servidor na internet (a API)
         </div>
       </div>
 
@@ -217,7 +217,7 @@ export const FetchJourney: React.FC = () => {
           opacity: capO,
         }}
       >
-        do navegador → <span style={{ color: C.spring }}>sua API</span> → de volta como{" "}
+        do navegador → <span style={{ color: C.spring }}>a API</span> → de volta como{" "}
         <span style={{ color: C.js }}>cards</span> na tela
       </div>
     </AbsoluteFill>

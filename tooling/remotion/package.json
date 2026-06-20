@@ -4,8 +4,12 @@
   "private": true,
   "description": "Videoclipes Remotion do Cap 03 (DOM & eventos) — material Frontend Fullstack",
   "scripts": {
+    "render:api": "remotion render src/index.ts WhatIsApi ../../assets/video/o-que-e-api.mp4",
+    "render:json": "remotion render src/index.ts JsonAnatomy ../../assets/video/anatomia-json.mp4",
     "render:fetch": "remotion render src/index.ts FetchJourney ../../assets/video/jornada-fetch.mp4",
     "render:click": "remotion render src/index.ts ClickToDom ../../assets/video/clique-dom.mp4",
+    "still:api": "remotion still src/index.ts WhatIsApi ../../assets/video/o-que-e-api.png --frame=180",
+    "still:json": "remotion still src/index.ts JsonAnatomy ../../assets/video/anatomia-json.png --frame=180",
     "still:fetch": "remotion still src/index.ts FetchJourney ../../assets/video/jornada-fetch.png --frame=80",
     "still:click": "remotion still src/index.ts ClickToDom ../../assets/video/clique-dom.png --frame=70"
   },

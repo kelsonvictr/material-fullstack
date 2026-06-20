@@ -1,5 +1,16 @@
 # 07 — Sequência de HTTP / fetch / axios no arco do curso
 
+> ⚠️ **ATUALIZAÇÃO 2026-06-20 — premissa quebrada para a turma nova.** Toda a análise abaixo
+> assumia que **"o aluno chega no front tendo construído uma API Spring"** (ver "Racional"). A
+> **turma atual é nova e NÃO viu backend ainda.** Por isso o Cap 3 foi reescrito para **explicar
+> API/servidor/requisição/resposta/endpoint/JSON do zero**, usar uma **API pública real**
+> (`fakestoreapi.com`) em vez de `localhost:8080`, e enquadrar o backend no **futuro** ("você vai
+> construir") em vez do passado ("você construiu"). Detalhes na decisão **2026-06-20** do
+> `05-decisoes.md`. As decisões 1–4 abaixo (ordem fetch → `.then()` → `useEffect` → axios)
+> **continuam valendo**; o que mudou é só a **premissa de pré-requisito** (não há backend prévio a
+> referenciar). Os mocks dos Caps 4–6 seguem no shape de API, mas rotulados "vira fetch **quando
+> você aprender back-end**", não "no Cap 7 vira a SUA API do ERP".
+
 > Decisão de 2026-06-12, na véspera da aula do Cap 2 (6ª turma). Pergunta do professor:
 > "antecipar HTTP/REST/API + integração JS puro ↔ API já no Cap 2? E mostrar axios logo
 > depois dos primeiros componentes React?" Análise feita; conclusões abaixo são a spec.
