@@ -4,9 +4,18 @@ import { FetchJourney } from "./FetchJourney";
 import { ClickToDom } from "./ClickToDom";
 import { WhatIsApi } from "./WhatIsApi";
 import { JsonAnatomy } from "./JsonAnatomy";
+import { ArrowFunction } from "./ArrowFunction";
 
 export const RemotionRoot: React.FC = () => (
   <>
+    <Composition
+      id="ArrowFunction"
+      component={ArrowFunction}
+      durationInFrames={340}
+      fps={30}
+      width={1280}
+      height={720}
+    />
     <Composition
       id="WhatIsApi"
       component={WhatIsApi}

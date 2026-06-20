@@ -152,6 +152,12 @@
     font-size:0.78rem;font-weight:700;padding:8px 14px;border-radius:10px;cursor:pointer;transition:all .2s}
   .tr-tab.active{border-color:var(--js);color:var(--js);background:rgba(247,223,30,0.10)}
 
+  /* ── videoclipes (Remotion) ── */
+  .clip{margin:18px 0 4px}
+  .clip video{width:100%;border-radius:14px;border:1px solid rgba(247,223,30,0.25);
+    box-shadow:0 18px 50px rgba(0,0,0,0.45);display:block;background:#0a0a12}
+  .clip figcaption{font-size:0.78rem;color:var(--text-dim);text-align:center;margin-top:8px}
+
   @media (prefers-reduced-motion: reduce){
     .ift-ball,.fm-chip.in{transition:none}
     .fm-body.working,.tg-card.shake,.fm-chip.out{animation:none}
@@ -789,18 +795,29 @@ console.log("2 + 3 * 10 =", 2 + 3 * 10);
 <span class="bi">console</span>.<span class="fn">log</span>(<span class="fn">saudacao</span>(<span class="st">"Maria"</span>))<span class="punc">;</span>  <span class="cm">// Olá, Maria!</span></pre>
       </div>
 
-      <p style="color:var(--text-dim);margin:14px 0 6px">Existe uma forma mais curta, a <strong>arrow function</strong>
-      (função-seta). É a queridinha do React:</p>
+      <p style="color:var(--text-dim);margin:14px 0 6px">Existe uma forma mais curta de escrever a mesma
+      coisa: a <strong>arrow function</strong> (função-seta). É a <strong>queridinha do React</strong> — você vai
+      ver essa setinha <code>=&gt;</code> o tempo todo. Antes do código, olha a função clássica
+      <strong>virando</strong> uma arrow neste clipe: 👇</p>
+
+      <figure class="clip" data-motion="rise">
+        <video controls preload="none" playsinline poster="../../assets/video/arrow-function.png">
+          <source src="../../assets/video/arrow-function.mp4" type="video/mp4">
+          Seu navegador não reproduz o vídeo. <a href="../../assets/video/arrow-function.mp4">Baixe o clipe aqui.</a>
+        </video>
+        <figcaption>⚙️ a função clássica perde o <code>function</code>, ganha <code>const nome =</code> e a seta <code>=&gt;</code></figcaption>
+      </figure>
+
+      <p style="color:var(--text-dim);margin:14px 0 6px">Repare: é a <strong>mesma</strong> função do exemplo
+      anterior. Só mudou o <em>jeito de escrever</em> — começa com <code>const</code>, e no lugar da palavra
+      <code>function</code> entra a seta <code>=&gt;</code> depois dos parênteses:</p>
 
       <div class="code-block">
         <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">arrow.js</span><span class="lang-badge js">JavaScript</span></div>
-<pre><span class="kw">const</span> <span class="fn">saudacao</span> <span class="op">=</span> (<span class="var">nome</span>) <span class="op">=&gt;</span> <span class="punc">{</span>
+<pre><span class="cm">// mesma saudação, agora como arrow function:</span>
+<span class="kw">const</span> <span class="fn">saudacao</span> <span class="op">=</span> (<span class="var">nome</span>) <span class="op">=&gt;</span> <span class="punc">{</span>
   <span class="kw">return</span> <span class="st">`Olá, ${nome}!`</span><span class="punc">;</span>
-<span class="punc">}</span><span class="punc">;</span>
-
-<span class="cm">// versão curtíssima (return implícito):</span>
-<span class="kw">const</span> <span class="fn">dobro</span> <span class="op">=</span> (<span class="var">n</span>) <span class="op">=&gt;</span> <span class="var">n</span> <span class="op">*</span> <span class="num">2</span><span class="punc">;</span>
-<span class="bi">console</span>.<span class="fn">log</span>(<span class="fn">dobro</span>(<span class="num">5</span>))<span class="punc">;</span>  <span class="cm">// 10</span></pre>
+<span class="punc">}</span><span class="punc">;</span></pre>
       </div>
 
       <div class="warning">
@@ -811,6 +828,25 @@ console.log("2 + 3 * 10 =", 2 + 3 * 10);
           A sua IDE (VSCode) pode <em>desenhar</em> isso como uma setinha bonita <code>⇒</code>, mas
           <strong>você nunca digita o símbolo</strong> — sempre <kbd>=</kbd> e <kbd>&gt;</kbd>.
         </div>
+      </div>
+
+      <p style="color:var(--text-dim);margin:16px 0 6px">Quando o corpo da função é <strong>uma conta só</strong>,
+      dá pra encurtar ainda mais: <strong>tira as chaves <code>{ }</code> e o <code>return</code></strong> — a arrow
+      devolve o resultado sozinha (a gente chama isso de <strong>return implícito</strong>):</p>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">arrow-curta.js</span><span class="lang-badge js">JavaScript</span></div>
+<pre><span class="cm">// uma linha só — sem chaves e sem return:</span>
+<span class="kw">const</span> <span class="fn">dobro</span> <span class="op">=</span> (<span class="var">n</span>) <span class="op">=&gt;</span> <span class="var">n</span> <span class="op">*</span> <span class="num">2</span><span class="punc">;</span>
+<span class="bi">console</span>.<span class="fn">log</span>(<span class="fn">dobro</span>(<span class="num">5</span>))<span class="punc">;</span>  <span class="cm">// 10</span></pre>
+      </div>
+
+      <div class="concept">
+        <div class="concept-title">🧭 Como ler uma arrow</div>
+        <p>Bate o olho sempre na <strong>setinha</strong>: <strong>à esquerda</strong> de <code>=&gt;</code> ficam os
+        <strong>ingredientes</strong> (os parâmetros, entre parênteses); <strong>à direita</strong>, o que a função
+        <strong>faz/devolve</strong>. Com chaves <code>{ }</code>, você escreve o <code>return</code> na mão; sem chaves,
+        o <code>return</code> é automático. É só isso — o resto é a mesma função de sempre.</p>
       </div>
 
       <p style="color:var(--text-dim);margin:16px 0 6px">

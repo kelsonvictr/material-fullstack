@@ -2,8 +2,10 @@
   "name": "remotion-cap03",
   "version": "1.0.0",
   "private": true,
-  "description": "Videoclipes Remotion do Cap 03 (DOM & eventos) — material Frontend Fullstack",
+  "description": "Videoclipes Remotion dos capítulos — material Frontend Fullstack",
   "scripts": {
+    "render:arrow": "remotion render src/index.ts ArrowFunction ../../assets/video/arrow-function.mp4",
+    "still:arrow": "remotion still src/index.ts ArrowFunction ../../assets/video/arrow-function.png --frame=175",
     "render:api": "remotion render src/index.ts WhatIsApi ../../assets/video/o-que-e-api.mp4",
     "render:json": "remotion render src/index.ts JsonAnatomy ../../assets/video/anatomia-json.mp4",
     "render:fetch": "remotion render src/index.ts FetchJourney ../../assets/video/jornada-fetch.mp4",
