@@ -81,6 +81,20 @@ Dados: Pesquisa Código Fonte TV 2025 (citar fonte sempre).
       · Decisões travadas: props entra no Cap 4 (Cap 5 = `.map()`+imagens+CSS Modules); array do
       passo 5 no shape da API "vira `.map()` no Cap 5, `fetch` no Cap 7". Sem Remotion/memes (ainda).
       · Hub religado (tirado `em-breve` do c04) e Cap 3 ganhou botão "Próximo: Cap 04".
+      · **Reforma 2026-07-04 (mais conteúdo, nada removido):** seção "Por que React" ganhou
+      "React é biblioteca" + quem usa (chips Instagram/Netflix/Nubank/iFood/ML); **NOVA seção 🔌
+      "Como o React liga na página"** (`#engrenagem`, pós-Vite): index.html (a tomada `root` vazia)
+      → main.jsx (o plugue, com `document.getElementById` = ponte Cap 3) → App.jsx + concept
+      package.json (lista de compras)/node_modules (estante, não editar/não enviar) + **1º vídeo
+      Remotion do cap** (`jornada-componente.mp4`, ComponentJourney.tsx) + **máquina 🔌 Corrente do
+      React** (3 arquivos clicáveis + ▶ liga a corrente até o h1). JSX: + comentário `{/* */}`,
+      `style={{}}` (2 chaves), warning "só expressão nas chaves, if não" (gancho Cap 5); jogo
+      HTML-ou-JSX **5→10 rodadas**. Props: + **máquina 🎛️ Painel de Props** (inputs nome/preço +
+      toggle aspas×chaves → frete "32015" texto × 335 número, erro visível) + concept **props são
+      somente leitura** (gancho useState/Cap 6). Quiz intermediário novo (componente minúsculo) na
+      seção Componentes. Treino **5→7 passos**: novo P5 solo "Rodapé da loja" (Rodape.jsx c/ props)
+      e novo P7 solo "sinta a dor" (produtos[2] na mão → gancho .map()); casa: bônus prop emoji
+      (o antigo bônus Rodape virou o P5). ~1120→1567 linhas.
 - [x] Cap 5 — Listas & estilo (2026-06-20) — continua a Mini-loja do Cap 4. `.map()` (array→JSX, um
       card por item), prop **`key`** (`key={p.id}`, por que e o caso sem ela), **imagens** (public/ com
       `"/x.jpg"` × import de src/assets × o erro "sem import"), **CSS Modules** (`.module.css` +
@@ -93,6 +107,20 @@ Dados: Pesquisa Código Fonte TV 2025 (citar fonte sempre).
       · Reintroduz a arrow `=>` (no `.map()`) ⇒ **aviso de IDE voltou** (`=>` pode virar `⇒`). NOTA: o
       título/pills do card 05 no hub foram trocados de "Props & estilo/props" para "Listas & estilo/
       map()/imagens" (props migrou pro Cap 4). Pasta segue `05-react-props-css/`. Sem Remotion/memes.
+      · **Reforma 2026-07-04 (mais conteúdo, nada removido):** ponte explícita com o Cap 2 na seção
+      .map() (par de code-blocks: `n * 2` × JSX — "mesma esteira, molde diferente") + **1º vídeo
+      Remotion do cap** (`esteira-map.mp4`, MapAssemblyLine.tsx). Key: + **máquina 🔑 Guarda-volumes**
+      (com key × sem key lado a lado; remover o 1º → pertences trocam de dono no lado sem key, console
+      simulado com o warning). **NOVA seção 👻 "Mostrar ou esconder"** (`#condicional`, pós-CSS
+      Modules): porteiro `&&` (selo 💎) + ternário `? :` (Disponível×Esgotado) + classe condicional
+      (`className={cond ? styles.a : styles.b}`) + **máquina 🚦 Interruptor do JSX** (chips de preço +
+      estoque → linha do código acende) + quiz + aviso IDE p/ `>=`. BugZilla: **+Bug 5** (`if` nas
+      chaves). Treino **5→7 passos**: novo P5 solo "selo 💎 Premium com &&" (o antigo desafio de casa,
+      agora com teoria dada), vitrine→P6, novo P7 solo "disponível ou esgotado?" (campo `emEstoque` +
+      ternário + classe cinza); **casa NOVO** = contador `total={produtos.length}` no Cabecalho +
+      bônus frete grátis (`&&`) e plural (ternário). ~919→1359 linhas.
+      **⚠️ Decisão didática: renderização condicional (`&&`/ternário) agora é ensinada no Cap 5** —
+      o Cap 6 (useState) pode assumir os dois porteiros como conhecidos.
 - [ ] Caps 6–9 (próximas sessões) — marcados como "🔒 em breve" no hub
 - [x] Memes gerados: `meme-intro-fullstack.png`, `meme-css-centralizar.png`, `meme-js-soma.png`,
       `meme-dom-mudei-tela.png` (Cap 3 — "EU MUDEI A TELA COM CÓDIGO")

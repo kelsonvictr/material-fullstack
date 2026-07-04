@@ -5,9 +5,27 @@ import { ClickToDom } from "./ClickToDom";
 import { WhatIsApi } from "./WhatIsApi";
 import { JsonAnatomy } from "./JsonAnatomy";
 import { ArrowFunction } from "./ArrowFunction";
+import { ComponentJourney } from "./ComponentJourney";
+import { MapAssemblyLine } from "./MapAssemblyLine";
 
 export const RemotionRoot: React.FC = () => (
   <>
+    <Composition
+      id="ComponentJourney"
+      component={ComponentJourney}
+      durationInFrames={330}
+      fps={30}
+      width={1280}
+      height={720}
+    />
+    <Composition
+      id="MapAssemblyLine"
+      component={MapAssemblyLine}
+      durationInFrames={320}
+      fps={30}
+      width={1280}
+      height={720}
+    />
     <Composition
       id="ArrowFunction"
       component={ArrowFunction}

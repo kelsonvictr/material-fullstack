@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="../../shared/playground.css">
 <style>
   /* ── mono didático: SEMPRE sem ligaduras (=> não vira ⇒, >= não vira ≥) ── */
-  .mono,.vr-num,.vr-code,.ct-line,.ct-node,.jx-snippet,.jx-tag{
+  .mono,.vr-num,.vr-code,.ct-line,.ct-node,.jx-snippet,.jx-tag,.rc-file,.rc-root,.pp-jsx,.pp-sum code,.pp-field input,.pp-chip{
     font-family:'JetBrains Mono',monospace;
     font-variant-ligatures:none;font-feature-settings:"liga" 0,"clig" 0,"calt" 0}
 
@@ -86,8 +86,69 @@
   .jx-restart{margin-top:8px;border:1px solid rgba(97,218,251,0.4);background:var(--surface2);color:#61dafb;
     font-family:'JetBrains Mono',monospace;font-weight:700;font-size:0.8rem;padding:8px 16px;border-radius:10px;cursor:pointer}
 
+  /* ── videoclipes (Remotion) ── */
+  .clip{margin:18px 0 4px}
+  .clip video{width:100%;border-radius:14px;border:1px solid rgba(97,218,251,0.25);
+    box-shadow:0 18px 50px rgba(0,0,0,0.45);display:block;background:#0a0a12}
+  .clip figcaption{font-size:0.78rem;color:var(--text-dim);text-align:center;margin-top:8px}
+
+  /* ═══ 🔌 Corrente do React ═══ */
+  .reactchain{background:linear-gradient(180deg,#0b1020,#0d0d1a);border:1px solid rgba(97,218,251,0.25);
+    border-radius:16px;padding:18px;margin:14px 0}
+  .rc-flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1.25fr;gap:8px;align-items:stretch}
+  @media (max-width:720px){.rc-flow{grid-template-columns:1fr}.rc-wire{transform:rotate(90deg);justify-self:center}}
+  .rc-file{background:#0b0b14;border:2px solid rgba(255,255,255,0.12);border-radius:12px;padding:10px 8px;
+    text-align:center;cursor:pointer;font-size:0.78rem;color:#cdd6f4;font-weight:700;
+    transition:border-color .3s,background .3s,transform .3s}
+  .rc-file .rc-ico{font-size:1.3rem;display:block;margin-bottom:2px}
+  .rc-file small{display:block;font-family:'Nunito',sans-serif;font-weight:600;font-size:0.64rem;color:var(--text-dim);margin-top:4px}
+  .rc-file.lit{border-color:var(--react);background:rgba(97,218,251,0.10);transform:translateY(-3px)}
+  .rc-wire{display:flex;align-items:center;color:rgba(97,218,251,0.30);font-weight:800;font-size:0.9rem;transition:color .3s}
+  .rc-wire.lit{color:var(--js)}
+  .rc-screen{background:#0b0b14;border:2px solid rgba(255,255,255,0.12);border-radius:12px;padding:10px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-height:96px;
+    text-align:center;transition:border-color .3s}
+  .rc-screen.lit{border-color:#46d39a}
+  .rc-root{font-size:0.64rem;color:var(--text-dim)}
+  .rc-screen .rc-h1{font-family:'Nunito',sans-serif;font-size:1.02rem;font-weight:900;color:#fff;
+    opacity:0;transform:scale(.8);transition:opacity .4s,transform .4s}
+  .rc-screen.on .rc-h1{opacity:1;transform:scale(1)}
+  .rc-state{font-size:0.66rem;color:var(--text-dim)}
+  .rc-note{margin-top:14px;background:#0b0b14;border:1px solid rgba(255,255,255,0.1);border-radius:10px;
+    padding:10px 12px;font-size:0.84rem;color:#cdd6f4;text-align:center;min-height:44px}
+  .rc-controls{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px;font-size:0.8rem;color:var(--text-dim)}
+  .rc-controls button{border:1px solid rgba(97,218,251,0.4);background:var(--surface2);color:#61dafb;
+    font-family:'JetBrains Mono',monospace;font-weight:700;font-size:0.8rem;padding:8px 14px;border-radius:10px;cursor:pointer;transition:all .2s}
+  .rc-controls button:hover{transform:translateY(-2px);background:rgba(97,218,251,0.12)}
+
+  /* ═══ 🎛️ Painel de Props ═══ */
+  .propspanel{background:linear-gradient(180deg,#0b1020,#0d0d1a);border:1px solid rgba(70,211,154,0.3);
+    border-radius:16px;padding:18px;margin:14px 0}
+  .pp-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);gap:14px;align-items:start}
+  @media (max-width:640px){.pp-grid{grid-template-columns:1fr}}
+  .pp-controls{display:flex;flex-direction:column;gap:10px}
+  .pp-field{font-size:0.76rem;color:var(--text-dim);font-weight:700}
+  .pp-field input{display:block;width:100%;margin-top:4px;background:#0b0b14;border:1px solid rgba(255,255,255,0.15);
+    border-radius:8px;padding:8px 10px;color:#fff;font-size:0.85rem}
+  .pp-field input:focus{outline:none;border-color:var(--react)}
+  .pp-mode{display:flex;gap:8px;flex-wrap:wrap;margin-top:2px}
+  .pp-chip{border:1px solid rgba(70,211,154,0.4);background:var(--surface2);color:#7ef0c4;
+    font-weight:700;font-size:0.72rem;padding:8px 10px;border-radius:10px;cursor:pointer;transition:all .2s}
+  .pp-chip:hover{transform:translateY(-2px)}
+  .pp-chip.active{border-color:var(--js);color:var(--js);background:rgba(247,223,30,0.10)}
+  .pp-out{display:flex;flex-direction:column;gap:10px;min-width:0}
+  .pp-jsx{background:#06060c;border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 12px;
+    font-size:0.76rem;color:#cdd6f4;overflow-x:auto;white-space:pre}
+  .pp-card{background:#fff;color:#111;border-radius:12px;padding:12px 16px;font-family:'Nunito',sans-serif;
+    box-shadow:0 8px 24px rgba(0,0,0,0.35);max-width:280px}
+  .pp-card h4{margin:0;font-size:1rem}
+  .pp-card p{margin:2px 0 0;color:#16a34a;font-weight:800}
+  .pp-sum{background:#0b0b14;border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 12px;
+    font-size:0.8rem;color:#cdd6f4}
+  .pp-sum .ok{color:#46d39a;font-weight:800}.pp-sum .bad{color:#ff6b6b;font-weight:800}
+
   @media (prefers-reduced-motion: reduce){
-    .ct-node,.vr-num,.vr-fill{transition:none}
+    .ct-node,.vr-num,.vr-fill,.rc-file,.rc-wire,.rc-screen,.rc-screen .rc-h1,.pp-chip{transition:none}
   }
 </style>
 </head>
@@ -111,6 +172,7 @@
     <a class="sidebar-link" onclick="goTo('aquecimento')"><span class="dot" style="background:var(--accent5)"></span> Aquecimento</a>
     <a class="sidebar-link" onclick="goTo('porque')"><span class="dot" style="background:var(--react)"></span> ⚖️ Por que React</a>
     <a class="sidebar-link" onclick="goTo('vite')"><span class="dot" style="background:var(--vite)"></span> ⚡ Criando com Vite</a>
+    <a class="sidebar-link" onclick="goTo('engrenagem')"><span class="dot" style="background:var(--react)"></span> 🔌 Como o React liga</a>
     <a class="sidebar-link" onclick="goTo('componentes')"><span class="dot" style="background:var(--react)"></span> 🧩 Componentes</a>
     <a class="sidebar-link" onclick="goTo('jsx')"><span class="dot" style="background:var(--js)"></span> 📝 JSX</a>
     <a class="sidebar-link" onclick="goTo('props')"><span class="dot" style="background:var(--accent7)"></span> 🎁 Props</a>
@@ -233,6 +295,26 @@
         pisca em branco), a SPA carrega <strong>uma vez</strong> e o JavaScript troca só os pedaços que
         mudam — rápido e fluido, como um app de celular. Sites como Instagram e Gmail são assim.</p>
       </div>
+
+      <div class="concept">
+        <div class="concept-title">📚 E o que é o React, exatamente? Uma biblioteca</div>
+        <p>O React é uma <strong>biblioteca JavaScript</strong>: um pacotão de código pronto, escrito e
+        mantido por outra equipe (nasceu no Facebook, em 2013), que você <strong>puxa pro seu
+        projeto</strong> pra não reinventar a roda. Você escreve os componentes; quem monta, atualiza e
+        troca os pedaços certos da página (o trabalho de pedreiro do Cap 3) é ele. E quem
+        <strong>baixa e guarda</strong> essa biblioteca pra você é o <code>npm</code>, que você conheceu
+        no Cap 00b — daqui a pouco você vê os dois trabalhando juntos.</p>
+      </div>
+
+      <p style="margin-top:12px">E não é modinha: boa parte dos apps que você usa todo dia é React —
+      e é uma das habilidades mais pedidas nas vagas de front-end no Brasil:</p>
+      <div class="hero-stack" style="justify-content:flex-start;margin-top:8px">
+        <span class="stack-chip react">📸 Instagram</span>
+        <span class="stack-chip react">🎬 Netflix</span>
+        <span class="stack-chip react">💜 Nubank</span>
+        <span class="stack-chip react">🍔 iFood</span>
+        <span class="stack-chip react">🛒 Mercado Livre</span>
+      </div>
     </div>
   </section>
 
@@ -294,7 +376,7 @@
 ├── index.html        <span class="cm"># a única página de verdade (a "S" de SPA)</span>
 ├── package.json      <span class="cm"># lista as dependências do projeto</span>
 └── src/
-    ├── main.jsx      <span class="cm"># liga o React no index.html (não mexa por enquanto)</span>
+    ├── main.jsx      <span class="cm"># liga o React no index.html (a próxima seção explica!)</span>
     ├── App.jsx       <span class="cm"># 👈 SEU primeiro componente — é aqui que você trabalha</span>
     └── index.css     <span class="cm"># estilos globais</span></pre>
       </div>
@@ -343,6 +425,106 @@
 <script type="text/html" data-mp="html">
   <h1 style="font-family:sans-serif">Minha Loja 🛒</h1>
 </script>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ COMO O REACT LIGA NA PÁGINA ═══════════════ -->
+  <section class="step-section" id="engrenagem">
+    <div class="step-header">
+      <div class="step-number sn-react">🔌</div>
+      <div>
+        <div class="step-title">Como o React liga na página</div>
+        <div class="step-sub">O caminho do index.html até o SEU componente</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="analogy">
+        <div class="analogy-title">🔌 A tomada e o plugue</div>
+        <p>Pense no <code>index.html</code> como um quarto <strong>vazio</strong> com uma única
+        <strong>tomada</strong> na parede: uma <code>&lt;div id="root"&gt;</code> sem nada dentro.
+        O <code>main.jsx</code> é o <strong>plugue</strong>: ele encaixa o seu <code>App</code> nessa
+        tomada. A partir daí, <strong>tudo</strong> que aparece na tela nasce do <code>App.jsx</code>.</p>
+      </div>
+
+      <p>Abra o <code>index.html</code> do seu projeto e repare: o corpo é praticamente vazio — bem
+      diferente dos HTMLs cheios de tags que você escreveu nos Caps 1 e 3:</p>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">index.html (o que o Vite criou)</span><span class="lang-badge html">HTML</span></div>
+<pre><span class="tag">&lt;body&gt;</span>
+  <span class="tag">&lt;div</span> <span class="atr">id</span><span class="op">=</span><span class="st">"root"</span><span class="tag">&gt;&lt;/div&gt;</span>   <span class="cm">&lt;!-- a tomada: vazia de propósito --&gt;</span>
+  <span class="tag">&lt;script</span> <span class="atr">type</span><span class="op">=</span><span class="st">"module"</span> <span class="atr">src</span><span class="op">=</span><span class="st">"/src/main.jsx"</span><span class="tag">&gt;&lt;/script&gt;</span>
+<span class="tag">&lt;/body&gt;</span></pre>
+      </div>
+
+      <p>E quem enche essa <code>div</code>? O <code>main.jsx</code> — olha ele aí, usando um velho
+      conhecido seu do Cap 3:</p>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/main.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">import</span> <span class="punc">{</span> <span class="var">createRoot</span> <span class="punc">}</span> <span class="kw">from</span> <span class="st">"react-dom/client"</span>
+<span class="kw">import</span> <span class="var">App</span> <span class="kw">from</span> <span class="st">"./App"</span>
+<span class="kw">import</span> <span class="st">"./index.css"</span>
+
+<span class="cm">// acha a tomada (olá, Cap 3!) e pluga o seu App nela</span>
+<span class="fn">createRoot</span>(<span class="bi">document</span>.<span class="fn">getElementById</span>(<span class="st">"root"</span>)).<span class="fn">render</span>(<span class="tag">&lt;</span><span class="cmp">App</span> <span class="tag">/&gt;</span>)</pre>
+      </div>
+
+      <div class="tip">
+        <span class="tip-icon">🧠</span>
+        <div class="tip-content">
+          Viu o <code>document.getElementById("root")</code>? É <strong>o mesmo</strong> do Cap 3! O React
+          usa o DOM por baixo dos panos — a diferença é que, daqui pra frente, quem mexe no DOM é
+          <strong>ele</strong>, não você. Esse arquivo você <strong>não precisa editar</strong> — mas agora
+          sabe exatamente o que ele faz.
+        </div>
+      </div>
+
+      <figure class="clip" data-motion="rise">
+        <video controls autoplay loop muted playsinline poster="../../assets/video/jornada-componente.png">
+          <source src="../../assets/video/jornada-componente.mp4" type="video/mp4">
+          Seu navegador não reproduz o vídeo. <a href="../../assets/video/jornada-componente.mp4">Baixe o clipe aqui.</a>
+        </video>
+        <figcaption>🔌 o <code>index.html</code> nasce vazio → o <code>main.jsx</code> pluga o <code>&lt;App /&gt;</code> na tomada <code>root</code> → o que o App retorna vira a tela</figcaption>
+      </figure>
+
+      <p style="color:var(--text-dim);margin:14px 0 4px">Clique em cada arquivo pra ver o papel dele —
+      e aperte <strong>▶</strong> pra ver a corrente inteira ligar 👇</p>
+
+      <div class="reactchain" id="reactchain">
+        <div class="rc-flow">
+          <div class="rc-file" data-k="html"><span class="rc-ico">📄</span>index.html<small>o quarto com a tomada</small></div>
+          <div class="rc-wire">⚡→</div>
+          <div class="rc-file" data-k="main"><span class="rc-ico">🔌</span>main.jsx<small>o plugue</small></div>
+          <div class="rc-wire">⚡→</div>
+          <div class="rc-file" data-k="app"><span class="rc-ico">⚛️</span>App.jsx<small>seu componente</small></div>
+          <div class="rc-wire">⚡→</div>
+          <div class="rc-screen" id="rc-screen">
+            <span class="rc-root">&lt;div id="root"&gt;&lt;/div&gt;</span>
+            <span class="rc-h1">Minha Loja 🛒</span>
+            <span class="rc-state" id="rc-state">tela vazia…</span>
+          </div>
+        </div>
+        <div class="rc-note" id="rc-note">Clique num arquivo pra conhecer o papel dele, ou aperte ▶ pra ligar a corrente.</div>
+        <div class="rc-controls">
+          <button id="rc-run">▶ ligar a corrente</button>
+          <span>é isso que acontece toda vez que a página carrega</span>
+        </div>
+      </div>
+
+      <div class="concept">
+        <div class="concept-title">📦 Então o que foi aquele "npm install"?</div>
+        <p>Agora dá pra contar: o <code>package.json</code> é a <strong>lista de compras</strong> do
+        projeto ("preciso do react, do react-dom…"). O <code>npm install</code> vai na internet, baixa
+        cada item da lista (e o que <em>eles</em> precisam) e guarda tudo na estante
+        <code>node_modules</code> — por isso ela é gigante e apareceu "do nada". Duas regras da estante:
+        <strong>ninguém edita nada lá dentro</strong>, e ela <strong>não se envia</strong> pra ninguém
+        (nem zip, nem pendrive) — quem recebe o projeto roda <code>npm install</code> e monta a própria
+        estante a partir da lista.</p>
       </div>
     </div>
   </section>
@@ -438,6 +620,17 @@
           <span>cada caixinha é um <strong>componente</strong> que você criou</span>
         </div>
       </div>
+
+      <div class="quiz" style="margin-top:16px">
+        <div class="quiz-q"><span class="q-emoji">🧩</span> Checagem rápida: você criou o <code>CartaoProduto.jsx</code> direitinho, mas no App escreveu <code>&lt;cartaoProduto /&gt;</code> (minúsculo). O que acontece?</div>
+        <div class="quiz-options">
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">Funciona normal — maiúscula é só estilo</button>
+          <button class="quiz-opt" data-correct="true" onclick="checkQuiz(this,true)">O React trata como tag HTML desconhecida e não renderiza nada</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">O Vite corrige sozinho quando você salva</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">O navegador pergunta se quer instalar o componente</button>
+        </div>
+        <div class="quiz-feedback" data-correct="Exato!" data-wrong="Quase…" data-explain="A inicial Maiúscula é o SINAL que o React usa pra saber que a tag é um componente seu. Minúsculo = tag HTML comum — e como essa tag não existe no HTML, não aparece nada na tela. Você vai reencontrar isso no BugZilla, daqui a pouco."></div>
+      </div>
     </div>
   </section>
 
@@ -490,13 +683,36 @@
         </div>
       </div>
 
+      <div class="concept">
+        <div class="concept-title">✌️ Mais duas regrinhas que aparecem cedo</div>
+        <ul class="about-bullets" style="margin:6px 0 0">
+          <li><div><strong>Comentário em JSX tem cara própria:</strong> <code>{/* assim */}</code> — é o
+          comentário de bloco do JS (<code>/* */</code>) dentro das chaves de sempre. O
+          <code>&lt;!-- do HTML --&gt;</code> <strong>não vale</strong> dentro do <code>return</code>.</div></li>
+          <li><div><strong><code>style</code> recebe um objeto, não texto:</strong>
+          <code>style={{ color: "red" }}</code>. São <strong>duas</strong> chaves mesmo: a de fora avisa
+          "vem JavaScript aí", a de dentro é um objeto (Cap 2!). Na prática você vai preferir
+          <code>className</code> + CSS — mas precisa reconhecer isso quando vir por aí.</div></li>
+        </ul>
+      </div>
+
+      <div class="warning">
+        <span class="warning-icon">🚧</span>
+        <div class="warning-content">
+          E um limite importante: nas <code>{ }</code> só entra o que <strong>vira um valor</strong>.
+          Um <code>if</code> solto <strong>não</strong> entra — <code>{ if (x) { ... } }</code> quebra na
+          hora. Quando você precisar decidir "mostra ou não mostra" na tela, existe um jeito próprio do
+          JSX — é assunto do <strong>Cap 5</strong>. 😉
+        </div>
+      </div>
+
       <p style="color:var(--text-dim);margin:14px 0 4px">Treine o olho: cada cartão abaixo mostra um
       trecho. Ele <strong>funciona no JSX</strong> ou é HTML que o React não aceita? 👇</p>
 
       <div class="jsxgame" id="jsxgame">
         <div class="jx-top">
           <span>🧪 HTML ou JSX?</span>
-          <span class="jx-score" id="jx-score">0 / 5</span>
+          <span class="jx-score" id="jx-score">0 / 10</span>
         </div>
         <div class="jx-stage">
           <div class="jx-q" id="jx-q">Isso funciona dentro do JSX?</div>
@@ -568,6 +784,32 @@
         </div>
       </div>
 
+      <p style="color:var(--text-dim);margin:14px 0 4px">Brinque com o painel: mude os valores e veja o
+      <strong>mesmo</strong> componente virar outro card. Depois troque o preço de <strong>chaves</strong>
+      pra <strong>aspas</strong> e olhe a conta do frete quebrar 👇</p>
+
+      <div class="propspanel" id="propspanel">
+        <div class="pp-grid">
+          <div class="pp-controls">
+            <label class="pp-field">nome
+              <input id="pp-nome" value="Teclado Mecânico" maxlength="22">
+            </label>
+            <label class="pp-field">preco
+              <input id="pp-preco" type="number" value="320" min="0" max="99999">
+            </label>
+            <div class="pp-mode">
+              <button class="pp-chip active" data-m="chaves">preco={320} · chaves</button>
+              <button class="pp-chip" data-m="aspas">preco="320" · aspas</button>
+            </div>
+          </div>
+          <div class="pp-out">
+            <div class="pp-jsx" id="pp-jsx"></div>
+            <div class="pp-card"><h4 id="pp-card-nome"></h4><p id="pp-card-preco"></p></div>
+            <div class="pp-sum" id="pp-sum"></div>
+          </div>
+        </div>
+      </div>
+
       <div class="concept">
         <div class="concept-title">✨ Atalho: desestruturar as props</div>
         <p>Escrever <code>props.nome</code>, <code>props.preco</code> o tempo todo cansa. Dá pra "abrir" as
@@ -587,6 +829,16 @@
 <span class="punc">}</span>
 
 <span class="kw">export</span> <span class="kw">default</span> <span class="var">CartaoProduto</span></pre>
+      </div>
+
+      <div class="concept">
+        <div class="concept-title">🔒 Props são somente leitura</div>
+        <p>Uma regra do jogo: o componente <strong>recebe</strong> as props e <strong>usa</strong> — mas
+        <strong>nunca altera</strong>. Escrever <code>nome = "outra coisa"</code> dentro do
+        <code>CartaoProduto</code> é contra as regras do React. Pense na etiqueta da encomenda: quem
+        escreve é quem <strong>envia</strong> (o App); o pacote só lê. "Mas e quando a tela precisar
+        <em>mudar</em> — um contador, um carrinho?" Pra isso existe outra ferramenta: o
+        <strong>estado</strong>, a estrela do <strong>Cap 6</strong>.</p>
       </div>
 
       <div class="tip">
@@ -711,7 +963,9 @@
         <span class="at-dot lv1">2</span><span class="at-arrow">→</span>
         <span class="at-dot lv2">3</span><span class="at-arrow">→</span>
         <span class="at-dot lv2">4</span><span class="at-arrow">→</span>
-        <span class="at-dot lv3">5</span><span class="at-arrow">→</span>
+        <span class="at-dot lv2">5</span><span class="at-arrow">→</span>
+        <span class="at-dot lv3">6</span><span class="at-arrow">→</span>
+        <span class="at-dot lv3">7</span><span class="at-arrow">→</span>
         <span class="at-dot lv3">🏆</span>
       </div>
 
@@ -881,10 +1135,56 @@
         </div>
       </div>
 
-      <!-- 5. guided — array shape API (teaser map) -->
+      <!-- 5. solo — Rodape com props -->
+      <div class="exercise solo">
+        <div class="exercise-header"><span class="exercise-icon">🧑‍💻</span><div>
+          <div class="exercise-title">Passo 5 — o rodapé da loja (sozinho/a)</div>
+          <div class="exercise-sub">Um componente novo, do zero, com props — o ciclo completo sem ajuda</div></div>
+        </div>
+        <div class="drill-tags"><span class="drill-level lv2"><span class="stars">★★</span> médio</span><span class="drill-tag">componente</span><span class="drill-tag">props</span><span class="drill-tag">rafce</span></div>
+        <div class="concept"><div class="concept-title">💡 Dica</div><p>Crie <code>src/Rodape.jsx</code> (<code>rafce</code> + <kbd>Tab</kbd>) recebendo <code>{ loja, ano }</code>. Retorne um <code>&lt;footer&gt;</code> com algo como <code>© {ano} — {loja}</code>. No App, importe e use <code>&lt;Rodape loja="Mini-loja" ano={2026} /&gt;</code> <strong>abaixo</strong> dos cards. Lembre: texto entre aspas, número entre chaves!</p></div>
+        <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Tenta antes!</strong> É o ciclo que você já rodou duas vezes: criar arquivo → rafce → props → importar → usar.</div></div>
+        <div class="toggler">
+          <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — Ver solução</span><span class="toggler-arrow">▼</span></div>
+          <div class="toggler-body">
+            <div class="code-block">
+              <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/Rodape.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">const</span> <span class="fn">Rodape</span> <span class="op">=</span> (<span class="punc">{</span> <span class="var">loja</span>, <span class="var">ano</span> <span class="punc">}</span>) <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;footer&gt;</span>
+      <span class="tag">&lt;p&gt;</span>© {<span class="var">ano</span>} — {<span class="var">loja</span>} · feito com React ⚛️<span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;/footer&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">Rodape</span></pre>
+            </div>
+            <div class="code-block">
+              <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx (import no topo + uso no fim do &lt;div&gt;)</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">import</span> <span class="var">Rodape</span> <span class="kw">from</span> <span class="st">"./Rodape"</span>
+<span class="cm">// ...</span>
+<span class="tag">&lt;</span><span class="cmp">Rodape</span> <span class="atr">loja</span><span class="op">=</span><span class="st">"Mini-loja"</span> <span class="atr">ano</span><span class="op">=</span>{<span class="num">2026</span>} <span class="tag">/&gt;</span></pre>
+            </div>
+            <div class="mini-browser" data-url="localhost:5173">
+<script type="text/html" data-mp="html">
+  <header style="font-family:sans-serif"><h1>Mini-loja 🛒</h1></header>
+  <div style="font-family:sans-serif;border:1px solid #ddd;border-radius:10px;padding:12px;display:inline-block;margin:8px 8px 0 0">
+    <h2 style="margin:0 0 4px">Teclado Mecânico</h2><p style="margin:0">R$ 320</p>
+  </div>
+  <div style="font-family:sans-serif;border:1px solid #ddd;border-radius:10px;padding:12px;display:inline-block;margin-top:8px">
+    <h2 style="margin:0 0 4px">Monitor 27 pol</h2><p style="margin:0">R$ 1450</p>
+  </div>
+  <footer style="font-family:sans-serif;color:#666;font-size:13px;margin-top:12px">© 2026 — Mini-loja · feito com React ⚛️</footer>
+</script>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. guided — array shape API (teaser map) -->
       <div class="exercise guided">
         <div class="exercise-header"><span class="exercise-icon">👨‍🏫</span><div>
-          <div class="exercise-title">Passo 5 — os dados no formato da sua API (com o prof)</div>
+          <div class="exercise-title">Passo 6 — os dados no formato da sua API (com o prof)</div>
           <div class="exercise-sub">Preparar o array que o Cap 5 vai transformar</div></div>
         </div>
         <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>No topo do <code>App.jsx</code>, crie o array <code>produtos</code> com a <strong>cara exata</strong> do JSON da sua API do ERP. Por enquanto, ligue um card a cada item <strong>na mão</strong> (<code>produtos[0]</code>, <code>produtos[1]</code>…). No próximo capítulo isso vira uma linha só.</p></div>
@@ -902,6 +1202,7 @@
       <span class="tag">&lt;</span><span class="cmp">Cabecalho</span> <span class="tag">/&gt;</span>
       <span class="tag">&lt;</span><span class="cmp">CartaoProduto</span> <span class="atr">nome</span><span class="op">=</span>{<span class="var">produtos</span>[<span class="num">0</span>].<span class="var">nome</span>} <span class="atr">preco</span><span class="op">=</span>{<span class="var">produtos</span>[<span class="num">0</span>].<span class="var">preco</span>} <span class="tag">/&gt;</span>
       <span class="tag">&lt;</span><span class="cmp">CartaoProduto</span> <span class="atr">nome</span><span class="op">=</span>{<span class="var">produtos</span>[<span class="num">1</span>].<span class="var">nome</span>} <span class="atr">preco</span><span class="op">=</span>{<span class="var">produtos</span>[<span class="num">1</span>].<span class="var">preco</span>} <span class="tag">/&gt;</span>
+      <span class="tag">&lt;</span><span class="cmp">Rodape</span> <span class="atr">loja</span><span class="op">=</span><span class="st">"Mini-loja"</span> <span class="atr">ano</span><span class="op">=</span>{<span class="num">2026</span>} <span class="tag">/&gt;</span>
     <span class="tag">&lt;/div&gt;</span>
   )
 <span class="punc">}</span>
@@ -919,13 +1220,56 @@
         </div>
       </div>
 
+      <!-- 7. solo — sinta a dor -->
+      <div class="exercise solo">
+        <div class="exercise-header"><span class="exercise-icon">🧑‍💻</span><div>
+          <div class="exercise-title">Passo 7 — sinta a dor (sozinho/a)</div>
+          <div class="exercise-sub">Mais um produto… e o copia-e-cola começa a doer</div></div>
+        </div>
+        <div class="drill-tags"><span class="drill-level lv3"><span class="stars">★★★</span> desafio</span><span class="drill-tag">array</span><span class="drill-tag">props</span></div>
+        <div class="concept"><div class="concept-title">💡 Missão</div><p>Adicione um <strong>3º produto</strong> ao array (<code>id: 3</code>, uma Cadeira Gamer de R$ 980) e ligue mais um <code>&lt;CartaoProduto /&gt;</code> na mão, usando <code>produtos[2]</code>. Enquanto digita, repare no quanto você está copiando e colando. Agora imagine <strong>20 produtos</strong> chegando da API…</p></div>
+        <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Tenta antes!</strong> É o mesmo padrão do <code>produtos[0]</code> e <code>produtos[1]</code> do passo 6.</div></div>
+        <div class="toggler">
+          <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — Ver solução</span><span class="toggler-arrow">▼</span></div>
+          <div class="toggler-body">
+            <div class="code-block">
+              <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx (o que muda)</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="cm">// no array, mais um item:</span>
+<span class="punc">{</span> <span class="var">id</span><span class="punc">:</span> <span class="num">3</span>, <span class="var">nome</span><span class="punc">:</span> <span class="st">"Cadeira Gamer"</span>, <span class="var">preco</span><span class="punc">:</span> <span class="num">980</span> <span class="punc">}</span>,
+
+<span class="cm">// e no return, mais uma linha quase igual às outras…</span>
+<span class="tag">&lt;</span><span class="cmp">CartaoProduto</span> <span class="atr">nome</span><span class="op">=</span>{<span class="var">produtos</span>[<span class="num">2</span>].<span class="var">nome</span>} <span class="atr">preco</span><span class="op">=</span>{<span class="var">produtos</span>[<span class="num">2</span>].<span class="var">preco</span>} <span class="tag">/&gt;</span></pre>
+            </div>
+            <div class="mini-browser" data-url="localhost:5173">
+<script type="text/html" data-mp="html">
+  <header style="font-family:sans-serif"><h1>Mini-loja 🛒</h1></header>
+  <div style="font-family:sans-serif;display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+    <div style="border:1px solid #ddd;border-radius:10px;padding:12px"><h2 style="margin:0 0 4px">Teclado Mecânico</h2><p style="margin:0">R$ 320</p></div>
+    <div style="border:1px solid #ddd;border-radius:10px;padding:12px"><h2 style="margin:0 0 4px">Monitor 27 pol</h2><p style="margin:0">R$ 1450</p></div>
+    <div style="border:1px solid #ddd;border-radius:10px;padding:12px"><h2 style="margin:0 0 4px">Cadeira Gamer</h2><p style="margin:0">R$ 980</p></div>
+  </div>
+  <footer style="font-family:sans-serif;color:#666;font-size:13px;margin-top:12px">© 2026 — Mini-loja · feito com React ⚛️</footer>
+</script>
+            </div>
+            <div class="tip" style="margin-top:12px">
+              <span class="tip-icon">🔮</span>
+              <div class="tip-content">
+                Doeu? <strong>Ótimo</strong> — essa dor tem cura, e ela se chama <code>.map()</code>. É a
+                primeira coisa do <strong>Cap 5</strong>: as três linhas repetidas viram <strong>uma</strong>,
+                e a lista pode crescer à vontade. 😌
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- desafio para casa -->
       <div class="exercise home" style="margin-top:18px">
         <div class="exercise-header"><span class="exercise-icon">🏠</span><div>
           <div class="exercise-title">Desafio para Casa — um componente de saudação</div>
           <div class="exercise-sub">Pratica props do zero, sozinho(a)</div></div>
         </div>
-        <div class="concept"><div class="concept-title">💡 Missão</div><p>Crie um componente <code>Saudacao</code> que recebe uma prop <code>nome</code> e mostra <code>"Bem-vindo(a), Fulano!"</code>. Use ele no topo do <code>App</code> passando o seu nome. Bônus: faça um <code>Rodape</code> com o ano. Traga no próximo sábado! 👋</p></div>
+        <div class="concept"><div class="concept-title">💡 Missão</div><p>Crie um componente <code>Saudacao</code> que recebe uma prop <code>nome</code> e mostra <code>"Bem-vindo(a), Fulano!"</code>. Use ele no topo do <code>App</code> passando o seu nome. Bônus 1: dê ao <code>CartaoProduto</code> uma prop <code>emoji</code> e mostre ela antes do nome (⌨️ Teclado…). Bônus 2: no <code>Rodape</code>, mostre também <code>{2026 + 1}</code> e explique pra si mesmo(a) por que aparece 2027. Traga no próximo sábado! 👋</p></div>
       </div>
     </div>
   </section>
@@ -946,9 +1290,10 @@
       <ul class="about-bullets">
         <li><div><strong>Por que React:</strong> você <em>descreve</em> a tela (declarativo) em vez de montá-la passo a passo (imperativo). Base de uma SPA.</div></li>
         <li><div><strong>Vite:</strong> cria e roda o projeto (<code>npm create vite@latest</code> → <code>npm run dev</code>), traduz o JSX e recarrega sozinho.</div></li>
+        <li><div><strong>A corrente:</strong> <code>index.html</code> (a tomada <code>root</code>, vazia) → <code>main.jsx</code> (o plugue) → <code>App.jsx</code> (seu componente). E <code>npm install</code> monta a estante <code>node_modules</code> a partir da lista do <code>package.json</code>.</div></li>
         <li><div><strong>Componente:</strong> uma <strong>arrow function</strong> em <strong>Maiúscula</strong> que retorna JSX, fechada com <code>export default</code>. Atalho pra criar: <code>rafce</code> + <kbd>Tab</kbd> (o "Rafael do Ceará" 😄).</div></li>
         <li><div><strong>JSX:</strong> um pai só, <code>className</code> (não <code>class</code>), toda tag fecha, e JavaScript entre <code>{ }</code>.</div></li>
-        <li><div><strong>Props:</strong> dados que você passa pro componente como atributos — texto entre <code>" "</code>, número/JS entre <code>{ }</code>.</div></li>
+        <li><div><strong>Props:</strong> dados que você passa pro componente como atributos — texto entre <code>" "</code>, número/JS entre <code>{ }</code>. E são <strong>somente leitura</strong>: quem envia escreve, o componente só lê (tela que muda = estado, no Cap 6).</div></li>
       </ul>
 
       <div class="quiz" style="margin-top:16px">
@@ -1064,6 +1409,89 @@
     onView(root,build);
   })();
 
+  /* ════ 🔌 Corrente do React ════ */
+  (()=>{
+    const root=document.getElementById('reactchain'); if(!root) return;
+    const files=[...root.querySelectorAll('.rc-file')];
+    const wires=[...root.querySelectorAll('.rc-wire')];
+    const screen=root.querySelector('#rc-screen');
+    const note=root.querySelector('#rc-note');
+    const stateEl=root.querySelector('#rc-state');
+    const btn=root.querySelector('#rc-run');
+    const info={
+      html:'📄 <strong>index.html</strong> — a única página de verdade da SPA. O corpo é quase vazio: só a <code>&lt;div id="root"&gt;</code> (a tomada) e o script que chama o main.jsx.',
+      main:'🔌 <strong>main.jsx</strong> — o plugue. Acha a tomada com <code>document.getElementById</code> (Cap 3!) e faz <code>render(&lt;App /&gt;)</code>. Você não mexe nele — mas agora sabe o que ele faz.',
+      app:'⚛️ <strong>App.jsx</strong> — SEU componente. Tudo que o return dele descreve (e os blocos que ele importa) vira a tela.',
+    };
+    const litFile=(k,on)=>files.forEach(f=>{ if(f.dataset.k===k) f.classList.toggle('lit',on); });
+    files.forEach(f=>f.addEventListener('click',()=>{
+      files.forEach(x=>x.classList.toggle('lit',x===f));
+      note.innerHTML=info[f.dataset.k];
+    }));
+    let running=false;
+    const run=()=>{
+      if(running) return; running=true;
+      files.forEach(f=>f.classList.remove('lit'));
+      wires.forEach(w=>w.classList.remove('lit'));
+      screen.classList.remove('lit','on');
+      stateEl.textContent='tela vazia…';
+      const steps=[
+        ()=>{ litFile('html',true); note.innerHTML=info.html; },
+        ()=>{ wires[0].classList.add('lit'); litFile('main',true); note.innerHTML=info.main; },
+        ()=>{ wires[1].classList.add('lit'); litFile('app',true); note.innerHTML=info.app; },
+        ()=>{ wires[2].classList.add('lit'); screen.classList.add('lit','on'); stateEl.textContent='renderizado! ✓';
+              note.innerHTML='⚡ Corrente fechada: <strong>index.html</strong> → <strong>main.jsx</strong> → <strong>App.jsx</strong> → <strong>tela</strong>. É isso que acontece toda vez que a página carrega.';
+              running=false; },
+      ];
+      steps.forEach((s,i)=>setTimeout(s,i*900));
+    };
+    btn.addEventListener('click',run);
+    onView(root,run);
+  })();
+
+  /* ════ 🎛️ Painel de Props ════ */
+  (()=>{
+    const root=document.getElementById('propspanel'); if(!root) return;
+    const nomeIn=root.querySelector('#pp-nome');
+    const precoIn=root.querySelector('#pp-preco');
+    const chips=[...root.querySelectorAll('.pp-chip')];
+    const jsx=root.querySelector('#pp-jsx');
+    const cNome=root.querySelector('#pp-card-nome');
+    const cPreco=root.querySelector('#pp-card-preco');
+    const sum=root.querySelector('#pp-sum');
+    let modo='chaves';
+    const esc=(s)=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    const render=()=>{
+      const nome=nomeIn.value.trim()||'Produto';
+      const preco=precoIn.value===''?0:precoIn.value;
+      const precoAttr=(modo==='chaves')
+        ? '<span class="punc">{</span><span class="num">'+esc(preco)+'</span><span class="punc">}</span>'
+        : '<span class="st">"'+esc(preco)+'"</span>';
+      jsx.innerHTML='<span class="tag">&lt;</span><span class="cmp">CartaoProduto</span> '
+        +'<span class="atr">nome</span><span class="op">=</span><span class="st">"'+esc(nome)+'"</span> '
+        +'<span class="atr">preco</span><span class="op">=</span>'+precoAttr+' <span class="tag">/&gt;</span>';
+      cNome.textContent=nome;
+      cPreco.textContent='R$ '+preco;
+      const frete=15;
+      if(modo==='chaves'){
+        const total=Number(preco)+frete;
+        sum.innerHTML='🚚 preço + frete (15): <code>'+esc(preco)+' + 15</code> = <span class="ok">'+total+'</span> — número soma com número ✓';
+      }else{
+        const total=String(preco)+String(frete);
+        sum.innerHTML='🚚 preço + frete (15): <code>"'+esc(preco)+'" + 15</code> = <span class="bad">"'+esc(total)+'"</span> 💥 chegou como TEXTO: o + virou cola, não soma!';
+      }
+      if(animate){ animate(sum,{opacity:[0.4,1]},{duration:.25}); }
+    };
+    nomeIn.addEventListener('input',render);
+    precoIn.addEventListener('input',render);
+    chips.forEach(c=>c.addEventListener('click',()=>{
+      modo=c.dataset.m;
+      chips.forEach(x=>x.classList.toggle('active',x===c));
+      render();
+    }));
+    render();
+  })();
+
   /* ════ 🧪 HTML ou JSX? ════ */
   (()=>{
     const root=document.getElementById('jsxgame'); if(!root) return;
@@ -1073,6 +1501,11 @@
       { code:'for="email"',         ok:false, why:'Em JSX o atributo de label é <b>htmlFor</b>, não <code>for</code>.' },
       { code:'{produto.nome}',      ok:true,  why:'Chaves = JavaScript dentro do JSX. Mostra o valor da variável. ✅' },
       { code:'style="color:red"',   ok:false, why:'Em JSX, style recebe um <b>objeto</b>: <code>style={{ color: "red" }}</code>.' },
+      { code:'<br>',                ok:false, why:'Toda tag fecha em JSX. Tag sozinha leva a barra: <code>&lt;br /&gt;</code>.' },
+      { code:'<img src={foto} />',  ok:true,  why:'Tag fechada com a barra e JavaScript entre chaves no atributo. Perfeito. ✅' },
+      { code:'{2 + 1}',             ok:true,  why:'Qualquer conta que vira valor entra nas chaves — aparece 3 na tela. ✅' },
+      { code:'{/* meu comentário */}', ok:true, why:'Comentário em JSX é assim: chaves + <code>/* */</code>. O &lt;!-- do HTML --&gt; não vale. ✅' },
+      { code:'{if (preco > 100) { … }}', ok:false, why:'<code>if</code> solto não vira valor — não entra nas chaves. O jeito certo de decidir na tela vem no Cap 5.' },
     ];
     const snippet=root.querySelector('#jx-snippet');
     const fb=root.querySelector('#jx-feedback');
@@ -1114,6 +1547,20 @@
     no.addEventListener('click',()=>answer(false));
     restart.addEventListener('click',()=>{ i=0; score=0; restart.style.display='none'; show(); });
     onView(root,show);
+  })();
+
+  /* ════ ▶️ vídeos: dão play sozinhos ao aparecer e pausam ao sair da tela ════ */
+  (()=>{
+    const vids=[...document.querySelectorAll('.clip video')];
+    if(!vids.length || !('IntersectionObserver' in window)) return;
+    const io=new IntersectionObserver((es)=>{
+      es.forEach((e)=>{
+        const v=e.target;
+        if(e.isIntersecting){ const p=v.play(); if(p&&p.catch) p.catch(()=>{}); }
+        else { v.pause(); }
+      });
+    },{threshold:0.4});
+    vids.forEach((v)=>io.observe(v));
   })();
 </script>
 </body>

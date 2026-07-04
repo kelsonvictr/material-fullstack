@@ -4,6 +4,10 @@
   "private": true,
   "description": "Videoclipes Remotion dos capítulos — material Frontend Fullstack",
   "scripts": {
+    "render:journey": "remotion render src/index.ts ComponentJourney ../../assets/video/jornada-componente.mp4",
+    "still:journey": "remotion still src/index.ts ComponentJourney ../../assets/video/jornada-componente.png --frame=290",
+    "render:map": "remotion render src/index.ts MapAssemblyLine ../../assets/video/esteira-map.mp4",
+    "still:map": "remotion still src/index.ts MapAssemblyLine ../../assets/video/esteira-map.png --frame=300",
     "render:arrow": "remotion render src/index.ts ArrowFunction ../../assets/video/arrow-function.mp4",
     "still:arrow": "remotion still src/index.ts ArrowFunction ../../assets/video/arrow-function.png --frame=175",
     "render:api": "remotion render src/index.ts WhatIsApi ../../assets/video/o-que-e-api.mp4",

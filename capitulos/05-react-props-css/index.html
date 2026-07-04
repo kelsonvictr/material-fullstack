@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="../../shared/playground.css">
 <style>
   /* ── mono didático: SEMPRE sem ligaduras (=> não vira ⇒, >= não vira ≥) ── */
-  .mono,.mf-pill,.mf-card,.iw-code,.iw-code pre,.cs-cls,.cs-hash{
+  .mono,.mf-pill,.mf-card,.iw-code,.iw-code pre,.cs-cls,.cs-hash,.kl-console,.sw-line,.sw-code{
     font-family:'JetBrains Mono',monospace;
     font-variant-ligatures:none;font-feature-settings:"liga" 0,"clig" 0,"calt" 0}
 
@@ -74,8 +74,65 @@
   .cs-note{margin-top:14px;background:#0b0b14;border:1px solid rgba(255,255,255,0.1);border-radius:10px;
     padding:10px 12px;font-size:0.82rem;color:#cdd6f4;text-align:center;min-height:42px}
 
+  /* ── videoclipes (Remotion) ── */
+  .clip{margin:18px 0 4px}
+  .clip video{width:100%;border-radius:14px;border:1px solid rgba(97,218,251,0.25);
+    box-shadow:0 18px 50px rgba(0,0,0,0.45);display:block;background:#0a0a12}
+  .clip figcaption{font-size:0.78rem;color:var(--text-dim);text-align:center;margin-top:8px}
+
+  /* ═══ 🔑 Guarda-volumes (a prop key) ═══ */
+  .lockers{background:linear-gradient(180deg,#0b1020,#0d0d1a);border:1px solid rgba(247,223,30,0.25);
+    border-radius:16px;padding:18px;margin:14px 0}
+  .kl-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media (max-width:640px){.kl-grid{grid-template-columns:1fr}}
+  .kl-col{background:#0b0b14;border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:12px}
+  .kl-col.ok{border-color:rgba(70,211,154,0.35)}
+  .kl-col.bad{border-color:rgba(255,107,107,0.35)}
+  .kl-title{font-size:0.8rem;font-weight:800;margin-bottom:10px}
+  .kl-col.ok .kl-title{color:#7ef0c4}
+  .kl-col.bad .kl-title{color:#ff8b8b}
+  .kl-list{display:flex;flex-direction:column;gap:8px;min-height:128px}
+  .kl-row{display:flex;justify-content:space-between;align-items:center;gap:8px;background:var(--surface2);
+    border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:8px 10px;font-size:0.8rem;color:#fff;
+    transition:border-color .3s,background .3s}
+  .kl-row .kl-bag{font-size:0.7rem;color:var(--text-dim)}
+  .kl-row.wrong{border-color:#ff6b6b;background:rgba(255,107,107,0.10)}
+  .kl-row.wrong .kl-bag{color:#ff8b8b;font-weight:700}
+  .kl-console{margin-top:12px;background:#06060c;border:1px solid rgba(255,255,255,0.1);border-radius:10px;
+    padding:10px 12px;font-size:0.7rem;color:#f7b731;min-height:20px;white-space:pre-wrap}
+  .kl-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px;font-size:0.78rem;color:var(--text-dim)}
+  .kl-controls button{border:1px solid rgba(247,223,30,0.4);background:var(--surface2);color:var(--js);
+    font-family:'JetBrains Mono',monospace;font-weight:700;font-size:0.78rem;padding:8px 14px;border-radius:10px;cursor:pointer;transition:all .2s}
+  .kl-controls button:hover{transform:translateY(-2px);background:rgba(247,223,30,0.08)}
+
+  /* ═══ 🚦 Interruptor do JSX (condicional) ═══ */
+  .jsxswitch{background:linear-gradient(180deg,#0b1020,#0d0d1a);border:1px solid rgba(70,211,154,0.3);
+    border-radius:16px;padding:18px;margin:14px 0}
+  .sw-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center}
+  .sw-lab{font-size:0.74rem;color:var(--text-dim);font-weight:700;margin-right:2px}
+  .sw-chip{border:1px solid rgba(70,211,154,0.4);background:var(--surface2);color:#7ef0c4;
+    font-weight:700;font-size:0.78rem;padding:8px 12px;border-radius:10px;cursor:pointer;transition:all .2s}
+  .sw-chip:hover{transform:translateY(-2px)}
+  .sw-chip.active{border-color:var(--js);color:var(--js);background:rgba(247,223,30,0.10)}
+  .sw-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:14px;align-items:start}
+  @media (max-width:640px){.sw-grid{grid-template-columns:1fr}}
+  .sw-code{background:#06060c;border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px;font-size:0.72rem;color:#cdd6f4}
+  .sw-line{padding:4px 8px;border-radius:6px;white-space:pre-wrap;transition:background .3s,box-shadow .3s,opacity .3s}
+  .sw-line.lit{background:rgba(70,211,154,0.14);box-shadow:inset 0 0 0 1px rgba(70,211,154,0.5)}
+  .sw-line.off{opacity:.45}
+  .sw-card{background:#fff;color:#111;border-radius:12px;padding:14px 16px;font-family:'Nunito',sans-serif;
+    box-shadow:0 8px 24px rgba(0,0,0,0.35);transition:filter .3s,opacity .3s}
+  .sw-card.out{filter:grayscale(1);opacity:.6}
+  .sw-card h4{margin:0;font-size:1rem}
+  .sw-card .sw-price{color:#16a34a;font-weight:800;margin:2px 0}
+  .sw-selo{display:inline-block;background:#f7df1e;color:#3d3200;border-radius:999px;font-size:0.7rem;font-weight:800;padding:3px 10px;margin-top:4px}
+  .sw-status{font-size:0.78rem;font-weight:800;margin-top:6px}
+  .sw-status.ok{color:#16a34a}.sw-status.bad{color:#b91c1c}
+  .sw-note{margin-top:12px;background:#0b0b14;border:1px solid rgba(255,255,255,0.1);border-radius:10px;
+    padding:10px 12px;font-size:0.82rem;color:#cdd6f4;text-align:center;min-height:40px}
+
   @media (prefers-reduced-motion: reduce){
-    .mf-card,.cs-demo,.cs-cls{transition:none}
+    .mf-card,.cs-demo,.cs-cls,.kl-row,.sw-line,.sw-card,.sw-chip{transition:none}
   }
 </style>
 </head>
@@ -101,6 +158,7 @@
     <a class="sidebar-link" onclick="goTo('key')"><span class="dot" style="background:var(--js)"></span> 🔑 A prop key</a>
     <a class="sidebar-link" onclick="goTo('imagens')"><span class="dot" style="background:var(--json)"></span> 🖼️ Imagens em React</a>
     <a class="sidebar-link" onclick="goTo('css')"><span class="dot" style="background:var(--vite)"></span> 🎨 CSS Modules</a>
+    <a class="sidebar-link" onclick="goTo('condicional')"><span class="dot" style="background:var(--accent5)"></span> 👻 Mostrar ou esconder</a>
     <a class="sidebar-link" onclick="goTo('bugzilla')"><span class="dot" style="background:var(--bug)"></span> BugZilla 🐛</a>
     <a class="sidebar-link" onclick="goTo('treino')"><span class="dot" style="background:var(--react)"></span> ⌨️ Treino: Mini-loja</a>
     <a class="sidebar-link" onclick="goTo('resumo')"><span class="dot" style="background:var(--accent7)"></span> Resumo</a>
@@ -122,6 +180,7 @@
     <span class="stack-chip js">🔑 key</span>
     <span class="stack-chip node">🖼️ imagens</span>
     <span class="stack-chip react">🎨 CSS Modules</span>
+    <span class="stack-chip js">👻 mostrar/esconder</span>
   </div>
 </section>
 
@@ -170,7 +229,31 @@
       </div>
 
       <p>Você já viu o <code>.map()</code> no Cap 2: ele <strong>transforma cada item</strong> de um array e
-      devolve um array novo. A novidade é que, em React, cada item é transformado em <strong>JSX</strong>:</p>
+      devolve um array novo. Relembra:</p>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">o .map() que você já conhece (Cap 2)</span><span class="lang-badge js">JavaScript</span></div>
+<pre><span class="kw">const</span> <span class="var">numeros</span> <span class="op">=</span> [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>]<span class="punc">;</span>
+<span class="kw">const</span> <span class="var">dobros</span> <span class="op">=</span> <span class="var">numeros</span>.<span class="fn">map</span>((<span class="var">n</span>) <span class="op">=&gt;</span> <span class="var">n</span> <span class="op">*</span> <span class="num">2</span>)<span class="punc">;</span>   <span class="cm">// [2, 4, 6]</span>
+<span class="cm">// número entra, número sai</span></pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">o MESMO .map(), agora em React</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">const</span> <span class="var">cards</span> <span class="op">=</span> <span class="var">produtos</span>.<span class="fn">map</span>((<span class="var">p</span>) <span class="op">=&gt;</span> <span class="tag">&lt;</span><span class="cmp">CartaoProduto</span> <span class="atr">nome</span><span class="op">=</span>{<span class="var">p</span>.<span class="var">nome</span>} <span class="tag">/&gt;</span>)<span class="punc">;</span>
+<span class="cm">// produto entra, JSX sai</span></pre>
+      </div>
+
+      <p><strong>Mesma esteira, molde diferente.</strong> No Cap 2 cada item virava um número; agora cada
+      item vira um <strong>pedaço de tela</strong>. Essa é a única novidade:</p>
+
+      <figure class="clip" data-motion="rise">
+        <video controls autoplay loop muted playsinline poster="../../assets/video/esteira-map.png">
+          <source src="../../assets/video/esteira-map.mp4" type="video/mp4">
+          Seu navegador não reproduz o vídeo. <a href="../../assets/video/esteira-map.mp4">Baixe o clipe aqui.</a>
+        </video>
+        <figcaption>🏭 o array entra na esteira do <code>.map()</code> → cada item passa pelo molde → sai um card por item (e o código não muda)</figcaption>
+      </figure>
 
       <div class="warning">
         <span class="warning-icon">⌨️</span>
@@ -271,6 +354,29 @@
           "Warning: Each child in a list should have a unique key prop." é <strong>o</strong> aviso mais
           comum de quem começa com listas em React. Não é um erro que quebra a tela, mas conserte sempre:
           adicione <code>key={p.id}</code>. O BugZilla volta nisso.
+        </div>
+      </div>
+
+      <p style="color:var(--text-dim);margin:14px 0 4px">Veja o guarda-volumes funcionando: cada produto
+      deixou um pertence na plaquinha dele. Remova o primeiro da lista e compare o que acontece
+      <strong>com</strong> e <strong>sem</strong> key 👇</p>
+
+      <div class="lockers" id="lockers">
+        <div class="kl-grid">
+          <div class="kl-col ok">
+            <div class="kl-title">✅ com key={p.id}</div>
+            <div class="kl-list" id="kl-com"></div>
+          </div>
+          <div class="kl-col bad">
+            <div class="kl-title">⚠️ sem key (pela posição)</div>
+            <div class="kl-list" id="kl-sem"></div>
+          </div>
+        </div>
+        <div class="kl-console" id="kl-console"></div>
+        <div class="kl-controls">
+          <button id="kl-remove">🗑️ remover o primeiro produto</button>
+          <button id="kl-reset">↻ recomeçar</button>
+          <span id="kl-note">cada plaquinha guarda o pertence do SEU dono</span>
         </div>
       </div>
     </div>
@@ -421,6 +527,121 @@
 
   <div class="section-connector"><div class="line"></div></div>
 
+  <!-- ═══════════════ MOSTRAR OU ESCONDER (CONDICIONAL) ═══════════════ -->
+  <section class="step-section" id="condicional">
+    <div class="step-header">
+      <div class="step-number sn-green">👻</div>
+      <div>
+        <div class="step-title">Mostrar ou esconder: o JSX que decide</div>
+        <div class="step-sub">Selo de Premium, aviso de esgotado — a tela reagindo aos dados</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="analogy">
+        <div class="analogy-title">🚪 O porteiro da festa</div>
+        <p>Sua loja mostra <em>tudo, sempre</em>. Mas e um selo <strong>💎 Premium</strong> que só aparece
+        nos produtos caros? Um <strong>Esgotado</strong> só em quem não tem estoque? Você precisa de um
+        <strong>porteiro</strong> na entrada do JSX: ele olha o dado e decide se aquele pedaço de tela
+        <strong>entra ou não entra</strong>. E lembra: <code>if</code> solto não pode dentro das
+        <code>{ }</code> (regra do Cap 4) — o porteiro tem dois jeitos próprios de trabalhar.</p>
+      </div>
+
+      <div class="warning">
+        <span class="warning-icon">⌨️</span>
+        <div class="warning-content">
+          Vão aparecer o <code>&gt;=</code> (maior ou igual) e o <code>&amp;&amp;</code> (E lógico) do
+          Cap 2. Sua IDE pode <strong>desenhar</strong> <code>≥</code> no lugar de <code>&gt;=</code> —
+          mas são <strong>dois caracteres</strong> que você digita: <kbd>&gt;</kbd> e depois <kbd>=</kbd>.
+        </div>
+      </div>
+
+      <p><strong>Jeito 1 — o <code>&amp;&amp;</code> ("se for verdade, mostra"):</strong> o porteiro olha a
+      condição à esquerda; se for <strong>verdadeira</strong>, deixa entrar o que está à direita. Se for
+      falsa, não mostra <em>nada</em> (nem espaço em branco):</p>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/CartaoProduto.jsx (dentro do return)</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="tag">&lt;div</span> <span class="atr">className</span><span class="op">=</span>{<span class="var">styles</span>.<span class="var">cartao</span>}<span class="tag">&gt;</span>
+  <span class="tag">&lt;h2&gt;</span>{<span class="var">nome</span>}<span class="tag">&lt;/h2&gt;</span>
+  <span class="tag">&lt;p&gt;</span>R$ {<span class="var">preco</span>}<span class="tag">&lt;/p&gt;</span>
+  {<span class="var">preco</span> <span class="op">&gt;=</span> <span class="num">1000</span> <span class="op">&amp;&amp;</span> <span class="tag">&lt;span&gt;</span>💎 Premium<span class="tag">&lt;/span&gt;</span>}
+<span class="tag">&lt;/div&gt;</span></pre>
+      </div>
+
+      <div class="tip">
+        <span class="tip-icon">🗣️</span>
+        <div class="tip-content">
+          Leia em voz alta: "<em>se o preço for maior ou igual a 1000, <strong>e aí sim</strong>, mostre o
+          span</em>". O <code>&amp;&amp;</code> é o mesmo "E" do Cap 2 — o React só aproveita um detalhe:
+          quando a esquerda é falsa, o JavaScript nem olha a direita, então nada é desenhado.
+        </div>
+      </div>
+
+      <p style="margin-top:14px"><strong>Jeito 2 — o ternário <code>? :</code> ("isto ou aquilo"):</strong>
+      quando você quer mostrar <strong>uma coisa OU outra</strong> (não "mostrar ou nada"), usa a pergunta
+      com duas respostas:</p>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/CartaoProduto.jsx (dentro do return)</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="cm">{</span><span class="cm">/* condição ? valor-se-sim : valor-se-não */</span><span class="cm">}</span>
+<span class="tag">&lt;p&gt;</span>{<span class="var">emEstoque</span> <span class="op">?</span> <span class="st">"✅ Disponível"</span> <span class="op">:</span> <span class="st">"😢 Esgotado"</span>}<span class="tag">&lt;/p&gt;</span></pre>
+      </div>
+
+      <div class="concept">
+        <div class="concept-title">🎨 E dá pra decidir a CLASSE também (olha o CSS Module de novo!)</div>
+        <p>O ternário devolve um <strong>valor</strong> — e classe é valor! Então dá pra trocar o visual
+        inteiro do card conforme o dado:</p>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/CartaoProduto.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="tag">&lt;div</span> <span class="atr">className</span><span class="op">=</span>{<span class="var">emEstoque</span> <span class="op">?</span> <span class="var">styles</span>.<span class="var">cartao</span> <span class="op">:</span> <span class="var">styles</span>.<span class="var">esgotado</span>}<span class="tag">&gt;</span></pre>
+      </div>
+
+      <p style="color:var(--text-dim);margin:14px 0 4px">Brinque de porteiro: mude o preço e o estoque e
+      repare <strong>qual linha do código acende</strong> pra desenhar o card 👇</p>
+
+      <div class="jsxswitch" id="jsxswitch">
+        <div class="sw-chips">
+          <span class="sw-lab">preço:</span>
+          <button class="sw-chip" data-preco="150">R$ 150</button>
+          <button class="sw-chip" data-preco="980">R$ 980</button>
+          <button class="sw-chip active" data-preco="1450">R$ 1450</button>
+          <span class="sw-lab" style="margin-left:10px">estoque:</span>
+          <button class="sw-chip active" data-estoque="1">✅ tem</button>
+          <button class="sw-chip" data-estoque="0">🚫 acabou</button>
+        </div>
+        <div class="sw-grid">
+          <div class="sw-code">
+            <div class="sw-line" id="sw-line-selo">{preco &gt;= 1000 &amp;&amp; &lt;span&gt;💎 Premium&lt;/span&gt;}</div>
+            <div class="sw-line" id="sw-line-tern">{emEstoque ? "✅ Disponível" : "😢 Esgotado"}</div>
+          </div>
+          <div class="sw-card" id="sw-card">
+            <h4>Monitor 27 pol</h4>
+            <p class="sw-price" id="sw-price">R$ 1450</p>
+            <span class="sw-selo" id="sw-selo">💎 Premium</span>
+            <div class="sw-status ok" id="sw-status">✅ Disponível</div>
+          </div>
+        </div>
+        <div class="sw-note" id="sw-note">…</div>
+      </div>
+
+      <div class="quiz" style="margin-top:16px">
+        <div class="quiz-q"><span class="q-emoji">👻</span> Checagem rápida: você quer mostrar "Frete grátis" só quando <code>preco &gt;= 500</code> — e <strong>nada</strong> quando for menor. Qual porteiro usar?</div>
+        <div class="quiz-options">
+          <button class="quiz-opt" data-correct="true" onclick="checkQuiz(this,true)">{preco &gt;= 500 &amp;&amp; &lt;span&gt;Frete grátis&lt;/span&gt;}</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">{if (preco &gt;= 500) mostrar o span}</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">Criar dois componentes de card diferentes</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">Esconder com display:none no CSS global</button>
+        </div>
+        <div class="quiz-feedback" data-correct="Porteiro contratado! 🚪" data-wrong="Revê os dois jeitos…" data-explain="Mostrar-ou-nada = &&. Isto-ou-aquilo = ternário. O if solto não entra nas chaves do JSX, e esconder no CSS deixaria o elemento lá (só invisível) — o && nem desenha."></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
   <!-- ═══════════════ BUGZILLA ═══════════════ -->
   <section class="step-section" id="bugzilla">
     <div class="step-header">
@@ -466,6 +687,16 @@
         <strong>precisa importar</strong> (<code>import x from "./assets/x.jpg"</code>); só escrever
         <code>src="./assets/x.jpg"</code> costuma quebrar depois do build. Em <code>public/</code>, o caminho
         começa na raiz: <code>src="/x.jpg"</code>.
+      </div>
+    </div>
+
+    <div class="bug-box" style="margin-top:14px">
+      <span class="bug-icon">🐛</span>
+      <div class="bug-content">
+        <strong>Bug 5 — <code>if</code> dentro das chaves do JSX.</strong>
+        <code>{ if (preco &gt;= 1000) ... }</code> explode com "Unexpected token": dentro das
+        <code>{ }</code> só entra o que <strong>vira valor</strong>. <strong>Conserto:</strong> use os
+        porteiros — <code>&amp;&amp;</code> (mostrar ou nada) ou o ternário <code>? :</code> (isto ou aquilo).
       </div>
     </div>
 
@@ -530,7 +761,9 @@
         <span class="at-dot lv1">2</span><span class="at-arrow">→</span>
         <span class="at-dot lv2">3</span><span class="at-arrow">→</span>
         <span class="at-dot lv2">4</span><span class="at-arrow">→</span>
-        <span class="at-dot lv3">5</span><span class="at-arrow">→</span>
+        <span class="at-dot lv2">5</span><span class="at-arrow">→</span>
+        <span class="at-dot lv3">6</span><span class="at-arrow">→</span>
+        <span class="at-dot lv3">7</span><span class="at-arrow">→</span>
         <span class="at-dot lv3">🏆</span>
       </div>
 
@@ -668,10 +901,50 @@
         </div>
       </div>
 
-      <!-- 5. guided — grid na loja -->
+      <!-- 5. solo — selo Premium com && -->
+      <div class="exercise solo">
+        <div class="exercise-header"><span class="exercise-icon">🧑‍💻</span><div>
+          <div class="exercise-title">Passo 5 — o selo 💎 Premium (sozinho/a)</div>
+          <div class="exercise-sub">O porteiro &amp;&amp; entra em cena na sua loja</div></div>
+        </div>
+        <div class="drill-tags"><span class="drill-level lv2"><span class="stars">★★</span> médio</span><span class="drill-tag">condicional &amp;&amp;</span><span class="drill-tag">CSS Modules</span></div>
+        <div class="concept"><div class="concept-title">💡 Dica</div><p>No <code>CartaoProduto</code>, abaixo do preço, mostre um selo <code>💎 Premium</code> <strong>só</strong> quando <code>preco &gt;= 1000</code> — é exatamente o molde da seção "Mostrar ou esconder". Crie a classe <code>.selo</code> no <code>CartaoProduto.module.css</code> (fundo amarelo, cantos redondos). Lembre: <code>&gt;=</code> são dois caracteres!</p></div>
+        <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Tenta antes!</strong> Se a tela quebrar, confere: o <code>if</code> não entra — é <code>&amp;&amp;</code>.</div></div>
+        <div class="toggler">
+          <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — Ver solução</span><span class="toggler-arrow">▼</span></div>
+          <div class="toggler-body">
+            <div class="code-block">
+              <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/CartaoProduto.module.css (adicione)</span><span class="lang-badge css">CSS</span></div>
+<pre><span class="sel">.selo</span> <span class="punc">{</span>
+  <span class="prop">background</span><span class="punc">:</span> <span class="val">#facc15</span><span class="punc">;</span>
+  <span class="prop">color</span><span class="punc">:</span> <span class="val">#3d3200</span><span class="punc">;</span>
+  <span class="prop">border-radius</span><span class="punc">:</span> <span class="num">999</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">padding</span><span class="punc">:</span> <span class="num">2</span><span class="unit">px</span> <span class="num">10</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">font-size</span><span class="punc">:</span> <span class="num">13</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">font-weight</span><span class="punc">:</span> <span class="num">700</span><span class="punc">;</span>
+<span class="punc">}</span></pre>
+            </div>
+            <div class="code-block">
+              <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/CartaoProduto.jsx (dentro do return)</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="tag">&lt;p&gt;</span>R$ {<span class="var">preco</span>}<span class="tag">&lt;/p&gt;</span>
+{<span class="var">preco</span> <span class="op">&gt;=</span> <span class="num">1000</span> <span class="op">&amp;&amp;</span> <span class="tag">&lt;span</span> <span class="atr">className</span><span class="op">=</span>{<span class="var">styles</span>.<span class="var">selo</span>}<span class="tag">&gt;</span>💎 Premium<span class="tag">&lt;/span&gt;</span>}</pre>
+            </div>
+            <div class="mini-browser" data-url="localhost:5173">
+<script type="text/html" data-mp="html">
+  <div style="font-family:sans-serif;display:flex;gap:10px;flex-wrap:wrap">
+    <div style="border:1px solid #e2e8f0;border-radius:12px;padding:14px;text-align:center"><div style="font-size:40px">⌨️</div><h2 style="margin:4px 0">Teclado Mecânico</h2><p style="margin:0;color:#16a34a;font-weight:700">R$ 320</p></div>
+    <div style="border:1px solid #e2e8f0;border-radius:12px;padding:14px;text-align:center"><div style="font-size:40px">🖥️</div><h2 style="margin:4px 0">Monitor 27 pol</h2><p style="margin:0 0 6px;color:#16a34a;font-weight:700">R$ 1450</p><span style="background:#facc15;color:#3d3200;border-radius:999px;padding:2px 10px;font-size:13px;font-weight:700">💎 Premium</span></div>
+  </div>
+</script>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. guided — grid na loja -->
       <div class="exercise guided">
         <div class="exercise-header"><span class="exercise-icon">👨‍🏫</span><div>
-          <div class="exercise-title">Passo 5 — vitrine de verdade (com o prof)</div>
+          <div class="exercise-title">Passo 6 — vitrine de verdade (com o prof)</div>
           <div class="exercise-sub">Um CSS Module no App pra alinhar os cards</div></div>
         </div>
         <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>Crie <code>src/App.module.css</code> com uma classe <code>.vitrine</code> usando <code>display: flex</code> e <code>gap</code>. No <code>App.jsx</code>, importe e ponha a <code>&lt;div className={styles.vitrine}&gt;</code> em volta do <code>.map()</code>.</p></div>
@@ -699,7 +972,7 @@
   <header style="font-family:sans-serif;text-align:center"><h1>Mini-loja 🛒</h1></header>
   <div style="font-family:sans-serif;display:flex;flex-wrap:wrap;gap:16px;justify-content:center">
     <div style="border:1px solid #e2e8f0;border-radius:12px;padding:14px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.06)"><div style="font-size:40px">⌨️</div><h2 style="margin:4px 0">Teclado Mecânico</h2><p style="margin:0;color:#16a34a;font-weight:700">R$ 320</p></div>
-    <div style="border:1px solid #e2e8f0;border-radius:12px;padding:14px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.06)"><div style="font-size:40px">🖥️</div><h2 style="margin:4px 0">Monitor 27 pol</h2><p style="margin:0;color:#16a34a;font-weight:700">R$ 1450</p></div>
+    <div style="border:1px solid #e2e8f0;border-radius:12px;padding:14px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.06)"><div style="font-size:40px">🖥️</div><h2 style="margin:4px 0">Monitor 27 pol</h2><p style="margin:0 0 6px;color:#16a34a;font-weight:700">R$ 1450</p><span style="background:#facc15;color:#3d3200;border-radius:999px;padding:2px 10px;font-size:13px;font-weight:700">💎 Premium</span></div>
     <div style="border:1px solid #e2e8f0;border-radius:12px;padding:14px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.06)"><div style="font-size:40px">🪑</div><h2 style="margin:4px 0">Cadeira Gamer</h2><p style="margin:0;color:#16a34a;font-weight:700">R$ 980</p></div>
   </div>
 </script>
@@ -715,13 +988,71 @@
         </div>
       </div>
 
+      <!-- 7. solo — esgotado com ternário -->
+      <div class="exercise solo">
+        <div class="exercise-header"><span class="exercise-icon">🧑‍💻</span><div>
+          <div class="exercise-title">Passo 7 — disponível ou esgotado? (sozinho/a)</div>
+          <div class="exercise-sub">O ternário decide o texto E o visual do card</div></div>
+        </div>
+        <div class="drill-tags"><span class="drill-level lv3"><span class="stars">★★★</span> desafio</span><span class="drill-tag">ternário ? :</span><span class="drill-tag">prop nova</span><span class="drill-tag">CSS Modules</span></div>
+        <div class="concept"><div class="concept-title">💡 Missão</div><p>1) No array, dê a cada produto um campo <code>emEstoque</code> (deixe a Cadeira Gamer com <code>false</code>). 2) Passe a prop no <code>.map()</code>. 3) No card, mostre <code>{emEstoque ? "✅ Disponível" : "😢 Esgotado"}</code>. 4) Bônus de mestre: troque a classe do card inteiro com o ternário (<code>styles.cartao</code> × <code>styles.esgotado</code> — um cinza, meio apagado).</p></div>
+        <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Tenta antes!</strong> São os dois moldes da seção "Mostrar ou esconder", aplicados na SUA loja.</div></div>
+        <div class="toggler">
+          <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — Ver solução</span><span class="toggler-arrow">▼</span></div>
+          <div class="toggler-body">
+            <div class="code-block">
+              <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx (array e .map)</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="cm">// no array, cada produto ganha emEstoque:</span>
+<span class="punc">{</span> <span class="var">id</span><span class="punc">:</span> <span class="num">3</span>, <span class="var">nome</span><span class="punc">:</span> <span class="st">"Cadeira Gamer"</span>, <span class="var">preco</span><span class="punc">:</span> <span class="num">980</span>, <span class="var">emEstoque</span><span class="punc">:</span> <span class="kw">false</span> <span class="punc">}</span>,
+
+<span class="cm">// no .map, a prop nova vai junto:</span>
+<span class="tag">&lt;</span><span class="cmp">CartaoProduto</span> <span class="atr">key</span><span class="op">=</span>{<span class="var">p</span>.<span class="var">id</span>} <span class="atr">nome</span><span class="op">=</span>{<span class="var">p</span>.<span class="var">nome</span>} <span class="atr">preco</span><span class="op">=</span>{<span class="var">p</span>.<span class="var">preco</span>} <span class="atr">imagem</span><span class="op">=</span>{<span class="var">p</span>.<span class="var">imagem</span>} <span class="atr">emEstoque</span><span class="op">=</span>{<span class="var">p</span>.<span class="var">emEstoque</span>} <span class="tag">/&gt;</span></pre>
+            </div>
+            <div class="code-block">
+              <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/CartaoProduto.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">const</span> <span class="fn">CartaoProduto</span> <span class="op">=</span> (<span class="punc">{</span> <span class="var">nome</span>, <span class="var">preco</span>, <span class="var">imagem</span>, <span class="var">emEstoque</span> <span class="punc">}</span>) <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div</span> <span class="atr">className</span><span class="op">=</span>{<span class="var">emEstoque</span> <span class="op">?</span> <span class="var">styles</span>.<span class="var">cartao</span> <span class="op">:</span> <span class="var">styles</span>.<span class="var">esgotado</span>}<span class="tag">&gt;</span>
+      <span class="tag">&lt;img</span> <span class="atr">src</span><span class="op">=</span>{<span class="var">imagem</span>} <span class="atr">alt</span><span class="op">=</span>{<span class="var">nome</span>} <span class="atr">width</span><span class="op">=</span><span class="st">"120"</span> <span class="tag">/&gt;</span>
+      <span class="tag">&lt;h2&gt;</span>{<span class="var">nome</span>}<span class="tag">&lt;/h2&gt;</span>
+      <span class="tag">&lt;p&gt;</span>R$ {<span class="var">preco</span>}<span class="tag">&lt;/p&gt;</span>
+      <span class="tag">&lt;p&gt;</span>{<span class="var">emEstoque</span> <span class="op">?</span> <span class="st">"✅ Disponível"</span> <span class="op">:</span> <span class="st">"😢 Esgotado"</span>}<span class="tag">&lt;/p&gt;</span>
+      {<span class="var">preco</span> <span class="op">&gt;=</span> <span class="num">1000</span> <span class="op">&amp;&amp;</span> <span class="tag">&lt;span</span> <span class="atr">className</span><span class="op">=</span>{<span class="var">styles</span>.<span class="var">selo</span>}<span class="tag">&gt;</span>💎 Premium<span class="tag">&lt;/span&gt;</span>}
+    <span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span></pre>
+            </div>
+            <div class="code-block">
+              <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/CartaoProduto.module.css (adicione)</span><span class="lang-badge css">CSS</span></div>
+<pre><span class="sel">.esgotado</span> <span class="punc">{</span>
+  <span class="prop">border</span><span class="punc">:</span> <span class="num">1</span><span class="unit">px</span> <span class="val">solid</span> <span class="val">#e2e8f0</span><span class="punc">;</span>
+  <span class="prop">border-radius</span><span class="punc">:</span> <span class="num">12</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">padding</span><span class="punc">:</span> <span class="num">14</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">text-align</span><span class="punc">:</span> <span class="val">center</span><span class="punc">;</span>
+  <span class="prop">opacity</span><span class="punc">:</span> <span class="num">0.5</span><span class="punc">;</span>
+  <span class="prop">filter</span><span class="punc">:</span> <span class="fn">grayscale</span>(<span class="num">1</span>)<span class="punc">;</span>
+<span class="punc">}</span></pre>
+            </div>
+            <div class="mini-browser" data-url="localhost:5173">
+<script type="text/html" data-mp="html">
+  <div style="font-family:sans-serif;display:flex;flex-wrap:wrap;gap:16px;justify-content:center">
+    <div style="border:1px solid #e2e8f0;border-radius:12px;padding:14px;text-align:center"><div style="font-size:40px">⌨️</div><h2 style="margin:4px 0">Teclado Mecânico</h2><p style="margin:0;color:#16a34a;font-weight:700">R$ 320</p><p style="margin:4px 0 0;font-size:13px">✅ Disponível</p></div>
+    <div style="border:1px solid #e2e8f0;border-radius:12px;padding:14px;text-align:center"><div style="font-size:40px">🖥️</div><h2 style="margin:4px 0">Monitor 27 pol</h2><p style="margin:0;color:#16a34a;font-weight:700">R$ 1450</p><p style="margin:4px 0 4px;font-size:13px">✅ Disponível</p><span style="background:#facc15;color:#3d3200;border-radius:999px;padding:2px 10px;font-size:13px;font-weight:700">💎 Premium</span></div>
+    <div style="border:1px solid #e2e8f0;border-radius:12px;padding:14px;text-align:center;opacity:.5;filter:grayscale(1)"><div style="font-size:40px">🪑</div><h2 style="margin:4px 0">Cadeira Gamer</h2><p style="margin:0;color:#16a34a;font-weight:700">R$ 980</p><p style="margin:4px 0 0;font-size:13px">😢 Esgotado</p></div>
+  </div>
+</script>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- desafio para casa -->
       <div class="exercise home" style="margin-top:18px">
         <div class="exercise-header"><span class="exercise-icon">🏠</span><div>
-          <div class="exercise-title">Desafio para Casa — selo de "caro"</div>
-          <div class="exercise-sub">Junta CSS Module + condição no JSX</div></div>
+          <div class="exercise-title">Desafio para Casa — o contador da vitrine</div>
+          <div class="exercise-sub">Junta props + .length + porteiros, tudo deste capítulo</div></div>
         </div>
-        <div class="concept"><div class="concept-title">💡 Missão</div><p>No <code>CartaoProduto</code>, quando <code>preco &gt;= 1000</code>, mostre um selo <code>💎 Premium</code>. Dica: dá pra fazer com <code>{preco &gt;= 1000 &amp;&amp; &lt;span&gt;💎 Premium&lt;/span&gt;}</code> dentro do JSX. Crie uma classe no CSS Module pro selo. Traga no próximo sábado! 💸</p></div>
+        <div class="concept"><div class="concept-title">💡 Missão</div><p>Faça o <code>Cabecalho</code> receber uma prop <code>total</code> e mostrar <code>"Nossa loja tem {total} produtos"</code>. No App, passe <code>total={produtos.length}</code> — quando você adicionar produto no array, o número sobe sozinho! Bônus 1: mostre <code>🚚 Frete grátis</code> nos cards com <code>preco &gt;= 500</code> (qual porteiro serve pra "mostrar ou nada"?). Bônus 2: no contador, use o ternário pra escrever "produto" (1) ou "produtos" (vários). Traga no próximo sábado! 🛒</p></div>
       </div>
     </div>
   </section>
@@ -744,6 +1075,7 @@
         <li><div><strong>key:</strong> a etiqueta única de cada item — <code>key={p.id}</code>, sempre no elemento de fora do <code>.map()</code>.</div></li>
         <li><div><strong>Imagens:</strong> <code>public/</code> (caminho <code>"/img.jpg"</code>) ou <code>import</code> de <code>src/assets</code> (<code>src={img}</code>).</div></li>
         <li><div><strong>CSS Modules:</strong> arquivo <code>.module.css</code> + <code>import styles</code> + <code>className={styles.classe}</code> — estilo que não vaza.</div></li>
+        <li><div><strong>Mostrar ou esconder:</strong> <code>&amp;&amp;</code> (mostrar ou nada) e o ternário <code>? :</code> (isto ou aquilo) — inclusive pra escolher a classe: <code>className={cond ? styles.a : styles.b}</code>. <code>if</code> solto não entra nas chaves.</div></li>
       </ul>
 
       <div class="quiz" style="margin-top:16px">
@@ -849,6 +1181,101 @@
     onView(root,sync);
   })();
 
+  /* ════ 🔑 Guarda-volumes (a prop key) ════ */
+  (()=>{
+    const root=document.getElementById('lockers'); if(!root) return;
+    const comEl=root.querySelector('#kl-com');
+    const semEl=root.querySelector('#kl-sem');
+    const consoleEl=root.querySelector('#kl-console');
+    const note=root.querySelector('#kl-note');
+    const removeBtn=root.querySelector('#kl-remove');
+    const resetBtn=root.querySelector('#kl-reset');
+    const base=[
+      {id:1,nome:'Teclado',bag:'🎒 pertence do Teclado'},
+      {id:2,nome:'Monitor',bag:'🧢 pertence do Monitor'},
+      {id:3,nome:'Cadeira',bag:'☂️ pertence da Cadeira'},
+    ];
+    let itens=base.slice();
+    let removed=false;
+    const row=(nome,bag,wrong)=>{
+      const d=document.createElement('div');
+      d.className='kl-row'+(wrong?' wrong':'');
+      d.innerHTML='<span>'+nome+'</span><span class="kl-bag">'+bag+(wrong?' ❌':'')+'</span>';
+      return d;
+    };
+    const render=()=>{
+      comEl.innerHTML=''; semEl.innerHTML='';
+      // com key: cada item mantém o próprio pertence
+      itens.forEach(p=>comEl.appendChild(row(p.nome,p.bag,false)));
+      // sem key: os nomes andam, mas os pertences ficam presos à POSIÇÃO original
+      itens.forEach((p,i)=>{
+        const bagDaPosicao=base[i].bag;
+        semEl.appendChild(row(p.nome,bagDaPosicao,removed && bagDaPosicao!==p.bag));
+      });
+      consoleEl.textContent='⚠️ Warning: Each child in a list should have a unique "key" prop.';
+      if(!removed){
+        note.innerHTML='cada plaquinha guarda o pertence do SEU dono';
+      }else{
+        note.innerHTML='💥 Sem key, o React foi <strong>pela posição</strong>: o Monitor herdou o pertence do Teclado! Com <code>key={p.id}</code>, cada um levou o seu.';
+      }
+      if(animate){ animate(root.querySelector('.kl-grid'),{opacity:[0.5,1]},{duration:.3}); }
+    };
+    removeBtn.addEventListener('click',()=>{
+      if(itens.length<=1) return;
+      itens=itens.slice(1);
+      removed=true;
+      render();
+    });
+    resetBtn.addEventListener('click',()=>{ itens=base.slice(); removed=false; render(); });
+    onView(root,render);
+  })();
+
+  /* ════ 🚦 Interruptor do JSX (condicional) ════ */
+  (()=>{
+    const root=document.getElementById('jsxswitch'); if(!root) return;
+    const precoChips=[...root.querySelectorAll('[data-preco]')];
+    const estoqueChips=[...root.querySelectorAll('[data-estoque]')];
+    const lineSelo=root.querySelector('#sw-line-selo');
+    const lineTern=root.querySelector('#sw-line-tern');
+    const card=root.querySelector('#sw-card');
+    const priceEl=root.querySelector('#sw-price');
+    const seloEl=root.querySelector('#sw-selo');
+    const statusEl=root.querySelector('#sw-status');
+    const note=root.querySelector('#sw-note');
+    let preco=1450, emEstoque=true;
+    const render=()=>{
+      priceEl.textContent='R$ '+preco;
+      const premium=preco>=1000;
+      seloEl.style.display=premium?'inline-block':'none';
+      lineSelo.classList.toggle('lit',premium);
+      lineSelo.classList.toggle('off',!premium);
+      statusEl.textContent=emEstoque?'✅ Disponível':'😢 Esgotado';
+      statusEl.classList.toggle('ok',emEstoque);
+      statusEl.classList.toggle('bad',!emEstoque);
+      lineTern.classList.add('lit');
+      card.classList.toggle('out',!emEstoque);
+      const p1=premium
+        ? 'preco &gt;= 1000 deu <strong>verdadeiro</strong> → o porteiro <code>&amp;&amp;</code> deixou o selo entrar'
+        : 'preco &gt;= 1000 deu <strong>falso</strong> → o <code>&amp;&amp;</code> nem desenhou o selo';
+      const p2=emEstoque
+        ? 'o ternário escolheu o lado do <strong>?</strong> ("Disponível")'
+        : 'o ternário escolheu o lado do <strong>:</strong> ("Esgotado")';
+      note.innerHTML=p1+' · '+p2+'.';
+      if(animate){ animate(card,{opacity:[0.5,1]},{duration:.25}); }
+    };
+    precoChips.forEach(c=>c.addEventListener('click',()=>{
+      preco=parseInt(c.dataset.preco,10);
+      precoChips.forEach(x=>x.classList.toggle('active',x===c));
+      render();
+    }));
+    estoqueChips.forEach(c=>c.addEventListener('click',()=>{
+      emEstoque=c.dataset.estoque==='1';
+      estoqueChips.forEach(x=>x.classList.toggle('active',x===c));
+      render();
+    }));
+    onView(root,render);
+  })();
+
   /* ════ 🖼️ Onde mora a imagem? ════ */
   (()=>{
     const root=document.getElementById('imgwhere'); if(!root) return;
@@ -912,6 +1339,20 @@
     };
     chips.forEach(c=>c.addEventListener('click',()=>run(c.dataset.mode)));
     onView(root,()=>run('global'));
+  })();
+
+  /* ════ ▶️ vídeos: dão play sozinhos ao aparecer e pausam ao sair da tela ════ */
+  (()=>{
+    const vids=[...document.querySelectorAll('.clip video')];
+    if(!vids.length || !('IntersectionObserver' in window)) return;
+    const io=new IntersectionObserver((es)=>{
+      es.forEach((e)=>{
+        const v=e.target;
+        if(e.isIntersecting){ const p=v.play(); if(p&&p.catch) p.catch(()=>{}); }
+        else { v.pause(); }
+      });
+    },{threshold:0.4});
+    vids.forEach((v)=>io.observe(v));
   })();
 </script>
 </body>

@@ -203,6 +203,29 @@
 5. Implementação: 14 defs convertidas no Cap 4 + 4 no Cap 5 (inclui a linha da máquina comptree).
    Verificado: `<pre>` 18/18 (cap4) e 13/13 (cap5), zero `=>`/`<` crus em `<pre>`, `⇒` só em aviso, widgets ok.
 
+## 2026-07-04 — Reforma dos Caps 4 e 5 ("estava pobrinho")
+1. **Motivo:** prof achou os Caps 4/5 magros vs Caps 1–3 (menos teoria, sem vídeo, treino curto).
+   Regra da reforma: **só acrescentar, nada remover**. Detalhe por cap em `04-conteudo-curso.md`.
+2. **Condicional antecipada pro Cap 5** (decisão do prof): `&&` + ternário ganharam seção própria
+   ("👻 Mostrar ou esconder", pós-CSS Modules) — corrigiu o buraco do desafio de casa que usava `&&`
+   sem ensinar. **Cap 6 pode assumir os dois porteiros como sabidos.** Vocabulário fixado: "porteiro"
+   (`&&` = mostrar-ou-nada; ternário = isto-ou-aquilo; `if` não entra nas chaves → Bug 5 do BugZilla).
+3. **Remotion chegou ao arco React:** `ComponentJourney.tsx` → `assets/video/jornada-componente.mp4`
+   (Cap 4, seção 🔌) e `MapAssemblyLine.tsx` → `esteira-map.mp4` (Cap 5, seção .map()). Scripts
+   `render:journey`/`still:journey` (frame 290) e `render:map`/`still:map` (frame 300). Player padrão
+   autoplay+loop+muted + bloco IO play/pause copiado do Cap 3 pros dois caps (CSS `.clip` local também).
+4. **Buraco didático fechado no Cap 4:** aluno agora entende `npm install`/`package.json`/
+   `node_modules` (lista de compras/estante) e o main.jsx (tomada+plugue, ponte com o
+   `getElementById` do Cap 3) — nova seção `#engrenagem`, sem pedir pra editar o arquivo.
+5. **4 máquinas novas** na receita de `02-padroes-didaticos.md` (input do aluno, erro visível,
+   IO+botão, funciona offline): 🔌 Corrente do React, 🎛️ Painel de Props (aspas×chaves → frete
+   "32015" texto × 335 número), 🔑 Guarda-volumes (key: pertences trocam de dono sem key),
+   🚦 Interruptor do JSX. Classes mono novas adicionadas à regra local de ligatures de cada cap.
+6. **Treinos com 7 passos** nos dois caps (novos solos: Rodapé/sinta-a-dor no 4; selo-&&/
+   esgotado-ternário no 5). Desafios de casa re-balanceados (selo Premium subiu pra aula; casa do
+   5 virou contador com `produtos.length`; bônus Rodape do 4 virou o P5 e o bônus novo é prop emoji).
+7. Sem memes nesta rodada (decisão do prof). Jogo HTML-ou-JSX do Cap 4 foi de 5→10 rodadas.
+
 ## Pendências reconhecidas
 - Planejar em detalhe os **Caps 6–9** (React: state → efeitos/dados → router → integração).
   Caps 4 e 5 já fixaram o tom, o setup Vite base e a Mini-loja como artefato contínuo do arco React.
