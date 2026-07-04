@@ -226,6 +226,26 @@
    5 virou contador com `produtos.length`; bônus Rodape do 4 virou o P5 e o bônus novo é prop emoji).
 7. Sem memes nesta rodada (decisão do prof). Jogo HTML-ou-JSX do Cap 4 foi de 5→10 rodadas.
 
+## 2026-07-04 — Cap 05b: capítulo-desafio "a Lanchonete" (só prática)
+1. **Motivo:** o prof trabalhou em sala um exemplo completo (App com array + `.map()`, Cabecalho,
+   CartaoProduto com 3 props, componente de imagens public×import) e pediu um capítulo para os
+   alunos **repetirem o arco sozinhos num exemplo novo**. Estreia o padrão "Nb-desafios" previsto
+   no mapa: pasta `05b-desafio-lanchonete`, numeração 05b (não rouba o 06, que segue planejado).
+2. **Formato de capítulo-desafio fixado:** zero conceito novo; hero + missão (com estrutura de
+   pastas e mini-browser do resultado final ANTES de começar) + regras (tentar primeiro / consultar
+   caps anteriores não é cola / ler a mensagem de erro) + tabela "arsenal" (skill → onde revisar) +
+   passos TODOS `.exercise.solo` com dica → PARE → 👀 + bônus pra casa. Sem máquinas/vídeo — leve.
+3. **Faxina de CSS virou passo formal:** apagar o CONTEÚDO de `index.css` e `App.css` (deixar
+   vazios, nunca deletar os arquivos — o import quebra e dá tela branca). Resultado "cru/feio" é
+   apresentado como sinal de sucesso da faxina.
+4. **Pasta `src/components/` entra aqui** (única novidade tolerada): imports `./components/X` no
+   App e o pulo do `'../assets/logo.png'` no Banner (sobe um nível). Caps 6+ podem assumir essa
+   organização.
+5. **Quiz "prop fantasma":** item do array sem o campo → prop `undefined` → JSX não desenha nada
+   (card com buraco, sem erro) — pegadinha que apareceu no exemplo de sala.
+6. Botão "Próximo" do Cap 5 redirecionado do Cap 6 (link quebrado, pasta não existe) para o 05b;
+   o 05b fecha voltando pro hub ("Cap 06 vem aí").
+
 ## Pendências reconhecidas
 - Planejar em detalhe os **Caps 6–9** (React: state → efeitos/dados → router → integração).
   Caps 4 e 5 já fixaram o tom, o setup Vite base e a Mini-loja como artefato contínuo do arco React.

@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cap 05b — Desafio: a Lanchonete | Curso Fullstack</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=JetBrains+Mono:wght@400;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../shared/styles.css">
+<link rel="stylesheet" href="../../shared/components.css">
+<link rel="stylesheet" href="../../shared/animations.css">
+<link rel="stylesheet" href="../../shared/playground.css">
+<style>
+  /* ── mono didático: SEMPRE sem ligaduras (=> não vira ⇒, >= não vira ≥) ── */
+  .mono{
+    font-family:'JetBrains Mono',monospace;
+    font-variant-ligatures:none;font-feature-settings:"liga" 0,"clig" 0,"calt" 0}
+
+  /* nome de componente dentro do JSX (sempre Maiúsculo) */
+  .cmp{color:var(--react);font-weight:600}
+
+  /* tabela "seu arsenal" */
+  .arsenal{width:100%;border-collapse:collapse;margin:12px 0;font-size:0.88rem}
+  .arsenal th{text-align:left;color:var(--text-dim);font-size:0.74rem;text-transform:uppercase;
+    letter-spacing:0.06em;padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.12)}
+  .arsenal td{padding:10px;border-bottom:1px solid rgba(255,255,255,0.06);vertical-align:top}
+  .arsenal td:first-child{white-space:nowrap;font-weight:800}
+  .arsenal .onde{color:var(--text-dim);font-size:0.8rem;white-space:nowrap}
+  @media (max-width:640px){.arsenal .onde{white-space:normal}}
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-orbs"><div class="orb"></div><div class="orb"></div><div class="orb"></div></div>
+<div class="progress-track"><div class="progress-bar"></div></div>
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<button class="menu-toggle" onclick="openSidebar()" aria-label="Abrir menu">☰</button>
+<div class="sidebar-overlay"></div>
+<nav class="sidebar-nav">
+  <button class="sidebar-close" onclick="closeSidebar()" aria-label="Fechar">✕</button>
+  <div class="sidebar-header">
+    <h3>🍔 Cap 05b · Desafio</h3>
+    <a class="sidebar-back" href="../../index.html">← Voltar ao hub</a>
+  </div>
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Neste capítulo</div>
+    <a class="sidebar-link" onclick="goTo('missao')"><span class="dot" style="background:var(--react)"></span> 🎯 A missão</a>
+    <a class="sidebar-link" onclick="goTo('regras')"><span class="dot" style="background:var(--accent5)"></span> 📏 Como funciona</a>
+    <a class="sidebar-link" onclick="goTo('arsenal')"><span class="dot" style="background:var(--js)"></span> 🎒 Seu arsenal</a>
+    <a class="sidebar-link" onclick="goTo('treino')"><span class="dot" style="background:var(--react)"></span> ⌨️ Os 6 passos</a>
+    <a class="sidebar-link" onclick="goTo('casa')"><span class="dot" style="background:var(--accent7)"></span> 🏠 Bônus pra casa</a>
+    <a class="sidebar-link" onclick="goTo('resumo')"><span class="dot" style="background:var(--accent7)"></span> 🏁 Conferência final</a>
+  </div>
+</nav>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section class="hero">
+  <div class="hero-icons" data-motion="float"><img src="../../assets/svg/react.svg" alt="React" width="46" height="46" style="vertical-align:middle"> 🍔 🍟</div>
+  <span class="hero-badge react">Capítulo 05b · Desafio prático</span>
+  <h1>Desafio: <span style="color:var(--react)">a Lanchonete</span> 🍔</h1>
+  <p class="subtitle">
+    <strong>Nenhum conceito novo.</strong> Você vai montar um cardápio de lanchonete
+    <strong style="color:var(--react)">do zero</strong>, sozinho(a), usando tudo o que treinou na
+    Mini-loja dos Caps 4 e 5: componentes, props, <code>.map()</code> e imagens.
+    É o teste de fogo: sem o prof do lado, o código sai?
+  </p>
+  <div class="hero-stack">
+    <span class="stack-chip react">⚛️ componentes</span>
+    <span class="stack-chip react">🎁 props</span>
+    <span class="stack-chip js">🏭 .map() + key</span>
+    <span class="stack-chip node">🖼️ imagens</span>
+    <span class="stack-chip css">🧹 faxina no CSS</span>
+  </div>
+</section>
+
+<div class="container">
+
+  <!-- ═══════════════ A MISSÃO ═══════════════ -->
+  <section class="step-section" id="missao">
+    <div class="step-header">
+      <div class="step-number sn-react">🎯</div>
+      <div>
+        <div class="step-title">A missão</div>
+        <div class="step-sub">O que você vai entregar no fim deste capítulo</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="analogy">
+        <div class="analogy-title">👨‍🍳 Cozinhar sem olhar a receita</div>
+        <p>Na Mini-loja, o prof cozinhou junto com você. Agora a cozinha é <strong>sua</strong>:
+        mesmo prato, ingredientes novos. Se travar em algum passo, tudo bem — é exatamente aí que
+        o aprendizado acontece. A receita (👀) existe, mas só depois de você <strong>tentar</strong>.</p>
+      </div>
+
+      <p>Você vai criar um projeto React <strong>novo</strong> chamado <code>lanchonete</code>, com:</p>
+
+      <ul class="about-bullets">
+        <li><div>Um <strong>Banner</strong> com <strong>duas imagens</strong> — uma vinda da pasta <code>public/</code> e outra importada de <code>src/assets/</code> (os dois caminhos do Cap 5).</div></li>
+        <li><div>Um <strong>Cabecalho</strong> dando boas-vindas à lanchonete.</div></li>
+        <li><div>Um <strong>CartaoLanche</strong> que recebe <code>nome</code>, <code>preco</code> e <code>descricao</code> por <strong>props</strong>.</div></li>
+        <li><div>Um array <code>lanches</code> com <strong>4 lanches</strong>, virando cards na tela com <code>.map()</code> e <code>key</code>.</div></li>
+        <li><div><code>index.css</code> e <code>App.css</code> <strong>completamente vazios</strong> — a página fica "crua" de propósito (o visual é bônus).</div></li>
+      </ul>
+
+      <p style="margin-top:14px">A estrutura final de pastas — repare na novidade pequena, a pasta
+      <code>src/components/</code> guardando os componentes (organização de projeto de verdade):</p>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">estrutura final do projeto</span><span class="lang-badge terminal">pastas</span></div>
+<pre><span class="var">lanchonete/</span>
+├── public/
+│   └── banner.png        <span class="cm">← imagem "solta" (caminho /banner.png)</span>
+└── src/
+    ├── assets/
+    │   └── logo.png      <span class="cm">← imagem importada (import logo from ...)</span>
+    ├── components/
+    │   ├── Banner.jsx
+    │   ├── Cabecalho.jsx
+    │   └── CartaoLanche.jsx
+    ├── App.jsx
+    ├── App.css           <span class="cm">← VAZIO</span>
+    ├── index.css         <span class="cm">← VAZIO</span>
+    └── main.jsx          <span class="cm">← não mexe</span></pre>
+      </div>
+
+      <p class="text-dim" style="font-size:0.82rem;margin:14px 0 4px">O resultado no navegador — feio mesmo,
+      sem CSS, e está <strong>certo</strong> assim 👇</p>
+      <div class="mini-browser" data-url="localhost:5173">
+<script type="text/html" data-mp="html">
+  <div>
+    <span style="font-size:56px">🖼️</span>
+    <span style="font-size:56px">🖼️</span>
+    <p style="margin:0;font-size:12px;color:#888">(as suas duas imagens aqui)</p>
+  </div>
+  <div>Bem-vindo à Lanchonete do Dev! 🍔</div>
+  <h1>Cardápio:</h1>
+  <div><p>Nome: X-Burger</p><p>Preço: R$ 18</p><p>Descrição: Pão, carne e queijo</p></div>
+  <div><p>Nome: X-Salada</p><p>Preço: R$ 22</p><p>Descrição: Alface, tomate e maionese da casa</p></div>
+  <div><p>Nome: X-Bacon</p><p>Preço: R$ 26</p><p>Descrição: Bacon crocante em dobro</p></div>
+  <div><p>Nome: Batata Frita</p><p>Preço: R$ 12</p><p>Descrição: Porção média bem sequinha</p></div>
+</script>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ COMO FUNCIONA ═══════════════ -->
+  <section class="step-section" id="regras">
+    <div class="step-header">
+      <div class="step-number sn-yellow">📏</div>
+      <div>
+        <div class="step-title">Como funciona o desafio</div>
+        <div class="step-sub">As regras do jogo (são só três)</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <ul class="about-bullets">
+        <li><div><strong>1. Tente primeiro.</strong> Cada passo tem uma dica que orienta sem entregar. O 👀 tem a
+        solução completa — mas só clique <strong>depois</strong> de tentar de verdade. Espiar antes joga fora o
+        ganho do capítulo inteiro.</div></li>
+        <li><div><strong>2. Pode consultar os capítulos anteriores.</strong> Abrir o
+        <a href="../04-react-inicio/index.html" style="color:var(--react)">Cap 4</a> e o
+        <a href="../05-react-props-css/index.html" style="color:var(--react)">Cap 5</a> pra relembrar um molde
+        <strong>não é cola</strong> — é o que dev faz todo dia. Cola é copiar a solução do 👀 sem tentar.</div></li>
+        <li><div><strong>3. Errar faz parte.</strong> Tela branca? Erro vermelho no navegador? Respira e
+        <strong>leia a mensagem</strong> — ela quase sempre diz o arquivo e a linha. O BugZilla 🐛 dos Caps 4 e 5
+        já mostrou os clássicos (import esquecido, componente minúsculo, <code>key</code> faltando).</div></li>
+      </ul>
+
+      <div class="warning">
+        <span class="warning-icon">⌨️</span>
+        <div class="warning-content">
+          Lembrete da IDE: as setas <code>=&gt;</code> das arrow functions são <kbd>=</kbd> seguido de
+          <kbd>&gt;</kbd>. Se o VSCode <strong>desenhar</strong> <code>⇒</code>, é só a fonte enfeitando —
+          você digita os dois caracteres separados.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ SEU ARSENAL ═══════════════ -->
+  <section class="step-section" id="arsenal">
+    <div class="step-header">
+      <div class="step-number sn-js">🎒</div>
+      <div>
+        <div class="step-title">Seu arsenal</div>
+        <div class="step-sub">Tudo o que o desafio pede, você já tem — e sabe onde revisar</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <table class="arsenal">
+        <thead><tr><th>Ferramenta</th><th>Pra que serve aqui</th><th>Onde revisar</th></tr></thead>
+        <tbody>
+          <tr><td>🏗️ <code>npm create vite</code></td><td>Criar o projeto <code>lanchonete</code> do zero</td><td class="onde">Cap 4 · setup</td></tr>
+          <tr><td>⚡ <code>rafce</code></td><td>Nascer cada componente (arrow + export) num piscar</td><td class="onde">Cap 4 · componentes</td></tr>
+          <tr><td>🎁 props</td><td><code>CartaoLanche</code> recebe nome, preço e descrição</td><td class="onde">Cap 4 · props</td></tr>
+          <tr><td>🏭 <code>.map()</code> + <code>key</code></td><td>O array <code>lanches</code> vira cards sozinho</td><td class="onde">Cap 5 · listas</td></tr>
+          <tr><td>🖼️ <code>public/</code> × <code>import</code></td><td>As duas imagens do Banner, uma de cada jeito</td><td class="onde">Cap 5 · imagens</td></tr>
+        </tbody>
+      </table>
+
+      <div class="tip">
+        <span class="tip-icon">💡</span>
+        <div class="tip-content">
+          <strong>Aspas × chaves</strong> (o clássico do Cap 4): texto vai entre aspas
+          (<code>nome="X-Burger"</code>), número e JavaScript vão entre chaves
+          (<code>preco={18}</code>, <code>nome={l.nome}</code>). Metade dos bugs de props mora aí.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ PROGRAMAÇÃO É PRÁTICA ═══════════════ -->
+  <section class="step-section">
+    <div class="card" style="text-align:center;background:linear-gradient(135deg,rgba(97,218,251,0.10),rgba(100,108,255,0.06));border-color:rgba(97,218,251,0.22)">
+      <div style="font-family:'Caveat',cursive;font-size:clamp(2rem,6vw,3rem);color:var(--react);font-weight:700;line-height:1.1">
+        PROGRAMAÇÃO É PRÁTICA 💪
+      </div>
+      <p class="text-dim" style="max-width:560px;margin:10px auto 0">
+        VSCode aberto, terminal na mão. Deste ponto em diante é <strong style="color:var(--text)">você</strong>
+        no comando — a solução de cada passo está no 👀, mas o seu cérebro só cresce se digitar primeiro. 🍔
+      </p>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ OS 6 PASSOS ═══════════════ -->
+  <section class="step-section" id="treino">
+    <div class="step-header">
+      <div class="step-number sn-react">⌨️</div>
+      <div>
+        <div class="step-title">O desafio — 6 passos até o cardápio</div>
+        <div class="step-sub">Cada passo continua o anterior. Dica → tentar → 👀</div>
+      </div>
+    </div>
+    <div class="card">
+
+      <!-- trilha de progresso -->
+      <div class="arena-track">
+        <span class="at-dot lv1">1</span><span class="at-arrow">→</span>
+        <span class="at-dot lv1">2</span><span class="at-arrow">→</span>
+        <span class="at-dot lv1">3</span><span class="at-arrow">→</span>
+        <span class="at-dot lv2">4</span><span class="at-arrow">→</span>
+        <span class="at-dot lv2">5</span><span class="at-arrow">→</span>
+        <span class="at-dot lv3">6</span><span class="at-arrow">→</span>
+        <span class="at-dot lv3">🏆</span>
+      </div>
+
+      <!-- ── PASSO 1 — criar o projeto ── -->
+      <div class="exercise solo">
+        <div class="exercise-header"><span class="exercise-icon">🧑‍💻</span><div>
+          <div class="exercise-title">Passo 1 — nasce a lanchonete (sozinho/a)</div>
+          <div class="exercise-sub">Projeto Vite novo, do zero, como no Cap 4</div></div>
+        </div>
+        <div class="drill-tags"><span class="drill-level lv1"><span class="stars">★</span> fácil</span><span class="drill-tag">Vite</span><span class="drill-tag">terminal</span></div>
+        <div class="concept"><div class="concept-title">💡 Dica</div><p>Na pasta onde você guarda seus projetos, crie um projeto Vite chamado <code>lanchonete</code> (framework <strong>React</strong>, variante <strong>JavaScript</strong>). Depois entre na pasta, instale as dependências e suba o servidor. São os <strong>mesmos 3 comandos</strong> da Mini-loja.</p></div>
+        <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Tenta antes!</strong> Você já fez isso no Cap 4. Se esquecer um comando, tente lembrar o que ele <em>fazia</em> — instalar? rodar?</div></div>
+        <div class="toggler">
+          <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — Ver solução</span><span class="toggler-arrow">▼</span></div>
+          <div class="toggler-body">
+            <div class="code-block">
+              <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">terminal</span><span class="lang-badge bash">bash</span></div>
+<pre><span class="fn">npm</span> create vite@latest lanchonete
+<span class="cm"># framework: React  ·  variant: JavaScript</span>
+<span class="fn">cd</span> lanchonete
+<span class="fn">npm</span> install
+<span class="fn">npm</span> run dev</pre>
+            </div>
+            <div class="tip"><span class="tip-icon">✅</span><div class="tip-content">Abriu <code>http://localhost:5173</code> e apareceu a página do Vite girando? Projeto no ar. Deixe o <code>npm run dev</code> <strong>rodando</strong> — ele recarrega sozinho a cada salvamento.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── PASSO 2 — faxina ── -->
+      <div class="exercise solo">
+        <div class="exercise-header"><span class="exercise-icon">🧹</span><div>
+          <div class="exercise-title">Passo 2 — a faxina (sozinho/a)</div>
+          <div class="exercise-sub">App.jsx enxuto + index.css e App.css VAZIOS</div></div>
+        </div>
+        <div class="drill-tags"><span class="drill-level lv1"><span class="stars">★</span> fácil</span><span class="drill-tag">boilerplate</span><span class="drill-tag">CSS limpo</span></div>
+        <div class="concept"><div class="concept-title">💡 Dica</div><p>O Vite entrega o projeto cheio de exemplo. Sua faxina tem 3 alvos, todos dentro de <code>src/</code>:</p>
+          <p style="margin-top:8px"><strong>1.</strong> <code>App.jsx</code> — apague tudo e recrie com o <code>rafce</code>, devolvendo só uma <code>&lt;div&gt;</code> com um <code>&lt;h1&gt;</code> qualquer (pra testar).<br>
+          <strong>2.</strong> <code>App.css</code> — abra, selecione tudo (<kbd>Ctrl/Cmd + A</kbd>), apague, salve. O arquivo fica <strong>vazio</strong>.<br>
+          <strong>3.</strong> <code>index.css</code> — mesma coisa: conteúdo zero.</p>
+          <p style="margin-top:8px">É o CSS de exemplo do Vite que deixa o fundo escuro e centraliza tudo — limpando os dois, a página volta a ser uma folha em branco.</p></div>
+        <div class="warning">
+          <span class="warning-icon">⚠️</span>
+          <div class="warning-content">
+            Apague o <strong>conteúdo</strong>, não os <strong>arquivos</strong>! O <code>main.jsx</code> importa o
+            <code>index.css</code> e o <code>App.jsx</code> pode importar o <code>App.css</code> — se o arquivo sumir,
+            o import quebra e a tela fica branca. Vazio ≠ deletado.
+          </div>
+        </div>
+        <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Tenta antes!</strong> Se o rafce colocar um <code>import React from 'react'</code> no topo, pode apagar essa linha — o Vite moderno dispensa.</div></div>
+        <div class="toggler">
+          <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — Ver solução</span><span class="toggler-arrow">▼</span></div>
+          <div class="toggler-body">
+            <div class="code-block">
+              <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">const</span> <span class="fn">App</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span>
+      <span class="tag">&lt;h1&gt;</span>Lanchonete no ar!<span class="tag">&lt;/h1&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">App</span></pre>
+            </div>
+            <div class="tip"><span class="tip-icon">🧠</span><div class="tip-content"><code>App.css</code> e <code>index.css</code> continuam <strong>existindo</strong>, só que com zero linhas dentro. No navegador: fundo branco, letra preta com cara de jornal, texto encostado na esquerda. <strong>Feio é o esperado</strong> — significa que a faxina funcionou.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── PASSO 3 — Cabecalho ── -->
+      <div class="exercise solo">
+        <div class="exercise-header"><span class="exercise-icon">🧢</span><div>
+          <div class="exercise-title">Passo 3 — o Cabecalho (sozinho/a)</div>
+          <div class="exercise-sub">Primeiro componente — e a pasta components/ estreia</div></div>
+        </div>
+        <div class="drill-tags"><span class="drill-level lv1"><span class="stars">★</span> fácil</span><span class="drill-tag">componente</span><span class="drill-tag">import</span></div>
+        <div class="concept"><div class="concept-title">💡 Dica</div><p>Crie a pasta <code>src/components/</code> e, dentro dela, o arquivo <code>Cabecalho.jsx</code> (<code>rafce</code>!). Ele devolve uma <code>&lt;div&gt;</code> com uma mensagem de boas-vindas à sua lanchonete. Depois <strong>importe e use</strong> no <code>App.jsx</code>, acima do <code>&lt;h1&gt;</code>. Atenção ao caminho do import: o Cabecalho agora mora em <code>./components/</code>.</p></div>
+        <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Tenta antes!</strong> Nome de componente começa com letra <strong>Maiúscula</strong> — no arquivo, na função e na tag.</div></div>
+        <div class="toggler">
+          <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — Ver solução</span><span class="toggler-arrow">▼</span></div>
+          <div class="toggler-body">
+            <div class="code-block">
+              <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/components/Cabecalho.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">const</span> <span class="fn">Cabecalho</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span>Bem-vindo à Lanchonete do Dev! 🍔<span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">Cabecalho</span></pre>
+            </div>
+            <div class="code-block">
+              <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">import</span> <span class="var">Cabecalho</span> <span class="kw">from</span> <span class="st">'./components/Cabecalho'</span>
+
+<span class="kw">const</span> <span class="fn">App</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span>
+      <span class="tag">&lt;</span><span class="cmp">Cabecalho</span> <span class="tag">/&gt;</span>
+      <span class="tag">&lt;h1&gt;</span>Cardápio:<span class="tag">&lt;/h1&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">App</span></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── PASSO 4 — CartaoLanche com props ── -->
+      <div class="exercise solo">
+        <div class="exercise-header"><span class="exercise-icon">🍔</span><div>
+          <div class="exercise-title">Passo 4 — o CartaoLanche com props (sozinho/a)</div>
+          <div class="exercise-sub">O molde que vai carimbar o cardápio inteiro</div></div>
+        </div>
+        <div class="drill-tags"><span class="drill-level lv2"><span class="stars">★★</span> médio</span><span class="drill-tag">props</span><span class="drill-tag">desestruturação</span></div>
+        <div class="concept"><div class="concept-title">💡 Dica</div><p>Crie <code>src/components/CartaoLanche.jsx</code> recebendo <strong>3 props desestruturadas</strong>: <code>nome</code>, <code>preco</code> e <code>descricao</code>. Ele devolve uma <code>&lt;div&gt;</code> com três <code>&lt;p&gt;</code>, um pra cada informação. Pra testar, use <strong>um</strong> card na mão no <code>App.jsx</code>, abaixo do <code>&lt;h1&gt;</code> — invente um lanche! Lembre: texto entre <strong>aspas</strong>, número entre <strong>chaves</strong>.</p></div>
+        <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Tenta antes!</strong> A desestruturação é aquele abraço de chaves nos parênteses: <code>({ nome, preco, descricao })</code>.</div></div>
+        <div class="toggler">
+          <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — Ver solução</span><span class="toggler-arrow">▼</span></div>
+          <div class="toggler-body">
+            <div class="code-block">
+              <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/components/CartaoLanche.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">const</span> <span class="fn">CartaoLanche</span> <span class="op">=</span> (<span class="punc">{</span> <span class="var">nome</span>, <span class="var">preco</span>, <span class="var">descricao</span> <span class="punc">}</span>) <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span>
+      <span class="tag">&lt;p&gt;</span>Nome: {<span class="var">nome</span>}<span class="tag">&lt;/p&gt;</span>
+      <span class="tag">&lt;p&gt;</span>Preço: R$ {<span class="var">preco</span>}<span class="tag">&lt;/p&gt;</span>
+      <span class="tag">&lt;p&gt;</span>Descrição: {<span class="var">descricao</span>}<span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">CartaoLanche</span></pre>
+            </div>
+            <div class="code-block">
+              <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx (o teste, dentro do return)</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="tag">&lt;h1&gt;</span>Cardápio:<span class="tag">&lt;/h1&gt;</span>
+<span class="tag">&lt;</span><span class="cmp">CartaoLanche</span> <span class="atr">nome</span><span class="op">=</span><span class="st">"X-Burger"</span> <span class="atr">preco</span><span class="op">=</span>{<span class="num">18</span>} <span class="atr">descricao</span><span class="op">=</span><span class="st">"Pão, carne e queijo"</span> <span class="tag">/&gt;</span></pre>
+            </div>
+            <div class="tip"><span class="tip-icon">🧠</span><div class="tip-content">Não esqueça o <code>import CartaoLanche from './components/CartaoLanche'</code> no topo do App. Se aparecer "CartaoLanche is not defined", é ele que faltou.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── PASSO 5 — array + map ── -->
+      <div class="exercise solo">
+        <div class="exercise-header"><span class="exercise-icon">🏭</span><div>
+          <div class="exercise-title">Passo 5 — o array e a esteira do .map() (sozinho/a)</div>
+          <div class="exercise-sub">4 lanches entram, 4 cards saem — sem copiar e colar</div></div>
+        </div>
+        <div class="drill-tags"><span class="drill-level lv2"><span class="stars">★★</span> médio</span><span class="drill-tag">.map()</span><span class="drill-tag">key</span></div>
+        <div class="concept"><div class="concept-title">💡 Dica</div><p>No <code>App.jsx</code>, crie (fora do componente) um array <code>lanches</code> com <strong>4 objetos</strong>, cada um com <code>id</code>, <code>nome</code>, <code>preco</code> e <code>descricao</code>. Depois apague o card de teste do Passo 4 e gere a lista com <code>lanches.map(...)</code>, passando as três props a partir de cada item — e a <code>key={l.id}</code>, senão o React reclama no console!</p></div>
+        <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Tenta antes!</strong> Leia em voz alta: "para cada lanche <code>l</code> da lista, devolva um <code>&lt;CartaoLanche&gt;</code> com os dados dele".</div></div>
+        <div class="toggler">
+          <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — Ver solução</span><span class="toggler-arrow">▼</span></div>
+          <div class="toggler-body">
+            <div class="code-block">
+              <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">import</span> <span class="var">Cabecalho</span> <span class="kw">from</span> <span class="st">'./components/Cabecalho'</span>
+<span class="kw">import</span> <span class="var">CartaoLanche</span> <span class="kw">from</span> <span class="st">'./components/CartaoLanche'</span>
+
+<span class="kw">const</span> <span class="var">lanches</span> <span class="op">=</span> [
+  <span class="punc">{</span> <span class="var">id</span><span class="punc">:</span> <span class="num">1</span>, <span class="var">nome</span><span class="punc">:</span> <span class="st">"X-Burger"</span>, <span class="var">preco</span><span class="punc">:</span> <span class="num">18</span>, <span class="var">descricao</span><span class="punc">:</span> <span class="st">"Pão, carne e queijo"</span> <span class="punc">}</span>,
+  <span class="punc">{</span> <span class="var">id</span><span class="punc">:</span> <span class="num">2</span>, <span class="var">nome</span><span class="punc">:</span> <span class="st">"X-Salada"</span>, <span class="var">preco</span><span class="punc">:</span> <span class="num">22</span>, <span class="var">descricao</span><span class="punc">:</span> <span class="st">"Alface, tomate e maionese da casa"</span> <span class="punc">}</span>,
+  <span class="punc">{</span> <span class="var">id</span><span class="punc">:</span> <span class="num">3</span>, <span class="var">nome</span><span class="punc">:</span> <span class="st">"X-Bacon"</span>, <span class="var">preco</span><span class="punc">:</span> <span class="num">26</span>, <span class="var">descricao</span><span class="punc">:</span> <span class="st">"Bacon crocante em dobro"</span> <span class="punc">}</span>,
+  <span class="punc">{</span> <span class="var">id</span><span class="punc">:</span> <span class="num">4</span>, <span class="var">nome</span><span class="punc">:</span> <span class="st">"Batata Frita"</span>, <span class="var">preco</span><span class="punc">:</span> <span class="num">12</span>, <span class="var">descricao</span><span class="punc">:</span> <span class="st">"Porção média bem sequinha"</span> <span class="punc">}</span>,
+]
+
+<span class="kw">const</span> <span class="fn">App</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span>
+      <span class="tag">&lt;</span><span class="cmp">Cabecalho</span> <span class="tag">/&gt;</span>
+      <span class="tag">&lt;h1&gt;</span>Cardápio:<span class="tag">&lt;/h1&gt;</span>
+      {<span class="var">lanches</span>.<span class="fn">map</span>((<span class="var">l</span>) <span class="op">=&gt;</span> (
+        <span class="tag">&lt;</span><span class="cmp">CartaoLanche</span> <span class="atr">key</span><span class="op">=</span>{<span class="var">l</span>.<span class="var">id</span>} <span class="atr">nome</span><span class="op">=</span>{<span class="var">l</span>.<span class="var">nome</span>} <span class="atr">preco</span><span class="op">=</span>{<span class="var">l</span>.<span class="var">preco</span>} <span class="atr">descricao</span><span class="op">=</span>{<span class="var">l</span>.<span class="var">descricao</span>} <span class="tag">/&gt;</span>
+      ))}
+    <span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">App</span></pre>
+            </div>
+            <div class="tip"><span class="tip-icon">✅</span><div class="tip-content">Teste a esteira: adicione um 5º lanche no array (com <code>id: 5</code>!), salve, e veja o card aparecer <strong>sem tocar no JSX</strong>. É por isso que o <code>.map()</code> existe.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- quiz — a pegadinha da prop fantasma -->
+      <div class="quiz" style="margin-top:18px">
+        <div class="quiz-q"><span class="q-emoji">👻</span> Pegadinha rápida: um colega adicionou ao array um lanche <strong>sem</strong> o campo <code>descricao</code>, mas o <code>.map()</code> continua passando <code>descricao={l.descricao}</code>. O que aparece naquele card?</div>
+        <div class="quiz-options">
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">Erro vermelho — a página quebra</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">A palavra "undefined" escrita no card</button>
+          <button class="quiz-opt" data-correct="true" onclick="checkQuiz(this,true)">"Descrição:" e nada depois — fica em branco</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">O React inventa uma descrição</button>
+        </div>
+        <div class="quiz-feedback" data-correct="Exato! Prop sem valor = undefined, e o JSX não desenha nada." data-wrong="Quase — não é erro…" data-explain="l.descricao de um objeto sem esse campo vale undefined. O JSX ignora undefined em silêncio: não quebra, não escreve nada — o card só fica com 'Descrição:' vazio. O mesmo acontece se você DIGITAR ERRADO o nome da prop (descricão ≠ descricao). Card com buraco? Confira o array e a grafia das props."></div>
+      </div>
+
+      <!-- ── PASSO 6 — Banner com imagens ── -->
+      <div class="exercise solo">
+        <div class="exercise-header"><span class="exercise-icon">🖼️</span><div>
+          <div class="exercise-title">Passo 6 — o Banner com as duas imagens (sozinho/a)</div>
+          <div class="exercise-sub">Uma da public/, outra importada de src/assets — os dois caminhos do Cap 5</div></div>
+        </div>
+        <div class="drill-tags"><span class="drill-level lv3"><span class="stars">★★★</span> desafio</span><span class="drill-tag">public/</span><span class="drill-tag">import de assets</span></div>
+        <div class="concept"><div class="concept-title">💡 Dica</div><p>Escolha <strong>duas imagens</strong> (baixe da internet — um hambúrguer, um logo, o que quiser):</p>
+          <p style="margin-top:8px"><strong>1.</strong> Salve uma como <code>banner.png</code> dentro de <code>public/</code> → no JSX ela entra com <code>src="/banner.png"</code> (caminho começando com barra, <strong>sem import</strong>).<br>
+          <strong>2.</strong> Crie a pasta <code>src/assets/</code> (se o Vite já não criou), salve a outra como <code>logo.png</code> → essa entra com <code>import</code> + <code>src={logo}</code>.</p>
+          <p style="margin-top:8px">Monte tudo num componente <code>Banner.jsx</code> (em <code>components/</code>!) e use no App <strong>acima</strong> do Cabecalho. Dê um <code>width</code> nas imagens pra não explodirem a tela.</p></div>
+        <div class="warning">
+          <span class="warning-icon">🧭</span>
+          <div class="warning-content">
+            Atenção ao caminho do import dentro do <code>Banner.jsx</code>: ele mora em
+            <code>src/components/</code>, e a imagem em <code>src/assets/</code> — ou seja, o caminho
+            <strong>sobe um nível</strong>: <code>'../assets/logo.png'</code> (dois pontos = "sai da pasta components").
+          </div>
+        </div>
+        <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Tenta antes!</strong> Se a imagem aparecer "quebrada" 🧩, revise: a da <code>public/</code> usa barra e aspas; a de <code>assets</code> usa import e chaves. Misturou? Não funciona.</div></div>
+        <div class="toggler">
+          <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — Ver solução</span><span class="toggler-arrow">▼</span></div>
+          <div class="toggler-body">
+            <div class="code-block">
+              <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/components/Banner.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">import</span> <span class="var">logo</span> <span class="kw">from</span> <span class="st">'../assets/logo.png'</span>
+
+<span class="kw">const</span> <span class="fn">Banner</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span>
+      <span class="tag">&lt;img</span> <span class="atr">src</span><span class="op">=</span><span class="st">"/banner.png"</span> <span class="atr">width</span><span class="op">=</span><span class="st">"150"</span> <span class="tag">/&gt;</span>   <span class="cm">{/* veio da public/ */}</span>
+      <span class="tag">&lt;img</span> <span class="atr">src</span><span class="op">=</span>{<span class="var">logo</span>} <span class="atr">width</span><span class="op">=</span><span class="st">"150"</span> <span class="tag">/&gt;</span>          <span class="cm">{/* veio do import */}</span>
+    <span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">Banner</span></pre>
+            </div>
+            <div class="code-block">
+              <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx (topo + começo do return)</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">import</span> <span class="var">Banner</span> <span class="kw">from</span> <span class="st">'./components/Banner'</span>
+<span class="cm">// ...os outros imports continuam aqui</span>
+
+<span class="kw">return</span> (
+  <span class="tag">&lt;div&gt;</span>
+    <span class="tag">&lt;</span><span class="cmp">Banner</span> <span class="tag">/&gt;</span>
+    <span class="tag">&lt;</span><span class="cmp">Cabecalho</span> <span class="tag">/&gt;</span>
+    <span class="cm">{/* ...o resto continua igual */}</span>
+  <span class="tag">&lt;/div&gt;</span>
+)</pre>
+            </div>
+            <div class="tip"><span class="tip-icon">🏆</span><div class="tip-content">Banner com as duas imagens + boas-vindas + 4 cards saindo do <code>.map()</code>? <strong>Desafio concluído!</strong> Compare com o mini-navegador lá da missão — bateu, fechou.</div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ BÔNUS PRA CASA ═══════════════ -->
+  <section class="step-section" id="casa">
+    <div class="step-header">
+      <div class="step-number sn-mint">🏠</div>
+      <div>
+        <div class="step-title">Bônus pra casa</div>
+        <div class="step-sub">Pra quem quer temperar o lanche (usa o resto do Cap 5)</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="exercise home">
+        <div class="exercise-header"><span class="exercise-icon">🔥</span><div>
+          <div class="exercise-title">Bônus 1 — o selo "🔥 Mais pedido"</div>
+          <div class="exercise-sub">O porteiro &amp;&amp; visita a lanchonete</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">💡 Missão</div><p>Adicione um campo <code>maisPedido: true</code> em <strong>um ou dois</strong> lanches do array (nos outros, <code>false</code>). Passe como prop e, dentro do <code>CartaoLanche</code>, mostre <code>🔥 Mais pedido</code> <strong>só</strong> quando for <code>true</code>. Qual porteiro faz "mostrar ou nada"? Você viu na seção 👻 do Cap 5.</p></div>
+      </div>
+
+      <div class="exercise home" style="margin-top:14px">
+        <div class="exercise-header"><span class="exercise-icon">🎨</span><div>
+          <div class="exercise-title">Bônus 2 — cara de cardápio de verdade</div>
+          <div class="exercise-sub">CSS Modules — os arquivos vazios eram só o começo</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">💡 Missão</div><p>Crie um <code>CartaoLanche.module.css</code> (borda arredondada, sombra, um respiro de padding) e ligue com <code>import styles</code> + <code>className={styles.cartao}</code>. Se quiser ir além: um <code>App.module.css</code> com <code>display: flex</code> pra deixar os cards lado a lado, como a vitrine do Cap 5. Traga no próximo sábado! 🍟</p></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ CONFERÊNCIA FINAL ═══════════════ -->
+  <section class="step-section" id="resumo">
+    <div class="step-header">
+      <div class="step-number sn-mint">🏁</div>
+      <div>
+        <div class="step-title">Conferência final</div>
+        <div class="step-sub">Se marcou tudo, você domina o básico do React</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <ul class="about-bullets">
+        <li><div><strong>Projeto do zero:</strong> criou com Vite, limpou o boilerplate e deixou <code>index.css</code> + <code>App.css</code> vazios (sem deletar os arquivos!).</div></li>
+        <li><div><strong>Componentes organizados:</strong> <code>Banner</code>, <code>Cabecalho</code> e <code>CartaoLanche</code> morando em <code>src/components/</code>, cada um com seu <code>export default</code>.</div></li>
+        <li><div><strong>Props na veia:</strong> texto entre aspas, número/JS entre chaves, desestruturação nos parênteses.</div></li>
+        <li><div><strong>.map() + key:</strong> o array manda, a tela obedece — 4 lanches ou 40, o código é o mesmo.</div></li>
+        <li><div><strong>Imagens pelos dois caminhos:</strong> <code>public/</code> com <code>"/banner.png"</code> e <code>src/assets/</code> com <code>import</code> + <code>{logo}</code>.</div></li>
+      </ul>
+
+      <div class="tip" style="margin-top:16px">
+        <span class="tip-icon">➡️</span>
+        <div class="tip-content">
+          <strong>No próximo capítulo (Cap 6):</strong> a lanchonete está de pé, mas os botões ainda não
+          existem — nada acontece quando o cliente clica. Entra o <code>useState</code>: a memória do React
+          que faz a tela <strong>reagir</strong> (adicionar lanche ao pedido, contar itens, filtrar o
+          cardápio). Prepare o avental. 🚀
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:22px;display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+        <a href="../05-react-props-css/index.html" style="display:inline-block;padding:14px 28px;background:var(--surface2);color:var(--text);font-weight:800;border-radius:50px;font-size:1rem;text-decoration:none;border:1px solid rgba(255,255,255,0.12)">
+          ← rever o Cap 05
+        </a>
+        <a href="../../index.html" style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg,var(--react),#2aa9c9);color:#06222b;font-weight:900;border-radius:50px;font-size:1rem;text-decoration:none;box-shadow:0 10px 28px rgba(97,218,251,0.35)">
+          Voltar ao hub — Cap 06 vem aí 🚀
+        </a>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="footer">
+  Feito com <span class="heart">♥</span> pela <strong style="color:var(--text)">programa AI</strong> ·
+  <a href="../../index.html">Hub do curso</a> · Cap 05b — Desafio: a Lanchonete
+</footer>
+
+<script src="../../shared/scripts.js" defer></script>
+<script src="../../shared/playground.js" defer></script>
+<script type="module" src="../../shared/motion-fx.js"></script>
+
+</body>
+</html>
