@@ -246,6 +246,29 @@
 6. Botão "Próximo" do Cap 5 redirecionado do Cap 6 (link quebrado, pasta não existe) para o 05b;
    o 05b fecha voltando pro hub ("Cap 06 vem aí").
 
+## 2026-07-16 — Cap 05b vira "5 Desafios: da Lanchonete ao Chefão"
+1. **Motivo:** o prof pediu que o 05b deixasse de ser um desafio único e virasse **5 desafios**
+   na mesma pegada da lanchonete — mantendo a lanchonete e somando 4 — cobrindo SÓ o que foi
+   visto de React até o Cap 5. Narrativa nova: "5 clientes de freela" (lanchonete, cinema,
+   biblioteca, agência de viagens, loja de games), cards dos clientes + trilha na missão.
+2. **Escada de habilidades (um degrau novo por desafio):**
+   D1 🍔 Lanchonete (★ guiado, os 6 passos originais INTACTOS, agora dentro da seção `#d1`);
+   D2 🎬 CineDev (★★) = mesmo arco + porteiro `&&` (selo ⭐ com `nota >= 9`);
+   D3 📚 Estante do Dev (★★) = ternário no texto + CSS Modules + **classe condicional**
+   (`.disponivel` verde × `.emprestado` cinza) + warning `disponivel="true"` com aspas é texto;
+   D4 ✈️ DevViagens (★★★) = imagens pelos 2 caminhos + `App.module.css` com `.vitrine` flex
+   (warning: App.module.css é NOVO, App.css da faxina segue vazio);
+   D5 🎮 GameStore (★★★ chefão) = tudo junto + `Cabecalho` com prop `total={jogos.length}`.
+3. **Formato dos desafios 2–5** (mais enxuto que o D1 guiado): analogy "pedido do cliente" →
+   drill-tags → checklist "o que entregar" → mini-browser do resultado → UM `.exercise.solo`
+   com dica (referencia a seção exata dos Caps 4–5) → PARE → 👀 com solução completa
+   (todos os arquivos) + tip de teste ("mude a nota e veja o selo sumir"). Cabecalho fica
+   "por sua conta" nos D3/D4 de propósito (repetição espaçada).
+4. **Cada desafio = projeto Vite NOVO** (regra 1 do capítulo): criar+faxinar 5× até virar reflexo.
+5. Bônus pra casa mantidos (selo 🔥 e CSS Modules na lanchonete), reposicionados como "volta no
+   Desafio 1 e tempera" — termômetro de fixação após D2–D5. Conferência final e card do hub
+   atualizados. Pasta segue `05b-desafio-lanchonete/` (links preservados).
+
 ## Pendências reconhecidas
 - Planejar em detalhe os **Caps 6–9** (React: state → efeitos/dados → router → integração).
   Caps 4 e 5 já fixaram o tom, o setup Vite base e a Mini-loja como artefato contínuo do arco React.

@@ -15,7 +15,7 @@ do backend** que o aluno já construiu (`../backend-fullstack` / `../projetos-fu
 | 3 | `capitulos/03-dom-eventos/` | **JS no navegador** | DOM, seletores, eventos, manipular a página, primeiro `fetch` |
 | 4 | `capitulos/04-react-inicio/` | **React: início** | Por que React/SPA, Vite, componentes, JSX |
 | 5 | `capitulos/05-react-props-css/` | **Props & estilo** | Props, listas (`map`), imagens (public/assets), CSS Modules |
-| 5b | `capitulos/05b-desafio-lanchonete/` | **Desafio: a Lanchonete** | Só prática (caps 4–5): projeto novo do zero, componentes, props, `.map()`, imagens |
+| 5b | `capitulos/05b-desafio-lanchonete/` | **5 Desafios: da Lanchonete ao Chefão** | Só prática (caps 4–5): 5 projetos do zero — lanchonete (guiada), CineDev (`&&`), Estante (ternário+Modules), DevViagens (imagens+flex), GameStore (chefão c/ `.length`) |
 | 6 | `capitulos/06-react-state/` | **Interatividade** | `useState`, eventos em React, formulários controlados |
 | 7 | `capitulos/07-react-efeitos-dados/` | **Dados** | `useEffect`, fetch, json-server (mock da API) |
 | 8 | `capitulos/08-react-router/` | **Navegação** | React Router DOM, SPA com várias páginas |
@@ -134,6 +134,14 @@ Dados: Pesquisa Código Fonte TV 2025 (citar fonte sempre).
       pegadinha vivida em sala). Bônus casa: selo `&&` + CSS Modules. Sem máquinas/Remotion/memes
       (capítulo leve de propósito). Hub ganhou card 05b; botão "Próximo" do Cap 5 (que apontava pro
       Cap 6 inexistente) agora aponta pro 05b.
+      · **Reforma 2026-07-16: virou "5 Desafios: da Lanchonete ao Chefão"** — a lanchonete
+      permanece intacta como Desafio 1 (guiado ★) e ganhou 4 clientes novos, um degrau por vez:
+      🎬 CineDev (★★, porteiro `&&` no selo ⭐ `nota >= 9`), 📚 Estante do Dev (★★, ternário +
+      CSS Modules + classe condicional verde×cinza), ✈️ DevViagens (★★★, imagens public×import +
+      `.vitrine` flex em `App.module.css`), 🎮 GameStore (★★★ chefão: tudo + `total={jogos.length}`
+      no Cabecalho). Cada desafio = projeto Vite novo; D2–D5 têm pedido do cliente + checklist +
+      mini-browser do resultado + olhinho com solução completa. Ver decisão 2026-07-16 em
+      `05-decisoes.md`.
 - [ ] Caps 6–9 (próximas sessões) — marcados como "🔒 em breve" no hub
 - [x] Memes gerados: `meme-intro-fullstack.png`, `meme-css-centralizar.png`, `meme-js-soma.png`,
       `meme-dom-mudei-tela.png` (Cap 3 — "EU MUDEI A TELA COM CÓDIGO")

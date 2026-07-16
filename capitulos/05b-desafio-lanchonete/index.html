@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cap 05b — Desafio: a Lanchonete | Curso Fullstack</title>
+<title>Cap 05b — 5 Desafios React: da Lanchonete ao Chefão | Curso Fullstack</title>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=JetBrains+Mono:wght@400;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../../shared/styles.css">
 <link rel="stylesheet" href="../../shared/components.css">
@@ -26,6 +26,21 @@
   .arsenal td:first-child{white-space:nowrap;font-weight:800}
   .arsenal .onde{color:var(--text-dim);font-size:0.8rem;white-space:nowrap}
   @media (max-width:640px){.arsenal .onde{white-space:normal}}
+
+  /* cards dos 5 clientes (na missão) */
+  .clientes{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:16px 0}
+  .cliente-card{
+    background:var(--surface2);border:1px solid rgba(255,255,255,0.07);
+    border-radius:14px;padding:14px;text-align:center;
+  }
+  .cliente-card .ce{font-size:2rem;line-height:1;display:block;margin-bottom:8px}
+  .cliente-card .cn{font-weight:900;font-size:0.92rem;display:block}
+  .cliente-card .cs{color:var(--text-dim);font-size:0.76rem;display:block;margin-top:4px;line-height:1.45}
+  .cliente-card .cl{display:inline-block;margin-top:8px;font-size:0.72rem;font-weight:800;
+    padding:2px 10px;border-radius:50px;letter-spacing:0.5px}
+  .cliente-card .cl.lv1{color:var(--accent7);background:rgba(6,214,160,0.10)}
+  .cliente-card .cl.lv2{color:var(--accent5);background:rgba(247,183,49,0.10)}
+  .cliente-card .cl.lv3{color:var(--accent2);background:rgba(255,107,107,0.10)}
 </style>
 </head>
 <body>
@@ -40,7 +55,7 @@
 <nav class="sidebar-nav">
   <button class="sidebar-close" onclick="closeSidebar()" aria-label="Fechar">✕</button>
   <div class="sidebar-header">
-    <h3>🍔 Cap 05b · Desafio</h3>
+    <h3>⚛️ Cap 05b · 5 Desafios</h3>
     <a class="sidebar-back" href="../../index.html">← Voltar ao hub</a>
   </div>
   <div class="sidebar-group">
@@ -48,7 +63,13 @@
     <a class="sidebar-link" onclick="goTo('missao')"><span class="dot" style="background:var(--react)"></span> 🎯 A missão</a>
     <a class="sidebar-link" onclick="goTo('regras')"><span class="dot" style="background:var(--accent5)"></span> 📏 Como funciona</a>
     <a class="sidebar-link" onclick="goTo('arsenal')"><span class="dot" style="background:var(--js)"></span> 🎒 Seu arsenal</a>
-    <a class="sidebar-link" onclick="goTo('treino')"><span class="dot" style="background:var(--react)"></span> ⌨️ Os 6 passos</a>
+    <div class="sidebar-group-title">Os 5 clientes</div>
+    <a class="sidebar-link" onclick="goTo('d1')"><span class="dot" style="background:var(--accent7)"></span> 🍔 1 · Lanchonete ★ (guiado)</a>
+    <a class="sidebar-link" onclick="goTo('d2')"><span class="dot" style="background:var(--accent5)"></span> 🎬 2 · CineDev ★★</a>
+    <a class="sidebar-link" onclick="goTo('d3')"><span class="dot" style="background:var(--accent5)"></span> 📚 3 · Estante do Dev ★★</a>
+    <a class="sidebar-link" onclick="goTo('d4')"><span class="dot" style="background:var(--accent2)"></span> ✈️ 4 · DevViagens ★★★</a>
+    <a class="sidebar-link" onclick="goTo('d5')"><span class="dot" style="background:var(--accent2)"></span> 🎮 5 · GameStore ★★★</a>
+    <div class="sidebar-group-title">Fechamento</div>
     <a class="sidebar-link" onclick="goTo('casa')"><span class="dot" style="background:var(--accent7)"></span> 🏠 Bônus pra casa</a>
     <a class="sidebar-link" onclick="goTo('resumo')"><span class="dot" style="background:var(--accent7)"></span> 🏁 Conferência final</a>
   </div>
@@ -56,13 +77,14 @@
 
 <!-- ═══════════════ HERO ═══════════════ -->
 <section class="hero">
-  <div class="hero-icons" data-motion="float"><img src="../../assets/svg/react.svg" alt="React" width="46" height="46" style="vertical-align:middle"> 🍔 🍟</div>
-  <span class="hero-badge react">Capítulo 05b · Desafio prático</span>
-  <h1>Desafio: <span style="color:var(--react)">a Lanchonete</span> 🍔</h1>
+  <div class="hero-icons" data-motion="float"><img src="../../assets/svg/react.svg" alt="React" width="46" height="46" style="vertical-align:middle"> 🍔 🎬 📚 ✈️ 🎮</div>
+  <span class="hero-badge react">Capítulo 05b · Desafios práticos</span>
+  <h1>5 Desafios: <span style="color:var(--react)">da Lanchonete ao Chefão</span></h1>
   <p class="subtitle">
-    <strong>Nenhum conceito novo.</strong> Você vai montar um cardápio de lanchonete
-    <strong style="color:var(--react)">do zero</strong>, sozinho(a), usando tudo o que treinou na
-    Mini-loja dos Caps 4 e 5: componentes, props, <code>.map()</code> e imagens.
+    <strong>Nenhum conceito novo.</strong> Cinco "clientes" chegaram pedindo sites — lanchonete,
+    cinema, biblioteca, agência de viagens e loja de games. Você vai entregar os cinco usando
+    <strong style="color:var(--react)">só o que treinou nos Caps 4 e 5</strong>: componentes, props,
+    <code>.map()</code>, imagens, CSS Modules e os porteiros <code>&amp;&amp;</code> / ternário.
     É o teste de fogo: sem o prof do lado, o código sai?
   </p>
   <div class="hero-stack">
@@ -70,7 +92,8 @@
     <span class="stack-chip react">🎁 props</span>
     <span class="stack-chip js">🏭 .map() + key</span>
     <span class="stack-chip node">🖼️ imagens</span>
-    <span class="stack-chip css">🧹 faxina no CSS</span>
+    <span class="stack-chip css">🎨 CSS Modules</span>
+    <span class="stack-chip js">👻 && e ternário</span>
   </div>
 </section>
 
@@ -81,18 +104,192 @@
     <div class="step-header">
       <div class="step-number sn-react">🎯</div>
       <div>
-        <div class="step-title">A missão</div>
-        <div class="step-sub">O que você vai entregar no fim deste capítulo</div>
+        <div class="step-title">A missão: 5 freelas, 5 entregas</div>
+        <div class="step-sub">Cada desafio é um cliente diferente — e um projeto novo do zero</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="analogy">
+        <div class="analogy-title">💼 Seu primeiro dia como dev freelancer</div>
+        <p>Imagina: você abriu o notebook e tem <strong>5 pedidos</strong> na caixa de entrada.
+        Cada cliente quer um site simples — e tudo que eles pedem, você <strong>já sabe fazer</strong>.
+        Na Mini-loja dos Caps 4 e 5 o prof cozinhou junto; agora a cozinha é <strong>sua</strong>.
+        Se travar, tudo bem — é exatamente aí que o aprendizado acontece. A receita (👀) existe,
+        mas só depois de você <strong>tentar</strong>.</p>
+      </div>
+
+      <div class="clientes">
+        <div class="cliente-card">
+          <span class="ce">🍔</span>
+          <span class="cn">Lanchonete</span>
+          <span class="cs">componentes, props, <code>.map()</code>, imagens — <strong>guiado em 6 passos</strong></span>
+          <span class="cl lv1">★ guiado</span>
+        </div>
+        <div class="cliente-card">
+          <span class="ce">🎬</span>
+          <span class="cn">CineDev</span>
+          <span class="cs">cards de filmes + selo de destaque com o porteiro <code>&amp;&amp;</code></span>
+          <span class="cl lv2">★★ sozinho</span>
+        </div>
+        <div class="cliente-card">
+          <span class="ce">📚</span>
+          <span class="cn">Estante do Dev</span>
+          <span class="cs">ternário + CSS Modules + classe condicional (verde × cinza)</span>
+          <span class="cl lv2">★★ sozinho</span>
+        </div>
+        <div class="cliente-card">
+          <span class="ce">✈️</span>
+          <span class="cn">DevViagens</span>
+          <span class="cs">imagens pelos 2 caminhos + vitrine <code>flex</code> com CSS Modules</span>
+          <span class="cl lv3">★★★ sozinho</span>
+        </div>
+        <div class="cliente-card">
+          <span class="ce">🎮</span>
+          <span class="cn">GameStore</span>
+          <span class="cs"><strong>o chefão:</strong> tudo junto + contador com <code>.length</code></span>
+          <span class="cl lv3">★★★ chefão</span>
+        </div>
+      </div>
+
+      <!-- trilha de progresso -->
+      <div class="arena-track">
+        <span class="at-dot lv1">🍔</span><span class="at-arrow">→</span>
+        <span class="at-dot lv2">🎬</span><span class="at-arrow">→</span>
+        <span class="at-dot lv2">📚</span><span class="at-arrow">→</span>
+        <span class="at-dot lv3">✈️</span><span class="at-arrow">→</span>
+        <span class="at-dot lv3">🎮</span><span class="at-arrow">→</span>
+        <span class="at-dot lv3">🏆</span>
+      </div>
+
+      <div class="tip">
+        <span class="tip-icon">📈</span>
+        <div class="tip-content">
+          <strong>A escada sobe devagar:</strong> o Desafio 1 te guia passo a passo (como em sala).
+          Do 2 em diante, você recebe o pedido do cliente + o resultado esperado + dicas — e o
+          resto é com você. Cada desafio acrescenta <strong>UMA habilidade</strong> em cima do anterior.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ COMO FUNCIONA ═══════════════ -->
+  <section class="step-section" id="regras">
+    <div class="step-header">
+      <div class="step-number sn-yellow">📏</div>
+      <div>
+        <div class="step-title">Como funciona</div>
+        <div class="step-sub">As regras do jogo (são só quatro)</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <ul class="about-bullets">
+        <li><div><strong>1. Cada desafio é um projeto Vite NOVO.</strong> Sim, você vai rodar
+        <code>npm create vite</code> cinco vezes — de propósito. Criar projeto + faxina do boilerplate
+        precisa virar automático, e só repetição faz isso.</div></li>
+        <li><div><strong>2. Tente primeiro.</strong> Cada desafio tem dicas que orientam sem entregar. O 👀 tem a
+        solução completa — mas só clique <strong>depois</strong> de tentar de verdade. Espiar antes joga fora o
+        ganho do capítulo inteiro.</div></li>
+        <li><div><strong>3. Pode consultar os capítulos anteriores.</strong> Abrir o
+        <a href="../04-react-inicio/index.html" style="color:var(--react)">Cap 4</a> e o
+        <a href="../05-react-props-css/index.html" style="color:var(--react)">Cap 5</a> pra relembrar um molde
+        <strong>não é cola</strong> — é o que dev faz todo dia. Cola é copiar a solução do 👀 sem tentar.</div></li>
+        <li><div><strong>4. Errar faz parte.</strong> Tela branca? Erro vermelho no navegador? Respira e
+        <strong>leia a mensagem</strong> — ela quase sempre diz o arquivo e a linha. O BugZilla 🐛 dos Caps 4 e 5
+        já mostrou os clássicos (import esquecido, componente minúsculo, <code>key</code> faltando).</div></li>
+      </ul>
+
+      <div class="warning">
+        <span class="warning-icon">⌨️</span>
+        <div class="warning-content">
+          Lembrete da IDE: as setas <code>=&gt;</code> das arrow functions são <kbd>=</kbd> seguido de
+          <kbd>&gt;</kbd>, e o <code>&gt;=</code> do porteiro é <kbd>&gt;</kbd> seguido de <kbd>=</kbd>.
+          Se o VSCode <strong>desenhar</strong> <code>⇒</code> ou <code>≥</code>, é só a fonte enfeitando —
+          você digita os dois caracteres separados.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ SEU ARSENAL ═══════════════ -->
+  <section class="step-section" id="arsenal">
+    <div class="step-header">
+      <div class="step-number sn-js">🎒</div>
+      <div>
+        <div class="step-title">Seu arsenal</div>
+        <div class="step-sub">Tudo o que os 5 clientes pedem, você já tem — e sabe onde revisar</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <table class="arsenal">
+        <thead><tr><th>Ferramenta</th><th>Pra que serve aqui</th><th>Onde revisar</th></tr></thead>
+        <tbody>
+          <tr><td>🏗️ <code>npm create vite</code></td><td>Criar cada projeto do zero (5 vezes!)</td><td class="onde">Cap 4 · setup</td></tr>
+          <tr><td>⚡ <code>rafce</code></td><td>Nascer cada componente (arrow + export) num piscar</td><td class="onde">Cap 4 · componentes</td></tr>
+          <tr><td>🎁 props</td><td>Os cartões recebem nome, preço, nota… por props</td><td class="onde">Cap 4 · props</td></tr>
+          <tr><td>🏭 <code>.map()</code> + <code>key</code></td><td>O array vira cards sozinho, em todo desafio</td><td class="onde">Cap 5 · listas</td></tr>
+          <tr><td>🖼️ <code>public/</code> × <code>import</code></td><td>As imagens do Banner, uma de cada jeito</td><td class="onde">Cap 5 · imagens</td></tr>
+          <tr><td>👻 <code>&amp;&amp;</code> e ternário</td><td>Selo que aparece/some, Disponível × Esgotado</td><td class="onde">Cap 5 · mostrar ou esconder</td></tr>
+          <tr><td>🎨 CSS Modules</td><td>Cartões bonitos, vitrine flex, classe condicional</td><td class="onde">Cap 5 · CSS Modules</td></tr>
+          <tr><td>🔢 <code>.length</code></td><td>O contador de itens no cabeçalho do chefão</td><td class="onde">Cap 2 · arrays</td></tr>
+        </tbody>
+      </table>
+
+      <div class="tip">
+        <span class="tip-icon">💡</span>
+        <div class="tip-content">
+          <strong>Aspas × chaves</strong> (o clássico do Cap 4): texto vai entre aspas
+          (<code>nome="X-Burger"</code>), número e JavaScript vão entre chaves
+          (<code>preco={18}</code>, <code>nome={l.nome}</code>). Metade dos bugs de props mora aí.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ PROGRAMAÇÃO É PRÁTICA ═══════════════ -->
+  <section class="step-section">
+    <div class="card" style="text-align:center;background:linear-gradient(135deg,rgba(97,218,251,0.10),rgba(100,108,255,0.06));border-color:rgba(97,218,251,0.22)">
+      <div style="font-family:'Caveat',cursive;font-size:clamp(2rem,6vw,3rem);color:var(--react);font-weight:700;line-height:1.1">
+        PROGRAMAÇÃO É PRÁTICA 💪
+      </div>
+      <p class="text-dim" style="max-width:560px;margin:10px auto 0">
+        VSCode aberto, terminal na mão. Deste ponto em diante é <strong style="color:var(--text)">você</strong>
+        no comando — a solução de cada desafio está no 👀, mas o seu cérebro só cresce se digitar primeiro.
+      </p>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       DESAFIO 1 — A LANCHONETE (guiado) ★
+       ═══════════════════════════════════════════════════════ -->
+  <section class="step-section" id="d1">
+    <div class="step-header">
+      <div class="step-number sn-react">1</div>
+      <div>
+        <div class="step-title">Desafio 1 — a Lanchonete 🍔</div>
+        <div class="step-sub">★ guiado · 6 passos até o cardápio — o primeiro voo tem instrutor do lado</div>
       </div>
     </div>
 
     <div class="card">
       <div class="analogy">
         <div class="analogy-title">👨‍🍳 Cozinhar sem olhar a receita</div>
-        <p>Na Mini-loja, o prof cozinhou junto com você. Agora a cozinha é <strong>sua</strong>:
-        mesmo prato, ingredientes novos. Se travar em algum passo, tudo bem — é exatamente aí que
-        o aprendizado acontece. A receita (👀) existe, mas só depois de você <strong>tentar</strong>.</p>
+        <p>O primeiro cliente quer um <strong>cardápio de lanchonete</strong>. É o mesmo prato da
+        Mini-loja dos Caps 4 e 5, com ingredientes novos — por isso este desafio ainda te guia
+        passo a passo. Nos próximos, as rodinhas saem da bicicleta. 😄</p>
       </div>
+
+      <div class="drill-tags"><span class="drill-level lv1"><span class="stars">★</span> guiado</span><span class="drill-tag">componentes</span><span class="drill-tag">props</span><span class="drill-tag">.map() + key</span><span class="drill-tag">imagens</span></div>
 
       <p>Você vai criar um projeto React <strong>novo</strong> chamado <code>lanchonete</code>, com:</p>
 
@@ -143,106 +340,7 @@
 </script>
       </div>
     </div>
-  </section>
 
-  <div class="section-connector"><div class="line"></div></div>
-
-  <!-- ═══════════════ COMO FUNCIONA ═══════════════ -->
-  <section class="step-section" id="regras">
-    <div class="step-header">
-      <div class="step-number sn-yellow">📏</div>
-      <div>
-        <div class="step-title">Como funciona o desafio</div>
-        <div class="step-sub">As regras do jogo (são só três)</div>
-      </div>
-    </div>
-
-    <div class="card">
-      <ul class="about-bullets">
-        <li><div><strong>1. Tente primeiro.</strong> Cada passo tem uma dica que orienta sem entregar. O 👀 tem a
-        solução completa — mas só clique <strong>depois</strong> de tentar de verdade. Espiar antes joga fora o
-        ganho do capítulo inteiro.</div></li>
-        <li><div><strong>2. Pode consultar os capítulos anteriores.</strong> Abrir o
-        <a href="../04-react-inicio/index.html" style="color:var(--react)">Cap 4</a> e o
-        <a href="../05-react-props-css/index.html" style="color:var(--react)">Cap 5</a> pra relembrar um molde
-        <strong>não é cola</strong> — é o que dev faz todo dia. Cola é copiar a solução do 👀 sem tentar.</div></li>
-        <li><div><strong>3. Errar faz parte.</strong> Tela branca? Erro vermelho no navegador? Respira e
-        <strong>leia a mensagem</strong> — ela quase sempre diz o arquivo e a linha. O BugZilla 🐛 dos Caps 4 e 5
-        já mostrou os clássicos (import esquecido, componente minúsculo, <code>key</code> faltando).</div></li>
-      </ul>
-
-      <div class="warning">
-        <span class="warning-icon">⌨️</span>
-        <div class="warning-content">
-          Lembrete da IDE: as setas <code>=&gt;</code> das arrow functions são <kbd>=</kbd> seguido de
-          <kbd>&gt;</kbd>. Se o VSCode <strong>desenhar</strong> <code>⇒</code>, é só a fonte enfeitando —
-          você digita os dois caracteres separados.
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <div class="section-connector"><div class="line"></div></div>
-
-  <!-- ═══════════════ SEU ARSENAL ═══════════════ -->
-  <section class="step-section" id="arsenal">
-    <div class="step-header">
-      <div class="step-number sn-js">🎒</div>
-      <div>
-        <div class="step-title">Seu arsenal</div>
-        <div class="step-sub">Tudo o que o desafio pede, você já tem — e sabe onde revisar</div>
-      </div>
-    </div>
-
-    <div class="card">
-      <table class="arsenal">
-        <thead><tr><th>Ferramenta</th><th>Pra que serve aqui</th><th>Onde revisar</th></tr></thead>
-        <tbody>
-          <tr><td>🏗️ <code>npm create vite</code></td><td>Criar o projeto <code>lanchonete</code> do zero</td><td class="onde">Cap 4 · setup</td></tr>
-          <tr><td>⚡ <code>rafce</code></td><td>Nascer cada componente (arrow + export) num piscar</td><td class="onde">Cap 4 · componentes</td></tr>
-          <tr><td>🎁 props</td><td><code>CartaoLanche</code> recebe nome, preço e descrição</td><td class="onde">Cap 4 · props</td></tr>
-          <tr><td>🏭 <code>.map()</code> + <code>key</code></td><td>O array <code>lanches</code> vira cards sozinho</td><td class="onde">Cap 5 · listas</td></tr>
-          <tr><td>🖼️ <code>public/</code> × <code>import</code></td><td>As duas imagens do Banner, uma de cada jeito</td><td class="onde">Cap 5 · imagens</td></tr>
-        </tbody>
-      </table>
-
-      <div class="tip">
-        <span class="tip-icon">💡</span>
-        <div class="tip-content">
-          <strong>Aspas × chaves</strong> (o clássico do Cap 4): texto vai entre aspas
-          (<code>nome="X-Burger"</code>), número e JavaScript vão entre chaves
-          (<code>preco={18}</code>, <code>nome={l.nome}</code>). Metade dos bugs de props mora aí.
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <div class="section-connector"><div class="line"></div></div>
-
-  <!-- ═══════════════ PROGRAMAÇÃO É PRÁTICA ═══════════════ -->
-  <section class="step-section">
-    <div class="card" style="text-align:center;background:linear-gradient(135deg,rgba(97,218,251,0.10),rgba(100,108,255,0.06));border-color:rgba(97,218,251,0.22)">
-      <div style="font-family:'Caveat',cursive;font-size:clamp(2rem,6vw,3rem);color:var(--react);font-weight:700;line-height:1.1">
-        PROGRAMAÇÃO É PRÁTICA 💪
-      </div>
-      <p class="text-dim" style="max-width:560px;margin:10px auto 0">
-        VSCode aberto, terminal na mão. Deste ponto em diante é <strong style="color:var(--text)">você</strong>
-        no comando — a solução de cada passo está no 👀, mas o seu cérebro só cresce se digitar primeiro. 🍔
-      </p>
-    </div>
-  </section>
-
-  <div class="section-connector"><div class="line"></div></div>
-
-  <!-- ═══════════════ OS 6 PASSOS ═══════════════ -->
-  <section class="step-section" id="treino">
-    <div class="step-header">
-      <div class="step-number sn-react">⌨️</div>
-      <div>
-        <div class="step-title">O desafio — 6 passos até o cardápio</div>
-        <div class="step-sub">Cada passo continua o anterior. Dica → tentar → 👀</div>
-      </div>
-    </div>
     <div class="card">
 
       <!-- trilha de progresso -->
@@ -505,11 +603,591 @@
   <span class="tag">&lt;/div&gt;</span>
 )</pre>
             </div>
-            <div class="tip"><span class="tip-icon">🏆</span><div class="tip-content">Banner com as duas imagens + boas-vindas + 4 cards saindo do <code>.map()</code>? <strong>Desafio concluído!</strong> Compare com o mini-navegador lá da missão — bateu, fechou.</div></div>
+            <div class="tip"><span class="tip-icon">🏆</span><div class="tip-content">Banner com as duas imagens + boas-vindas + 4 cards saindo do <code>.map()</code>? <strong>Cliente 1 atendido!</strong> Compare com o mini-navegador lá de cima — bateu, fechou. Agora o CineDev te espera. 🎬</div></div>
           </div>
         </div>
       </div>
 
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       DESAFIO 2 — CINEDEV ★★
+       ═══════════════════════════════════════════════════════ -->
+  <section class="step-section" id="d2">
+    <div class="step-header">
+      <div class="step-number sn-yellow">2</div>
+      <div>
+        <div class="step-title">Desafio 2 — CineDev 🎬</div>
+        <div class="step-sub">★★ sozinho/a · cards de filmes + o porteiro <code>&amp;&amp;</code> no selo de destaque</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="analogy">
+        <div class="analogy-title">🎬 O pedido do cliente</div>
+        <p>"Tenho um cineminha de bairro, o <strong>CineDev</strong>. Quero uma página com os filmes
+        em cartaz — título, gênero e nota. Ah, e os filmes <strong>muito bem avaliados</strong>
+        (nota 9 pra cima) merecem um selo de destaque, tipo ⭐. Os outros, não."</p>
+      </div>
+
+      <div class="drill-tags"><span class="drill-level lv2"><span class="stars">★★</span> sozinho/a</span><span class="drill-tag">props</span><span class="drill-tag">.map() + key</span><span class="drill-tag">porteiro &amp;&amp;</span></div>
+
+      <p><strong>📋 O que entregar</strong> — projeto novo <code>cinedev</code> (com faxina!), contendo:</p>
+      <ul class="about-bullets">
+        <li><div><strong>Cabecalho</strong> com as boas-vindas do cinema (em <code>src/components/</code>, claro).</div></li>
+        <li><div><strong>CartaoFilme</strong> recebendo <code>titulo</code>, <code>genero</code> e <code>nota</code> por props — título em <code>&lt;h2&gt;</code>, o resto em <code>&lt;p&gt;</code>.</div></li>
+        <li><div>Array <code>filmes</code> com <strong>5 filmes</strong> (<code>id</code>, <code>titulo</code>, <code>genero</code>, <code>nota</code>) virando cards com <code>.map()</code> + <code>key</code>.</div></li>
+        <li><div>A novidade: dentro do card, a linha <code>⭐ Destaque da crítica</code> aparece <strong>só quando</strong> <code>nota &gt;= 9</code>. Sem CSS — a página fica crua mesmo.</div></li>
+      </ul>
+
+      <p class="text-dim" style="font-size:0.82rem;margin:14px 0 4px">O resultado esperado — repare: só os filmes com nota alta ganham a estrela 👇</p>
+      <div class="mini-browser" data-url="localhost:5173">
+<script type="text/html" data-mp="html">
+  <div>🎬 Bem-vindo ao CineDev!</div>
+  <h1>Em cartaz:</h1>
+  <div><h2 style="margin:8px 0 2px">Matrix</h2><p style="margin:2px 0">Gênero: Ficção científica</p><p style="margin:2px 0">Nota: 9.5</p><p style="margin:2px 0">⭐ Destaque da crítica</p></div>
+  <div><h2 style="margin:8px 0 2px">Shrek</h2><p style="margin:2px 0">Gênero: Animação</p><p style="margin:2px 0">Nota: 8.7</p></div>
+  <div><h2 style="margin:8px 0 2px">Interestelar</h2><p style="margin:2px 0">Gênero: Ficção científica</p><p style="margin:2px 0">Nota: 9.2</p><p style="margin:2px 0">⭐ Destaque da crítica</p></div>
+  <div><h2 style="margin:8px 0 2px">Minions</h2><p style="margin:2px 0">Gênero: Animação</p><p style="margin:2px 0">Nota: 7.8</p></div>
+</script>
+      </div>
+    </div>
+
+    <div class="exercise solo">
+      <div class="exercise-header"><span class="exercise-icon">🎬</span><div>
+        <div class="exercise-title">Mãos à obra — cinedev</div>
+        <div class="exercise-sub">O esqueleto é o da lanchonete; a novidade é o porteiro</div></div>
+      </div>
+      <div class="concept"><div class="concept-title">💡 Dica</div>
+        <p>Até o <code>.map()</code>, este desafio é a <strong>lanchonete com outro tema</strong>:
+        projeto → faxina → Cabecalho → CartaoFilme com 3 props → array → esteira. Se fez o Desafio 1,
+        você refaz esse arco em bem menos tempo (e sentir isso é o objetivo!).</p>
+        <p style="margin-top:8px">A parte nova é o <strong>porteiro <code>&amp;&amp;</code></strong> da seção
+        👻 do Cap 5: <em>"se a condição for verdadeira, mostra; senão, nada"</em>. A condição aqui é
+        <code>nota &gt;= 9</code>, e o que ele deixa entrar é um <code>&lt;p&gt;</code> com a estrela.
+        Vai dentro do JSX do <code>CartaoFilme</code>, entre chaves.</p>
+      </div>
+      <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Tenta antes!</strong> Sem espiar: escreva primeiro a lanchonete de memória com tema de cinema. Só abra o 👀 se travar DEPOIS de consultar os Caps 4 e 5.</div></div>
+      <div class="toggler">
+        <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — Ver solução</span><span class="toggler-arrow">▼</span></div>
+        <div class="toggler-body">
+          <div class="code-block">
+            <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/components/Cabecalho.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">const</span> <span class="fn">Cabecalho</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span>🎬 Bem-vindo ao CineDev!<span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">Cabecalho</span></pre>
+          </div>
+          <div class="code-block">
+            <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/components/CartaoFilme.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">const</span> <span class="fn">CartaoFilme</span> <span class="op">=</span> (<span class="punc">{</span> <span class="var">titulo</span>, <span class="var">genero</span>, <span class="var">nota</span> <span class="punc">}</span>) <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span>
+      <span class="tag">&lt;h2&gt;</span>{<span class="var">titulo</span>}<span class="tag">&lt;/h2&gt;</span>
+      <span class="tag">&lt;p&gt;</span>Gênero: {<span class="var">genero</span>}<span class="tag">&lt;/p&gt;</span>
+      <span class="tag">&lt;p&gt;</span>Nota: {<span class="var">nota</span>}<span class="tag">&lt;/p&gt;</span>
+      {<span class="var">nota</span> <span class="op">&gt;=</span> <span class="num">9</span> <span class="op">&amp;&amp;</span> <span class="tag">&lt;p&gt;</span>⭐ Destaque da crítica<span class="tag">&lt;/p&gt;</span>}
+    <span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">CartaoFilme</span></pre>
+          </div>
+          <div class="code-block">
+            <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">import</span> <span class="var">Cabecalho</span> <span class="kw">from</span> <span class="st">'./components/Cabecalho'</span>
+<span class="kw">import</span> <span class="var">CartaoFilme</span> <span class="kw">from</span> <span class="st">'./components/CartaoFilme'</span>
+
+<span class="kw">const</span> <span class="var">filmes</span> <span class="op">=</span> [
+  <span class="punc">{</span> <span class="var">id</span><span class="punc">:</span> <span class="num">1</span>, <span class="var">titulo</span><span class="punc">:</span> <span class="st">"Matrix"</span>, <span class="var">genero</span><span class="punc">:</span> <span class="st">"Ficção científica"</span>, <span class="var">nota</span><span class="punc">:</span> <span class="num">9.5</span> <span class="punc">}</span>,
+  <span class="punc">{</span> <span class="var">id</span><span class="punc">:</span> <span class="num">2</span>, <span class="var">titulo</span><span class="punc">:</span> <span class="st">"Shrek"</span>, <span class="var">genero</span><span class="punc">:</span> <span class="st">"Animação"</span>, <span class="var">nota</span><span class="punc">:</span> <span class="num">8.7</span> <span class="punc">}</span>,
+  <span class="punc">{</span> <span class="var">id</span><span class="punc">:</span> <span class="num">3</span>, <span class="var">titulo</span><span class="punc">:</span> <span class="st">"Interestelar"</span>, <span class="var">genero</span><span class="punc">:</span> <span class="st">"Ficção científica"</span>, <span class="var">nota</span><span class="punc">:</span> <span class="num">9.2</span> <span class="punc">}</span>,
+  <span class="punc">{</span> <span class="var">id</span><span class="punc">:</span> <span class="num">4</span>, <span class="var">titulo</span><span class="punc">:</span> <span class="st">"Minions"</span>, <span class="var">genero</span><span class="punc">:</span> <span class="st">"Animação"</span>, <span class="var">nota</span><span class="punc">:</span> <span class="num">7.8</span> <span class="punc">}</span>,
+  <span class="punc">{</span> <span class="var">id</span><span class="punc">:</span> <span class="num">5</span>, <span class="var">titulo</span><span class="punc">:</span> <span class="st">"Cidade de Deus"</span>, <span class="var">genero</span><span class="punc">:</span> <span class="st">"Drama"</span>, <span class="var">nota</span><span class="punc">:</span> <span class="num">9.3</span> <span class="punc">}</span>,
+]
+
+<span class="kw">const</span> <span class="fn">App</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span>
+      <span class="tag">&lt;</span><span class="cmp">Cabecalho</span> <span class="tag">/&gt;</span>
+      <span class="tag">&lt;h1&gt;</span>Em cartaz:<span class="tag">&lt;/h1&gt;</span>
+      {<span class="var">filmes</span>.<span class="fn">map</span>((<span class="var">f</span>) <span class="op">=&gt;</span> (
+        <span class="tag">&lt;</span><span class="cmp">CartaoFilme</span> <span class="atr">key</span><span class="op">=</span>{<span class="var">f</span>.<span class="var">id</span>} <span class="atr">titulo</span><span class="op">=</span>{<span class="var">f</span>.<span class="var">titulo</span>} <span class="atr">genero</span><span class="op">=</span>{<span class="var">f</span>.<span class="var">genero</span>} <span class="atr">nota</span><span class="op">=</span>{<span class="var">f</span>.<span class="var">nota</span>} <span class="tag">/&gt;</span>
+      ))}
+    <span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">App</span></pre>
+          </div>
+          <div class="tip"><span class="tip-icon">🧪</span><div class="tip-content"><strong>Teste o porteiro:</strong> mude a nota do Shrek pra <code>9.1</code>, salve — a estrela aparece. Volte pra <code>8.7</code> — ela some. É o dado <strong>mandando na tela</strong>, sem você tocar no JSX. Guarde essa sensação: no Cap 6 (useState) ela vira o coração do React.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       DESAFIO 3 — ESTANTE DO DEV ★★
+       ═══════════════════════════════════════════════════════ -->
+  <section class="step-section" id="d3">
+    <div class="step-header">
+      <div class="step-number sn-yellow">3</div>
+      <div>
+        <div class="step-title">Desafio 3 — Estante do Dev 📚</div>
+        <div class="step-sub">★★ sozinho/a · ternário + CSS Modules + classe condicional</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="analogy">
+        <div class="analogy-title">📚 O pedido do cliente</div>
+        <p>"Empresto muitos livros de programação pros amigos e me perco. Quero a
+        <strong>Estante do Dev</strong>: cada livro num cartão. Se está comigo, o cartão fica
+        <strong style="color:#2ecc71">verde</strong> com "✅ Disponível na estante"; se está emprestado, fica
+        <strong style="color:#999">acinzentado</strong> com "❌ Emprestado". Bater o olho e saber."</p>
+      </div>
+
+      <div class="drill-tags"><span class="drill-level lv2"><span class="stars">★★</span> sozinho/a</span><span class="drill-tag">ternário ? :</span><span class="drill-tag">CSS Modules</span><span class="drill-tag">classe condicional</span></div>
+
+      <p><strong>📋 O que entregar</strong> — projeto novo <code>estante-dev</code> (com faxina!), contendo:</p>
+      <ul class="about-bullets">
+        <li><div><strong>Cabecalho</strong> + <strong>CartaoLivro</strong> recebendo <code>titulo</code>, <code>autor</code> e <code>disponivel</code> (um <strong>booleano</strong>! — e booleano vai entre <strong>chaves</strong> no array).</div></li>
+        <li><div>Array <code>livros</code> com <strong>4 livros</strong>, uns com <code>disponivel: true</code>, outros <code>false</code>, virando cards com <code>.map()</code> + <code>key</code>.</div></li>
+        <li><div>No texto do card, um <strong>ternário</strong> decide: <code>"✅ Disponível na estante"</code> ou <code>"❌ Emprestado"</code>.</div></li>
+        <li><div>Um <code>CartaoLivro.module.css</code> com <strong>duas classes</strong> (<code>.disponivel</code> verde, <code>.emprestado</code> cinza) — e a <code>className</code> do card escolhida <strong>pelo mesmo ternário</strong>, como na seção 👻 do Cap 5.</div></li>
+      </ul>
+
+      <p class="text-dim" style="font-size:0.82rem;margin:14px 0 4px">O resultado esperado — agora com CSS, os cartões contam a história sozinhos 👇</p>
+      <div class="mini-browser" data-url="localhost:5173">
+<script type="text/html" data-mp="html">
+  <div>📚 Estante do Dev — os livros de quem programa</div>
+  <h1>Livros:</h1>
+  <div style="border:2px solid #2ecc71;border-radius:8px;padding:10px;margin:8px 0"><b>O Programador Pragmático</b><br><span style="font-size:13px">Autor: Hunt &amp; Thomas</span><br><span style="font-size:13px">✅ Disponível na estante</span></div>
+  <div style="border:2px solid #ccc;border-radius:8px;padding:10px;margin:8px 0;color:#999"><b>Código Limpo</b><br><span style="font-size:13px">Autor: Robert C. Martin</span><br><span style="font-size:13px">❌ Emprestado</span></div>
+  <div style="border:2px solid #2ecc71;border-radius:8px;padding:10px;margin:8px 0"><b>Entendendo Algoritmos</b><br><span style="font-size:13px">Autor: Aditya Bhargava</span><br><span style="font-size:13px">✅ Disponível na estante</span></div>
+</script>
+      </div>
+    </div>
+
+    <div class="exercise solo">
+      <div class="exercise-header"><span class="exercise-icon">📚</span><div>
+        <div class="exercise-title">Mãos à obra — estante-dev</div>
+        <div class="exercise-sub">Um booleano, um ternário, duas classes</div></div>
+      </div>
+      <div class="concept"><div class="concept-title">💡 Dica</div>
+        <p>O <strong>mesmo</strong> <code>disponivel</code> é usado <strong>duas vezes</strong> dentro do
+        <code>CartaoLivro</code>: uma no <em>texto</em>
+        (<code>{disponivel ? "✅ ..." : "❌ ..."}</code>) e outra na <em>classe</em>
+        (<code>className={disponivel ? styles.disponivel : styles.emprestado}</code>).
+        É a dupla ternário + classe condicional da seção 👻 do Cap 5.</p>
+        <p style="margin-top:8px">Pro CSS Module, lembra do ritual: arquivo termina em
+        <code>.module.css</code>, entra com <code>import styles from ...</code>, e a classe vira
+        <code>styles.nomeDaClasse</code>. E no array, booleano vai entre chaves:
+        <code>disponivel: true</code> (sem aspas!).</p>
+      </div>
+      <div class="warning">
+        <span class="warning-icon">⚠️</span>
+        <div class="warning-content">
+          <code>disponivel="true"</code> <strong>com aspas</strong> é TEXTO, e texto não-vazio é sempre
+          "verdadeiro" — todos os cartões ficariam verdes! Booleano de verdade não usa aspas,
+          nem no array nem na prop. (Pegadinha clássica do aspas × chaves.)
+        </div>
+      </div>
+      <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Tenta antes!</strong> Monte primeiro tudo SEM cor (texto com ternário funcionando). Depois adicione o module.css. Uma coisa de cada vez!</div></div>
+      <div class="toggler">
+        <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — Ver solução</span><span class="toggler-arrow">▼</span></div>
+        <div class="toggler-body">
+          <div class="code-block">
+            <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/components/CartaoLivro.module.css</span><span class="lang-badge css">CSS</span></div>
+<pre><span class="sel">.disponivel</span> <span class="punc">{</span>
+  <span class="prop">border</span><span class="punc">:</span> <span class="num">2</span><span class="unit">px</span> <span class="val">solid</span> <span class="val">#2ecc71</span><span class="punc">;</span>
+  <span class="prop">border-radius</span><span class="punc">:</span> <span class="num">8</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">padding</span><span class="punc">:</span> <span class="num">12</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">margin-bottom</span><span class="punc">:</span> <span class="num">10</span><span class="unit">px</span><span class="punc">;</span>
+<span class="punc">}</span>
+
+<span class="sel">.emprestado</span> <span class="punc">{</span>
+  <span class="prop">border</span><span class="punc">:</span> <span class="num">2</span><span class="unit">px</span> <span class="val">solid</span> <span class="val">#cccccc</span><span class="punc">;</span>
+  <span class="prop">border-radius</span><span class="punc">:</span> <span class="num">8</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">padding</span><span class="punc">:</span> <span class="num">12</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">margin-bottom</span><span class="punc">:</span> <span class="num">10</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">color</span><span class="punc">:</span> <span class="val">#999999</span><span class="punc">;</span>
+<span class="punc">}</span></pre>
+          </div>
+          <div class="code-block">
+            <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/components/CartaoLivro.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">import</span> <span class="var">styles</span> <span class="kw">from</span> <span class="st">'./CartaoLivro.module.css'</span>
+
+<span class="kw">const</span> <span class="fn">CartaoLivro</span> <span class="op">=</span> (<span class="punc">{</span> <span class="var">titulo</span>, <span class="var">autor</span>, <span class="var">disponivel</span> <span class="punc">}</span>) <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div</span> <span class="atr">className</span><span class="op">=</span>{<span class="var">disponivel</span> <span class="op">?</span> <span class="var">styles</span>.<span class="var">disponivel</span> <span class="op">:</span> <span class="var">styles</span>.<span class="var">emprestado</span>}<span class="tag">&gt;</span>
+      <span class="tag">&lt;h2&gt;</span>{<span class="var">titulo</span>}<span class="tag">&lt;/h2&gt;</span>
+      <span class="tag">&lt;p&gt;</span>Autor: {<span class="var">autor</span>}<span class="tag">&lt;/p&gt;</span>
+      <span class="tag">&lt;p&gt;</span>{<span class="var">disponivel</span> <span class="op">?</span> <span class="st">"✅ Disponível na estante"</span> <span class="op">:</span> <span class="st">"❌ Emprestado"</span>}<span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">CartaoLivro</span></pre>
+          </div>
+          <div class="code-block">
+            <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">import</span> <span class="var">Cabecalho</span> <span class="kw">from</span> <span class="st">'./components/Cabecalho'</span>
+<span class="kw">import</span> <span class="var">CartaoLivro</span> <span class="kw">from</span> <span class="st">'./components/CartaoLivro'</span>
+
+<span class="kw">const</span> <span class="var">livros</span> <span class="op">=</span> [
+  <span class="punc">{</span> <span class="var">id</span><span class="punc">:</span> <span class="num">1</span>, <span class="var">titulo</span><span class="punc">:</span> <span class="st">"O Programador Pragmático"</span>, <span class="var">autor</span><span class="punc">:</span> <span class="st">"Hunt &amp; Thomas"</span>, <span class="var">disponivel</span><span class="punc">:</span> <span class="kw">true</span> <span class="punc">}</span>,
+  <span class="punc">{</span> <span class="var">id</span><span class="punc">:</span> <span class="num">2</span>, <span class="var">titulo</span><span class="punc">:</span> <span class="st">"Código Limpo"</span>, <span class="var">autor</span><span class="punc">:</span> <span class="st">"Robert C. Martin"</span>, <span class="var">disponivel</span><span class="punc">:</span> <span class="kw">false</span> <span class="punc">}</span>,
+  <span class="punc">{</span> <span class="var">id</span><span class="punc">:</span> <span class="num">3</span>, <span class="var">titulo</span><span class="punc">:</span> <span class="st">"Entendendo Algoritmos"</span>, <span class="var">autor</span><span class="punc">:</span> <span class="st">"Aditya Bhargava"</span>, <span class="var">disponivel</span><span class="punc">:</span> <span class="kw">true</span> <span class="punc">}</span>,
+  <span class="punc">{</span> <span class="var">id</span><span class="punc">:</span> <span class="num">4</span>, <span class="var">titulo</span><span class="punc">:</span> <span class="st">"O Mítico Homem-Mês"</span>, <span class="var">autor</span><span class="punc">:</span> <span class="st">"Fred Brooks"</span>, <span class="var">disponivel</span><span class="punc">:</span> <span class="kw">false</span> <span class="punc">}</span>,
+]
+
+<span class="kw">const</span> <span class="fn">App</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span>
+      <span class="tag">&lt;</span><span class="cmp">Cabecalho</span> <span class="tag">/&gt;</span>
+      <span class="tag">&lt;h1&gt;</span>Livros:<span class="tag">&lt;/h1&gt;</span>
+      {<span class="var">livros</span>.<span class="fn">map</span>((<span class="var">liv</span>) <span class="op">=&gt;</span> (
+        <span class="tag">&lt;</span><span class="cmp">CartaoLivro</span> <span class="atr">key</span><span class="op">=</span>{<span class="var">liv</span>.<span class="var">id</span>} <span class="atr">titulo</span><span class="op">=</span>{<span class="var">liv</span>.<span class="var">titulo</span>} <span class="atr">autor</span><span class="op">=</span>{<span class="var">liv</span>.<span class="var">autor</span>} <span class="atr">disponivel</span><span class="op">=</span>{<span class="var">liv</span>.<span class="var">disponivel</span>} <span class="tag">/&gt;</span>
+      ))}
+    <span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">App</span></pre>
+          </div>
+          <div class="tip"><span class="tip-icon">🧠</span><div class="tip-content"><strong>Reparou</strong> que <code>.disponivel</code> e <code>.emprestado</code> repetem borda, raio e padding? Existe jeito de compartilhar estilo comum, mas por enquanto repetir é honesto e funciona — clareza primeiro, elegância depois. (O Cabecalho ficou por sua conta — é igualzinho ao do CineDev.)</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       DESAFIO 4 — DEVVIAGENS ★★★
+       ═══════════════════════════════════════════════════════ -->
+  <section class="step-section" id="d4">
+    <div class="step-header">
+      <div class="step-number sn-red">4</div>
+      <div>
+        <div class="step-title">Desafio 4 — DevViagens ✈️</div>
+        <div class="step-sub">★★★ sozinho/a · imagens pelos 2 caminhos + vitrine flex com CSS Modules</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="analogy">
+        <div class="analogy-title">✈️ O pedido do cliente</div>
+        <p>"Minha agência, a <strong>DevViagens</strong>, precisa de uma vitrine de destinos.
+        Quero um banner bonito no topo (com a foto de capa E o nosso logo) e os destinos em
+        cartões <strong>lado a lado</strong> — não um embaixo do outro, parece lista de mercado!"</p>
+      </div>
+
+      <div class="drill-tags"><span class="drill-level lv3"><span class="stars">★★★</span> sozinho/a</span><span class="drill-tag">public/ × import</span><span class="drill-tag">CSS Modules</span><span class="drill-tag">display: flex</span></div>
+
+      <p><strong>📋 O que entregar</strong> — projeto novo <code>devviagens</code> (com faxina!), contendo:</p>
+      <ul class="about-bullets">
+        <li><div><strong>Banner</strong> com duas imagens: <code>praia.png</code> na <code>public/</code> (entra com <code>"/praia.png"</code>) e <code>logo.png</code> em <code>src/assets/</code> (entra com <code>import</code>) — os dois caminhos do Cap 5, de novo, pra nunca mais esquecer.</div></li>
+        <li><div><strong>Cabecalho</strong> + <strong>CartaoDestino</strong> recebendo <code>cidade</code>, <code>pais</code> e <code>preco</code>, com visual próprio num <code>CartaoDestino.module.css</code> (borda, raio, padding, largura fixa — e o preço verde em destaque).</div></li>
+        <li><div>Array <code>destinos</code> com <strong>4 destinos</strong> virando cards com <code>.map()</code> + <code>key</code>.</div></li>
+        <li><div>A novidade: um <code>App.module.css</code> com a classe <code>.vitrine</code> (<code>display: flex</code> + <code>gap</code> + <code>flex-wrap</code>) numa <code>&lt;div&gt;</code> <strong>em volta do <code>.map()</code></strong> — os cards ficam lado a lado, como a vitrine do Cap 5.</div></li>
+      </ul>
+
+      <p class="text-dim" style="font-size:0.82rem;margin:14px 0 4px">O resultado esperado 👇</p>
+      <div class="mini-browser" data-url="localhost:5173">
+<script type="text/html" data-mp="html">
+  <div><span style="font-size:44px">🖼️</span><span style="font-size:44px">🖼️</span><span style="font-size:11px;color:#888"> (capa + logo)</span></div>
+  <div>✈️ DevViagens — pra onde seu código te leva?</div>
+  <h1>Destinos:</h1>
+  <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <div style="border:1px solid #ddd;border-radius:10px;padding:10px;width:120px"><b>Recife</b><br><span style="font-size:12px">Brasil</span><br><span style="font-size:12px;color:#16a34a;font-weight:bold">R$ 899</span></div>
+    <div style="border:1px solid #ddd;border-radius:10px;padding:10px;width:120px"><b>Lisboa</b><br><span style="font-size:12px">Portugal</span><br><span style="font-size:12px;color:#16a34a;font-weight:bold">R$ 3450</span></div>
+    <div style="border:1px solid #ddd;border-radius:10px;padding:10px;width:120px"><b>Tóquio</b><br><span style="font-size:12px">Japão</span><br><span style="font-size:12px;color:#16a34a;font-weight:bold">R$ 7200</span></div>
+  </div>
+</script>
+      </div>
+    </div>
+
+    <div class="exercise solo">
+      <div class="exercise-header"><span class="exercise-icon">✈️</span><div>
+        <div class="exercise-title">Mãos à obra — devviagens</div>
+        <div class="exercise-sub">Dois module.css num projeto só — um pro cartão, um pra vitrine</div></div>
+      </div>
+      <div class="concept"><div class="concept-title">💡 Dica</div>
+        <p>Este junta o Passo 6 da lanchonete (imagens) com o final do treino do Cap 5 (vitrine).
+        Dois cuidados de caminho: dentro do <code>Banner.jsx</code> o import da imagem
+        <strong>sobe um nível</strong> (<code>'../assets/logo.png'</code>), e no <code>App.jsx</code>
+        o <code>App.module.css</code> mora na mesma pasta (<code>'./App.module.css'</code>).</p>
+        <p style="margin-top:8px">A vitrine é uma <code>&lt;div className={styles.vitrine}&gt;</code>
+        abraçando <strong>só o bloco do <code>.map()</code></strong> — Banner, Cabecalho e
+        <code>&lt;h1&gt;</code> ficam fora do abraço.</p>
+      </div>
+      <div class="warning">
+        <span class="warning-icon">🧭</span>
+        <div class="warning-content">
+          <code>App.module.css</code> é um arquivo <strong>NOVO</strong> — não confunda com o
+          <code>App.css</code> da faxina, que continua existindo <strong>vazio</strong>.
+          O que dá superpoder de escopo é o <code>.module.</code> no meio do nome.
+        </div>
+      </div>
+      <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Tenta antes!</strong> Ordem sugerida: estrutura crua primeiro (Banner + cards funcionando feios), CSS por último. Imagem quebrada 🧩? Revise: public/ = barra + aspas · assets = import + chaves.</div></div>
+      <div class="toggler">
+        <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — Ver solução</span><span class="toggler-arrow">▼</span></div>
+        <div class="toggler-body">
+          <div class="code-block">
+            <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/components/Banner.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">import</span> <span class="var">logo</span> <span class="kw">from</span> <span class="st">'../assets/logo.png'</span>
+
+<span class="kw">const</span> <span class="fn">Banner</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span>
+      <span class="tag">&lt;img</span> <span class="atr">src</span><span class="op">=</span><span class="st">"/praia.png"</span> <span class="atr">width</span><span class="op">=</span><span class="st">"220"</span> <span class="tag">/&gt;</span>   <span class="cm">{/* public/ */}</span>
+      <span class="tag">&lt;img</span> <span class="atr">src</span><span class="op">=</span>{<span class="var">logo</span>} <span class="atr">width</span><span class="op">=</span><span class="st">"120"</span> <span class="tag">/&gt;</span>          <span class="cm">{/* import */}</span>
+    <span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">Banner</span></pre>
+          </div>
+          <div class="code-block">
+            <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/components/CartaoDestino.module.css</span><span class="lang-badge css">CSS</span></div>
+<pre><span class="sel">.cartao</span> <span class="punc">{</span>
+  <span class="prop">border</span><span class="punc">:</span> <span class="num">1</span><span class="unit">px</span> <span class="val">solid</span> <span class="val">#dddddd</span><span class="punc">;</span>
+  <span class="prop">border-radius</span><span class="punc">:</span> <span class="num">10</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">padding</span><span class="punc">:</span> <span class="num">14</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">width</span><span class="punc">:</span> <span class="num">180</span><span class="unit">px</span><span class="punc">;</span>
+<span class="punc">}</span>
+
+<span class="sel">.preco</span> <span class="punc">{</span>
+  <span class="prop">color</span><span class="punc">:</span> <span class="val">#16a34a</span><span class="punc">;</span>
+  <span class="prop">font-weight</span><span class="punc">:</span> <span class="val">bold</span><span class="punc">;</span>
+<span class="punc">}</span></pre>
+          </div>
+          <div class="code-block">
+            <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/components/CartaoDestino.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">import</span> <span class="var">styles</span> <span class="kw">from</span> <span class="st">'./CartaoDestino.module.css'</span>
+
+<span class="kw">const</span> <span class="fn">CartaoDestino</span> <span class="op">=</span> (<span class="punc">{</span> <span class="var">cidade</span>, <span class="var">pais</span>, <span class="var">preco</span> <span class="punc">}</span>) <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div</span> <span class="atr">className</span><span class="op">=</span>{<span class="var">styles</span>.<span class="var">cartao</span>}<span class="tag">&gt;</span>
+      <span class="tag">&lt;h2&gt;</span>{<span class="var">cidade</span>}<span class="tag">&lt;/h2&gt;</span>
+      <span class="tag">&lt;p&gt;</span>{<span class="var">pais</span>}<span class="tag">&lt;/p&gt;</span>
+      <span class="tag">&lt;p</span> <span class="atr">className</span><span class="op">=</span>{<span class="var">styles</span>.<span class="var">preco</span>}<span class="tag">&gt;</span>R$ {<span class="var">preco</span>}<span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">CartaoDestino</span></pre>
+          </div>
+          <div class="code-block">
+            <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.module.css</span><span class="lang-badge css">CSS</span></div>
+<pre><span class="sel">.vitrine</span> <span class="punc">{</span>
+  <span class="prop">display</span><span class="punc">:</span> <span class="val">flex</span><span class="punc">;</span>
+  <span class="prop">gap</span><span class="punc">:</span> <span class="num">16</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">flex-wrap</span><span class="punc">:</span> <span class="val">wrap</span><span class="punc">;</span>
+<span class="punc">}</span></pre>
+          </div>
+          <div class="code-block">
+            <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">import</span> <span class="var">styles</span> <span class="kw">from</span> <span class="st">'./App.module.css'</span>
+<span class="kw">import</span> <span class="var">Banner</span> <span class="kw">from</span> <span class="st">'./components/Banner'</span>
+<span class="kw">import</span> <span class="var">Cabecalho</span> <span class="kw">from</span> <span class="st">'./components/Cabecalho'</span>
+<span class="kw">import</span> <span class="var">CartaoDestino</span> <span class="kw">from</span> <span class="st">'./components/CartaoDestino'</span>
+
+<span class="kw">const</span> <span class="var">destinos</span> <span class="op">=</span> [
+  <span class="punc">{</span> <span class="var">id</span><span class="punc">:</span> <span class="num">1</span>, <span class="var">cidade</span><span class="punc">:</span> <span class="st">"Recife"</span>, <span class="var">pais</span><span class="punc">:</span> <span class="st">"Brasil"</span>, <span class="var">preco</span><span class="punc">:</span> <span class="num">899</span> <span class="punc">}</span>,
+  <span class="punc">{</span> <span class="var">id</span><span class="punc">:</span> <span class="num">2</span>, <span class="var">cidade</span><span class="punc">:</span> <span class="st">"Lisboa"</span>, <span class="var">pais</span><span class="punc">:</span> <span class="st">"Portugal"</span>, <span class="var">preco</span><span class="punc">:</span> <span class="num">3450</span> <span class="punc">}</span>,
+  <span class="punc">{</span> <span class="var">id</span><span class="punc">:</span> <span class="num">3</span>, <span class="var">cidade</span><span class="punc">:</span> <span class="st">"Tóquio"</span>, <span class="var">pais</span><span class="punc">:</span> <span class="st">"Japão"</span>, <span class="var">preco</span><span class="punc">:</span> <span class="num">7200</span> <span class="punc">}</span>,
+  <span class="punc">{</span> <span class="var">id</span><span class="punc">:</span> <span class="num">4</span>, <span class="var">cidade</span><span class="punc">:</span> <span class="st">"Buenos Aires"</span>, <span class="var">pais</span><span class="punc">:</span> <span class="st">"Argentina"</span>, <span class="var">preco</span><span class="punc">:</span> <span class="num">1800</span> <span class="punc">}</span>,
+]
+
+<span class="kw">const</span> <span class="fn">App</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span>
+      <span class="tag">&lt;</span><span class="cmp">Banner</span> <span class="tag">/&gt;</span>
+      <span class="tag">&lt;</span><span class="cmp">Cabecalho</span> <span class="tag">/&gt;</span>
+      <span class="tag">&lt;h1&gt;</span>Destinos:<span class="tag">&lt;/h1&gt;</span>
+      <span class="tag">&lt;div</span> <span class="atr">className</span><span class="op">=</span>{<span class="var">styles</span>.<span class="var">vitrine</span>}<span class="tag">&gt;</span>
+        {<span class="var">destinos</span>.<span class="fn">map</span>((<span class="var">d</span>) <span class="op">=&gt;</span> (
+          <span class="tag">&lt;</span><span class="cmp">CartaoDestino</span> <span class="atr">key</span><span class="op">=</span>{<span class="var">d</span>.<span class="var">id</span>} <span class="atr">cidade</span><span class="op">=</span>{<span class="var">d</span>.<span class="var">cidade</span>} <span class="atr">pais</span><span class="op">=</span>{<span class="var">d</span>.<span class="var">pais</span>} <span class="atr">preco</span><span class="op">=</span>{<span class="var">d</span>.<span class="var">preco</span>} <span class="tag">/&gt;</span>
+        ))}
+      <span class="tag">&lt;/div&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">App</span></pre>
+          </div>
+          <div class="tip"><span class="tip-icon">✅</span><div class="tip-content"><strong>Teste o flex:</strong> estreite a janela do navegador — o <code>flex-wrap: wrap</code> faz os cards "pularem" pra linha de baixo em vez de espremer. E o Cabecalho ficou por sua conta de novo. 😉</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       DESAFIO 5 — GAMESTORE (chefão) ★★★
+       ═══════════════════════════════════════════════════════ -->
+  <section class="step-section" id="d5">
+    <div class="step-header">
+      <div class="step-number sn-red">5</div>
+      <div>
+        <div class="step-title">Desafio 5 — GameStore 🎮 (o chefão)</div>
+        <div class="step-sub">★★★ · TUDO junto: props, map, &amp;&amp;, ternário, classe condicional, CSS Modules e .length</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="analogy">
+        <div class="analogy-title">🎮 O pedido do cliente (o mais exigente de todos)</div>
+        <p>"Minha loja de games precisa de um catálogo <strong>caprichado</strong>: cards lado a lado,
+        selo de <strong>🔥 PROMOÇÃO</strong> nos jogos em oferta, e os esgotados têm que aparecer
+        <strong>apagadinhos</strong> com "⚫ Esgotado" — mas continuam no catálogo! Ah, e no topo quero
+        ver quantos jogos temos, <strong>sem eu precisar contar</strong>."</p>
+      </div>
+
+      <div class="drill-tags"><span class="drill-level lv3"><span class="stars">★★★</span> chefão</span><span class="drill-tag">tudo dos Caps 4-5</span><span class="drill-tag">.length</span></div>
+
+      <p><strong>📋 O que entregar</strong> — projeto novo <code>gamestore</code> (com faxina!), contendo:</p>
+      <ul class="about-bullets">
+        <li><div><strong>Cabecalho</strong> que recebe uma prop <code>total</code> e escreve <em>"🎮 GameStore — X jogos no catálogo"</em>. No App, quem passa o valor é <code>total={jogos.length}</code> — o array conta a si mesmo (Cap 2!).</div></li>
+        <li><div>Array <code>jogos</code> com <strong>5 jogos</strong>: <code>id</code>, <code>nome</code>, <code>preco</code>, <code>promocao</code> (booleano) e <code>emEstoque</code> (booleano).</div></li>
+        <li><div><strong>CartaoJogo</strong> com as 4 props: nome em <code>&lt;h2&gt;</code>, preço, selo <code>🔥 PROMOÇÃO!</code> <strong>só quando</strong> <code>promocao</code> for <code>true</code> (porteiro <code>&amp;&amp;</code>), e <code>🟢 Em estoque</code> × <code>⚫ Esgotado</code> no <strong>ternário</strong>.</div></li>
+        <li><div><code>CartaoJogo.module.css</code> com <code>.normal</code> (borda azul React) e <code>.esgotado</code> (borda cinza + <code>opacity: 0.5</code>) — escolhidas por <strong>classe condicional</strong> em cima de <code>emEstoque</code>.</div></li>
+        <li><div><code>App.module.css</code> com a <code>.vitrine</code> flex — cards lado a lado, como na DevViagens.</div></li>
+      </ul>
+
+      <p class="text-dim" style="font-size:0.82rem;margin:14px 0 4px">O resultado esperado — repare no contador do topo, no selo 🔥 e nos esgotados apagadinhos 👇</p>
+      <div class="mini-browser" data-url="localhost:5173">
+<script type="text/html" data-mp="html">
+  <div>🎮 GameStore — 5 jogos no catálogo</div>
+  <h1>Catálogo:</h1>
+  <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <div style="border:2px solid #61dafb;border-radius:10px;padding:10px;width:130px"><b>Super Dev Kart</b><br><span style="font-size:12px">R$ 120</span><br><span style="font-size:12px">🔥 PROMOÇÃO!</span><br><span style="font-size:12px">🟢 Em estoque</span></div>
+    <div style="border:2px solid #ccc;border-radius:10px;padding:10px;width:130px;opacity:0.5"><b>Bug Hunter II</b><br><span style="font-size:12px">R$ 250</span><br><span style="font-size:12px">⚫ Esgotado</span></div>
+    <div style="border:2px solid #61dafb;border-radius:10px;padding:10px;width:130px"><b>CSS Souls</b><br><span style="font-size:12px">R$ 320</span><br><span style="font-size:12px">🔥 PROMOÇÃO!</span><br><span style="font-size:12px">🟢 Em estoque</span></div>
+  </div>
+</script>
+      </div>
+    </div>
+
+    <div class="exercise solo">
+      <div class="exercise-header"><span class="exercise-icon">🏆</span><div>
+        <div class="exercise-title">Mãos à obra — gamestore (o teste de fogo final)</div>
+        <div class="exercise-sub">Nada aqui é novo. A dificuldade é juntar tudo — e é isso que dev faz</div></div>
+      </div>
+      <div class="concept"><div class="concept-title">💡 Dica</div>
+        <p>O chefão é a soma dos 4 anteriores: o arco da lanchonete + o porteiro do CineDev +
+        o ternário/classe da Estante + a vitrine flex da DevViagens. A única peça "nova" é o
+        contador — e ela tem duas partes: o <code>Cabecalho</code> vira um componente
+        <strong>com prop</strong> (<code>({ total })</code>), e o App passa
+        <code>total={jogos.length}</code>.</p>
+        <p style="margin-top:8px">Dentro do <code>CartaoJogo</code>, os dois porteiros convivem
+        numa boa: uma linha com <code>{promocao &amp;&amp; ...}</code> e outra com
+        <code>{emEstoque ? ... : ...}</code>. Um mostra-ou-some, o outro escolhe-entre-dois.</p>
+        <p style="margin-top:8px">Monte em fatias e <strong>rode a cada fatia</strong>: cards crus →
+        selo 🔥 → ternário do estoque → classes → vitrine → contador. Seis saves, seis vitórias.</p>
+      </div>
+      <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Esse é O desafio.</strong> Se você entregar a GameStore sem abrir o 👀, pode se considerar oficialmente pronto(a) pro useState do Cap 6. Vai com calma, uma fatia por vez — e boa sorte, dev! 🎮</div></div>
+      <div class="toggler">
+        <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — Ver solução</span><span class="toggler-arrow">▼</span></div>
+        <div class="toggler-body">
+          <div class="code-block">
+            <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/components/Cabecalho.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">const</span> <span class="fn">Cabecalho</span> <span class="op">=</span> (<span class="punc">{</span> <span class="var">total</span> <span class="punc">}</span>) <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span>🎮 GameStore — {<span class="var">total</span>} jogos no catálogo<span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">Cabecalho</span></pre>
+          </div>
+          <div class="code-block">
+            <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/components/CartaoJogo.module.css</span><span class="lang-badge css">CSS</span></div>
+<pre><span class="sel">.normal</span> <span class="punc">{</span>
+  <span class="prop">border</span><span class="punc">:</span> <span class="num">2</span><span class="unit">px</span> <span class="val">solid</span> <span class="val">#61dafb</span><span class="punc">;</span>
+  <span class="prop">border-radius</span><span class="punc">:</span> <span class="num">10</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">padding</span><span class="punc">:</span> <span class="num">14</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">width</span><span class="punc">:</span> <span class="num">190</span><span class="unit">px</span><span class="punc">;</span>
+<span class="punc">}</span>
+
+<span class="sel">.esgotado</span> <span class="punc">{</span>
+  <span class="prop">border</span><span class="punc">:</span> <span class="num">2</span><span class="unit">px</span> <span class="val">solid</span> <span class="val">#cccccc</span><span class="punc">;</span>
+  <span class="prop">border-radius</span><span class="punc">:</span> <span class="num">10</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">padding</span><span class="punc">:</span> <span class="num">14</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">width</span><span class="punc">:</span> <span class="num">190</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">opacity</span><span class="punc">:</span> <span class="num">0.5</span><span class="punc">;</span>
+<span class="punc">}</span></pre>
+          </div>
+          <div class="code-block">
+            <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/components/CartaoJogo.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">import</span> <span class="var">styles</span> <span class="kw">from</span> <span class="st">'./CartaoJogo.module.css'</span>
+
+<span class="kw">const</span> <span class="fn">CartaoJogo</span> <span class="op">=</span> (<span class="punc">{</span> <span class="var">nome</span>, <span class="var">preco</span>, <span class="var">promocao</span>, <span class="var">emEstoque</span> <span class="punc">}</span>) <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div</span> <span class="atr">className</span><span class="op">=</span>{<span class="var">emEstoque</span> <span class="op">?</span> <span class="var">styles</span>.<span class="var">normal</span> <span class="op">:</span> <span class="var">styles</span>.<span class="var">esgotado</span>}<span class="tag">&gt;</span>
+      <span class="tag">&lt;h2&gt;</span>{<span class="var">nome</span>}<span class="tag">&lt;/h2&gt;</span>
+      <span class="tag">&lt;p&gt;</span>R$ {<span class="var">preco</span>}<span class="tag">&lt;/p&gt;</span>
+      {<span class="var">promocao</span> <span class="op">&amp;&amp;</span> <span class="tag">&lt;p&gt;</span>🔥 PROMOÇÃO!<span class="tag">&lt;/p&gt;</span>}
+      <span class="tag">&lt;p&gt;</span>{<span class="var">emEstoque</span> <span class="op">?</span> <span class="st">"🟢 Em estoque"</span> <span class="op">:</span> <span class="st">"⚫ Esgotado"</span>}<span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">CartaoJogo</span></pre>
+          </div>
+          <div class="code-block">
+            <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.module.css</span><span class="lang-badge css">CSS</span></div>
+<pre><span class="sel">.vitrine</span> <span class="punc">{</span>
+  <span class="prop">display</span><span class="punc">:</span> <span class="val">flex</span><span class="punc">;</span>
+  <span class="prop">gap</span><span class="punc">:</span> <span class="num">16</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">flex-wrap</span><span class="punc">:</span> <span class="val">wrap</span><span class="punc">;</span>
+<span class="punc">}</span></pre>
+          </div>
+          <div class="code-block">
+            <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">import</span> <span class="var">styles</span> <span class="kw">from</span> <span class="st">'./App.module.css'</span>
+<span class="kw">import</span> <span class="var">Cabecalho</span> <span class="kw">from</span> <span class="st">'./components/Cabecalho'</span>
+<span class="kw">import</span> <span class="var">CartaoJogo</span> <span class="kw">from</span> <span class="st">'./components/CartaoJogo'</span>
+
+<span class="kw">const</span> <span class="var">jogos</span> <span class="op">=</span> [
+  <span class="punc">{</span> <span class="var">id</span><span class="punc">:</span> <span class="num">1</span>, <span class="var">nome</span><span class="punc">:</span> <span class="st">"Super Dev Kart"</span>, <span class="var">preco</span><span class="punc">:</span> <span class="num">120</span>, <span class="var">promocao</span><span class="punc">:</span> <span class="kw">true</span>, <span class="var">emEstoque</span><span class="punc">:</span> <span class="kw">true</span> <span class="punc">}</span>,
+  <span class="punc">{</span> <span class="var">id</span><span class="punc">:</span> <span class="num">2</span>, <span class="var">nome</span><span class="punc">:</span> <span class="st">"Bug Hunter II"</span>, <span class="var">preco</span><span class="punc">:</span> <span class="num">250</span>, <span class="var">promocao</span><span class="punc">:</span> <span class="kw">false</span>, <span class="var">emEstoque</span><span class="punc">:</span> <span class="kw">false</span> <span class="punc">}</span>,
+  <span class="punc">{</span> <span class="var">id</span><span class="punc">:</span> <span class="num">3</span>, <span class="var">nome</span><span class="punc">:</span> <span class="st">"A Lenda do Semicolon"</span>, <span class="var">preco</span><span class="punc">:</span> <span class="num">199</span>, <span class="var">promocao</span><span class="punc">:</span> <span class="kw">false</span>, <span class="var">emEstoque</span><span class="punc">:</span> <span class="kw">true</span> <span class="punc">}</span>,
+  <span class="punc">{</span> <span class="var">id</span><span class="punc">:</span> <span class="num">4</span>, <span class="var">nome</span><span class="punc">:</span> <span class="st">"CSS Souls"</span>, <span class="var">preco</span><span class="punc">:</span> <span class="num">320</span>, <span class="var">promocao</span><span class="punc">:</span> <span class="kw">true</span>, <span class="var">emEstoque</span><span class="punc">:</span> <span class="kw">true</span> <span class="punc">}</span>,
+  <span class="punc">{</span> <span class="var">id</span><span class="punc">:</span> <span class="num">5</span>, <span class="var">nome</span><span class="punc">:</span> <span class="st">"Deploy de Sexta"</span>, <span class="var">preco</span><span class="punc">:</span> <span class="num">66</span>, <span class="var">promocao</span><span class="punc">:</span> <span class="kw">false</span>, <span class="var">emEstoque</span><span class="punc">:</span> <span class="kw">false</span> <span class="punc">}</span>,
+]
+
+<span class="kw">const</span> <span class="fn">App</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span>
+      <span class="tag">&lt;</span><span class="cmp">Cabecalho</span> <span class="atr">total</span><span class="op">=</span>{<span class="var">jogos</span>.<span class="var">length</span>} <span class="tag">/&gt;</span>
+      <span class="tag">&lt;h1&gt;</span>Catálogo:<span class="tag">&lt;/h1&gt;</span>
+      <span class="tag">&lt;div</span> <span class="atr">className</span><span class="op">=</span>{<span class="var">styles</span>.<span class="var">vitrine</span>}<span class="tag">&gt;</span>
+        {<span class="var">jogos</span>.<span class="fn">map</span>((<span class="var">j</span>) <span class="op">=&gt;</span> (
+          <span class="tag">&lt;</span><span class="cmp">CartaoJogo</span> <span class="atr">key</span><span class="op">=</span>{<span class="var">j</span>.<span class="var">id</span>} <span class="atr">nome</span><span class="op">=</span>{<span class="var">j</span>.<span class="var">nome</span>} <span class="atr">preco</span><span class="op">=</span>{<span class="var">j</span>.<span class="var">preco</span>} <span class="atr">promocao</span><span class="op">=</span>{<span class="var">j</span>.<span class="var">promocao</span>} <span class="atr">emEstoque</span><span class="op">=</span>{<span class="var">j</span>.<span class="var">emEstoque</span>} <span class="tag">/&gt;</span>
+        ))}
+      <span class="tag">&lt;/div&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">App</span></pre>
+          </div>
+          <div class="tip"><span class="tip-icon">🧪</span><div class="tip-content"><strong>Teste o contador:</strong> adicione um 6º jogo no array e salve — o cabeçalho passa a dizer "6 jogos no catálogo" <strong>sozinho</strong>, o card novo aparece na vitrine, e os porteiros dele obedecem aos booleanos. O array manda em TUDO. É exatamente assim que a tela vai funcionar quando os dados vierem da sua API. 😉</div></div>
+          <div class="tip"><span class="tip-icon">🏆</span><div class="tip-content"><strong>Entregou a GameStore?</strong> Você acabou de montar, sozinho(a), cinco interfaces React completas. O que falta pra isso virar um app de verdade? Os botões — e eles chegam no Cap 6 com o <code>useState</code>.</div></div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -521,25 +1199,25 @@
       <div class="step-number sn-mint">🏠</div>
       <div>
         <div class="step-title">Bônus pra casa</div>
-        <div class="step-sub">Pra quem quer temperar o lanche (usa o resto do Cap 5)</div>
+        <div class="step-sub">Terminou os 5? Volta na lanchonete e tempera ela</div>
       </div>
     </div>
 
     <div class="card">
       <div class="exercise home">
         <div class="exercise-header"><span class="exercise-icon">🔥</span><div>
-          <div class="exercise-title">Bônus 1 — o selo "🔥 Mais pedido"</div>
-          <div class="exercise-sub">O porteiro &amp;&amp; visita a lanchonete</div></div>
+          <div class="exercise-title">Bônus 1 — o selo "🔥 Mais pedido" na lanchonete</div>
+          <div class="exercise-sub">O porteiro &amp;&amp; visita o Desafio 1</div></div>
         </div>
-        <div class="concept"><div class="concept-title">💡 Missão</div><p>Adicione um campo <code>maisPedido: true</code> em <strong>um ou dois</strong> lanches do array (nos outros, <code>false</code>). Passe como prop e, dentro do <code>CartaoLanche</code>, mostre <code>🔥 Mais pedido</code> <strong>só</strong> quando for <code>true</code>. Qual porteiro faz "mostrar ou nada"? Você viu na seção 👻 do Cap 5.</p></div>
+        <div class="concept"><div class="concept-title">💡 Missão</div><p>Adicione um campo <code>maisPedido: true</code> em <strong>um ou dois</strong> lanches do array (nos outros, <code>false</code>). Passe como prop e, dentro do <code>CartaoLanche</code>, mostre <code>🔥 Mais pedido</code> <strong>só</strong> quando for <code>true</code>. Depois do CineDev e da GameStore, esse deve sair de olhos fechados — é o termômetro de que o porteiro grudou.</p></div>
       </div>
 
       <div class="exercise home" style="margin-top:14px">
         <div class="exercise-header"><span class="exercise-icon">🎨</span><div>
           <div class="exercise-title">Bônus 2 — cara de cardápio de verdade</div>
-          <div class="exercise-sub">CSS Modules — os arquivos vazios eram só o começo</div></div>
+          <div class="exercise-sub">CSS Modules na lanchonete — os arquivos vazios eram só o começo</div></div>
         </div>
-        <div class="concept"><div class="concept-title">💡 Missão</div><p>Crie um <code>CartaoLanche.module.css</code> (borda arredondada, sombra, um respiro de padding) e ligue com <code>import styles</code> + <code>className={styles.cartao}</code>. Se quiser ir além: um <code>App.module.css</code> com <code>display: flex</code> pra deixar os cards lado a lado, como a vitrine do Cap 5. Traga no próximo sábado! 🍟</p></div>
+        <div class="concept"><div class="concept-title">💡 Missão</div><p>Crie um <code>CartaoLanche.module.css</code> (borda arredondada, sombra, um respiro de padding) e ligue com <code>import styles</code> + <code>className={styles.cartao}</code>. Depois um <code>App.module.css</code> com a <code>.vitrine</code> flex, como na DevViagens — e a lanchonete fica com cara de iFood. Traga no próximo sábado! 🍟</p></div>
       </div>
     </div>
   </section>
@@ -558,20 +1236,22 @@
 
     <div class="card">
       <ul class="about-bullets">
-        <li><div><strong>Projeto do zero:</strong> criou com Vite, limpou o boilerplate e deixou <code>index.css</code> + <code>App.css</code> vazios (sem deletar os arquivos!).</div></li>
-        <li><div><strong>Componentes organizados:</strong> <code>Banner</code>, <code>Cabecalho</code> e <code>CartaoLanche</code> morando em <code>src/components/</code>, cada um com seu <code>export default</code>.</div></li>
-        <li><div><strong>Props na veia:</strong> texto entre aspas, número/JS entre chaves, desestruturação nos parênteses.</div></li>
-        <li><div><strong>.map() + key:</strong> o array manda, a tela obedece — 4 lanches ou 40, o código é o mesmo.</div></li>
+        <li><div><strong>5 projetos do zero:</strong> criou com Vite, limpou o boilerplate e deixou <code>index.css</code> + <code>App.css</code> vazios — cinco vezes, até virar reflexo.</div></li>
+        <li><div><strong>Componentes organizados:</strong> tudo morando em <code>src/components/</code>, cada um com seu <code>export default</code> e seu import certinho.</div></li>
+        <li><div><strong>Props na veia:</strong> texto entre aspas, número/booleano/JS entre chaves, desestruturação nos parênteses — inclusive a prop <code>total</code> do chefão.</div></li>
+        <li><div><strong>.map() + key em tudo:</strong> lanches, filmes, livros, destinos e jogos — o array manda, a tela obedece.</div></li>
+        <li><div><strong>Porteiros dominados:</strong> <code>&amp;&amp;</code> pra mostrar-ou-nada (⭐, 🔥) e ternário pra escolher-entre-dois (✅ × ❌, 🟢 × ⚫) — no texto E na <code>className</code>.</div></li>
         <li><div><strong>Imagens pelos dois caminhos:</strong> <code>public/</code> com <code>"/banner.png"</code> e <code>src/assets/</code> com <code>import</code> + <code>{logo}</code>.</div></li>
+        <li><div><strong>CSS Modules:</strong> cartões com estilo próprio, vitrine flex e classe condicional — sem nenhum vazamento de CSS entre componentes.</div></li>
       </ul>
 
       <div class="tip" style="margin-top:16px">
         <span class="tip-icon">➡️</span>
         <div class="tip-content">
-          <strong>No próximo capítulo (Cap 6):</strong> a lanchonete está de pé, mas os botões ainda não
+          <strong>No próximo capítulo (Cap 6):</strong> suas cinco lojinhas estão de pé, mas os botões ainda não
           existem — nada acontece quando o cliente clica. Entra o <code>useState</code>: a memória do React
-          que faz a tela <strong>reagir</strong> (adicionar lanche ao pedido, contar itens, filtrar o
-          cardápio). Prepare o avental. 🚀
+          que faz a tela <strong>reagir</strong> (adicionar ao carrinho, marcar livro como devolvido, filtrar
+          o catálogo). Prepare o controle. 🎮🚀
         </div>
       </div>
 
@@ -590,7 +1270,7 @@
 
 <footer class="footer">
   Feito com <span class="heart">♥</span> pela <strong style="color:var(--text)">programa AI</strong> ·
-  <a href="../../index.html">Hub do curso</a> · Cap 05b — Desafio: a Lanchonete
+  <a href="../../index.html">Hub do curso</a> · Cap 05b — 5 Desafios React
 </footer>
 
 <script src="../../shared/scripts.js" defer></script>
