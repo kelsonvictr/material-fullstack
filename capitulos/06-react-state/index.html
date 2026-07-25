@@ -189,7 +189,6 @@
   </div>
   <div class="sidebar-group">
     <div class="sidebar-group-title">Neste capítulo</div>
-    <a class="sidebar-link" onclick="goTo('aquecimento')"><span class="dot" style="background:var(--accent5)"></span> Aquecimento</a>
     <a class="sidebar-link" onclick="goTo('eventos')"><span class="dot" style="background:var(--js)"></span> ⚡ Eventos no React</a>
     <a class="sidebar-link" onclick="goTo('teimosa')"><span class="dot" style="background:var(--accent4)"></span> 🧊 A variável teimosa</a>
     <a class="sidebar-link" onclick="goTo('usestate')"><span class="dot" style="background:var(--react)"></span> 🧠 useState</a>
@@ -224,29 +223,6 @@
 </section>
 
 <div class="container">
-
-  <!-- ═══════════════ AQUECIMENTO ═══════════════ -->
-  <section class="step-section" id="aquecimento">
-    <div class="step-header">
-      <div class="step-number sn-yellow">🤔</div>
-      <div>
-        <div class="step-title">Aquecimento</div>
-        <div class="step-sub">Um mistério pra abrir a aula</div>
-      </div>
-    </div>
-    <div class="quiz">
-      <div class="quiz-q"><span class="q-emoji">1️⃣</span> Um aluno criou <code>let cliques = 0</code> no componente e um botão que faz <code>cliques = cliques + 1</code>. No console, o número <strong>sobe</strong>: 1, 2, 3… Mas a tela <strong>continua mostrando 0</strong>. O que você acha que está acontecendo?</div>
-      <div class="quiz-options">
-        <button class="quiz-opt" onclick="checkQuiz(this,false)">O JavaScript está bugado — a variável não mudou</button>
-        <button class="quiz-opt" data-correct="true" onclick="checkQuiz(this,true)">A variável mudou, mas ninguém avisou o React pra redesenhar a tela</button>
-        <button class="quiz-opt" onclick="checkQuiz(this,false)">Faltou dar F5 depois de cada clique</button>
-        <button class="quiz-opt" onclick="checkQuiz(this,false)">O botão está com defeito</button>
-      </div>
-      <div class="quiz-feedback" data-correct="Exatamente! E o 'aviso' tem nome: useState." data-wrong="O console prova que a variável mudou… então o problema é outro." data-explain="O React só redesenha o componente quando VOCÊ avisa que algo mudou. Variável comum muda em silêncio — a tela nem fica sabendo. A memória que avisa o React é o useState, o assunto de hoje."></div>
-    </div>
-  </section>
-
-  <div class="section-connector"><div class="line"></div></div>
 
   <!-- ═══════════════ EVENTOS ═══════════════ -->
   <section class="step-section" id="eventos">
@@ -437,19 +413,39 @@
       <div class="step-number sn-react">🧠</div>
       <div>
         <div class="step-title">useState — a memória do componente</div>
-        <div class="step-sub">A variável que avisa o React quando muda</div>
+        <div class="step-sub">Seu primeiro hook: a variável que avisa o React quando muda</div>
       </div>
     </div>
 
     <div class="card">
+      <p>O <code>let</code> falhou porque muda <strong>em silêncio</strong>. O que a gente precisa é de
+      uma memória que, ao mudar, <strong>avise o React</strong>. O React já entrega essa peça pronta —
+      e ela é o seu primeiro <strong style="color:var(--accent6)">hook</strong>.</p>
+
+      <div class="concept">
+        <div class="concept-title">🪝 O que é um hook?</div>
+        <p>Hook (gancho, em inglês) é uma <strong>função pronta do React</strong> que dá um
+        <strong>poder novo</strong> ao seu componente. Você reconhece um hook de longe: o nome
+        <strong>sempre começa com <code>use</code></strong>.</p>
+        <p style="margin-top:8px">O de hoje é o <code>useState</code> — o hook da <strong>memória</strong>,
+        o mais usado de todos. Existem outros, e cada um vai aparecer no capítulo em que você precisar dele.</p>
+        <p style="margin-top:8px">Só uma regrinha por enquanto: hook se escreve sempre no
+        <strong>comecinho do componente</strong>, antes do <code>return</code>. Simples assim.</p>
+      </div>
+
+      <p>E o que o <code>useState</code> te dá? Uma <strong>dupla</strong>: o <strong>valor</strong>
+      (que o React guarda por você) e a <strong>função que muda esse valor</strong> — avisando o React
+      no mesmo instante. Exatamente o que faltava pro <code>let</code>.</p>
+
       <div class="analogy">
         <div class="analogy-title">🏟️ O placar do estádio</div>
         <p>O gol acontece no campo, mas ninguém na arquibancada vê o número mudar sozinho: existe um
         <strong>operador do placar</strong> que aperta o botão, e aí sim o telão mostra 1 × 0 pra
         <strong>todo mundo</strong>. O <code>useState</code> te dá exatamente essa dupla: o
-        <strong style="color:var(--react)">placar</strong> (o valor que aparece) e o
+        <strong style="color:var(--react)">placar</strong> (o valor que aparece na tela) e o
         <strong style="color:var(--accent5)">botão do operador</strong> (a função que muda o valor
-        <em>e avisa o React</em> pra redesenhar).</p>
+        <em>e avisa o React</em> pra redesenhar). Gol sem operador — o <code>let</code> da seção
+        anterior — é gol que ninguém fica sabendo.</p>
       </div>
 
       <p>Uma linha te dá os dois. Ela parece estranha na primeira vez — vamos ler com calma:</p>
