@@ -208,6 +208,8 @@ function playSeqLoop(box){
    <div class="mini-browser" data-url="perfil.html">
      [script data-mp="html"]  ...HTML real...   [/script]
      [script data-mp="css"]   ...CSS opcional... [/script]
+     [script data-mp="js"]    ...JS opcional -> prévia INTERATIVA (sandbox allow-scripts);
+                              use data-h="260" no .mini-browser p/ fixar a altura... [/script]
    </div>
    <div class="mini-browser console" data-url="Console">
      <script type="text/plain" data-mp="out">linha 1
@@ -222,6 +224,7 @@ function buildMiniPreview(mb){
   const get = (k) => mb.querySelector(`script[data-mp="${k}"]`)?.textContent ?? '';
   const htmlSrc = get('html');
   const cssSrc  = get('css');
+  const jsSrc   = get('js');    // opcional: preview INTERATIVA (ex.: contador que funciona)
   const outSrc  = get('out');
   mb.innerHTML = '';
 
@@ -255,20 +258,26 @@ function buildMiniPreview(mb){
     }
   } else {
     const iframe = document.createElement('iframe');
-    iframe.setAttribute('sandbox', '');          // SEM allow-scripts: HTML/CSS puro
+    // com data-mp="js" a prévia ganha allow-scripts (interativa, ainda em sandbox);
+    // sem js continua HTML/CSS puro, sem script nenhum
+    iframe.setAttribute('sandbox', jsSrc ? 'allow-scripts' : '');
     iframe.setAttribute('title', 'prévia ' + url);
     iframe.setAttribute('scrolling', 'no');
     iframe.srcdoc =
       '<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8">' +
       '<style>html,body{margin:0}body{font-family:system-ui,Arial,sans-serif;' +
       'padding:16px;color:#1a1a1a;background:#fff}' + cssSrc + '</style></head><body>' +
-      htmlSrc + '</body></html>';
-    // ajusta a altura ao conteúdo quando carregar
+      htmlSrc +
+      (jsSrc ? '<scr' + 'ipt>' + jsSrc + '</scr' + 'ipt>' : '') +
+      '</body></html>';
+    // ajusta a altura ao conteúdo quando carregar (com allow-scripts o iframe é
+    // opaco pro pai — usa data-h ou o fallback)
     iframe.addEventListener('load', () => {
       try {
         const h = iframe.contentDocument?.body?.scrollHeight;
         if (h) iframe.style.height = Math.min(Math.max(h, 90), 520) + 'px';
-      } catch(e){ iframe.style.height = '220px'; }
+        else iframe.style.height = (mb.dataset.h || 220) + 'px';
+      } catch(e){ iframe.style.height = (mb.dataset.h || 220) + 'px'; }
     });
     iframe.style.height = '120px';
     viewport.appendChild(iframe);

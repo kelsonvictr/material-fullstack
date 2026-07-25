@@ -142,7 +142,24 @@ Dados: Pesquisa Código Fonte TV 2025 (citar fonte sempre).
       no Cabecalho). Cada desafio = projeto Vite novo; D2–D5 têm pedido do cliente + checklist +
       mini-browser do resultado + olhinho com solução completa. Ver decisão 2026-07-16 em
       `05-decisoes.md`.
-- [ ] Caps 6–9 (próximas sessões) — marcados como "🔒 em breve" no hub
+- [x] Cap 6 — Interatividade: useState & eventos (2026-07-25, spec em `08-plano-caps-06-07.md`) —
+      eventos (`onClick` sem parênteses) → variável teimosa (a dor) → useState (placar do estádio +
+      anatomia colorida + 2 vídeos) → 3 regras do estado → estado+porteiros → formulários
+      controlados → "o estado mora no pai" (carrinho). **5 máquinas** (🎯 Clique Certo, 🧊 Variável
+      Teimosa, 🔄 Ciclo do Estado c/ filme de fotos 📸, 👯 Gêmeos, 🪞 Input-Espelho), 1 playground
+      react (🧪 Laboratório), treino encadeado 7 passos na Mini-loja (contador → filtro ao vivo →
+      chefão carrinho) com **mini-browsers interativos**. ~1450 linhas.
+- [x] Cap 7 — Dados de verdade: useEffect & fetch (2026-07-25) — loop infinito (a dor) →
+      **anatomia useEffect(O QUE, QUANDO) + receita da moldura** (antídoto da confusão de sintaxe)
+      → 3 modos do array → json-server (shape ERP, backend no futuro) → cerimônia "apague o const"
+      → carregando/erro → faxina+async só citados. **5 máquinas** (🌀 Loop Infinito, 🧩 Montador,
+      🎛️ Painel do useEffect, 🚚 Entrega ao Vivo, ⏳ Semáforo), 1 playground react (painel
+      editável), treino 7 passos (db.json → console.log → document.title [busca] → apagar o const
+      → loading → matar o servidor → chefão integração). ~1500 linhas. **4 vídeos HyperFrames
+      entregues** (anatomia-usestate 12s, ciclo-do-estado 14s, anatomia-useeffect 14s,
+      vida-do-componente 16s — 1920×1080/30fps, loop, sem áudio, paleta do material, posters no
+      frame do payoff) renderizados de `tooling/hyperframes/` (scripts `render:*`, pin 0.7.45).
+- [ ] Caps 8–9 (próximas sessões) — marcados como "🔒 em breve" no hub
 - [x] Memes gerados: `meme-intro-fullstack.png`, `meme-css-centralizar.png`, `meme-js-soma.png`,
       `meme-dom-mudei-tela.png` (Cap 3 — "EU MUDEI A TELA COM CÓDIGO")
 

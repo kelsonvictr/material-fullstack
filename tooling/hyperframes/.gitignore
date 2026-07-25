@@ -1,0 +1,6 @@
+# dependências / artefatos do HyperFrames — o mp4/png final em assets/video/ É versionado
+node_modules/
+**/renders/
+**/snapshots/
+**/.hyperframes/
+*.log

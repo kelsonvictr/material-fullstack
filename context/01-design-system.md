@@ -83,6 +83,20 @@ demanda na viewport).
   allow-scripts). Conteúdo é **HTML real (NÃO escapado)** — é renderizado. ⚠️ nunca `</script>` literal dentro.
 - **Modo console** (JS): `<div class="mini-browser console">` + `<script type="text/plain"
   data-mp="out">…</script>`. Linhas estilo devtools (estático). Prefixo `> ` = comando, `! ` = erro.
+- **Modo INTERATIVO (2026-07-25, estreou nos Caps 6–7):** adicione `<script type="text/plain"
+  data-mp="js">…</script>` e a prévia ganha `sandbox="allow-scripts"` — o resultado do exercício
+  fica CLICÁVEL (contador que soma, busca que filtra, carrinho que conta). Com scripts o iframe
+  fica opaco pro pai → fixe a altura com `data-h="220"` no `.mini-browser`. JS em ES5 simples,
+  imitando o comportamento do app do aluno (não é React de verdade — é encenação fiel).
+
+## Playground modo `react` (2026-07-25, Caps 6–7)
+`<div class="playground" data-mode="react">` + `<textarea data-pg="jsx">` com um componente
+**`App`** (obrigatório; o playground renderiza `<App />` sozinho). Vendors **offline-first** em
+`shared/vendor/` (React 18 UMD + ReactDOM + Babel standalone, ~3 MB, carregados sob demanda só
+se a página tiver playground react). JSX transpilado na hora; `useState`/`useEffect` injetados;
+erros viram painel vermelho (error boundary), `console.log` (inclusive dos efeitos!) aparecem num
+console embutido. **Uso parcimonioso: 1 "🧪 Laboratório" por capítulo**, sempre DEPOIS do conceito
+digitado no VSCode (regra "forçar o VSCode" continua). CSS `.pg-react*` em `playground.css`.
 
 ## Forja de Tags — "as tags chegam no navegador" (2026-05-30)
 `shared/tag-forge.js` (módulo, Motion via CDN). Cada tag voa do editor pro navegador e vira o

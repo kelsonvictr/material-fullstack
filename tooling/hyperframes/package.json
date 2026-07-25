@@ -1,0 +1,16 @@
+{
+  "name": "hyperframes-videos",
+  "private": true,
+  "description": "Vídeos didáticos animados (HyperFrames) — Caps 06/07 do material Frontend Fullstack. Um sub-projeto por vídeo; o mp4 + poster renderizados vão para ../../assets/video/ (versionados).",
+  "scripts": {
+    "check:usestate": "cd anatomia-usestate && npx --yes hyperframes@0.7.45 lint && npx --yes hyperframes@0.7.45 validate",
+    "check:ciclo": "cd ciclo-do-estado && npx --yes hyperframes@0.7.45 lint && npx --yes hyperframes@0.7.45 validate",
+    "check:useeffect": "cd anatomia-useeffect && npx --yes hyperframes@0.7.45 lint && npx --yes hyperframes@0.7.45 validate",
+    "check:vida": "cd vida-do-componente && npx --yes hyperframes@0.7.45 lint && npx --yes hyperframes@0.7.45 validate",
+    "render:usestate": "npx --yes hyperframes@0.7.45 render ./anatomia-usestate -q high -o ../../assets/video/anatomia-usestate.mp4 && ffmpeg -y -ss 11.2 -i ../../assets/video/anatomia-usestate.mp4 -frames:v 1 -update 1 ../../assets/video/anatomia-usestate.png",
+    "render:ciclo": "npx --yes hyperframes@0.7.45 render ./ciclo-do-estado -q high -o ../../assets/video/ciclo-do-estado.mp4 && ffmpeg -y -ss 12.4 -i ../../assets/video/ciclo-do-estado.mp4 -frames:v 1 -update 1 ../../assets/video/ciclo-do-estado.png",
+    "render:useeffect": "npx --yes hyperframes@0.7.45 render ./anatomia-useeffect -q high -o ../../assets/video/anatomia-useeffect.mp4 && ffmpeg -y -ss 10.8 -i ../../assets/video/anatomia-useeffect.mp4 -frames:v 1 -update 1 ../../assets/video/anatomia-useeffect.png",
+    "render:vida": "npx --yes hyperframes@0.7.45 render ./vida-do-componente -q high -o ../../assets/video/vida-do-componente.mp4 && ffmpeg -y -ss 9.5 -i ../../assets/video/vida-do-componente.mp4 -frames:v 1 -update 1 ../../assets/video/vida-do-componente.png",
+    "render:all": "npm run render:usestate && npm run render:ciclo && npm run render:useeffect && npm run render:vida"
+  }
+}

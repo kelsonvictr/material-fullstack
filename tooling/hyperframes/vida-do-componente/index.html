@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      :root {
+        --bg: #0a0a12;
+        --surface: #12121e;
+        --surface2: #1a1a2e;
+        --code-bg: #0d0d1a;
+        --text: #eef0f8;
+        --dim: #8892b0;
+        --line: #262640;
+        --accent: #6c63ff;
+        --react: #61dafb;
+        --teal: #4ecdc4;
+        --amber: #f7b731;
+        --js: #f7df1e;
+        --green: #46d39a;
+      }
+      /* Ligaduras OFF (regra do material) */
+      pre, code, .mono {
+        font-variant-ligatures: none;
+        font-feature-settings: "liga" 0, "clig" 0, "calt" 0;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        width: 1920px; height: 1080px; overflow: hidden;
+        background: var(--bg);
+        font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        color: var(--text);
+      }
+      .mono { font-family: "JetBrains Mono", ui-monospace, "Menlo", monospace; }
+
+      #bg {
+        position: absolute; inset: 0;
+        background:
+          radial-gradient(1100px 700px at 50% 20%, #14142a 0%, rgba(20,20,42,0) 65%),
+          linear-gradient(180deg, #0b0b16 0%, #0a0a12 100%);
+      }
+      #grid {
+        position: absolute; inset: 0;
+        background-image:
+          linear-gradient(rgba(38,38,64,0.5) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(38,38,64,0.5) 1px, transparent 1px);
+        background-size: 44px 44px;
+        opacity: 0.5;
+        mask-image: radial-gradient(1400px 900px at 50% 45%, #000 55%, transparent 100%);
+        -webkit-mask-image: radial-gradient(1400px 900px at 50% 45%, #000 55%, transparent 100%);
+      }
+
+      #title { position: absolute; top: 48px; left: 0; width: 100%; text-align: center;
+        font-size: 46px; font-weight: 900; }
+      #title .hook { color: var(--react); }
+
+      /* ===== navegador (a vitrine) ===== */
+      #browser { position: absolute; left: 120px; top: 170px; width: 640px; height: 560px;
+        background: var(--surface); border: 2px solid var(--line); border-radius: 18px;
+        overflow: hidden; }
+      #browser .bar { height: 52px; background: var(--surface2); display: flex;
+        align-items: center; gap: 9px; padding: 0 18px; border-bottom: 2px solid var(--line); }
+      #browser .bar .d { width: 14px; height: 14px; border-radius: 50%; background: var(--line); }
+      #browser .bar .d.r { background: #ff6b6b; } #browser .bar .d.a { background: var(--amber); }
+      #browser .bar .d.g { background: var(--green); }
+      #browser .bar .url { margin-left: 10px; font-size: 17px; color: var(--dim);
+        background: var(--code-bg); border-radius: 8px; padding: 4px 16px; }
+      #browser .hd { padding: 20px 28px 6px; font-size: 27px; font-weight: 800; }
+      #browser .hd .cart { float: right; color: var(--dim); font-size: 22px; }
+      .slot { position: relative; height: 108px; margin: 14px 28px 0; }
+      .slot .sk, .slot .pr { position: absolute; inset: 0; border-radius: 12px; }
+      .slot .sk { background: var(--surface2); border: 2px solid var(--line); padding: 18px 20px; }
+      .slot .sk .l1 { width: 60%; height: 22px; border-radius: 6px; background: #262647; }
+      .slot .sk .l2 { width: 34%; height: 16px; border-radius: 6px; background: #20203c;
+        margin-top: 14px; }
+      .slot .pr { background: var(--surface2); border: 2px solid rgba(97,218,251,0.45);
+        padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; }
+      .slot .pr .nm { font-size: 24px; font-weight: 700; }
+      .slot .pr .pc { font-size: 21px; color: var(--js); }
+      #flash { position: absolute; inset: 0; background: #ffffff; }
+
+      /* ===== servidor json-server ===== */
+      #server { position: absolute; left: 1460px; top: 250px; width: 340px; height: 320px; }
+      #server .box { position: absolute; inset: 0 0 66px 0; background: var(--surface2);
+        border: 2px solid var(--line); border-radius: 18px; padding: 24px; }
+      #server .rk { height: 44px; border-radius: 10px; background: var(--code-bg);
+        border: 2px solid var(--line); margin-bottom: 14px; position: relative; }
+      #server .rk .led { position: absolute; right: 14px; top: 14px; width: 12px; height: 12px;
+        border-radius: 50%; background: #3a3a55; }
+      #server .lbl { position: absolute; bottom: 0; width: 100%; text-align: center; }
+      #server .lbl .nm { font-size: 26px; font-weight: 700; color: var(--amber); }
+      #server .lbl .url { font-size: 18px; color: var(--dim); }
+
+      /* linha tracejada cliente ↔ servidor */
+      #wire { position: absolute; left: 780px; top: 428px; width: 660px; height: 3px;
+        background: repeating-linear-gradient(90deg, var(--dim) 0 12px, transparent 12px 24px);
+        opacity: 0.45; }
+
+      /* pacotes */
+      .pk { position: absolute; top: 400px; padding: 10px 22px; border-radius: 999px;
+        font-size: 24px; font-weight: 700; color: #0a0a12; white-space: nowrap; }
+      #pk-get { left: 770px; background: var(--js); box-shadow: 0 6px 26px rgba(247,223,30,0.4); }
+      #pk-json { left: 1180px; background: var(--amber); box-shadow: 0 6px 26px rgba(247,183,49,0.4); }
+      #pk-again { left: 800px; background: transparent; border: 2px dashed var(--dim);
+        color: var(--dim); }
+
+      /* chips de código embaixo do navegador */
+      .code-chip { position: absolute; border-radius: 14px; background: var(--code-bg);
+        border: 2px solid var(--react); padding: 14px 22px; font-size: 28px; color: var(--react); }
+      #fx-chip { left: 120px; top: 776px; }
+      #fx-chip .dep { color: var(--amber); font-weight: 700; }
+      #fx-ring { position: absolute; left: 0; top: 0; width: 100px; height: 100px;
+        border: 3px solid var(--react); border-radius: 22px; }
+      #set-chip { left: 560px; top: 776px; border-color: var(--teal); color: var(--teal); }
+
+      /* escudo [] */
+      #shield { position: absolute; left: 1010px; top: 396px; width: 92px; height: 72px;
+        border-radius: 14px; background: rgba(247,183,49,0.14); border: 3px solid var(--amber);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 34px; font-weight: 800; color: var(--amber); }
+      #porta { position: absolute; left: 760px; top: 330px; width: 400px; text-align: center;
+        font-size: 29px; font-weight: 800; color: var(--amber); }
+
+      /* linha do tempo */
+      #steps { position: absolute; bottom: 60px; left: 0; width: 100%;
+        display: flex; justify-content: center; gap: 74px; }
+      .st { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+      .st .dot { width: 22px; height: 22px; border-radius: 50%; background: #2a2a48;
+        border: 2px solid var(--line); }
+      .st .tx { font-size: 22px; color: var(--dim); font-weight: 700; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="16"
+      data-width="1920" data-height="1080">
+
+      <div id="bg" class="clip" data-start="0" data-duration="16" data-track-index="0"></div>
+      <div id="grid" class="clip" data-start="0" data-duration="16" data-track-index="1"></div>
+
+      <div id="title" class="clip" data-start="0" data-duration="16" data-track-index="2">
+        A vida do <span class="hook mono">componente</span>
+      </div>
+
+      <div id="browser" class="clip" data-start="0" data-duration="16" data-track-index="3">
+        <div class="bar"><span class="d r"></span><span class="d a"></span><span class="d g"></span>
+          <span class="url mono">localhost:5173</span></div>
+        <div class="hd">Mini-loja <span class="cart">🛒 0</span></div>
+        <div class="slot s1">
+          <div class="sk"><div class="l1"></div><div class="l2"></div></div>
+          <div class="pr"><span class="nm">Teclado Mecânico</span><span class="pc mono">R$ 320</span></div>
+        </div>
+        <div class="slot s2">
+          <div class="sk"><div class="l1"></div><div class="l2"></div></div>
+          <div class="pr"><span class="nm">Monitor 27"</span><span class="pc mono">R$ 1.450</span></div>
+        </div>
+        <div class="slot s3">
+          <div class="sk"><div class="l1"></div><div class="l2"></div></div>
+          <div class="pr"><span class="nm">Cadeira Gamer</span><span class="pc mono">R$ 980</span></div>
+        </div>
+        <div id="flash"></div>
+      </div>
+
+      <div id="server" class="clip" data-start="0" data-duration="16" data-track-index="4">
+        <div class="box">
+          <div class="rk"><span class="led led1"></span></div>
+          <div class="rk"><span class="led led2"></span></div>
+          <div class="rk"><span class="led led3"></span></div>
+        </div>
+        <div class="lbl"><div class="nm mono">json-server</div>
+          <div class="url mono">localhost:3000/produtos</div></div>
+      </div>
+
+      <div id="wire" class="clip" data-start="0" data-duration="16" data-track-index="5"></div>
+
+      <div id="pk-get" class="pk clip mono" data-start="0" data-duration="16" data-track-index="6"
+        data-layout-allow-overlap>GET /produtos</div>
+      <div id="pk-json" class="pk clip mono" data-start="0" data-duration="16" data-track-index="7"
+        data-layout-allow-overlap>JSON [ {...} ]</div>
+      <div id="pk-again" class="pk clip mono" data-start="0" data-duration="16" data-track-index="8"
+        data-layout-allow-overlap>de novo?</div>
+
+      <div id="fx-chip" class="code-chip clip mono" data-start="0" data-duration="16" data-track-index="9">
+        useEffect(buscar, <span class="dep">[ ]</span>)
+      </div>
+      <div id="fx-ring" class="clip" data-start="0" data-duration="16" data-track-index="10"
+        data-layout-allow-overlap></div>
+      <div id="set-chip" class="code-chip clip mono" data-start="0" data-duration="16" data-track-index="11">
+        setProdutos(dados)
+      </div>
+
+      <div id="shield" class="clip mono" data-start="0" data-duration="16" data-track-index="12"
+        data-layout-allow-overlap>[ ]</div>
+      <div id="porta" class="clip" data-start="0" data-duration="16" data-track-index="13"
+        data-layout-allow-overlap>o [ ] segura a porta 🚪</div>
+
+      <div id="steps" class="clip" data-start="0" data-duration="16" data-track-index="14">
+        <div class="st st1"><div class="dot"></div><div class="tx">monta</div></div>
+        <div class="st st2"><div class="dot"></div><div class="tx">1º render (vazio)</div></div>
+        <div class="st st3"><div class="dot"></div><div class="tx">useEffect roda</div></div>
+        <div class="st st4"><div class="dot"></div><div class="tx">fetch ⇄ JSON</div></div>
+        <div class="st st5"><div class="dot"></div><div class="tx">novo render</div></div>
+      </div>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      /* posiciona o anel do useEffect sobre o chip (1x no load) */
+      const fx = document.getElementById("fx-chip").getBoundingClientRect();
+      const ring = document.getElementById("fx-ring");
+      ring.style.left = (fx.left + fx.width / 2 - 50) + "px";
+      ring.style.top = (fx.top + fx.height / 2 - 50) + "px";
+
+      /* estados iniciais */
+      tl.set("#title", { opacity: 0, y: -18 }, 0);
+      tl.set("#browser", { opacity: 0, scale: 0.92, transformOrigin: "50% 50%" }, 0);
+      tl.set("#browser .slot .sk", { opacity: 0, y: 16 }, 0);
+      tl.set("#browser .slot .pr", { opacity: 0, y: 24 }, 0);
+      tl.set("#flash", { opacity: 0 }, 0);
+      tl.set("#server", { opacity: 0, x: 46 }, 0);
+      tl.set("#wire", { opacity: 0 }, 0);
+      tl.set("#pk-get, #pk-json, #pk-again", { opacity: 0 }, 0);
+      tl.set("#fx-chip", { opacity: 0, y: 26 }, 0);
+      tl.set("#fx-ring", { opacity: 0, scale: 0.6 }, 0);
+      tl.set("#set-chip", { opacity: 0, y: 26 }, 0);
+      tl.set("#shield", { opacity: 0, scale: 0.5 }, 0);
+      tl.set("#porta", { opacity: 0, y: 14 }, 0);
+      tl.set("#steps", { opacity: 0, y: 20 }, 0);
+
+      const lightStep = (n, t, color) => {
+        tl.to("#steps .st" + n + " .dot", { backgroundColor: color, borderColor: color, duration: 0.25 }, t);
+        tl.to("#steps .st" + n + " .dot", { scale: 1.5, duration: 0.2, yoyo: true, repeat: 1, ease: "back.out(2.5)" }, t);
+        tl.to("#steps .st" + n + " .tx", { color: "#eef0f8", duration: 0.25 }, t);
+      };
+
+      /* ── ATO 1 · monta + 1º render vazio (0–3s) ── */
+      tl.to("#title", { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 0.25);
+      tl.to("#steps", { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 0.35);
+      tl.to("#browser", { opacity: 1, scale: 1, duration: 0.6, ease: "back.out(1.6)" }, 0.55);
+      lightStep(1, 0.7, "#61dafb");
+
+      tl.to("#browser .slot .sk", { opacity: 1, y: 0, duration: 0.5, ease: "power2.out", stagger: 0.14 }, 1.2);
+      lightStep(2, 1.5, "#61dafb");
+      /* skeleton respira (esperando dados) */
+      tl.to("#browser .slot .sk", { opacity: 0.55, duration: 0.5, yoyo: true, repeat: 3, ease: "sine.inOut" }, 1.9);
+
+      /* ── ATO 2 · useEffect acorda e o fetch viaja (2.4–8s) ── */
+      tl.to("#fx-chip", { opacity: 1, y: 0, duration: 0.55, ease: "back.out(1.7)" }, 2.4);
+      tl.to("#fx-ring", { opacity: 0.9, scale: 1, duration: 0.1 }, 2.95);
+      tl.to("#fx-ring", { opacity: 0, scale: 2.4, duration: 0.7, ease: "power2.out" }, 3.05);
+      lightStep(3, 3.0, "#61dafb");
+
+      tl.to("#server", { opacity: 1, x: 0, duration: 0.6, ease: "back.out(1.5)" }, 3.3);
+      tl.to("#wire", { opacity: 0.45, duration: 0.5 }, 3.5);
+
+      /* GET viaja até o json-server */
+      tl.to("#pk-get", { opacity: 1, duration: 0.2 }, 4.0);
+      tl.to("#pk-get", { x: 610, duration: 1.15, ease: "power1.inOut" }, 4.1);
+      tl.to("#pk-get", { opacity: 0, duration: 0.2 }, 5.25);
+      lightStep(4, 4.6, "#f7b731");
+      /* servidor acende */
+      tl.to("#server .led1", { backgroundColor: "#46d39a", duration: 0.12 }, 5.3);
+      tl.to("#server .led2", { backgroundColor: "#f7b731", duration: 0.12 }, 5.45);
+      tl.to("#server .led3", { backgroundColor: "#46d39a", duration: 0.12 }, 5.6);
+      tl.to("#server", { scale: 1.04, duration: 0.2, yoyo: true, repeat: 1, ease: "back.out(2)" }, 5.35);
+
+      /* JSON volta */
+      tl.to("#pk-json", { opacity: 1, duration: 0.2 }, 5.95);
+      tl.to("#pk-json", { x: -610, duration: 1.15, ease: "power1.inOut" }, 6.05);
+      tl.to("#pk-json", { opacity: 0, duration: 0.2 }, 7.2);
+
+      /* setProdutos entra em cena */
+      tl.to("#set-chip", { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.8)" }, 7.3);
+      tl.to("#set-chip", { scale: 1.07, duration: 0.18, yoyo: true, repeat: 1, ease: "back.out(2)" }, 7.85);
+
+      /* ── ATO 3 · novo render com os cards (8.2–10s) ── */
+      tl.to("#flash", { opacity: 0.8, duration: 0.09 }, 8.25);
+      tl.to("#flash", { opacity: 0, duration: 0.3, ease: "power2.out" }, 8.34);
+      tl.to("#browser .slot .sk", { opacity: 0, y: -14, duration: 0.35, ease: "power2.in", stagger: 0.1 }, 8.3);
+      tl.to("#browser .slot .pr", { opacity: 1, y: 0, duration: 0.55, ease: "back.out(1.7)", stagger: 0.14 }, 8.55);
+      lightStep(5, 8.8, "#46d39a");
+
+      /* ── ATO 3b · o [] segura a porta (10.4–13s) ── */
+      tl.to("#pk-again", { opacity: 1, duration: 0.25 }, 10.5);
+      tl.to("#pk-again", { x: 62, duration: 0.7, ease: "power1.in" }, 10.6);
+      tl.to("#shield", { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2.4)" }, 10.9);
+      /* o pacote bate no escudo e volta */
+      tl.to("#pk-again", { x: 6, duration: 0.45, ease: "power2.out" }, 11.35);
+      tl.to("#pk-again", { opacity: 0, duration: 0.35 }, 11.75);
+      tl.to("#shield", { scale: 1.18, duration: 0.16, yoyo: true, repeat: 1, ease: "back.out(2.5)" }, 11.3);
+      tl.to("#fx-chip", { rotation: 2.4, duration: 0.1, yoyo: true, repeat: 3, ease: "sine.inOut" }, 11.35);
+      tl.to("#porta", { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 11.9);
+
+      /* respiro final */
+      tl.to("#server .led2", { backgroundColor: "#3a3a55", duration: 0.3 }, 13.3);
+      tl.to("#server .led2", { backgroundColor: "#f7b731", duration: 0.3 }, 14.0);
+      tl.to("#browser", { scale: 1.01, duration: 0.8, yoyo: true, repeat: 1, ease: "sine.inOut" }, 13.6);
+      tl.to("#shield", { y: -6, duration: 0.7, yoyo: true, repeat: 1, ease: "sine.inOut" }, 13.8);
+
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

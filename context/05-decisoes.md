@@ -269,6 +269,56 @@
    Desafio 1 e tempera" — termômetro de fixação após D2–D5. Conferência final e card do hub
    atualizados. Pasta segue `05b-desafio-lanchonete/` (links preservados).
 
+## 2026-07-25 — Caps 6 (useState) e 7 (useEffect) + playground React + mini-browser interativo
+
+Sessão planejou (spec em `08-plano-caps-06-07.md`) e entregou os dois capítulos no mesmo dia.
+
+1. **Cap 06 (`06-react-state/`, "Interatividade: useState & eventos")** — arco: eventos
+   (`onClick={f}` sem parênteses, "receita não bolo") → dor da variável teimosa (`let` muda,
+   tela não) → useState (analogia do **placar do estádio**; anatomia colorida da linha) →
+   **3 regras do estado** (só pelo set · set não é imediato/📸 · cada componente tem a sua
+   memória) → estado+porteiros (payoff Cap 5, zero conteúdo novo) → formulários controlados
+   (input com crachá) → **"o estado mora no pai"** (carrinho; sem o jargão "lifting"). 5 máquinas:
+   🎯 Clique Certo (onClick errado dispara SOZINHO na renderização), 🧊 Variável Teimosa (a dor é
+   a máquina; toggle refaz com useState), 🔄 Ciclo do Estado (máquina-mor: esteira + FILME de
+   fotos 📸 empilhando — prepara a regra 2 e o Cap 7), 👯 Gêmeos (memórias independentes),
+   🪞 Input-Espelho (toggle "tirar o onChange" = campo congelado). Treino 7 passos: contador →
+   zerar/não-negativo → qtd por card → curtir ❤️ → busca controlada → **filtro ao vivo** (UAU) →
+   chefão 🛒 carrinho no Cabecalho. Casa: plural + limpar (função desce!) + modo escuro.
+2. **Cap 07 (`07-react-efeitos-dados/`, "Dados de verdade: useEffect & fetch")** — arco: dor
+   primeiro (🌀 loop infinito, ponte direta com a esteira de fotos do Cap 6) → **anatomia
+   useEffect(O QUE, QUANDO)** com a **receita da moldura** (1 moldura → 2 função → 3 vírgula+array
+   → 4 corpo; mnemônico fixo do capítulo, cores consistentes função=ciano/array=amarelo em TODOS
+   os blocos e máquinas) → 3 modos do array → json-server ("cozinha de treino"; ponte Cap 3 em 3
+   linhas; shape do ERP; enquadramento futuro p/ turma sem backend) → **cerimônia "apague o
+   const"** (padrão canônico de 3 passos) → carregando/erro (porteiros) → concept-box faxina +
+   async/await (só citação; .then segue, decisão de 2026-06-12 mantida). 5 máquinas: 🌀 Loop
+   Infinito (contador de renders acelerando + extintor useEffect), 🧩 Montador (peças clicáveis
+   na ordem da receita; erro mostra o que o React diria; confete), 🎛️ Painel do useEffect
+   (máquina-mor: 3 modos × 3 provocações → LED + console), 🚚 Entrega ao Vivo (skeleton → 
+   caminhão → JSON → cards; botão "desligar o servidor" = rota do erro), ⏳ Semáforo (3 cenários ×
+   linha do porteiro que acende). Treino 7 passos: db.json+json-server → 1º useEffect console.log
+   ([] × sem array) → `document.title` com `[busca]` (payoff visível do modo 3) → apagar o const →
+   carregando → erro (matar o servidor de propósito) → chefão integração 5+6+7. Casa: emEstoque
+   atravessando a stack + botão recarregar.
+3. **Playground modo `react`** (novo, `shared/playground.js` + vendors em `shared/vendor/`):
+   React 18 UMD + Babel standalone vendorizados (offline-first, ~3 MB, lazy). 1 Laboratório por
+   cap (contador+espelho no 6; painel do useEffect editável no 7, com console capturando os
+   efeitos). Regra "forçar o VSCode" preservada (labs vêm DEPOIS do exercício digitado).
+   ⚠️ corrigida de tabela a ligadura no editor: `.pg-code` não desativava ligatures (=> virava ⇒).
+4. **Mini-browser interativo** (`data-mp="js"` + `data-h`): prévia com `allow-scripts` — nos
+   treinos de estado o resultado É clicável (contador, filtro, carrinho). Ver `01-design-system.md`.
+5. **Vídeos: experimento HyperFrames** em `tooling/hyperframes/` (4 storyboards:
+   `anatomia-usestate`, `ciclo-do-estado`, `anatomia-useeffect`, `vida-do-componente`; 16:9
+   1920×1080 loop sem áudio, paleta do material, mp4+poster em `assets/video/`). Pipeline novo ao
+   lado do Remotion; se a qualidade não bater, os storyboards portam pro Remotion.
+6. **Fix compartilhado `motion-fx.js`:** versões novas do motion@11 (CDN) passam um
+   IntersectionObserverEntry pro callback do `inView` → normalizado com `asEl()` (afetava todos
+   os caps com `data-motion`, exceção silenciosa no console).
+7. Hub: cards 06/07 destravados (pills novas; "CRUD" saiu do card 07 — não ensinamos CRUD lá);
+   05b agora aponta "Próximo: Cap 06". Memes dos caps ainda **pendentes de aprovação**
+   (Pikachu setContador / Anakin-Padmé fetch no useEffect).
+
 ## Pendências reconhecidas
 - Planejar em detalhe os **Caps 6–9** (React: state → efeitos/dados → router → integração).
   Caps 4 e 5 já fixaram o tom, o setup Vite base e a Mini-loja como artefato contínuo do arco React.

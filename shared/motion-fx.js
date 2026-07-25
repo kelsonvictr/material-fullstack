@@ -22,8 +22,13 @@ const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
   }
   const { animate, inView, stagger } = M;
 
+  /* versões novas do motion passam um IntersectionObserverEntry pro callback
+     do inView (não o elemento) — normaliza pra funcionar nas duas */
+  const asEl = (x) => (x instanceof Element ? x : x?.target);
+
   /* entrada: sobe + fade, com stagger nos filhos marcados */
-  inView('[data-motion="rise"]', (el) => {
+  inView('[data-motion="rise"]', (raw) => {
+    const el = asEl(raw); if (!el) return;
     const kids = el.querySelectorAll('[data-motion-child]');
     if (kids.length) {
       animate(kids, { opacity: [0, 1], transform: ['translateY(24px)', 'translateY(0px)'] },
@@ -36,7 +41,8 @@ const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
   }, { margin: '0px 0px -10% 0px' });
 
   /* pop ao entrar */
-  inView('[data-motion="pop"]', (el) => {
+  inView('[data-motion="pop"]', (raw) => {
+    const el = asEl(raw); if (!el) return;
     animate(el, { transform: ['scale(0.7)', 'scale(1)'], opacity: [0, 1] },
       { duration: 0.5, easing: [0.34, 1.56, 0.64, 1] });
     return () => {};

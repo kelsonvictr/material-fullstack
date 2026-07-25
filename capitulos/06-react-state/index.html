@@ -1,0 +1,1706 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cap 06 — Interatividade: useState &amp; eventos | Curso Fullstack</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=JetBrains+Mono:wght@400;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../shared/styles.css">
+<link rel="stylesheet" href="../../shared/components.css">
+<link rel="stylesheet" href="../../shared/animations.css">
+<link rel="stylesheet" href="../../shared/playground.css">
+<style>
+  /* ── mono didático: SEMPRE sem ligaduras (=> não vira ⇒, >= não vira ≥) ── */
+  .mono,.st-code,.st-console,.cp-line,.cy-code,.tw-label,.mir-state,.mir-console,.anat-code,.anat-piece{
+    font-family:'JetBrains Mono',monospace;
+    font-variant-ligatures:none;font-feature-settings:"liga" 0,"clig" 0,"calt" 0}
+
+  /* nome de componente dentro do JSX (sempre Maiúsculo) */
+  .cmp{color:var(--react);font-weight:600}
+
+  /* ── videoclipes (Remotion/HyperFrames) ── */
+  .clip{margin:18px 0 4px}
+  .clip video{width:100%;border-radius:14px;border:1px solid rgba(97,218,251,0.25);
+    box-shadow:0 18px 50px rgba(0,0,0,0.45);display:block;background:#0a0a12}
+  .clip figcaption{font-size:0.78rem;color:var(--text-dim);text-align:center;margin-top:8px}
+
+  /* ═══ 🧬 Anatomia do useState (leitura guiada colorida) ═══ */
+  .anat{background:linear-gradient(180deg,#0b1020,#0d0d1a);border:1px solid rgba(97,218,251,0.25);
+    border-radius:16px;padding:20px 16px;margin:14px 0;text-align:center;overflow-x:auto}
+  .anat-code{font-size:clamp(0.72rem,2.4vw,1.02rem);white-space:nowrap;color:#cdd6f4}
+  .anat-code .a-valor{color:var(--react);font-weight:700}
+  .anat-code .a-set{color:var(--accent5);font-weight:700}
+  .anat-code .a-hook{color:#a78bfa;font-weight:700}
+  .anat-code .a-inicial{color:#46d39a;font-weight:700}
+  .anat-legend{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:14px}
+  .anat-piece{font-size:0.72rem;border-radius:10px;padding:6px 12px;border:1px solid}
+  .anat-piece.p-valor{color:var(--react);border-color:rgba(97,218,251,0.45);background:rgba(97,218,251,0.08)}
+  .anat-piece.p-set{color:var(--accent5);border-color:rgba(247,183,49,0.45);background:rgba(247,183,49,0.08)}
+  .anat-piece.p-hook{color:#a78bfa;border-color:rgba(167,139,250,0.45);background:rgba(167,139,250,0.08)}
+  .anat-piece.p-inicial{color:#46d39a;border-color:rgba(70,211,154,0.45);background:rgba(70,211,154,0.08)}
+
+  /* ═══ 🧊 Variável Teimosa ═══ */
+  .stubborn{background:linear-gradient(180deg,#0b1020,#0d0d1a);border:1px solid rgba(69,183,209,0.3);
+    border-radius:16px;padding:18px;margin:14px 0}
+  .st-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:14px;align-items:start}
+  @media (max-width:640px){.st-grid{grid-template-columns:1fr}}
+  .st-code{background:#06060c;border:1px solid rgba(255,255,255,0.1);border-radius:10px;
+    padding:12px;font-size:0.72rem;color:#cdd6f4;white-space:pre-wrap;line-height:1.6}
+  .st-code .hot{border-radius:6px;transition:background .3s,box-shadow .3s}
+  .st-code .hot.lit{background:rgba(69,183,209,0.16);box-shadow:inset 0 0 0 1px rgba(69,183,209,0.5)}
+  .st-screen{background:#fff;color:#111;border-radius:12px;padding:16px;text-align:center;
+    font-family:'Nunito',sans-serif;box-shadow:0 8px 24px rgba(0,0,0,0.35)}
+  .st-screen h4{margin:0 0 4px;font-size:1.05rem}
+  .st-screen .st-num{font-size:2rem;font-weight:900;transition:transform .2s}
+  .st-screen .st-num.bump{transform:scale(1.25)}
+  .st-face{font-size:1.2rem;min-height:26px}
+  .st-console{margin-top:10px;background:#06060c;border:1px solid rgba(255,255,255,0.1);border-radius:10px;
+    padding:10px 12px;font-size:0.7rem;color:#7ef0c4;min-height:44px;max-height:96px;overflow:auto;white-space:pre-wrap}
+  .st-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px;font-size:0.78rem;color:var(--text-dim)}
+  .st-controls button{border:1px solid rgba(69,183,209,0.45);background:var(--surface2);color:#45b7d1;
+    font-family:'JetBrains Mono',monospace;font-weight:700;font-size:0.78rem;padding:8px 14px;border-radius:10px;cursor:pointer;transition:all .2s}
+  .st-controls button:hover{transform:translateY(-2px);background:rgba(69,183,209,0.1)}
+  .st-controls button.on{border-color:var(--react);color:var(--react);background:rgba(97,218,251,0.1)}
+
+  /* ═══ 🎯 Clique Certo ═══ */
+  .clickpick{background:linear-gradient(180deg,#0b1020,#0d0d1a);border:1px solid rgba(247,223,30,0.25);
+    border-radius:16px;padding:18px;margin:14px 0}
+  .cp-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+  .cp-chip{border:1px solid rgba(247,223,30,0.4);background:var(--surface2);color:var(--js);
+    font-family:'JetBrains Mono',monospace;font-variant-ligatures:none;font-feature-settings:"liga" 0,"clig" 0,"calt" 0;
+    font-weight:700;font-size:0.74rem;padding:8px 12px;border-radius:10px;cursor:pointer;transition:all .2s}
+  .cp-chip:hover{transform:translateY(-2px)}
+  .cp-chip.active{border-color:#fff;color:#fff;background:rgba(255,255,255,0.08)}
+  .cp-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:14px;align-items:start}
+  @media (max-width:640px){.cp-grid{grid-template-columns:1fr}}
+  .cp-line{background:#06060c;border:1px solid rgba(255,255,255,0.1);border-radius:10px;
+    padding:12px;font-size:0.74rem;color:#cdd6f4;white-space:pre-wrap;line-height:1.7}
+  .cp-screen{background:#fff;color:#111;border-radius:12px;padding:16px;text-align:center;font-family:'Nunito',sans-serif}
+  .cp-screen .cp-num{font-size:1.8rem;font-weight:900}
+  .cp-screen button{font:inherit;font-weight:800;padding:8px 18px;border-radius:10px;border:1px solid #cbd5e1;
+    background:#f1f5f9;cursor:pointer;margin-top:6px}
+  .cp-note{margin-top:12px;background:#0b0b14;border:1px solid rgba(255,255,255,0.1);border-radius:10px;
+    padding:10px 12px;font-size:0.82rem;color:#cdd6f4;text-align:center;min-height:40px}
+  .cp-note .ok{color:#46d39a;font-weight:800}.cp-note .bad{color:#ff8b8b;font-weight:800}
+
+  /* ═══ 🔄 Ciclo do Estado (máquina-mor) ═══ */
+  .cycle{background:linear-gradient(180deg,#0b1020,#0d0d1a);border:1px solid rgba(97,218,251,0.3);
+    border-radius:16px;padding:18px;margin:14px 0}
+  .cy-top{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center}
+  @media (max-width:640px){.cy-top{grid-template-columns:1fr}}
+  .cy-app{background:#fff;color:#111;border-radius:12px;padding:16px 22px;text-align:center;
+    font-family:'Nunito',sans-serif;box-shadow:0 8px 24px rgba(0,0,0,0.35)}
+  .cy-app .cy-num{font-size:2.2rem;font-weight:900;transition:transform .2s}
+  .cy-app .cy-num.bump{transform:scale(1.3)}
+  .cy-app button{font:inherit;font-weight:800;font-size:1rem;padding:10px 22px;border-radius:12px;
+    border:1px solid #cbd5e1;background:#f1f5f9;cursor:pointer;margin-top:6px;transition:transform .1s}
+  .cy-app button:active{transform:scale(0.94)}
+  .cy-steps{display:flex;flex-direction:column;gap:8px}
+  .cy-step{display:flex;align-items:center;gap:10px;background:#0b0b14;border:1px solid rgba(255,255,255,0.1);
+    border-radius:10px;padding:8px 12px;font-size:0.8rem;color:var(--text-dim);transition:all .25s}
+  .cy-step .cy-ico{font-size:1.05rem}
+  .cy-step.lit{border-color:rgba(97,218,251,0.6);background:rgba(97,218,251,0.1);color:#fff;transform:translateX(6px)}
+  .cy-step .cy-code{font-family:'JetBrains Mono',monospace;font-variant-ligatures:none;
+    font-feature-settings:"liga" 0,"clig" 0,"calt" 0;font-size:0.72rem;color:var(--accent5)}
+  .cy-film{margin-top:14px}
+  .cy-film-label{font-size:0.74rem;color:var(--text-dim);font-weight:700;margin-bottom:8px}
+  .cy-frames{display:flex;gap:8px;flex-wrap:wrap;min-height:58px}
+  .cy-frame{background:#0b0b14;border:1px solid rgba(97,218,251,0.35);border-radius:8px;
+    padding:6px 10px;text-align:center;opacity:0;transform:scale(.7);transition:all .3s}
+  .cy-frame.in{opacity:1;transform:scale(1)}
+  .cy-frame .f-cam{font-size:0.8rem}
+  .cy-frame .f-val{font-family:'JetBrains Mono',monospace;font-variant-ligatures:none;
+    font-feature-settings:"liga" 0,"clig" 0,"calt" 0;font-size:0.78rem;color:var(--react);font-weight:700}
+  .cy-frame.old{border-color:rgba(255,255,255,0.12);filter:grayscale(.8);opacity:.55}
+  .cy-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px;font-size:0.78rem;color:var(--text-dim)}
+  .cy-controls button{border:1px solid rgba(97,218,251,0.4);background:var(--surface2);color:#61dafb;
+    font-family:'JetBrains Mono',monospace;font-weight:700;font-size:0.78rem;padding:8px 14px;border-radius:10px;cursor:pointer;transition:all .2s}
+  .cy-controls button:hover{transform:translateY(-2px);background:rgba(97,218,251,0.12)}
+
+  /* ═══ 👯 Gêmeos com memória própria ═══ */
+  .twins{background:linear-gradient(180deg,#0b1020,#0d0d1a);border:1px solid rgba(167,139,250,0.3);
+    border-radius:16px;padding:18px;margin:14px 0}
+  .tw-row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+  .tw-card{background:#fff;color:#111;border-radius:12px;padding:14px 18px;text-align:center;
+    font-family:'Nunito',sans-serif;min-width:130px;opacity:0;transform:translateY(10px);transition:all .35s}
+  .tw-card.in{opacity:1;transform:translateY(0)}
+  .tw-card h5{margin:0 0 2px;font-size:0.9rem}
+  .tw-label{display:block;font-size:0.62rem;color:#64748b;margin-bottom:6px}
+  .tw-num{font-size:1.7rem;font-weight:900}
+  .tw-card button{font:inherit;font-weight:800;padding:6px 16px;border-radius:10px;border:1px solid #cbd5e1;
+    background:#f1f5f9;cursor:pointer;margin-top:4px}
+  .tw-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px;font-size:0.78rem;color:var(--text-dim)}
+  .tw-controls button{border:1px solid rgba(167,139,250,0.45);background:var(--surface2);color:#a78bfa;
+    font-family:'JetBrains Mono',monospace;font-weight:700;font-size:0.78rem;padding:8px 14px;border-radius:10px;cursor:pointer;transition:all .2s}
+  .tw-controls button:hover{transform:translateY(-2px);background:rgba(167,139,250,0.1)}
+
+  /* ═══ 🪞 Input-Espelho ═══ */
+  .mirror{background:linear-gradient(180deg,#0b1020,#0d0d1a);border:1px solid rgba(78,205,196,0.3);
+    border-radius:16px;padding:18px;margin:14px 0}
+  .mir-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+  @media (max-width:640px){.mir-grid{grid-template-columns:1fr}}
+  .mir-app{background:#fff;color:#111;border-radius:12px;padding:16px;font-family:'Nunito',sans-serif;text-align:center}
+  .mir-app input{font:inherit;padding:8px 12px;border-radius:10px;border:1px solid #cbd5e1;width:90%;max-width:240px}
+  .mir-app input.dead{background:#f1f5f9;cursor:not-allowed}
+  .mir-app .mir-ola{margin:10px 0 0;font-weight:800;min-height:24px}
+  .mir-side{display:flex;flex-direction:column;gap:10px}
+  .mir-state{background:#0b0b14;border:1px solid rgba(78,205,196,0.4);border-radius:10px;
+    padding:10px 12px;font-size:0.76rem;color:#4ecdc4}
+  .mir-state .v{color:#f7b731}
+  .mir-console{background:#06060c;border:1px solid rgba(255,255,255,0.1);border-radius:10px;
+    padding:10px 12px;font-size:0.7rem;color:#cdd6f4;min-height:56px;max-height:96px;overflow:auto;white-space:pre-wrap}
+  .mir-console .warn{color:#f7b731}
+  .mir-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px;font-size:0.78rem;color:var(--text-dim)}
+  .mir-controls button{border:1px solid rgba(78,205,196,0.45);background:var(--surface2);color:#4ecdc4;
+    font-family:'JetBrains Mono',monospace;font-weight:700;font-size:0.78rem;padding:8px 14px;border-radius:10px;cursor:pointer;transition:all .2s}
+  .mir-controls button:hover{transform:translateY(-2px);background:rgba(78,205,196,0.1)}
+  .mir-controls button.dead-on{border-color:var(--bug);color:#ff8b8b;background:rgba(255,71,87,0.08)}
+
+  /* ═══ 🛒 diagrama "o estado mora no pai" ═══ */
+  .updown{background:linear-gradient(180deg,#0b1020,#0d0d1a);border:1px solid rgba(97,218,251,0.25);
+    border-radius:16px;padding:18px;margin:14px 0;text-align:center}
+  .ud-box{display:inline-block;background:#0b0b14;border:1px solid rgba(97,218,251,0.4);border-radius:12px;
+    padding:10px 18px;font-weight:800;color:#fff}
+  .ud-box small{display:block;font-weight:600;color:var(--text-dim);font-size:0.68rem;margin-top:2px}
+  .ud-arrows{display:flex;justify-content:center;gap:38px;margin:6px 0;font-size:0.78rem;font-weight:800}
+  .ud-arrows .down{color:var(--react)}
+  .ud-arrows .up{color:var(--accent5)}
+  .ud-kids{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+
+  @media (prefers-reduced-motion: reduce){
+    .st-code .hot,.st-num,.cy-step,.cy-frame,.cy-num,.tw-card,.cp-chip,.cy-app button{transition:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-orbs"><div class="orb"></div><div class="orb"></div><div class="orb"></div></div>
+<div class="progress-track"><div class="progress-bar"></div></div>
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<button class="menu-toggle" onclick="openSidebar()" aria-label="Abrir menu">☰</button>
+<div class="sidebar-overlay"></div>
+<nav class="sidebar-nav">
+  <button class="sidebar-close" onclick="closeSidebar()" aria-label="Fechar">✕</button>
+  <div class="sidebar-header">
+    <h3>🧠 Cap 06 · Interatividade</h3>
+    <a class="sidebar-back" href="../../index.html">← Voltar ao hub</a>
+  </div>
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Neste capítulo</div>
+    <a class="sidebar-link" onclick="goTo('aquecimento')"><span class="dot" style="background:var(--accent5)"></span> Aquecimento</a>
+    <a class="sidebar-link" onclick="goTo('eventos')"><span class="dot" style="background:var(--js)"></span> ⚡ Eventos no React</a>
+    <a class="sidebar-link" onclick="goTo('teimosa')"><span class="dot" style="background:var(--accent4)"></span> 🧊 A variável teimosa</a>
+    <a class="sidebar-link" onclick="goTo('usestate')"><span class="dot" style="background:var(--react)"></span> 🧠 useState</a>
+    <a class="sidebar-link" onclick="goTo('regras')"><span class="dot" style="background:var(--accent5)"></span> 📜 As 3 regras do estado</a>
+    <a class="sidebar-link" onclick="goTo('porteiros')"><span class="dot" style="background:var(--accent7)"></span> 💡 Estado + porteiros</a>
+    <a class="sidebar-link" onclick="goTo('formularios')"><span class="dot" style="background:var(--accent3)"></span> 📝 Formulários controlados</a>
+    <a class="sidebar-link" onclick="goTo('pai')"><span class="dot" style="background:var(--vite)"></span> 🛒 O estado mora no pai</a>
+    <a class="sidebar-link" onclick="goTo('bugzilla')"><span class="dot" style="background:var(--bug)"></span> BugZilla 🐛</a>
+    <a class="sidebar-link" onclick="goTo('treino')"><span class="dot" style="background:var(--react)"></span> ⌨️ Treino: a loja reage</a>
+    <a class="sidebar-link" onclick="goTo('resumo')"><span class="dot" style="background:var(--accent7)"></span> Resumo</a>
+  </div>
+</nav>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section class="hero">
+  <div class="hero-icons" data-motion="float"><img src="../../assets/svg/react.svg" alt="React" width="46" height="46" style="vertical-align:middle"> 🧠 ⚡</div>
+  <span class="hero-badge react">Capítulo 06 · Curso Fullstack</span>
+  <h1>Interatividade: <span style="color:var(--react)">useState</span> &amp; eventos</h1>
+  <p class="subtitle">
+    Sua loja está linda… e <strong>parada</strong>. Hoje ela ganha <strong style="color:var(--react)">memória</strong>:
+    botões que contam, corações que curtem, uma busca que filtra em tempo real e um
+    <strong style="color:var(--accent5)">carrinho</strong> de verdade. Bem-vindo(a) ao hook mais
+    famoso do React.
+  </p>
+  <div class="hero-stack">
+    <span class="stack-chip js">⚡ onClick</span>
+    <span class="stack-chip react">🧠 useState</span>
+    <span class="stack-chip react">📸 re-render</span>
+    <span class="stack-chip node">📝 formulários</span>
+    <span class="stack-chip js">🛒 carrinho</span>
+  </div>
+</section>
+
+<div class="container">
+
+  <!-- ═══════════════ AQUECIMENTO ═══════════════ -->
+  <section class="step-section" id="aquecimento">
+    <div class="step-header">
+      <div class="step-number sn-yellow">🤔</div>
+      <div>
+        <div class="step-title">Aquecimento</div>
+        <div class="step-sub">Um mistério pra abrir a aula</div>
+      </div>
+    </div>
+    <div class="quiz">
+      <div class="quiz-q"><span class="q-emoji">1️⃣</span> Um aluno criou <code>let cliques = 0</code> no componente e um botão que faz <code>cliques = cliques + 1</code>. No console, o número <strong>sobe</strong>: 1, 2, 3… Mas a tela <strong>continua mostrando 0</strong>. O que você acha que está acontecendo?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz(this,false)">O JavaScript está bugado — a variável não mudou</button>
+        <button class="quiz-opt" data-correct="true" onclick="checkQuiz(this,true)">A variável mudou, mas ninguém avisou o React pra redesenhar a tela</button>
+        <button class="quiz-opt" onclick="checkQuiz(this,false)">Faltou dar F5 depois de cada clique</button>
+        <button class="quiz-opt" onclick="checkQuiz(this,false)">O botão está com defeito</button>
+      </div>
+      <div class="quiz-feedback" data-correct="Exatamente! E o 'aviso' tem nome: useState." data-wrong="O console prova que a variável mudou… então o problema é outro." data-explain="O React só redesenha o componente quando VOCÊ avisa que algo mudou. Variável comum muda em silêncio — a tela nem fica sabendo. A memória que avisa o React é o useState, o assunto de hoje."></div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ EVENTOS ═══════════════ -->
+  <section class="step-section" id="eventos">
+    <div class="step-header">
+      <div class="step-number sn-js">⚡</div>
+      <div>
+        <div class="step-title">Eventos no React — o clique vai direto no JSX</div>
+        <div class="step-sub">O addEventListener do Cap 3, do jeito React</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="analogy">
+        <div class="analogy-title">🔔 A campainha já vem instalada</div>
+        <p>No Cap 3, pra escutar um clique você tinha que <strong>achar</strong> o botão
+        (<code>querySelector</code>) e <strong>instalar</strong> a campainha
+        (<code>addEventListener</code>). No React, a campainha já vem de fábrica: você escreve
+        <strong>no próprio JSX</strong> qual função toca quando o botão for clicado.</p>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">como era no Cap 3 (JS puro)</span><span class="lang-badge js">JavaScript</span></div>
+<pre><span class="kw">const</span> <span class="var">botao</span> <span class="op">=</span> <span class="var">document</span>.<span class="fn">querySelector</span>(<span class="st">"button"</span>)<span class="punc">;</span>
+<span class="var">botao</span>.<span class="fn">addEventListener</span>(<span class="st">"click"</span>, <span class="var">aumentar</span>)<span class="punc">;</span></pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">como é no React</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="tag">&lt;button</span> <span class="atr">onClick</span><span class="op">=</span>{<span class="var">aumentar</span>}<span class="tag">&gt;</span>+1<span class="tag">&lt;/button&gt;</span></pre>
+      </div>
+
+      <ul class="about-bullets">
+        <li><div><strong><code>onClick</code> com C maiúsculo</strong> — é o camelCase do JSX, igual ao <code>className</code> do Cap 4 (<code>onclick</code> minúsculo o React ignora de propósito).</div></li>
+        <li><div><strong>Entre chaves <code>{ }</code></strong> — você está passando <strong>JavaScript</strong> (a função), não um texto.</div></li>
+        <li><div>Existe um evento pra tudo: <code>onClick</code>, <code>onChange</code> (vamos usar nos formulários), <code>onSubmit</code>, <code>onMouseOver</code>…</div></li>
+      </ul>
+
+      <p>Num componente completo, a função fica <strong>dentro</strong> dele, antes do <code>return</code>:</p>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">const</span> <span class="fn">App</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">const</span> <span class="fn">aumentar</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
+    <span class="var">console</span>.<span class="fn">log</span>(<span class="st">"clicou! 🖱️"</span>)
+  <span class="punc">}</span>
+
+  <span class="kw">return</span> <span class="tag">&lt;button</span> <span class="atr">onClick</span><span class="op">=</span>{<span class="var">aumentar</span>}<span class="tag">&gt;</span>+1<span class="tag">&lt;/button&gt;</span>
+<span class="punc">}</span></pre>
+      </div>
+
+      <div class="warning">
+        <span class="warning-icon">⚠️</span>
+        <div class="warning-content">
+          <strong>A pegadinha nº 1 do capítulo:</strong> é <code>onClick={aumentar}</code> —
+          <strong>sem parênteses!</strong> Você entrega a função pro React chamar <em>na hora do clique</em>.
+          Se escrever <code>onClick={aumentar()}</code>, os parênteses <strong>executam a função
+          imediatamente</strong>, enquanto o React desenha a tela — antes de qualquer clique.
+          Pense assim: você entrega a <strong>receita</strong> 📄, não o <strong>bolo pronto</strong> 🎂.
+        </div>
+      </div>
+
+      <div class="warning">
+        <span class="warning-icon">⌨️</span>
+        <div class="warning-content">
+          As arrow functions <code>=&gt;</code> do Cap 2 vão aparecer o capítulo inteiro (inclusive no
+          <strong>rafce</strong>, o "Rafael do Ceará"). Lembre: sua IDE pode <strong>desenhar</strong>
+          <code>⇒</code>, mas você digita <kbd>=</kbd> e depois <kbd>&gt;</kbd> — dois caracteres.
+        </div>
+      </div>
+
+      <p style="color:var(--text-dim);margin:14px 0 4px">Teste os três jeitos de escrever o
+      <code>onClick</code> e clique no botão de cada um pra ver a diferença 👇</p>
+
+      <div class="clickpick" id="clickpick">
+        <div class="cp-chips">
+          <button class="cp-chip active" data-v="certo">onClick={aumentar}</button>
+          <button class="cp-chip" data-v="parenteses">onClick={aumentar()}</button>
+          <button class="cp-chip" data-v="minusculo">onclick={aumentar}</button>
+        </div>
+        <div class="cp-grid">
+          <div class="cp-line" id="cp-line"></div>
+          <div class="cp-screen">
+            <div class="cp-num" id="cp-num">0</div>
+            <button id="cp-btn">+1</button>
+          </div>
+        </div>
+        <div class="cp-note" id="cp-note">…</div>
+      </div>
+
+      <div class="quiz" style="margin-top:16px">
+        <div class="quiz-q"><span class="q-emoji">⚡</span> Checagem rápida: qual botão só dispara a função <strong>quando alguém clica</strong>?</div>
+        <div class="quiz-options">
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">&lt;button onClick={avisar()}&gt;</button>
+          <button class="quiz-opt" data-correct="true" onclick="checkQuiz(this,true)">&lt;button onClick={avisar}&gt;</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">&lt;button onclick={avisar}&gt;</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">&lt;button click="avisar"&gt;</button>
+        </div>
+        <div class="quiz-feedback" data-correct="Isso! Sem parênteses: você entrega a receita, não o bolo." data-wrong="Cuidado com os parênteses e o camelCase…" data-explain="onClick={avisar} entrega a função pro React chamar no clique. Com parênteses ela roda na renderização; com onclick minúsculo o React ignora. E quando precisar passar um valor, embrulhe numa arrow: onClick={() => avisar('oi')}."></div>
+      </div>
+
+      <div class="tip">
+        <span class="tip-icon">🎁</span>
+        <div class="tip-content">
+          <strong>E se a função precisar de um valor?</strong> Embrulhe numa arrow:
+          <code>onClick={() =&gt; setContador(0)}</code>. A arrow é a receita; o que está dentro só roda
+          no clique. Você vai usar esse molde o tempo todo a partir de hoje.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ VARIÁVEL TEIMOSA ═══════════════ -->
+  <section class="step-section" id="teimosa">
+    <div class="step-header">
+      <div class="step-number sn-red">🧊</div>
+      <div>
+        <div class="step-title">A dor: a variável que muda… e a tela que não</div>
+        <div class="step-sub">Por que let não funciona dentro de componente</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p>Você já sabe eventos. Então bora fazer um contador do jeito que o Cap 2 ensinaria — com uma
+      variável comum:</p>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx — tentativa ingênua 🙈</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">const</span> <span class="fn">App</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">let</span> <span class="var">cliques</span> <span class="op">=</span> <span class="num">0</span>
+
+  <span class="kw">const</span> <span class="fn">aumentar</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
+    <span class="var">cliques</span> <span class="op">=</span> <span class="var">cliques</span> <span class="op">+</span> <span class="num">1</span>
+    <span class="var">console</span>.<span class="fn">log</span>(<span class="st">"cliques agora é:"</span>, <span class="var">cliques</span>)
+  <span class="punc">}</span>
+
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span>
+      <span class="tag">&lt;h2&gt;</span>Cliques: {<span class="var">cliques</span>}<span class="tag">&lt;/h2&gt;</span>
+      <span class="tag">&lt;button</span> <span class="atr">onClick</span><span class="op">=</span>{<span class="var">aumentar</span>}<span class="tag">&gt;</span>+1<span class="tag">&lt;/button&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span></pre>
+      </div>
+
+      <p>Parece perfeito, né? Clique você mesmo e olhe o console <strong>e</strong> a tela 👇</p>
+
+      <div class="stubborn" id="stubborn">
+        <div class="st-grid">
+          <div>
+            <div class="st-code" id="st-code"><span class="hot" id="st-hot-let">let cliques = 0</span>
+<span class="hot" id="st-hot-inc">cliques = cliques + 1</span>   <span style="color:#6b7394">// só a variável muda…</span>
+<span class="hot" id="st-hot-jsx">&lt;h2&gt;Cliques: {cliques}&lt;/h2&gt;</span>  <span style="color:#6b7394">// …a tela NÃO redesenha</span></div>
+            <div class="st-console" id="st-console">// o console vai aparecer aqui…</div>
+          </div>
+          <div>
+            <div class="st-screen">
+              <h4>🖥️ a tela do usuário</h4>
+              <div class="st-num" id="st-num">Cliques: 0</div>
+              <div class="st-face" id="st-face"></div>
+            </div>
+          </div>
+        </div>
+        <div class="st-controls">
+          <button id="st-click">🖱️ clicar no +1</button>
+          <button id="st-toggle">🔁 refazer com useState</button>
+          <button id="st-reset">↺ recomeçar</button>
+          <span id="st-note">a variável é teimosa: muda por dentro, mas a tela nem fica sabendo</span>
+        </div>
+      </div>
+
+      <div class="concept">
+        <div class="concept-title">💡 O que está faltando?</div>
+        <p>A variável até muda — o console prova. Mas o React <strong>não fica vigiando</strong> variável
+        comum: redesenhar a tela custa caro, então ele só faz isso quando <strong>você avisa</strong>.
+        O que a gente precisa é de uma variável especial que, ao mudar, <strong>avise o React</strong>:
+        "ei, redesenha aí!". Ela existe — e é a estrela do capítulo. 👇</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ USESTATE ═══════════════ -->
+  <section class="step-section" id="usestate">
+    <div class="step-header">
+      <div class="step-number sn-react">🧠</div>
+      <div>
+        <div class="step-title">useState — a memória do componente</div>
+        <div class="step-sub">A variável que avisa o React quando muda</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="analogy">
+        <div class="analogy-title">🏟️ O placar do estádio</div>
+        <p>O gol acontece no campo, mas ninguém na arquibancada vê o número mudar sozinho: existe um
+        <strong>operador do placar</strong> que aperta o botão, e aí sim o telão mostra 1 × 0 pra
+        <strong>todo mundo</strong>. O <code>useState</code> te dá exatamente essa dupla: o
+        <strong style="color:var(--react)">placar</strong> (o valor que aparece) e o
+        <strong style="color:var(--accent5)">botão do operador</strong> (a função que muda o valor
+        <em>e avisa o React</em> pra redesenhar).</p>
+      </div>
+
+      <p>Uma linha te dá os dois. Ela parece estranha na primeira vez — vamos ler com calma:</p>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">a linha mais importante do capítulo</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">import</span> <span class="punc">{</span> <span class="var">useState</span> <span class="punc">}</span> <span class="kw">from</span> <span class="st">"react"</span>
+
+<span class="kw">const</span> [<span class="var">contador</span>, <span class="var">setContador</span>] <span class="op">=</span> <span class="fn">useState</span>(<span class="num">0</span>)</pre>
+      </div>
+
+      <div class="anat" data-motion="rise">
+        <div class="anat-code">const [ <span class="a-valor">contador</span> , <span class="a-set">setContador</span> ] = <span class="a-hook">useState</span>( <span class="a-inicial">0</span> )</div>
+        <div class="anat-legend">
+          <span class="anat-piece p-valor">contador → o VALOR (o placar que aparece na tela)</span>
+          <span class="anat-piece p-set">setContador → a função que MUDA e avisa o React</span>
+          <span class="anat-piece p-hook">useState → o hook que cria a memória</span>
+          <span class="anat-piece p-inicial">0 → o valor INICIAL</span>
+        </div>
+      </div>
+
+      <figure class="clip" data-motion="rise">
+        <video controls autoplay loop muted playsinline poster="../../assets/video/anatomia-usestate.png">
+          <source src="../../assets/video/anatomia-usestate.mp4" type="video/mp4">
+          Seu navegador não reproduz o vídeo. <a href="../../assets/video/anatomia-usestate.mp4">Baixe o clipe aqui.</a>
+        </video>
+        <figcaption>🧬 a linha se montando: o <code>useState(0)</code> devolve um PAR — o valor e a função que o controla</figcaption>
+      </figure>
+
+      <ul class="about-bullets">
+        <li><div><strong>O <code>useState(0)</code> devolve um par:</strong> o valor atual e a função de mudança. Os colchetes <code>[ ]</code> são a <strong>desestruturação</strong> do Cap 2 — você abre o par e dá nome às duas peças.</div></li>
+        <li><div><strong>Convenção de nomes:</strong> <code>algo</code> e <code>setAlgo</code> — <code>contador</code>/<code>setContador</code>, <code>nome</code>/<code>setNome</code>, <code>curtido</code>/<code>setCurtido</code>. Todo dev React lê isso de olhos fechados.</div></li>
+        <li><div><strong>O <code>import</code> tem chaves:</strong> <code>import { useState } from "react"</code> — você está pegando uma peça específica da caixa do React.</div></li>
+      </ul>
+
+      <p>Agora o contador de verdade, completo — digite junto com o prof:</p>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx — o contador clássico ✅</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">import</span> <span class="punc">{</span> <span class="var">useState</span> <span class="punc">}</span> <span class="kw">from</span> <span class="st">"react"</span>
+
+<span class="kw">const</span> <span class="fn">App</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">const</span> [<span class="var">contador</span>, <span class="var">setContador</span>] <span class="op">=</span> <span class="fn">useState</span>(<span class="num">0</span>)
+
+  <span class="kw">const</span> <span class="fn">aumentar</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
+    <span class="fn">setContador</span>(<span class="var">contador</span> <span class="op">+</span> <span class="num">1</span>)
+  <span class="punc">}</span>
+
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span>
+      <span class="tag">&lt;h2&gt;</span>Contador: {<span class="var">contador</span>}<span class="tag">&lt;/h2&gt;</span>
+      <span class="tag">&lt;button</span> <span class="atr">onClick</span><span class="op">=</span>{<span class="var">aumentar</span>}<span class="tag">&gt;</span>+1<span class="tag">&lt;/button&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">App</span></pre>
+      </div>
+
+      <div class="tip">
+        <span class="tip-icon">🗣️</span>
+        <div class="tip-content">
+          Leia em voz alta: "<em>crie uma memória <code>contador</code> começando em 0; quando clicarem,
+          <code>setContador</code> guarda o valor novo <strong>e avisa o React</strong> — que redesenha a
+          tela com o número atualizado</em>". Compare com a versão do <code>let</code>: a ÚNICA diferença
+          é trocar a atribuição pelo <code>set</code>.
+        </div>
+      </div>
+
+      <p>E o que acontece <strong>por dentro</strong> quando você clica? Esse fluxo é o coração do React —
+      guarda ele no bolso:</p>
+
+      <figure class="clip" data-motion="rise">
+        <video controls autoplay loop muted playsinline poster="../../assets/video/ciclo-do-estado.png">
+          <source src="../../assets/video/ciclo-do-estado.mp4" type="video/mp4">
+          Seu navegador não reproduz o vídeo. <a href="../../assets/video/ciclo-do-estado.mp4">Baixe o clipe aqui.</a>
+        </video>
+        <figcaption>🔄 clique → <code>onClick</code> → <code>setContador(1)</code> → React tira uma nova 📸 do componente → a tela atualiza</figcaption>
+      </figure>
+
+      <p style="color:var(--text-dim);margin:14px 0 4px">Agora opere você o ciclo: clique no
+      <strong>+1</strong> e siga a esteira acendendo. Repare no filme de "fotos" embaixo — cada clique
+      gera uma <strong>renderização nova</strong> 👇</p>
+
+      <div class="cycle" id="cycle">
+        <div class="cy-top">
+          <div class="cy-app">
+            <div class="cy-num" id="cy-num">0</div>
+            <button id="cy-btn">+1</button>
+          </div>
+          <div class="cy-steps">
+            <div class="cy-step" id="cy-s1"><span class="cy-ico">👆</span> <span>clique do usuário</span></div>
+            <div class="cy-step" id="cy-s2"><span class="cy-ico">⚡</span> <span><span class="cy-code">onClick</span> chama a função</span></div>
+            <div class="cy-step" id="cy-s3"><span class="cy-ico">📦</span> <span><span class="cy-code" id="cy-setcall">setContador(1)</span> guarda o valor novo</span></div>
+            <div class="cy-step" id="cy-s4"><span class="cy-ico">📸</span> <span>React <strong>re-renderiza</strong>: tira uma foto nova do componente</span></div>
+          </div>
+        </div>
+        <div class="cy-film">
+          <div class="cy-film-label">🎞️ o filme das renderizações (cada foto = o componente rodou de novo)</div>
+          <div class="cy-frames" id="cy-frames"></div>
+        </div>
+        <div class="cy-controls">
+          <button id="cy-reset">↺ recomeçar</button>
+          <span id="cy-note">clique no +1 lá em cima pra rodar o ciclo</span>
+        </div>
+      </div>
+
+      <div class="concept">
+        <div class="concept-title">📸 "Re-renderizar" = rodar o componente de novo</div>
+        <p>Quando o estado muda, o React <strong>chama a sua função <code>App</code> de novo</strong>, do
+        topo — agora com <code>contador</code> valendo o número novo — e desenha o resultado. Cada foto
+        do filme acima é uma dessas rodadas. Grave essa ideia: <strong>ela explica quase tudo</strong>
+        que vem no resto do curso (inclusive o useEffect do Cap 7).</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ AS 3 REGRAS ═══════════════ -->
+  <section class="step-section" id="regras">
+    <div class="step-header">
+      <div class="step-number sn-yellow">📜</div>
+      <div>
+        <div class="step-title">As 3 regras do estado</div>
+        <div class="step-sub">Grava essas três e você escapa de 90% dos bugs</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p><strong>Regra 1 — só se muda estado pelo <code>set</code>.</strong> Atribuir direto até muda o
+      valor… mas não avisa o React, e a tela congela (você viu na variável teimosa):</p>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">regra 1 — sempre pelo set</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="cm">// ❌ muda em silêncio — a tela nem fica sabendo</span>
+<span class="var">contador</span> <span class="op">=</span> <span class="var">contador</span> <span class="op">+</span> <span class="num">1</span>
+
+<span class="cm">// ✅ muda E avisa o React -&gt; nova foto 📸</span>
+<span class="fn">setContador</span>(<span class="var">contador</span> <span class="op">+</span> <span class="num">1</span>)</pre>
+      </div>
+
+      <p style="margin-top:16px"><strong>Regra 2 — o <code>set</code> não é imediato.</strong> Ele
+      <strong>encomenda</strong> a próxima foto; a foto atual continua com o valor antigo até o React
+      re-renderizar. Por isso este clássico assusta todo iniciante:</p>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">regra 2 — a foto atual não muda</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">const</span> <span class="fn">aumentar</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="fn">setContador</span>(<span class="var">contador</span> <span class="op">+</span> <span class="num">1</span>)
+  <span class="var">console</span>.<span class="fn">log</span>(<span class="var">contador</span>)   <span class="cm">// 😱 imprime o valor ANTIGO!</span>
+<span class="punc">}</span></pre>
+      </div>
+
+      <div class="tip">
+        <span class="tip-icon">📸</span>
+        <div class="tip-content">
+          Não é bug — é o modelo de fotos. O <code>console.log</code> roda <strong>ainda na foto
+          atual</strong>, onde <code>contador</code> vale o antigo. O valor novo aparece na
+          <strong>próxima renderização</strong>. Se um dia a tela "atrasar um clique", lembre desta regra.
+        </div>
+      </div>
+
+      <p style="margin-top:16px"><strong>Regra 3 — cada componente tem a SUA memória.</strong> Dois
+      <code>&lt;Contador /&gt;</code> na tela = duas memórias independentes. Prove aí embaixo 👇</p>
+
+      <div class="twins" id="twins">
+        <div class="tw-row" id="tw-row"></div>
+        <div class="tw-controls">
+          <button id="tw-add">👯 + adicionar mais um irmão</button>
+          <button id="tw-reset">↺ recomeçar</button>
+          <span id="tw-note">clique nos contadores: cada um só mexe no seu número</span>
+        </div>
+      </div>
+
+      <div class="concept">
+        <div class="concept-title">💡 Por que isso importa?</div>
+        <p>É o que deixa o React poderoso: o <code>CartaoProduto</code> pode ter um "curtir" próprio, e
+        curtir um card <strong>não curte os outros</strong> — cada cópia do componente nasce com a sua
+        memória zerada. Mas atenção: isso também significa que um card <strong>não enxerga</strong> a
+        memória do outro… o que vai virar assunto na seção do carrinho. 🛒</p>
+      </div>
+
+      <div class="quiz" style="margin-top:16px">
+        <div class="quiz-q"><span class="q-emoji">📸</span> No clique, rodou <code>setContador(5)</code> e na linha seguinte <code>console.log(contador)</code>. O contador valia 4. O que sai no console?</div>
+        <div class="quiz-options">
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">5 — o set já mudou o valor</button>
+          <button class="quiz-opt" data-correct="true" onclick="checkQuiz(this,true)">4 — a foto atual continua com o valor antigo</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">undefined — o contador foi apagado</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">Dá erro — não pode logar estado</button>
+        </div>
+        <div class="quiz-feedback" data-correct="Regra 2 na veia! 📸" data-wrong="Revê a regra 2 (a foto)…" data-explain="O set ENCOMENDA a próxima foto, não muda a atual. O console.log ainda roda na foto velha, onde contador vale 4. O 5 aparece na renderização seguinte."></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ ESTADO + PORTEIROS ═══════════════ -->
+  <section class="step-section" id="porteiros">
+    <div class="step-header">
+      <div class="step-number sn-green">💡</div>
+      <div>
+        <div class="step-title">Estado + porteiros = a tela que reage</div>
+        <div class="step-sub">Nada novo pra decorar — só juntar Cap 5 com hoje</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p><strong>Boa notícia:</strong> esta seção não tem NADA novo. Você vai só juntar o
+      <code>useState</code> de hoje com os <strong>porteiros do Cap 5</strong> (<code>&amp;&amp;</code> e
+      ternário) — e é exatamente assim que nascem curtidas, abas, menus e modo escuro.</p>
+
+      <p>Um estado <strong>booleano</strong> (true/false) + um ternário = botão de curtir:</p>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/CartaoProduto.jsx — curtir ❤️</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">const</span> [<span class="var">curtido</span>, <span class="var">setCurtido</span>] <span class="op">=</span> <span class="fn">useState</span>(<span class="kw">false</span>)
+
+<span class="tag">&lt;button</span> <span class="atr">onClick</span><span class="op">=</span>{() <span class="op">=&gt;</span> <span class="fn">setCurtido</span>(<span class="op">!</span><span class="var">curtido</span>)}<span class="tag">&gt;</span>
+  {<span class="var">curtido</span> <span class="op">?</span> <span class="st">"❤️ Curtido"</span> <span class="op">:</span> <span class="st">"🤍 Curtir"</span>}
+<span class="tag">&lt;/button&gt;</span></pre>
+      </div>
+
+      <div class="tip">
+        <span class="tip-icon">🔀</span>
+        <div class="tip-content">
+          O <code>!curtido</code> é o "NÃO" do Cap 2: transforma <code>true</code> em <code>false</code> e
+          vice-versa. <code>setCurtido(!curtido)</code> = "<em>vira a chavinha</em>". É O padrão pra
+          qualquer botão liga/desliga.
+        </div>
+      </div>
+
+      <p style="margin-top:14px">E um booleano + o porteiro <code>&amp;&amp;</code> = mostrar/esconder
+      qualquer coisa:</p>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">mostrar detalhes só quando pedirem 👻</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">const</span> [<span class="var">mostrar</span>, <span class="var">setMostrar</span>] <span class="op">=</span> <span class="fn">useState</span>(<span class="kw">false</span>)
+
+<span class="tag">&lt;button</span> <span class="atr">onClick</span><span class="op">=</span>{() <span class="op">=&gt;</span> <span class="fn">setMostrar</span>(<span class="op">!</span><span class="var">mostrar</span>)}<span class="tag">&gt;</span>ver detalhes<span class="tag">&lt;/button&gt;</span>
+{<span class="var">mostrar</span> <span class="op">&amp;&amp;</span> <span class="tag">&lt;p&gt;</span>Entrega em 5 dias úteis 🚚<span class="tag">&lt;/p&gt;</span>}</pre>
+      </div>
+
+      <div class="concept">
+        <div class="concept-title">🧩 A fórmula mágica do React</div>
+        <p><strong>tela = f(estado)</strong>. Você não "manda mostrar/esconder" como no Cap 3
+        (<code>style.display</code>…). Você só <strong>muda o estado</strong> — e o JSX, com seus
+        porteiros, desenha a tela certa pra aquele estado. O React faz o resto.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ FORMULÁRIOS CONTROLADOS ═══════════════ -->
+  <section class="step-section" id="formularios">
+    <div class="step-header">
+      <div class="step-number sn-mint">📝</div>
+      <div>
+        <div class="step-title">Formulários controlados — o input com crachá</div>
+        <div class="step-sub">Cada tecla passa pelo estado (e é assim que nasce a busca)</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="analogy">
+        <div class="analogy-title">🪞 O input-espelho</div>
+        <p>No HTML puro, o input guarda o texto <strong>sozinho</strong> e você só descobre o valor quando
+        pergunta. Em React a gente inverte: <strong>o estado é o dono do texto</strong>, e o input vira um
+        <strong>espelho</strong> dele. Cada tecla dispara o <code>onChange</code>, que guarda a letra no
+        estado; o estado muda → nova foto 📸 → o input mostra o texto atualizado. Parece burocracia, mas
+        te dá superpoderes: validar, limpar, filtrar e reagir <strong>a cada tecla</strong>.</p>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx — input controlado</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">const</span> [<span class="var">nome</span>, <span class="var">setNome</span>] <span class="op">=</span> <span class="fn">useState</span>(<span class="st">""</span>)
+
+<span class="tag">&lt;input</span>
+  <span class="atr">value</span><span class="op">=</span>{<span class="var">nome</span>}
+  <span class="atr">onChange</span><span class="op">=</span>{(<span class="var">e</span>) <span class="op">=&gt;</span> <span class="fn">setNome</span>(<span class="var">e</span>.<span class="var">target</span>.<span class="var">value</span>)}
+  <span class="atr">placeholder</span><span class="op">=</span><span class="st">"Digite seu nome"</span>
+<span class="tag">/&gt;</span>
+<span class="tag">&lt;p&gt;</span>Olá, {<span class="var">nome</span>}! 👋<span class="tag">&lt;/p&gt;</span></pre>
+      </div>
+
+      <ul class="about-bullets">
+        <li><div><strong><code>value={nome}</code></strong> — o input <strong>mostra</strong> o que está no estado (o espelho).</div></li>
+        <li><div><strong><code>onChange={(e) =&gt; ...}</code></strong> — a cada tecla, o evento dispara. O <code>e</code> é o mesmo objeto-evento do Cap 3.</div></li>
+        <li><div><strong><code>e.target.value</code></strong> — "do evento, pegue o elemento-alvo, e dele o texto atual". Decore o trio: vai digitá-lo mil vezes.</div></li>
+      </ul>
+
+      <p style="color:var(--text-dim);margin:14px 0 4px">Digite no espelho e veja o estado acompanhar cada
+      tecla. Depois aperte <strong>tirar o onChange</strong> e tente digitar… 👇</p>
+
+      <div class="mirror" id="mirror">
+        <div class="mir-grid">
+          <div class="mir-app">
+            <input id="mir-input" placeholder="Digite seu nome" autocomplete="off">
+            <p class="mir-ola" id="mir-ola">Olá, ! 👋</p>
+          </div>
+          <div class="mir-side">
+            <div class="mir-state">estado: nome = <span class="v" id="mir-state-v">""</span></div>
+            <div class="mir-console" id="mir-console">// cada tecla dispara o onChange…</div>
+          </div>
+        </div>
+        <div class="mir-controls">
+          <button id="mir-toggle">✂️ tirar o onChange</button>
+          <button id="mir-reset">↺ recomeçar</button>
+          <span id="mir-note">o input é o espelho; o estado é o dono do texto</span>
+        </div>
+      </div>
+
+      <div class="warning">
+        <span class="warning-icon">🧊</span>
+        <div class="warning-content">
+          Sentiu? <code>value</code> <strong>sem</strong> <code>onChange</code> = campo
+          <strong>congelado</strong>: o espelho mostra o estado, mas ninguém atualiza o estado — então
+          digitar não faz nada (e o React ainda reclama no console). Os dois andam sempre juntos.
+        </div>
+      </div>
+
+      <div class="tip">
+        <span class="tip-icon">🚀</span>
+        <div class="tip-content">
+          <strong>Onde isso vai dar:</strong> no treino de hoje esse input vira a <strong>busca da
+          loja</strong> (filtra a vitrine a cada tecla!), e lá na frente é assim que nasce o formulário de
+          cadastro de produtos do <strong>ERP</strong> que você vai construir. Mesmo molde, sempre.
+        </div>
+      </div>
+
+      <p style="color:var(--text-dim);margin:16px 0 4px">🧪 <strong>Laboratório</strong> — brinque à
+      vontade com o contador + espelho abaixo (mude o valor inicial, faça o +2, quebre e conserte). O
+      treino "de verdade" continua sendo no VSCode 👇</p>
+
+      <div class="playground" data-mode="react" data-title="Laboratório React — useState">
+<textarea data-pg="jsx">const App = () => {
+  const [contador, setContador] = useState(0)
+  const [nome, setNome] = useState("")
+
+  return (
+    <div>
+      <h2>Contador: {contador}</h2>
+      <button onClick={() => setContador(contador + 1)}>+1</button>
+      <button onClick={() => setContador(0)}>zerar</button>
+
+      <hr />
+
+      <input
+        value={nome}
+        onChange={(e) => setNome(e.target.value)}
+        placeholder="Digite seu nome"
+      />
+      <p>Olá, {nome}! 👋</p>
+    </div>
+  )
+}</textarea>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ O ESTADO MORA NO PAI ═══════════════ -->
+  <section class="step-section" id="pai">
+    <div class="step-header">
+      <div class="step-number sn-react" style="background:linear-gradient(135deg,var(--vite),#8b91ff)">🛒</div>
+      <div>
+        <div class="step-title">O estado mora no pai — o segredo do carrinho</div>
+        <div class="step-sub">Quando VÁRIOS componentes precisam do mesmo dado</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="analogy">
+        <div class="analogy-title">🏠 A geladeira fica na cozinha</div>
+        <p>Pensa no total do carrinho: o botão "Adicionar" fica no <code>CartaoProduto</code>, mas o
+        numerozinho 🛒 aparece no <code>Cabecalho</code>. Se cada card tivesse o próprio contador
+        (regra 3!), o cabeçalho nunca ficaria sabendo. A solução da família React: o que é
+        <strong>de todos</strong> fica no cômodo <strong>comum</strong> — o estado mora no
+        <strong>pai</strong> (<code>App</code>), que é pai do Cabecalho E dos cards.</p>
+      </div>
+
+      <div class="updown" data-motion="rise">
+        <div class="ud-box">App <small>aqui mora <span class="mono" style="color:var(--react)">carrinho</span> + <span class="mono" style="color:var(--accent5)">aoComprar</span></small></div>
+        <div class="ud-arrows"><span class="down">⬇ dados descem (props)</span><span class="up">⬆ avisos sobem (função)</span></div>
+        <div class="ud-kids">
+          <div class="ud-box">Cabecalho <small>recebe <span class="mono" style="color:var(--react)">total</span> e mostra 🛒</small></div>
+          <div class="ud-box">CartaoProduto <small>recebe <span class="mono" style="color:var(--accent5)">aoComprar</span> e chama no clique</small></div>
+        </div>
+      </div>
+
+      <p>Em código são três movimentos — estado no pai, número desce, função desce:</p>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx — o pai guarda e distribui</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">const</span> <span class="fn">App</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">const</span> [<span class="var">carrinho</span>, <span class="var">setCarrinho</span>] <span class="op">=</span> <span class="fn">useState</span>(<span class="num">0</span>)
+
+  <span class="kw">const</span> <span class="fn">aoComprar</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
+    <span class="fn">setCarrinho</span>(<span class="var">carrinho</span> <span class="op">+</span> <span class="num">1</span>)
+  <span class="punc">}</span>
+
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span>
+      <span class="tag">&lt;</span><span class="cmp">Cabecalho</span> <span class="atr">total</span><span class="op">=</span>{<span class="var">carrinho</span>} <span class="tag">/&gt;</span>
+      {<span class="var">produtos</span>.<span class="fn">map</span>((<span class="var">p</span>) <span class="op">=&gt;</span> (
+        <span class="tag">&lt;</span><span class="cmp">CartaoProduto</span> <span class="atr">key</span><span class="op">=</span>{<span class="var">p</span>.<span class="var">id</span>} <span class="atr">nome</span><span class="op">=</span>{<span class="var">p</span>.<span class="var">nome</span>} <span class="atr">aoComprar</span><span class="op">=</span>{<span class="var">aoComprar</span>} <span class="tag">/&gt;</span>
+      ))}
+    <span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span></pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/CartaoProduto.jsx — o filho avisa o pai</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">const</span> <span class="fn">CartaoProduto</span> <span class="op">=</span> (<span class="punc">{</span> <span class="var">nome</span>, <span class="var">aoComprar</span> <span class="punc">}</span>) <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span>
+      <span class="tag">&lt;h2&gt;</span>{<span class="var">nome</span>}<span class="tag">&lt;/h2&gt;</span>
+      <span class="tag">&lt;button</span> <span class="atr">onClick</span><span class="op">=</span>{<span class="var">aoComprar</span>}<span class="tag">&gt;</span>🛒 Adicionar<span class="tag">&lt;/button&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span></pre>
+      </div>
+
+      <div class="concept">
+        <div class="concept-title">💡 Repare: função também é prop!</div>
+        <p>O <code>aoComprar</code> desce pro filho igualzinho a <code>nome</code> ou <code>preco</code> —
+        só que o valor é uma <strong>função</strong>. O filho não sabe (nem precisa saber) o que ela faz:
+        ele só <strong>toca a campainha</strong> no clique, e quem atende é o pai. Dados descem ⬇,
+        avisos sobem ⬆. Você vai reusar esse desenho no Cap 9, no ERP.</p>
+      </div>
+
+      <div class="tip">
+        <span class="tip-icon">🧭</span>
+        <div class="tip-content">
+          <strong>Regra de bolso pra decidir onde o estado mora:</strong> "quem precisa ver esse dado?"
+          Só um componente → o estado fica <strong>nele</strong> (o curtir ❤️). Vários →
+          o estado sobe pro <strong>pai comum mais próximo</strong> (o carrinho 🛒).
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ BUGZILLA ═══════════════ -->
+  <section class="step-section" id="bugzilla">
+    <div class="step-header">
+      <div class="step-number sn-red">🐛</div>
+      <div>
+        <div class="step-title">BugZilla ataca o estado!</div>
+        <div class="step-sub">Os 5 tropeços clássicos do useState</div>
+      </div>
+    </div>
+
+    <div class="bug-box">
+      <span class="bug-icon">🐛</span>
+      <div class="bug-content">
+        <strong>Bug 1 — mudou o estado na mão:</strong> <code>contador = contador + 1</code>. O pior tipo
+        de bug: <strong>nem dá erro</strong> — a tela só congela. <strong>Conserto:</strong> estado só muda
+        pelo set: <code>setContador(contador + 1)</code>.
+      </div>
+    </div>
+
+    <div class="bug-box" style="margin-top:14px">
+      <span class="bug-icon">🐛</span>
+      <div class="bug-content">
+        <strong>Bug 2 — parênteses no onClick:</strong> <code>onClick={aumentar()}</code> executa na
+        renderização. E se <code>aumentar</code> tem um <code>set</code> dentro, vira um
+        <strong>loop</strong>: renderiza → executa → set → renderiza → executa… ("Too many re-renders").
+        <strong>Conserto:</strong> sem parênteses (<code>onClick={aumentar}</code>) ou embrulhado
+        (<code>onClick={() =&gt; aumentar(2)}</code>). <em>Guarde esse loop — ele volta no Cap 7!</em>
+      </div>
+    </div>
+
+    <div class="bug-box" style="margin-top:14px">
+      <span class="bug-icon">🐛</span>
+      <div class="bug-content">
+        <strong>Bug 3 — esqueceu o import:</strong> "useState is not defined". <strong>Conserto:</strong>
+        <code>import { useState } from "react"</code> no topo — <strong>com chaves</strong> no
+        useState, que você está pegando uma peça específica da caixa.
+      </div>
+    </div>
+
+    <div class="bug-box" style="margin-top:14px">
+      <span class="bug-icon">🐛</span>
+      <div class="bug-content">
+        <strong>Bug 4 — input com <code>value</code> e sem <code>onChange</code>:</strong> o campo
+        congela (você digita e nada acontece) e o console mostra o warning "You provided a `value` prop
+        to a form field without an `onChange` handler". <strong>Conserto:</strong> espelho completo —
+        <code>value={nome}</code> <strong>e</strong> <code>onChange={(e) =&gt; setNome(e.target.value)}</code>.
+      </div>
+    </div>
+
+    <div class="bug-box" style="margin-top:14px">
+      <span class="bug-icon">🐛</span>
+      <div class="bug-content">
+        <strong>Bug 5 — esperar o set na mesma linha:</strong> <code>setContador(5)</code> e logo abaixo
+        <code>console.log(contador)</code> mostra o antigo. Não é bug do React — é a
+        <strong>regra 2</strong> (o set encomenda a próxima foto). <strong>Conserto:</strong> use o valor
+        que você acabou de calcular (<code>const novo = contador + 1</code>) ou confie na próxima renderização.
+      </div>
+    </div>
+
+    <div class="toggler" style="margin-top:14px">
+      <div class="toggler-header" onclick="toggleSection(this)">
+        <span>👀 Macete de ouro do BugZilla</span><span class="toggler-arrow">▼</span>
+      </div>
+      <div class="toggler-body">
+        <div class="tip" style="margin:0">
+          <span class="tip-icon">🔦</span>
+          <div class="tip-content">
+            Tela congelada? Pergunte na ordem: <strong>1)</strong> estou mudando pelo <code>set</code>?
+            <strong>2)</strong> o <code>onClick</code> está <strong>sem</strong> parênteses?
+            <strong>3)</strong> o <code>useState</code> está importado? E leia o console: "Too many
+            re-renders" = parênteses no onClick; warning de <code>value</code> = faltou o
+            <code>onChange</code>. O erro sempre deixa bilhete.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ PROGRAMAÇÃO É PRÁTICA ═══════════════ -->
+  <section class="step-section">
+    <div class="card" style="text-align:center;background:linear-gradient(135deg,rgba(97,218,251,0.10),rgba(100,108,255,0.06));border-color:rgba(97,218,251,0.22)">
+      <div style="font-family:'Caveat',cursive;font-size:clamp(2rem,6vw,3rem);color:var(--react);font-weight:700;line-height:1.1">
+        PROGRAMAÇÃO É PRÁTICA 💪
+      </div>
+      <p class="text-dim" style="max-width:560px;margin:10px auto 0">
+        Abra a sua Mini-loja no VSCode (com o <code>npm run dev</code> rodando) e bora dar
+        <strong style="color:var(--text)">vida</strong> a ela: contador, curtir, busca ao vivo e o
+        carrinho no cabeçalho. 🛒
+      </p>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ TREINO ENCADEADO ═══════════════ -->
+  <section class="step-section" id="treino">
+    <div class="step-header">
+      <div class="step-number sn-react">⌨️</div>
+      <div>
+        <div class="step-title">Treino — a Mini-loja ganha vida</div>
+        <div class="step-sub">Continua o projeto dos Caps 4–5. Do contador ao carrinho</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="warning">
+        <span class="warning-icon">▶️</span>
+        <div class="warning-content">
+          Use a <strong>mesma pasta</strong> <code>mini-loja</code> (com <code>npm run dev</code>
+          rodando). Vamos partir da vitrine com <code>.map()</code>, CSS Modules e porteiros do Cap 5.
+          O 👀 mostra a solução, e os <strong>mini-navegadores</strong> deste treino são
+          <strong>clicáveis</strong> — teste o resultado esperado neles!
+        </div>
+      </div>
+
+      <!-- trilha de progresso -->
+      <div class="arena-track">
+        <span class="at-dot lv1">1</span><span class="at-arrow">→</span>
+        <span class="at-dot lv1">2</span><span class="at-arrow">→</span>
+        <span class="at-dot lv2">3</span><span class="at-arrow">→</span>
+        <span class="at-dot lv2">4</span><span class="at-arrow">→</span>
+        <span class="at-dot lv2">5</span><span class="at-arrow">→</span>
+        <span class="at-dot lv3">6</span><span class="at-arrow">→</span>
+        <span class="at-dot lv3">7</span><span class="at-arrow">→</span>
+        <span class="at-dot lv3">🏆</span>
+      </div>
+
+      <!-- 1. guided — contador -->
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">👨‍🏫</span><div>
+          <div class="exercise-title">Passo 1 — o contador clássico (com o prof)</div>
+          <div class="exercise-sub">Todo dev React começou por ele</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>Crie <code>src/Contador.jsx</code> com o <strong>rafce</strong> (Rafael do Ceará ✊). Dentro: um <code>useState(0)</code>, o número num <code>&lt;h2&gt;</code> e dois botões — <strong>+1</strong> e <strong>−1</strong>. Monte <code>&lt;Contador /&gt;</code> no topo do <code>App</code> (vai ficar de teste por enquanto).</p></div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/Contador.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">import</span> <span class="punc">{</span> <span class="var">useState</span> <span class="punc">}</span> <span class="kw">from</span> <span class="st">"react"</span>
+
+<span class="kw">const</span> <span class="fn">Contador</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">const</span> [<span class="var">contador</span>, <span class="var">setContador</span>] <span class="op">=</span> <span class="fn">useState</span>(<span class="num">0</span>)
+
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span>
+      <span class="tag">&lt;h2&gt;</span>Contador: {<span class="var">contador</span>}<span class="tag">&lt;/h2&gt;</span>
+      <span class="tag">&lt;button</span> <span class="atr">onClick</span><span class="op">=</span>{() <span class="op">=&gt;</span> <span class="fn">setContador</span>(<span class="var">contador</span> <span class="op">+</span> <span class="num">1</span>)}<span class="tag">&gt;</span>+1<span class="tag">&lt;/button&gt;</span>
+      <span class="tag">&lt;button</span> <span class="atr">onClick</span><span class="op">=</span>{() <span class="op">=&gt;</span> <span class="fn">setContador</span>(<span class="var">contador</span> <span class="op">-</span> <span class="num">1</span>)}<span class="tag">&gt;</span>-1<span class="tag">&lt;/button&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">Contador</span></pre>
+        </div>
+        <p class="text-dim" style="font-size:0.82rem;margin:10px 0 4px">No navegador (clique! 🖱️) 👇</p>
+        <div class="mini-browser" data-url="localhost:5173" data-h="150">
+<script type="text/html" data-mp="html">
+  <div style="font-family:sans-serif;text-align:center">
+    <h2 style="margin:0 0 8px">Contador: <span id="n">0</span></h2>
+    <button id="mais" style="font-size:15px;padding:6px 16px;margin:0 4px">+1</button>
+    <button id="menos" style="font-size:15px;padding:6px 16px;margin:0 4px">-1</button>
+  </div>
+</script>
+<script type="text/plain" data-mp="js">
+  var n = 0;
+  var el = document.getElementById('n');
+  document.getElementById('mais').onclick = function(){ n = n + 1; el.textContent = n; };
+  document.getElementById('menos').onclick = function(){ n = n - 1; el.textContent = n; };
+</script>
+        </div>
+      </div>
+
+      <!-- 2. solo — zerar + não negativo -->
+      <div class="exercise solo">
+        <div class="exercise-header"><span class="exercise-icon">🧑‍💻</span><div>
+          <div class="exercise-title">Passo 2 — zerar e nunca ficar negativo (sozinho/a)</div>
+          <div class="exercise-sub">Os porteiros do Cap 5 protegem o contador</div></div>
+        </div>
+        <div class="drill-tags"><span class="drill-level lv1"><span class="stars">★</span> fácil</span><span class="drill-tag">useState</span><span class="drill-tag">porteiro &amp;&amp;</span></div>
+        <div class="concept"><div class="concept-title">💡 Dica</div><p>1) Adicione um botão <strong>zerar</strong> (<code>setContador(0)</code>, embrulhado numa arrow). 2) Faça o <strong>−1</strong> só funcionar quando <code>contador &gt; 0</code> — decida <strong>dentro</strong> da arrow do onClick com o <code>&amp;&amp;</code>, ou mostre o botão só quando puder (porteiro no JSX). Lembre: <code>&gt;</code> e <code>=</code> são caracteres separados!</p></div>
+        <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Tenta antes!</strong> Qualquer um dos dois caminhos vale — o porteiro é seu conhecido desde o Cap 5.</div></div>
+        <div class="toggler">
+          <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — Ver solução</span><span class="toggler-arrow">▼</span></div>
+          <div class="toggler-body"><div class="code-block">
+            <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/Contador.jsx (os botões)</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="tag">&lt;button</span> <span class="atr">onClick</span><span class="op">=</span>{() <span class="op">=&gt;</span> <span class="fn">setContador</span>(<span class="var">contador</span> <span class="op">+</span> <span class="num">1</span>)}<span class="tag">&gt;</span>+1<span class="tag">&lt;/button&gt;</span>
+
+<span class="cm">{</span><span class="cm">/* jeito 1: decide dentro da arrow */</span><span class="cm">}</span>
+<span class="tag">&lt;button</span> <span class="atr">onClick</span><span class="op">=</span>{() <span class="op">=&gt;</span> <span class="var">contador</span> <span class="op">&gt;</span> <span class="num">0</span> <span class="op">&amp;&amp;</span> <span class="fn">setContador</span>(<span class="var">contador</span> <span class="op">-</span> <span class="num">1</span>)}<span class="tag">&gt;</span>-1<span class="tag">&lt;/button&gt;</span>
+
+<span class="tag">&lt;button</span> <span class="atr">onClick</span><span class="op">=</span>{() <span class="op">=&gt;</span> <span class="fn">setContador</span>(<span class="num">0</span>)}<span class="tag">&gt;</span>zerar<span class="tag">&lt;/button&gt;</span></pre>
+          </div>
+          <div class="tip" style="margin-top:10px"><span class="tip-icon">💡</span><div class="tip-content">Jeito 2 (também certo): <code>{contador &gt; 0 &amp;&amp; &lt;button ...&gt;-1&lt;/button&gt;}</code> — o botão some quando não dá pra diminuir. Escolha o que achar mais claro.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. guided — quantidade no card -->
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">👨‍🏫</span><div>
+          <div class="exercise-title">Passo 3 — o contador vira seletor de quantidade (com o prof)</div>
+          <div class="exercise-sub">Cada card com a SUA memória (regra 3 ao vivo)</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>Leve a ideia do contador pra <strong>dentro do <code>CartaoProduto</code></strong>: um estado <code>qtd</code> começando em 1, com botões <strong>−</strong> e <strong>+</strong> em volta do número. Repare ao testar: mudar a quantidade de um card <strong>não mexe</strong> nos outros — cada componente tem a sua memória! (Pode apagar o <code>&lt;Contador /&gt;</code> de teste do App.)</p></div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/CartaoProduto.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">import</span> <span class="punc">{</span> <span class="var">useState</span> <span class="punc">}</span> <span class="kw">from</span> <span class="st">"react"</span>
+<span class="kw">import</span> <span class="var">styles</span> <span class="kw">from</span> <span class="st">"./CartaoProduto.module.css"</span>
+
+<span class="kw">const</span> <span class="fn">CartaoProduto</span> <span class="op">=</span> (<span class="punc">{</span> <span class="var">nome</span>, <span class="var">preco</span>, <span class="var">imagem</span>, <span class="var">emEstoque</span> <span class="punc">}</span>) <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">const</span> [<span class="var">qtd</span>, <span class="var">setQtd</span>] <span class="op">=</span> <span class="fn">useState</span>(<span class="num">1</span>)
+
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div</span> <span class="atr">className</span><span class="op">=</span>{<span class="var">styles</span>.<span class="var">cartao</span>}<span class="tag">&gt;</span>
+      <span class="tag">&lt;img</span> <span class="atr">src</span><span class="op">=</span>{<span class="var">imagem</span>} <span class="atr">alt</span><span class="op">=</span>{<span class="var">nome</span>} <span class="atr">width</span><span class="op">=</span><span class="st">"120"</span> <span class="tag">/&gt;</span>
+      <span class="tag">&lt;h2&gt;</span>{<span class="var">nome</span>}<span class="tag">&lt;/h2&gt;</span>
+      <span class="tag">&lt;p&gt;</span>R$ {<span class="var">preco</span>}<span class="tag">&lt;/p&gt;</span>
+      <span class="tag">&lt;div&gt;</span>
+        <span class="tag">&lt;button</span> <span class="atr">onClick</span><span class="op">=</span>{() <span class="op">=&gt;</span> <span class="var">qtd</span> <span class="op">&gt;</span> <span class="num">1</span> <span class="op">&amp;&amp;</span> <span class="fn">setQtd</span>(<span class="var">qtd</span> <span class="op">-</span> <span class="num">1</span>)}<span class="tag">&gt;</span>-<span class="tag">&lt;/button&gt;</span>
+        <span class="tag">&lt;span&gt;</span> {<span class="var">qtd</span>} <span class="tag">&lt;/span&gt;</span>
+        <span class="tag">&lt;button</span> <span class="atr">onClick</span><span class="op">=</span>{() <span class="op">=&gt;</span> <span class="fn">setQtd</span>(<span class="var">qtd</span> <span class="op">+</span> <span class="num">1</span>)}<span class="tag">&gt;</span>+<span class="tag">&lt;/button&gt;</span>
+      <span class="tag">&lt;/div&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span></pre>
+        </div>
+        <p class="text-dim" style="font-size:0.82rem;margin:10px 0 4px">No navegador (mexa num card e olhe o outro 🖱️) 👇</p>
+        <div class="mini-browser" data-url="localhost:5173" data-h="210">
+<script type="text/html" data-mp="html">
+  <div style="font-family:sans-serif;display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+    <div style="border:1px solid #e2e8f0;border-radius:12px;padding:14px;text-align:center">
+      <div style="font-size:34px">⌨️</div><h3 style="margin:4px 0">Teclado Mecânico</h3>
+      <p style="margin:0;color:#16a34a;font-weight:700">R$ 320</p>
+      <div style="margin-top:6px"><button data-d="-1">-</button> <span class="q">1</span> <button data-d="1">+</button></div>
+    </div>
+    <div style="border:1px solid #e2e8f0;border-radius:12px;padding:14px;text-align:center">
+      <div style="font-size:34px">🖥️</div><h3 style="margin:4px 0">Monitor 27 pol</h3>
+      <p style="margin:0;color:#16a34a;font-weight:700">R$ 1450</p>
+      <div style="margin-top:6px"><button data-d="-1">-</button> <span class="q">1</span> <button data-d="1">+</button></div>
+    </div>
+  </div>
+</script>
+<script type="text/plain" data-mp="js">
+  document.querySelectorAll('button[data-d]').forEach(function(b){
+    b.onclick = function(){
+      var span = b.parentElement.querySelector('.q');
+      var v = parseInt(span.textContent, 10) + parseInt(b.dataset.d, 10);
+      if (v >= 1) span.textContent = v;
+    };
+  });
+</script>
+        </div>
+      </div>
+
+      <!-- 4. solo — curtir -->
+      <div class="exercise solo">
+        <div class="exercise-header"><span class="exercise-icon">🧑‍💻</span><div>
+          <div class="exercise-title">Passo 4 — o coração de curtir (sozinho/a)</div>
+          <div class="exercise-sub">Booleano + ternário + classe condicional</div></div>
+        </div>
+        <div class="drill-tags"><span class="drill-level lv2"><span class="stars">★★</span> médio</span><span class="drill-tag">useState(false)</span><span class="drill-tag">ternário ? :</span></div>
+        <div class="concept"><div class="concept-title">💡 Dica</div><p>No <code>CartaoProduto</code>: estado <code>curtido</code> começando em <code>false</code>; um botão que <strong>vira a chavinha</strong> (<code>setCurtido(!curtido)</code>) e mostra <code>❤️ Curtido</code> ou <code>🤍 Curtir</code> com o ternário. Bônus: classe condicional no botão (<code>styles.curtido</code> com fundo rosinha) — molde do Cap 5.</p></div>
+        <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Tenta antes!</strong> É o exemplo da seção "Estado + porteiros" aplicado na SUA loja.</div></div>
+        <div class="toggler">
+          <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — Ver solução</span><span class="toggler-arrow">▼</span></div>
+          <div class="toggler-body">
+            <div class="code-block">
+              <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/CartaoProduto.jsx (adicione)</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">const</span> [<span class="var">curtido</span>, <span class="var">setCurtido</span>] <span class="op">=</span> <span class="fn">useState</span>(<span class="kw">false</span>)
+
+<span class="cm">// dentro do return, depois do preço:</span>
+<span class="tag">&lt;button</span>
+  <span class="atr">className</span><span class="op">=</span>{<span class="var">curtido</span> <span class="op">?</span> <span class="var">styles</span>.<span class="var">curtido</span> <span class="op">:</span> <span class="var">styles</span>.<span class="var">curtir</span>}
+  <span class="atr">onClick</span><span class="op">=</span>{() <span class="op">=&gt;</span> <span class="fn">setCurtido</span>(<span class="op">!</span><span class="var">curtido</span>)}
+<span class="tag">&gt;</span>
+  {<span class="var">curtido</span> <span class="op">?</span> <span class="st">"❤️ Curtido"</span> <span class="op">:</span> <span class="st">"🤍 Curtir"</span>}
+<span class="tag">&lt;/button&gt;</span></pre>
+            </div>
+            <div class="code-block">
+              <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/CartaoProduto.module.css (adicione)</span><span class="lang-badge css">CSS</span></div>
+<pre><span class="sel">.curtir</span> <span class="punc">{</span> <span class="prop">background</span><span class="punc">:</span> <span class="val">#f1f5f9</span><span class="punc">;</span> <span class="prop">border-radius</span><span class="punc">:</span> <span class="num">999</span><span class="unit">px</span><span class="punc">;</span> <span class="prop">padding</span><span class="punc">:</span> <span class="num">4</span><span class="unit">px</span> <span class="num">12</span><span class="unit">px</span><span class="punc">;</span> <span class="punc">}</span>
+<span class="sel">.curtido</span> <span class="punc">{</span> <span class="prop">background</span><span class="punc">:</span> <span class="val">#fecdd3</span><span class="punc">;</span> <span class="prop">border-radius</span><span class="punc">:</span> <span class="num">999</span><span class="unit">px</span><span class="punc">;</span> <span class="prop">padding</span><span class="punc">:</span> <span class="num">4</span><span class="unit">px</span> <span class="num">12</span><span class="unit">px</span><span class="punc">;</span> <span class="punc">}</span></pre>
+            </div>
+            <div class="mini-browser" data-url="localhost:5173" data-h="190">
+<script type="text/html" data-mp="html">
+  <div style="font-family:sans-serif;display:flex;gap:12px;justify-content:center">
+    <div style="border:1px solid #e2e8f0;border-radius:12px;padding:14px;text-align:center">
+      <div style="font-size:34px">⌨️</div><h3 style="margin:4px 0">Teclado Mecânico</h3>
+      <p style="margin:0 0 6px;color:#16a34a;font-weight:700">R$ 320</p>
+      <button class="like" style="border:none;background:#f1f5f9;border-radius:999px;padding:4px 12px;cursor:pointer">🤍 Curtir</button>
+    </div>
+    <div style="border:1px solid #e2e8f0;border-radius:12px;padding:14px;text-align:center">
+      <div style="font-size:34px">🖥️</div><h3 style="margin:4px 0">Monitor 27 pol</h3>
+      <p style="margin:0 0 6px;color:#16a34a;font-weight:700">R$ 1450</p>
+      <button class="like" style="border:none;background:#f1f5f9;border-radius:999px;padding:4px 12px;cursor:pointer">🤍 Curtir</button>
+    </div>
+  </div>
+</script>
+<script type="text/plain" data-mp="js">
+  document.querySelectorAll('.like').forEach(function(b){
+    var on = false;
+    b.onclick = function(){
+      on = !on;
+      b.textContent = on ? '❤️ Curtido' : '🤍 Curtir';
+      b.style.background = on ? '#fecdd3' : '#f1f5f9';
+    };
+  });
+</script>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. guided — busca controlada -->
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">👨‍🏫</span><div>
+          <div class="exercise-title">Passo 5 — a busca da loja (com o prof)</div>
+          <div class="exercise-sub">O input-espelho entra no App</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>No <code>App.jsx</code>: estado <code>busca</code> começando em <code>""</code> + um input controlado acima da vitrine. Por enquanto, só mostre embaixo do input o que está sendo digitado — o filtro é o próximo passo.</p></div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">const</span> [<span class="var">busca</span>, <span class="var">setBusca</span>] <span class="op">=</span> <span class="fn">useState</span>(<span class="st">""</span>)
+
+<span class="cm">// no return, entre o Cabecalho e a vitrine:</span>
+<span class="tag">&lt;input</span>
+  <span class="atr">value</span><span class="op">=</span>{<span class="var">busca</span>}
+  <span class="atr">onChange</span><span class="op">=</span>{(<span class="var">e</span>) <span class="op">=&gt;</span> <span class="fn">setBusca</span>(<span class="var">e</span>.<span class="var">target</span>.<span class="var">value</span>)}
+  <span class="atr">placeholder</span><span class="op">=</span><span class="st">"🔎 Buscar produto..."</span>
+<span class="tag">/&gt;</span>
+{<span class="var">busca</span> <span class="op">&amp;&amp;</span> <span class="tag">&lt;p&gt;</span>Buscando por: {<span class="var">busca</span>}<span class="tag">&lt;/p&gt;</span>}</pre>
+        </div>
+        <p class="text-dim" style="font-size:0.82rem;margin:10px 0 4px">No navegador (digite! ⌨️) 👇</p>
+        <div class="mini-browser" data-url="localhost:5173" data-h="150">
+<script type="text/html" data-mp="html">
+  <div style="font-family:sans-serif;text-align:center">
+    <input id="b" placeholder="🔎 Buscar produto..." style="font-size:14px;padding:6px 12px;border:1px solid #cbd5e1;border-radius:8px;width:70%">
+    <p id="eco" style="margin:8px 0 0;color:#475569"></p>
+  </div>
+</script>
+<script type="text/plain" data-mp="js">
+  var b = document.getElementById('b'), eco = document.getElementById('eco');
+  b.oninput = function(){ eco.textContent = b.value ? 'Buscando por: ' + b.value : ''; };
+</script>
+        </div>
+      </div>
+
+      <!-- 6. solo — filtro ao vivo -->
+      <div class="exercise solo">
+        <div class="exercise-header"><span class="exercise-icon">🧑‍💻</span><div>
+          <div class="exercise-title">Passo 6 — o filtro ao vivo (sozinho/a) ✨</div>
+          <div class="exercise-sub">O momento UAU: a vitrine reage a cada tecla</div></div>
+        </div>
+        <div class="drill-tags"><span class="drill-level lv3"><span class="stars">★★★</span> desafio</span><span class="drill-tag">filter</span><span class="drill-tag">includes</span><span class="drill-tag">estado</span></div>
+        <div class="concept"><div class="concept-title">💡 Dica</div><p>Lembra do <code>.filter()</code> do Cap 2 (o irmão do <code>.map()</code> que <strong>peneira</strong>)? Crie, antes do return: <code>const filtrados = produtos.filter((p) =&gt; p.nome.toLowerCase().includes(busca.toLowerCase()))</code> — e troque o <code>.map()</code> da vitrine pra usar <code>filtrados</code> no lugar de <code>produtos</code>. O <code>toLowerCase()</code> deixa a busca aceitar maiúsculas e minúsculas.</p></div>
+        <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Tenta antes!</strong> São só 2 linhas mudadas. Quando funcionar, digite devagar e curta a mágica — a vitrine obedecendo seu teclado. ✨</div></div>
+        <div class="toggler">
+          <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — Ver solução</span><span class="toggler-arrow">▼</span></div>
+          <div class="toggler-body">
+            <div class="code-block">
+              <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">const</span> <span class="var">filtrados</span> <span class="op">=</span> <span class="var">produtos</span>.<span class="fn">filter</span>((<span class="var">p</span>) <span class="op">=&gt;</span>
+  <span class="var">p</span>.<span class="var">nome</span>.<span class="fn">toLowerCase</span>().<span class="fn">includes</span>(<span class="var">busca</span>.<span class="fn">toLowerCase</span>())
+)
+
+<span class="cm">// e a vitrine passa a mapear os filtrados:</span>
+{<span class="var">filtrados</span>.<span class="fn">map</span>((<span class="var">p</span>) <span class="op">=&gt;</span> (
+  <span class="tag">&lt;</span><span class="cmp">CartaoProduto</span> <span class="atr">key</span><span class="op">=</span>{<span class="var">p</span>.<span class="var">id</span>} <span class="atr">nome</span><span class="op">=</span>{<span class="var">p</span>.<span class="var">nome</span>} <span class="atr">preco</span><span class="op">=</span>{<span class="var">p</span>.<span class="var">preco</span>} <span class="atr">imagem</span><span class="op">=</span>{<span class="var">p</span>.<span class="var">imagem</span>} <span class="atr">emEstoque</span><span class="op">=</span>{<span class="var">p</span>.<span class="var">emEstoque</span>} <span class="tag">/&gt;</span>
+))}</pre>
+            </div>
+            <div class="tip" style="margin-top:10px"><span class="tip-icon">🧠</span><div class="tip-content">Repare que você <strong>não criou estado novo</strong> pro filtro: <code>filtrados</code> é calculado a cada foto 📸 a partir de <code>produtos</code> + <code>busca</code>. Estado guarda o que o usuário fez; o resto a renderização calcula. tela = f(estado)!</div></div>
+            <div class="mini-browser" data-url="localhost:5173" data-h="240">
+<script type="text/html" data-mp="html">
+  <div style="font-family:sans-serif;text-align:center">
+    <input id="b" placeholder="🔎 Buscar produto..." style="font-size:14px;padding:6px 12px;border:1px solid #cbd5e1;border-radius:8px;width:70%">
+    <div id="v" style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:10px"></div>
+  </div>
+</script>
+<script type="text/plain" data-mp="js">
+  var prods = [
+    {e:'⌨️', n:'Teclado Mecânico', p:320},
+    {e:'🖥️', n:'Monitor 27 pol', p:1450},
+    {e:'🪑', n:'Cadeira Gamer', p:980},
+    {e:'🖱️', n:'Mouse Gamer', p:180}
+  ];
+  var v = document.getElementById('v'), b = document.getElementById('b');
+  function render(){
+    var f = prods.filter(function(p){ return p.n.toLowerCase().indexOf(b.value.toLowerCase()) !== -1; });
+    v.innerHTML = f.map(function(p){
+      return '<div style="border:1px solid #e2e8f0;border-radius:10px;padding:10px 14px"><div style="font-size:28px">' + p.e + '</div><strong style="font-size:13px">' + p.n + '</strong><p style="margin:2px 0 0;color:#16a34a;font-size:13px;font-weight:700">R$ ' + p.p + '</p></div>';
+    }).join('') || '<p style="color:#94a3b8">nenhum produto encontrado 😢</p>';
+  }
+  b.oninput = render; render();
+</script>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 7. solo chefão — carrinho -->
+      <div class="exercise solo">
+        <div class="exercise-header"><span class="exercise-icon">🏆</span><div>
+          <div class="exercise-title">Passo 7 — CHEFÃO: o carrinho no cabeçalho (sozinho/a)</div>
+          <div class="exercise-sub">O estado sobe pro pai — a loja vira sistema</div></div>
+        </div>
+        <div class="drill-tags"><span class="drill-level lv3"><span class="stars">★★★</span> desafio</span><span class="drill-tag">estado no pai</span><span class="drill-tag">função como prop</span></div>
+        <div class="concept"><div class="concept-title">💡 Missão</div><p>É a seção "O estado mora no pai", agora na SUA loja: 1) no <code>App</code>, estado <code>carrinho</code> começando em 0 e a função <code>aoComprar</code>; 2) passe <code>aoComprar</code> como prop no <code>.map()</code>; 3) no <code>CartaoProduto</code>, receba a prop e crie o botão <strong>🛒 Adicionar</strong>; 4) no <code>Cabecalho</code>, receba <code>total</code> e mostre <code>🛒 {total}</code>. Dica de mestre: só mostre o botão Adicionar quando <code>emEstoque</code> for true (porteiro!).</p></div>
+        <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Tenta antes!</strong> Siga o desenho: estado no App ⬇ número desce pro Cabecalho ⬇ função desce pros cards ⬆ clique sobe. Se travar, releia o diagrama da casinha.</div></div>
+        <div class="toggler">
+          <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — Ver solução completa</span><span class="toggler-arrow">▼</span></div>
+          <div class="toggler-body">
+            <div class="code-block">
+              <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">const</span> [<span class="var">carrinho</span>, <span class="var">setCarrinho</span>] <span class="op">=</span> <span class="fn">useState</span>(<span class="num">0</span>)
+
+<span class="kw">const</span> <span class="fn">aoComprar</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="fn">setCarrinho</span>(<span class="var">carrinho</span> <span class="op">+</span> <span class="num">1</span>)
+<span class="punc">}</span>
+
+<span class="cm">// no return:</span>
+<span class="tag">&lt;</span><span class="cmp">Cabecalho</span> <span class="atr">total</span><span class="op">=</span>{<span class="var">carrinho</span>} <span class="tag">/&gt;</span>
+<span class="cm">// ...e no .map(), a prop nova:</span>
+<span class="tag">&lt;</span><span class="cmp">CartaoProduto</span> <span class="atr">key</span><span class="op">=</span>{<span class="var">p</span>.<span class="var">id</span>} <span class="atr">nome</span><span class="op">=</span>{<span class="var">p</span>.<span class="var">nome</span>} <span class="atr">preco</span><span class="op">=</span>{<span class="var">p</span>.<span class="var">preco</span>} <span class="atr">imagem</span><span class="op">=</span>{<span class="var">p</span>.<span class="var">imagem</span>} <span class="atr">emEstoque</span><span class="op">=</span>{<span class="var">p</span>.<span class="var">emEstoque</span>} <span class="atr">aoComprar</span><span class="op">=</span>{<span class="var">aoComprar</span>} <span class="tag">/&gt;</span></pre>
+            </div>
+            <div class="code-block">
+              <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/CartaoProduto.jsx (adicione)</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">const</span> <span class="fn">CartaoProduto</span> <span class="op">=</span> (<span class="punc">{</span> <span class="var">nome</span>, <span class="var">preco</span>, <span class="var">imagem</span>, <span class="var">emEstoque</span>, <span class="var">aoComprar</span> <span class="punc">}</span>) <span class="op">=&gt;</span> <span class="punc">{</span>
+
+<span class="cm">// no return, no fim do card:</span>
+{<span class="var">emEstoque</span> <span class="op">&amp;&amp;</span> <span class="tag">&lt;button</span> <span class="atr">onClick</span><span class="op">=</span>{<span class="var">aoComprar</span>}<span class="tag">&gt;</span>🛒 Adicionar<span class="tag">&lt;/button&gt;</span>}</pre>
+            </div>
+            <div class="code-block">
+              <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/Cabecalho.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">const</span> <span class="fn">Cabecalho</span> <span class="op">=</span> (<span class="punc">{</span> <span class="var">total</span> <span class="punc">}</span>) <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;header&gt;</span>
+      <span class="tag">&lt;h1&gt;</span>Mini-loja 🛒<span class="tag">&lt;/h1&gt;</span>
+      <span class="tag">&lt;span&gt;</span>🛒 {<span class="var">total</span>}<span class="tag">&lt;/span&gt;</span>
+    <span class="tag">&lt;/header&gt;</span>
+  )
+<span class="punc">}</span></pre>
+            </div>
+            <div class="mini-browser" data-url="localhost:5173" data-h="250">
+<script type="text/html" data-mp="html">
+  <div style="font-family:sans-serif">
+    <header style="display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #e2e8f0;padding-bottom:8px">
+      <h2 style="margin:0">Mini-loja 🛒</h2>
+      <span style="background:#0ea5e9;color:#fff;border-radius:999px;padding:4px 12px;font-weight:800">🛒 <span id="tot">0</span></span>
+    </header>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:10px">
+      <div style="border:1px solid #e2e8f0;border-radius:10px;padding:10px 14px;text-align:center"><div style="font-size:28px">⌨️</div><strong style="font-size:13px">Teclado Mecânico</strong><p style="margin:2px 0 6px;color:#16a34a;font-size:13px;font-weight:700">R$ 320</p><button class="add" style="cursor:pointer">🛒 Adicionar</button></div>
+      <div style="border:1px solid #e2e8f0;border-radius:10px;padding:10px 14px;text-align:center"><div style="font-size:28px">🖥️</div><strong style="font-size:13px">Monitor 27 pol</strong><p style="margin:2px 0 6px;color:#16a34a;font-size:13px;font-weight:700">R$ 1450</p><button class="add" style="cursor:pointer">🛒 Adicionar</button></div>
+      <div style="border:1px solid #e2e8f0;border-radius:10px;padding:10px 14px;text-align:center;opacity:.5;filter:grayscale(1)"><div style="font-size:28px">🪑</div><strong style="font-size:13px">Cadeira Gamer</strong><p style="margin:2px 0 6px;color:#16a34a;font-size:13px;font-weight:700">R$ 980</p><span style="font-size:12px">😢 Esgotado</span></div>
+    </div>
+  </div>
+</script>
+<script type="text/plain" data-mp="js">
+  var t = 0, el = document.getElementById('tot');
+  document.querySelectorAll('.add').forEach(function(b){
+    b.onclick = function(){ t = t + 1; el.textContent = t; };
+  });
+</script>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- desafio para casa -->
+      <div class="exercise home" style="margin-top:18px">
+        <div class="exercise-header"><span class="exercise-icon">🏠</span><div>
+          <div class="exercise-title">Desafio para Casa — acabamento de loja grande</div>
+          <div class="exercise-sub">Ternário, porteiro e chavinha — tudo de hoje, sem ajuda</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">💡 Missão</div><p>1) No Cabecalho, plural inteligente: <code>{total} {total === 1 ? "item" : "itens"}</code>. 2) Botão <strong>limpar carrinho</strong> no Cabecalho — cuidado: o estado mora no App, então o que precisa <strong>descer</strong> pro Cabecalho? 🤔 3) Bônus ★★★: <strong>modo escuro</strong> — estado booleano no App, um botão 🌙/☀️ que vira a chavinha e uma classe condicional no container (fundo escuro, texto claro, via CSS Module). Traga no próximo sábado! 🌙</p></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ RESUMO ═══════════════ -->
+  <section class="step-section" id="resumo">
+    <div class="step-header">
+      <div class="step-number sn-mint">🎒</div>
+      <div>
+        <div class="step-title">O que você leva deste capítulo</div>
+        <div class="step-sub">Sua loja agora REAGE — e você entende por quê</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <ul class="about-bullets">
+        <li><div><strong>Eventos:</strong> <code>onClick={funcao}</code> — camelCase, entre chaves e <strong>sem parênteses</strong> (a receita, não o bolo). Com valor: <code>onClick={() =&gt; funcao(x)}</code>.</div></li>
+        <li><div><strong>useState:</strong> <code>const [valor, setValor] = useState(inicial)</code> — a memória que avisa o React. Nomes sempre <code>algo</code>/<code>setAlgo</code>.</div></li>
+        <li><div><strong>O ciclo:</strong> clique → <code>set</code> → React re-renderiza (nova foto 📸) → tela nova. E as 3 regras: só pelo set · o set não é imediato · cada componente tem a sua memória.</div></li>
+        <li><div><strong>Formulário controlado:</strong> <code>value={x}</code> + <code>onChange={(e) =&gt; setX(e.target.value)}</code> — o estado é o dono do texto.</div></li>
+        <li><div><strong>O estado mora no pai</strong> quando vários componentes precisam dele: dados descem como prop ⬇, avisos sobem como função ⬆.</div></li>
+      </ul>
+
+      <div class="quiz" style="margin-top:16px">
+        <div class="quiz-q"><span class="q-emoji">🎫</span> Quiz de saída: qual input de busca está <strong>certo</strong>?</div>
+        <div class="quiz-options">
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">&lt;input value={busca} /&gt; (só o value)</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">&lt;input onChange={setBusca(e.target.value)} /&gt;</button>
+          <button class="quiz-opt" data-correct="true" onclick="checkQuiz(this,true)">&lt;input value={busca} onChange={(e) =&gt; setBusca(e.target.value)} /&gt;</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">&lt;input value="busca" onChange="setBusca" /&gt;</button>
+        </div>
+        <div class="quiz-feedback" data-correct="Espelho completo! value + onChange, sempre juntos." data-wrong="Revê o input-espelho…" data-explain="Só value = campo congelado (Bug 4). setBusca(e.target.value) sem a arrow executa na renderização (Bug 2!). Aspas viram texto. O certo: value={busca} + onChange={(e) => setBusca(e.target.value)}."></div>
+      </div>
+
+      <div class="tip" style="margin-top:16px">
+        <span class="tip-icon">➡️</span>
+        <div class="tip-content">
+          <strong>No próximo capítulo (Cap 7):</strong> sua loja reage… mas os produtos ainda moram num
+          <code>const</code> dentro do código. Chegou a hora que a gente promete desde o Cap 4:
+          <strong>apagar o array</strong> e buscar os dados de uma <strong>API de verdade</strong> — com o
+          <code>fetch</code> do Cap 3 morando no lugar certo: o <code>useEffect</code>. Spoiler: colocar
+          ele no lugar <em>errado</em> cria um loop infinito (lembra do Bug 2?). 🌀
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:22px;display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+        <a href="../../index.html" style="display:inline-block;padding:14px 28px;background:var(--surface2);color:var(--text);font-weight:800;border-radius:50px;font-size:1rem;text-decoration:none;border:1px solid rgba(255,255,255,0.12)">
+          ← voltar ao hub
+        </a>
+        <a href="../07-react-efeitos-dados/index.html" style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg,var(--react),#2aa9c9);color:#06222b;font-weight:900;border-radius:50px;font-size:1rem;text-decoration:none;box-shadow:0 10px 28px rgba(97,218,251,0.35)">
+          Próximo: Cap 07 — Dados de verdade 🚀 →
+        </a>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="footer">
+  Feito com <span class="heart">♥</span> pela <strong style="color:var(--text)">programa AI</strong> ·
+  <a href="../../index.html">Hub do curso</a> · Cap 06 — Interatividade: useState &amp; eventos
+</footer>
+
+<script src="../../shared/scripts.js" defer></script>
+<script src="../../shared/playground.js" defer></script>
+<script type="module" src="../../shared/motion-fx.js"></script>
+<script type="module">
+  // ── Motor das máquinas didáticas do Cap 06 ──
+  // Motion (CDN) dá o tempero quando carrega; se a internet da sala falhar,
+  // TUDO continua funcionando (transições CSS + Web Animations nativas).
+  let animate=null;
+  try{ ({animate}=await import('https://cdn.jsdelivr.net/npm/motion@11/+esm')); }catch(e){}
+  const onView=(el,fn)=>{ if(!el) return;
+    const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){fn();io.disconnect();}})},{threshold:.3});
+    io.observe(el); };
+
+  /* ════ 🎯 Clique Certo ════ */
+  (()=>{
+    const root=document.getElementById('clickpick'); if(!root) return;
+    const chips=[...root.querySelectorAll('.cp-chip')];
+    const lineEl=root.querySelector('#cp-line');
+    const numEl=root.querySelector('#cp-num');
+    const btn=root.querySelector('#cp-btn');
+    const note=root.querySelector('#cp-note');
+    let mode='certo', n=0;
+    const CODE={
+      certo:'&lt;button <span style="color:#7ef0c4">onClick={aumentar}</span>&gt;+1&lt;/button&gt;\n\n// a função é ENTREGUE ao React.\n// Ele guarda e chama só no clique. ✅',
+      parenteses:'&lt;button <span style="color:#ff8b8b">onClick={aumentar()}</span>&gt;+1&lt;/button&gt;\n\n// os parênteses EXECUTAM agora,\n// durante a renderização! 💥',
+      minusculo:'&lt;button <span style="color:#f7b731">onclick={aumentar}</span>&gt;+1&lt;/button&gt;\n\n// "onclick" minúsculo não é o\n// evento do React — é ignorado. 🤷'
+    };
+    const set=(m)=>{
+      mode=m; n=0; numEl.textContent='0';
+      chips.forEach(c=>c.classList.toggle('active',c.dataset.v===m));
+      lineEl.innerHTML=CODE[m];
+      if(m==='parenteses'){
+        // simula o disparo NA RENDERIZAÇÃO: sobe sozinho, sem clique
+        setTimeout(()=>{ n=1; numEl.textContent='1';
+          note.innerHTML='<span class="bad">🔥 disparou SOZINHO!</span> A função rodou enquanto o React desenhava a tela — ninguém clicou. E o onClick recebeu o RESULTADO dela (undefined), não a função.';
+          if(animate) animate(numEl,{transform:['scale(1.4)','scale(1)']},{duration:.4});
+        },350);
+      }else if(m==='minusculo'){
+        note.innerHTML='Escrito assim, o React nem instala o evento. Clique no botão: nada vai acontecer (e o React avisa no console que você queria <b>onClick</b>).';
+      }else{
+        note.innerHTML='Assim o React guarda a receita e chama <b>só no clique</b>. Testa aí no botão! 👉';
+      }
+    };
+    btn.addEventListener('click',()=>{
+      if(mode==='certo'){ n++; numEl.textContent=String(n);
+        note.innerHTML='<span class="ok">✅ clicou → aumentar() rodou → '+n+'</span>. Cada clique, uma chamada. Como deve ser.';
+        if(animate) animate(numEl,{transform:['scale(1.3)','scale(1)']},{duration:.3});
+      }else if(mode==='parenteses'){
+        note.innerHTML='<span class="bad">nada aconteceu…</span> O onClick recebeu <b>undefined</b> (o retorno da função que já rodou). Clicar não faz nada.';
+      }else{
+        note.innerHTML='<span class="bad">nada aconteceu…</span> O React ignorou o <b>onclick</b> minúsculo. É camelCase: <b>onClick</b>.';
+      }
+    });
+    chips.forEach(c=>c.addEventListener('click',()=>set(c.dataset.v)));
+    onView(root,()=>set('certo'));
+  })();
+
+  /* ════ 🧊 Variável Teimosa ════ */
+  (()=>{
+    const root=document.getElementById('stubborn'); if(!root) return;
+    const consoleEl=root.querySelector('#st-console');
+    const numEl=root.querySelector('#st-num');
+    const faceEl=root.querySelector('#st-face');
+    const note=root.querySelector('#st-note');
+    const clickBtn=root.querySelector('#st-click');
+    const toggleBtn=root.querySelector('#st-toggle');
+    const resetBtn=root.querySelector('#st-reset');
+    const hotLet=root.querySelector('#st-hot-let');
+    const hotInc=root.querySelector('#st-hot-inc');
+    const hotJsx=root.querySelector('#st-hot-jsx');
+    let cliques=0, comState=false;
+    const flash=(el)=>{ el.classList.add('lit'); setTimeout(()=>el.classList.remove('lit'),600); };
+    const reset=()=>{
+      cliques=0; comState=false;
+      hotLet.textContent='let cliques = 0';
+      toggleBtn.classList.remove('on');
+      toggleBtn.textContent='🔁 refazer com useState';
+      consoleEl.textContent='// o console vai aparecer aqui…';
+      numEl.textContent='Cliques: 0'; faceEl.textContent='';
+      note.textContent='a variável é teimosa: muda por dentro, mas a tela nem fica sabendo';
+    };
+    clickBtn.addEventListener('click',()=>{
+      cliques++;
+      flash(hotInc);
+      if(consoleEl.textContent.startsWith('//')) consoleEl.textContent='';
+      consoleEl.textContent+=(comState?'':'cliques agora é: '+cliques+'\n');
+      if(comState){
+        consoleEl.textContent+='setCliques('+cliques+') → nova foto 📸\n';
+        numEl.textContent='Cliques: '+cliques;
+        numEl.classList.add('bump'); setTimeout(()=>numEl.classList.remove('bump'),200);
+        faceEl.textContent='😍';
+        note.innerHTML='o <b>set</b> avisou o React → a tela acompanhou. Essa é a diferença!';
+        flash(hotJsx);
+      }else{
+        faceEl.textContent='😕 ué…';
+        note.innerHTML='console: <b>'+cliques+'</b> · tela: <b>0</b>. A variável mudou em silêncio — o React nem ficou sabendo.';
+      }
+      consoleEl.scrollTop=consoleEl.scrollHeight;
+    });
+    toggleBtn.addEventListener('click',()=>{
+      comState=!comState;
+      cliques=0;
+      consoleEl.textContent=comState?'// agora com useState — clique de novo!\n':'// de volta ao let teimoso…\n';
+      numEl.textContent='Cliques: 0'; faceEl.textContent='';
+      toggleBtn.classList.toggle('on',comState);
+      toggleBtn.textContent=comState?'✅ usando useState':'🔁 refazer com useState';
+      hotLet.textContent=comState?'const [cliques, setCliques] = useState(0)':'let cliques = 0';
+      flash(hotLet);
+      note.textContent=comState?'mesma lógica, só trocou a memória. Clica no +1 e compara!':'clica no +1 e vê a teimosia de novo';
+    });
+    resetBtn.addEventListener('click',reset);
+    onView(root,()=>{});
+  })();
+
+  /* ════ 🔄 Ciclo do Estado (máquina-mor) ════ */
+  (()=>{
+    const root=document.getElementById('cycle'); if(!root) return;
+    const numEl=root.querySelector('#cy-num');
+    const btn=root.querySelector('#cy-btn');
+    const steps=['cy-s1','cy-s2','cy-s3','cy-s4'].map(id=>root.querySelector('#'+id));
+    const setCall=root.querySelector('#cy-setcall');
+    const frames=root.querySelector('#cy-frames');
+    const note=root.querySelector('#cy-note');
+    const resetBtn=root.querySelector('#cy-reset');
+    let n=0, busy=false;
+    const addFrame=(val,old)=>{
+      const f=document.createElement('div');
+      f.className='cy-frame'+(old?' old':'');
+      f.innerHTML='<div class="f-cam">📸</div><div class="f-val">'+val+'</div>';
+      frames.appendChild(f);
+      requestAnimationFrame(()=>requestAnimationFrame(()=>f.classList.add('in')));
+      while(frames.children.length>8) frames.removeChild(frames.firstChild);
+    };
+    const reset=()=>{
+      n=0; numEl.textContent='0'; frames.innerHTML='';
+      steps.forEach(s=>s.classList.remove('lit'));
+      addFrame(0,false);
+      note.textContent='clique no +1 lá em cima pra rodar o ciclo';
+    };
+    btn.addEventListener('click',()=>{
+      if(busy) return; busy=true;
+      steps.forEach(s=>s.classList.remove('lit'));
+      [...frames.children].forEach(f=>f.classList.add('old'));
+      const novo=n+1;
+      setCall.textContent='setContador('+novo+')';
+      const t=280;
+      setTimeout(()=>steps[0].classList.add('lit'),0);
+      setTimeout(()=>steps[1].classList.add('lit'),t);
+      setTimeout(()=>steps[2].classList.add('lit'),t*2);
+      setTimeout(()=>{
+        steps[3].classList.add('lit');
+        n=novo; numEl.textContent=String(n);
+        numEl.classList.add('bump'); setTimeout(()=>numEl.classList.remove('bump'),220);
+        addFrame(n,false);
+        note.innerHTML='foto nova: o App rodou DE NOVO, agora com contador = <b>'+n+'</b>. As fotos velhas ficam pra trás.';
+        busy=false;
+      },t*3);
+    });
+    resetBtn.addEventListener('click',reset);
+    onView(root,reset);
+  })();
+
+  /* ════ 👯 Gêmeos com memória própria ════ */
+  (()=>{
+    const root=document.getElementById('twins'); if(!root) return;
+    const row=root.querySelector('#tw-row');
+    const note=root.querySelector('#tw-note');
+    const addBtn=root.querySelector('#tw-add');
+    const resetBtn=root.querySelector('#tw-reset');
+    const NOMES=['A','B','C','D','E'];
+    let qtd=0;
+    const addCard=()=>{
+      if(qtd>=5) return;
+      const nome=NOMES[qtd]; qtd++;
+      const card=document.createElement('div');
+      card.className='tw-card';
+      card.innerHTML='<span class="tw-label">&lt;Contador /&gt; '+nome+'</span>'+
+        '<div class="tw-num">0</div><button>+1</button>';
+      const num=card.querySelector('.tw-num');
+      card.querySelector('button').addEventListener('click',()=>{
+        num.textContent=String(parseInt(num.textContent,10)+1);
+        if(animate) animate(num,{transform:['scale(1.3)','scale(1)']},{duration:.25});
+        note.innerHTML='só o <b>'+nome+'</b> mudou — cada cópia do componente tem a PRÓPRIA memória.';
+      });
+      row.appendChild(card);
+      requestAnimationFrame(()=>requestAnimationFrame(()=>card.classList.add('in')));
+      if(qtd>2) note.innerHTML='o irmão <b>'+nome+'</b> nasceu com a memória ZERADA — useState(0) roda pra cada cópia nova.';
+    };
+    const reset=()=>{ row.innerHTML=''; qtd=0; addCard(); addCard();
+      note.textContent='clique nos contadores: cada um só mexe no seu número'; };
+    addBtn.addEventListener('click',addCard);
+    resetBtn.addEventListener('click',reset);
+    onView(root,reset);
+  })();
+
+  /* ════ 🪞 Input-Espelho ════ */
+  (()=>{
+    const root=document.getElementById('mirror'); if(!root) return;
+    const input=root.querySelector('#mir-input');
+    const ola=root.querySelector('#mir-ola');
+    const stateV=root.querySelector('#mir-state-v');
+    const consoleEl=root.querySelector('#mir-console');
+    const note=root.querySelector('#mir-note');
+    const toggleBtn=root.querySelector('#mir-toggle');
+    const resetBtn=root.querySelector('#mir-reset');
+    let nome='', morto=false;
+    const paint=()=>{
+      stateV.textContent='"'+nome+'"';
+      ola.textContent='Olá, '+nome+'! 👋';
+      input.value=nome;
+    };
+    const log=(txt,warn)=>{
+      if(consoleEl.textContent.startsWith('//')) consoleEl.textContent='';
+      const div=document.createElement('div');
+      if(warn) div.className='warn';
+      div.textContent=txt;
+      consoleEl.appendChild(div);
+      while(consoleEl.children.length>6) consoleEl.removeChild(consoleEl.firstChild);
+      consoleEl.scrollTop=consoleEl.scrollHeight;
+    };
+    input.addEventListener('input',()=>{
+      if(morto){
+        // sem onChange: o estado não muda -> o espelho volta pro valor do estado
+        input.value=nome;
+        log('⚠️ Warning: campo com `value` e sem `onChange` — o input está travado.',true);
+        note.innerHTML='<b>congelou!</b> Sem onChange ninguém atualiza o estado — e o espelho (value) continua mostrando o valor velho.';
+        return;
+      }
+      nome=input.value;
+      log('onChange → setNome("'+nome+'")');
+      paint();
+      note.innerHTML='cada tecla: evento → <b>setNome</b> → nova foto 📸 → o input mostra o estado novo.';
+    });
+    toggleBtn.addEventListener('click',()=>{
+      morto=!morto;
+      toggleBtn.classList.toggle('dead-on',morto);
+      toggleBtn.textContent=morto?'🧊 sem onChange (campo travado)':'✂️ tirar o onChange';
+      input.classList.toggle('dead',morto);
+      note.innerHTML=morto?'agora tenta digitar aí no campo… 😈':'onChange devolvido! O espelho volta a funcionar.';
+    });
+    resetBtn.addEventListener('click',()=>{
+      nome=''; morto=false;
+      toggleBtn.classList.remove('dead-on');
+      toggleBtn.textContent='✂️ tirar o onChange';
+      input.classList.remove('dead');
+      consoleEl.textContent='// cada tecla dispara o onChange…';
+      paint();
+      note.textContent='o input é o espelho; o estado é o dono do texto';
+    });
+    onView(root,paint);
+  })();
+
+  /* ════ ▶️ vídeos: dão play sozinhos ao aparecer e pausam ao sair da tela ════ */
+  (()=>{
+    const vids=[...document.querySelectorAll('.clip video')];
+    if(!vids.length || !('IntersectionObserver' in window)) return;
+    const io=new IntersectionObserver((es)=>{
+      es.forEach((e)=>{
+        const v=e.target;
+        if(e.isIntersecting){ const p=v.play(); if(p&&p.catch) p.catch(()=>{}); }
+        else { v.pause(); }
+      });
+    },{threshold:0.4});
+    vids.forEach((v)=>io.observe(v));
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      :root {
+        --bg: #0a0a12;
+        --surface: #12121e;
+        --surface2: #1a1a2e;
+        --code-bg: #0d0d1a;
+        --text: #eef0f8;
+        --dim: #8892b0;
+        --line: #262640;
+        --accent: #6c63ff;
+        --react: #61dafb;
+        --teal: #4ecdc4;
+        --amber: #f7b731;
+        --purple: #a78bfa;
+      }
+      /* Ligaduras OFF (regra do material): -> != >= => nunca viram símbolos */
+      pre, code, .mono {
+        font-variant-ligatures: none;
+        font-feature-settings: "liga" 0, "clig" 0, "calt" 0;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        width: 1920px; height: 1080px; overflow: hidden;
+        background: var(--bg);
+        font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        color: var(--text);
+      }
+      .mono { font-family: "JetBrains Mono", ui-monospace, "Menlo", monospace; }
+
+      #bg {
+        position: absolute; inset: 0;
+        background:
+          radial-gradient(1100px 700px at 50% 20%, #14142a 0%, rgba(20,20,42,0) 65%),
+          linear-gradient(180deg, #0b0b16 0%, #0a0a12 100%);
+      }
+      #grid {
+        position: absolute; inset: 0;
+        background-image:
+          linear-gradient(rgba(38,38,64,0.5) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(38,38,64,0.5) 1px, transparent 1px);
+        background-size: 44px 44px;
+        opacity: 0.5;
+        mask-image: radial-gradient(1400px 900px at 50% 45%, #000 55%, transparent 100%);
+        -webkit-mask-image: radial-gradient(1400px 900px at 50% 45%, #000 55%, transparent 100%);
+      }
+
+      #title { position: absolute; top: 56px; left: 0; width: 100%; text-align: center;
+        font-size: 46px; font-weight: 900; }
+      #title .hook { color: var(--accent); }
+
+      /* caixinha useState(0) */
+      #machine {
+        position: absolute; left: 50%; top: 216px; width: 400px; height: 108px; margin-left: -200px;
+        background: var(--code-bg); border: 2px solid var(--accent); border-radius: 18px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 46px; box-shadow: 0 0 44px rgba(108,99,255,0.28);
+      }
+      #machine .zero { color: var(--amber); }
+      #machine .fn { color: var(--accent); }
+
+      /* o PAR que sai da caixinha */
+      .chip {
+        position: absolute; top: 386px; height: 132px; border-radius: 18px;
+        background: var(--surface); display: flex; flex-direction: column;
+        align-items: center; justify-content: center; gap: 4px;
+      }
+      #chip-valor { left: 50%; margin-left: -560px; width: 230px;
+        border: 2px solid var(--react); box-shadow: 0 0 34px rgba(97,218,251,0.22); }
+      #chip-valor .big { font-size: 54px; font-weight: 800; color: var(--amber); }
+      #chip-fn { left: 50%; margin-left: 320px; width: 320px;
+        border: 2px solid var(--teal); box-shadow: 0 0 34px rgba(78,205,196,0.22); }
+      #chip-fn .big { font-size: 42px; font-weight: 800; color: var(--teal); }
+      .chip .lbl { font-size: 21px; color: var(--dim); font-family: "Inter", sans-serif; }
+
+      /* a linha de código final */
+      #codeline {
+        position: absolute; top: 556px; left: 0; width: 100%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 52px; line-height: 1;
+      }
+      #codeline .tk { display: inline-flex; align-items: center; }
+      .kc {
+        padding: 10px 18px; margin: 0 14px; border-radius: 14px;
+        background: var(--surface2); border: 2px solid var(--line);
+        box-shadow: 0 6px 0 var(--line);
+        color: var(--react); font-weight: 700;
+      }
+      #tk-const { color: var(--purple); margin-right: 24px; }
+      #tk-nome  { color: var(--react); }
+      #tk-comma { color: var(--dim); margin: 0 20px 0 4px; }
+      #tk-set   { color: var(--teal); }
+      #tk-eq    { color: var(--dim); margin: 0 24px; }
+      #tk-use   { color: var(--accent); }
+      #tk-zero  { color: var(--amber); }
+      #tk-close { color: var(--accent); }
+
+      /* badge do valor atual (posicionado por JS acima de "contador") */
+      #badge {
+        position: absolute; width: 84px; height: 84px; border-radius: 16px;
+        background: var(--surface); border: 2px solid var(--react);
+        box-shadow: 0 0 30px rgba(97,218,251,0.35);
+        display: flex; align-items: center; justify-content: center;
+      }
+      #badge span { position: absolute; font-size: 44px; font-weight: 800; }
+      #badge .v0 { color: var(--amber); }
+      #badge .v1 { color: var(--amber); }
+      #badge-lbl {
+        position: absolute; font-size: 19px; color: var(--dim); white-space: nowrap;
+      }
+
+      /* botão payoff */
+      #btn {
+        position: absolute; left: 50%; top: 806px; width: 440px; height: 94px; margin-left: -220px;
+        border-radius: 18px; background: var(--surface);
+        border: 2px solid var(--teal); box-shadow: 0 0 34px rgba(78,205,196,0.25);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 38px; color: var(--teal); font-weight: 700;
+      }
+      #btn .tap {
+        position: absolute; right: -26px; top: -30px; font-size: 52px;
+        transform-origin: 40% 80%;
+      }
+
+      #pulse {
+        position: absolute; width: 20px; height: 20px; border-radius: 50%;
+        background: var(--teal); box-shadow: 0 0 18px 4px rgba(78,205,196,0.8);
+      }
+
+      #caption {
+        position: absolute; bottom: 62px; left: 0; width: 100%; text-align: center;
+        font-size: 30px; font-weight: 700; color: var(--text);
+      }
+      #caption b { color: var(--react); font-weight: 800; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="12"
+      data-width="1920" data-height="1080">
+
+      <div id="bg" class="clip" data-start="0" data-duration="12" data-track-index="0"></div>
+      <div id="grid" class="clip" data-start="0" data-duration="12" data-track-index="1"></div>
+
+      <div id="title" class="clip" data-start="0" data-duration="12" data-track-index="2">
+        Anatomia do <span class="hook mono">useState</span>
+      </div>
+
+      <div id="machine" class="clip mono" data-start="0" data-duration="12" data-track-index="3">
+        <span class="fn">useState(</span><span class="zero">0</span><span class="fn">)</span>
+      </div>
+
+      <div id="chip-valor" class="chip clip" data-start="0" data-duration="12" data-track-index="4">
+        <span class="big mono">0</span>
+        <span class="lbl">o valor</span>
+      </div>
+      <div id="chip-fn" class="chip clip" data-start="0" data-duration="12" data-track-index="5">
+        <span class="big mono">fn( )</span>
+        <span class="lbl">a função que troca o valor</span>
+      </div>
+
+      <div id="codeline" class="clip mono" data-start="0" data-duration="12" data-track-index="6">
+        <span class="tk" id="tk-const">const</span>
+        <span class="tk kc" id="tk-ob">[</span>
+        <span class="tk" id="tk-nome">contador</span>
+        <span class="tk" id="tk-comma">,</span>
+        <span class="tk" id="tk-set">setContador</span>
+        <span class="tk kc" id="tk-cb">]</span>
+        <span class="tk" id="tk-eq">=</span>
+        <span class="tk" id="tk-use">useState(</span>
+        <span class="tk" id="tk-zero">0</span>
+        <span class="tk" id="tk-close">)</span>
+      </div>
+
+      <div id="badge" class="clip mono" data-start="0" data-duration="12" data-track-index="7"
+        data-layout-allow-overlap>
+        <span class="v0">0</span>
+        <span class="v1">1</span>
+      </div>
+      <div id="badge-lbl" class="clip" data-start="0" data-duration="12" data-track-index="8"
+        data-layout-allow-overlap>valor atual</div>
+
+      <div id="btn" class="clip mono" data-start="0" data-duration="12" data-track-index="9">
+        setContador(1)
+        <span class="tap">👆</span>
+      </div>
+
+      <div id="pulse" class="clip" data-start="0" data-duration="12" data-track-index="10"
+        data-layout-allow-overlap></div>
+
+      <div id="caption" class="clip" data-start="0" data-duration="12" data-track-index="11">
+        trocou o valor → o React <b>redesenha a tela</b>
+      </div>
+    </div>
+
+    <script>
+      /* ---------- geometria (medida 1x no load, determinístico) ---------- */
+      const rect = (el) => el.getBoundingClientRect();
+      const center = (r) => ({ x: r.left + r.width / 2, y: r.top + r.height / 2 });
+
+      const machine = document.getElementById("machine");
+      const chipValor = document.getElementById("chip-valor");
+      const chipFn = document.getElementById("chip-fn");
+      const tkNome = document.getElementById("tk-nome");
+      const tkSet = document.getElementById("tk-set");
+      const tkUse = document.getElementById("tk-use");
+      const tkClose = document.getElementById("tk-close");
+      const badge = document.getElementById("badge");
+      const badgeLbl = document.getElementById("badge-lbl");
+      const btn = document.getElementById("btn");
+      const pulse = document.getElementById("pulse");
+
+      const cMachine = center(rect(machine));
+      const cChipValor = center(rect(chipValor));
+      const cChipFn = center(rect(chipFn));
+      const rNome = rect(tkNome);
+      const cNome = center(rNome);
+      const cSet = center(rect(tkSet));
+      const rUse = rect(tkUse), rClose = rect(tkClose);
+      const cUseGroup = { x: (rUse.left + rClose.right) / 2, y: (rUse.top + rUse.bottom) / 2 };
+
+      /* badge acima do token "contador" */
+      badge.style.left = (cNome.x - 42) + "px";
+      badge.style.top = (rNome.top - 122) + "px";
+      badgeLbl.style.left = (cNome.x - 44) + "px";
+      badgeLbl.style.top = (rNome.top - 154) + "px";
+      const cBadge = { x: cNome.x, y: rNome.top - 122 + 42 };
+
+      /* pulse nasce no botão */
+      const rBtn = rect(btn);
+      const cBtn = center(rBtn);
+      pulse.style.left = (cBtn.x - 10) + "px";
+      pulse.style.top = (rBtn.top - 14) + "px";
+      const pulseStart = { x: cBtn.x, y: rBtn.top - 14 + 10 };
+
+      /* ---------- timeline ---------- */
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      /* estados iniciais */
+      tl.set("#title", { opacity: 0, y: -18 }, 0);
+      tl.set("#machine", { opacity: 0, scale: 0.6, transformOrigin: "50% 50%" }, 0);
+      tl.set("#chip-valor", { opacity: 0, scale: 0.3,
+        x: cMachine.x - cChipValor.x, y: cMachine.y - cChipValor.y }, 0);
+      tl.set("#chip-fn", { opacity: 0, scale: 0.3,
+        x: cMachine.x - cChipFn.x, y: cMachine.y - cChipFn.y }, 0);
+      tl.set(".chip .lbl", { opacity: 0 }, 0);
+      tl.set("#codeline .tk", { opacity: 0 }, 0);
+      tl.set("#badge", { opacity: 0, scale: 0.4 }, 0);
+      tl.set("#badge .v1", { opacity: 0, y: -26 }, 0);
+      tl.set("#badge-lbl", { opacity: 0 }, 0);
+      tl.set("#btn", { opacity: 0, y: 46 }, 0);
+      tl.set("#btn .tap", { opacity: 0, scale: 0.4, rotation: -18 }, 0);
+      tl.set("#pulse", { opacity: 0 }, 0);
+      tl.set("#caption", { opacity: 0, y: 16 }, 0);
+
+      /* ── ATO 1 · a caixinha cospe o par (0–4s) ── */
+      tl.to("#title", { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 0.2);
+      tl.to("#machine", { opacity: 1, scale: 1, duration: 0.7, ease: "back.out(2)" }, 0.55);
+      tl.to("#machine", { rotation: 2.5, duration: 0.12, yoyo: true, repeat: 3, ease: "sine.inOut" }, 1.35);
+      tl.to("#machine", { scale: 0.92, duration: 0.14, yoyo: true, repeat: 1, ease: "power2.in" }, 1.62);
+
+      tl.to("#chip-valor", { opacity: 1, scale: 1, x: 0, y: 0, duration: 0.85, ease: "back.out(1.5)" }, 1.78);
+      tl.to("#chip-fn", { opacity: 1, scale: 1, x: 0, y: 0, duration: 0.85, ease: "back.out(1.5)" }, 1.92);
+      tl.to(".chip .lbl", { opacity: 1, duration: 0.5, stagger: 0.15 }, 2.65);
+
+      /* idle bob dos chips */
+      tl.to("#chip-valor", { y: -10, duration: 0.55, yoyo: true, repeat: 1, ease: "sine.inOut" }, 3.0);
+      tl.to("#chip-fn", { y: -10, duration: 0.55, yoyo: true, repeat: 1, ease: "sine.inOut" }, 3.15);
+
+      /* ── ATO 2 · desestruturação abre o par (4–8s) ── */
+      tl.to("#tk-ob", { opacity: 1, duration: 0.01 }, 4.0);
+      tl.from("#tk-ob", { scale: 0, y: -26, duration: 0.5, ease: "back.out(2.4)" }, 4.0);
+      tl.to("#tk-cb", { opacity: 1, duration: 0.01 }, 4.18);
+      tl.from("#tk-cb", { scale: 0, y: -26, duration: 0.5, ease: "back.out(2.4)" }, 4.18);
+
+      /* chip do valor voa para virar o nome "contador" */
+      tl.to("#chip-valor", { x: cNome.x - cChipValor.x, y: cNome.y - cChipValor.y,
+        scale: 0.35, opacity: 0, duration: 0.65, ease: "power2.in" }, 4.75);
+      tl.to("#tk-nome", { opacity: 1, duration: 0.01 }, 5.3);
+      tl.from("#tk-nome", { scale: 0.4, duration: 0.45, ease: "back.out(2.2)" }, 5.3);
+
+      tl.to("#tk-comma", { opacity: 1, duration: 0.01 }, 5.6);
+      tl.from("#tk-comma", { scale: 0, duration: 0.35, ease: "back.out(2.4)" }, 5.6);
+
+      /* chip da função voa para virar "setContador" */
+      tl.to("#chip-fn", { x: cSet.x - cChipFn.x, y: cSet.y - cChipFn.y,
+        scale: 0.35, opacity: 0, duration: 0.65, ease: "power2.in" }, 5.85);
+      tl.to("#tk-set", { opacity: 1, duration: 0.01 }, 6.4);
+      tl.from("#tk-set", { scale: 0.4, duration: 0.45, ease: "back.out(2.2)" }, 6.4);
+
+      /* const … = entram */
+      tl.to("#tk-const", { opacity: 1, duration: 0.4, ease: "power2.out" }, 6.75);
+      tl.from("#tk-const", { x: -30, duration: 0.4, ease: "power2.out" }, 6.75);
+      tl.to("#tk-eq", { opacity: 1, duration: 0.35, ease: "power2.out" }, 6.9);
+
+      /* a caixinha encolhe e vira o fim da linha */
+      tl.to("#machine", { x: cUseGroup.x - cMachine.x, y: cUseGroup.y - cMachine.y,
+        scale: 0.42, opacity: 0, duration: 0.7, ease: "power2.in" }, 7.0);
+      tl.to("#tk-use, #tk-zero, #tk-close", { opacity: 1, duration: 0.01, stagger: 0.08 }, 7.55);
+      tl.from("#tk-use, #tk-zero, #tk-close", { scale: 0.5, y: 14, duration: 0.4,
+        ease: "back.out(2)", stagger: 0.08 }, 7.55);
+
+      /* ── ATO 3 · payoff: setContador(1) troca o valor (8–12s) ── */
+      tl.to("#badge", { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(2.2)" }, 8.15);
+      tl.to("#badge-lbl", { opacity: 1, duration: 0.4 }, 8.35);
+
+      tl.to("#btn", { opacity: 1, y: 0, duration: 0.55, ease: "power3.out" }, 8.5);
+      tl.to("#btn .tap", { opacity: 1, scale: 1, rotation: 0, duration: 0.4, ease: "back.out(2)" }, 8.85);
+
+      /* o clique */
+      tl.to("#btn .tap", { scale: 0.78, rotation: -12, duration: 0.12, yoyo: true, repeat: 1, ease: "power2.in" }, 9.3);
+      tl.to("#btn", { scale: 0.94, duration: 0.12, yoyo: true, repeat: 1, ease: "power2.in" }, 9.32);
+
+      /* pulso viaja botão → badge */
+      tl.to("#pulse", { opacity: 1, duration: 0.08 }, 9.5);
+      tl.to("#pulse", { x: cBadge.x - pulseStart.x, y: cBadge.y - pulseStart.y,
+        duration: 0.5, ease: "power2.in" }, 9.52);
+      tl.to("#pulse", { opacity: 0, duration: 0.12 }, 10.0);
+
+      /* troca 0 → 1 */
+      tl.to("#badge .v0", { y: -30, opacity: 0, duration: 0.3, ease: "power2.in" }, 10.05);
+      tl.to("#badge .v1", { y: 0, opacity: 1, duration: 0.45, ease: "back.out(2.4)" }, 10.15);
+      tl.to("#badge", { scale: 1.18, duration: 0.2, yoyo: true, repeat: 1, ease: "back.out(2)" }, 10.15);
+      tl.to("#tk-nome", { scale: 1.12, duration: 0.2, yoyo: true, repeat: 1, ease: "sine.inOut" }, 10.2);
+
+      tl.to("#caption", { opacity: 1, y: 0, duration: 0.55, ease: "power2.out" }, 10.55);
+
+      /* respiro final (segura o loop) */
+      tl.to("#badge", { scale: 1.05, duration: 0.6, yoyo: true, repeat: 1, ease: "sine.inOut" }, 11.0);
+
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      :root {
+        --bg: #0a0a12;
+        --surface: #12121e;
+        --surface2: #1a1a2e;
+        --code-bg: #0d0d1a;
+        --text: #eef0f8;
+        --dim: #8892b0;
+        --line: #262640;
+        --accent: #6c63ff;
+        --react: #61dafb;
+        --teal: #4ecdc4;
+        --amber: #f7b731;
+        --js: #f7df1e;
+        --bug: #ff4757;
+        --green: #46d39a;
+      }
+      /* Ligaduras OFF (regra do material) */
+      pre, code, .mono {
+        font-variant-ligatures: none;
+        font-feature-settings: "liga" 0, "clig" 0, "calt" 0;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        width: 1920px; height: 1080px; overflow: hidden;
+        background: var(--bg);
+        font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        color: var(--text);
+      }
+      .mono { font-family: "JetBrains Mono", ui-monospace, "Menlo", monospace; }
+
+      #bg {
+        position: absolute; inset: 0;
+        background:
+          radial-gradient(1100px 700px at 50% 20%, #14142a 0%, rgba(20,20,42,0) 65%),
+          linear-gradient(180deg, #0b0b16 0%, #0a0a12 100%);
+      }
+      #grid {
+        position: absolute; inset: 0;
+        background-image:
+          linear-gradient(rgba(38,38,64,0.5) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(38,38,64,0.5) 1px, transparent 1px);
+        background-size: 44px 44px;
+        opacity: 0.5;
+        mask-image: radial-gradient(1400px 900px at 50% 45%, #000 55%, transparent 100%);
+        -webkit-mask-image: radial-gradient(1400px 900px at 50% 45%, #000 55%, transparent 100%);
+      }
+
+      #title { position: absolute; top: 48px; left: 0; width: 100%; text-align: center;
+        font-size: 46px; font-weight: 900; }
+      #title .hook { color: var(--react); }
+
+      /* ===== browser genérico ===== */
+      .browser { position: absolute; background: var(--surface);
+        border: 2px solid var(--line); border-radius: 18px; overflow: hidden; }
+      .browser .bar { height: 52px; background: var(--surface2); display: flex;
+        align-items: center; gap: 9px; padding: 0 18px; border-bottom: 2px solid var(--line); }
+      .browser .bar .d { width: 14px; height: 14px; border-radius: 50%; background: var(--line); }
+      .browser .bar .d.r { background: #ff6b6b; } .browser .bar .d.a { background: var(--amber); }
+      .browser .bar .d.g { background: var(--green); }
+      .browser .bar .url { margin-left: 10px; font-size: 17px; color: var(--dim);
+        background: var(--code-bg); border-radius: 8px; padding: 4px 16px; }
+
+      /* ===== ATO 1 · a dor ===== */
+      #scene-a { position: absolute; inset: 0; }
+      #console-a { position: absolute; left: 230px; top: 250px; width: 640px; height: 430px;
+        background: var(--code-bg); border: 2px solid var(--line); border-radius: 18px; }
+      #console-a .hd { height: 50px; display: flex; align-items: center; padding: 0 20px;
+        color: var(--dim); font-size: 19px; border-bottom: 2px solid var(--line); gap: 10px; }
+      #console-a .bd { padding: 22px 26px; font-size: 27px; line-height: 1.9; }
+      #console-a .decl { color: var(--dim); }
+      #console-a .decl .kw { color: var(--bug); font-weight: 700; }
+      #console-a .log { color: var(--js); }
+      #console-a .log .n { color: var(--text); }
+
+      #browser-a { left: 1060px; top: 220px; width: 620px; height: 460px; }
+      #browser-a .num { margin-top: 66px; text-align: center; font-size: 120px;
+        font-weight: 800; color: var(--react); }
+      #browser-a .b1 { margin: 34px auto 0; width: 190px; height: 74px; border-radius: 14px;
+        background: var(--surface2); border: 2px solid var(--js); color: var(--js);
+        font-size: 34px; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+      #cursor-a { position: absolute; left: 1420px; top: 620px; font-size: 60px;
+        transform-origin: 30% 80%; }
+      #dor { position: absolute; left: 1060px; top: 706px; width: 620px; text-align: center;
+        font-size: 32px; font-weight: 800; color: var(--bug); }
+
+      /* ===== ATOS 2–3 · o ciclo ===== */
+      #scene-b { position: absolute; inset: 0; }
+      .node { position: absolute; top: 420px; height: 104px; border-radius: 18px;
+        background: var(--surface); border: 2px solid var(--line);
+        display: flex; align-items: center; justify-content: center; gap: 10px;
+        font-size: 30px; font-weight: 700; }
+      #n1 { left: 90px;  width: 220px; color: var(--js); }
+      #n2 { left: 360px; width: 220px; color: var(--js); }
+      #n3 { left: 630px; width: 330px; color: var(--teal); }
+      #n4 { left: 1000px; width: 305px; color: var(--react); font-size: 28px; }
+      #n3 .digit { position: relative; width: 26px; height: 40px; }
+      #n3 .digit span { position: absolute; left: 0; top: 0; }
+      .conn { position: absolute; top: 470px; height: 4px; background: var(--line);
+        border-radius: 2px; }
+      #c12 { left: 314px; width: 42px; }
+      #c23 { left: 584px; width: 42px; }
+      #c34 { left: 964px; width: 42px; }
+      #pulse-b { position: absolute; left: 190px; top: 460px; width: 22px; height: 22px;
+        border-radius: 50%; background: var(--js);
+        box-shadow: 0 0 20px 5px rgba(247,223,30,0.65); }
+
+      #browser-b { left: 1330px; top: 250px; width: 500px; height: 440px; }
+      #browser-b .stage { position: relative; height: 210px; margin-top: 28px; }
+      #browser-b .stage span { position: absolute; left: 0; width: 100%; text-align: center;
+        font-size: 118px; font-weight: 800; color: var(--react); }
+      #browser-b .b1 { margin: 6px auto 0; width: 170px; height: 68px; border-radius: 14px;
+        background: var(--surface2); border: 2px solid var(--js); color: var(--js);
+        font-size: 32px; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+      #flash { position: absolute; inset: 0; background: #ffffff; }
+      #cursor-b { position: absolute; left: 1620px; top: 600px; font-size: 60px;
+        transform-origin: 30% 80%; }
+
+      #ok-chip { position: absolute; left: 90px; top: 330px; padding: 10px 22px;
+        border-radius: 999px; background: rgba(70,211,154,0.12); border: 2px solid var(--green);
+        color: var(--green); font-size: 24px; font-weight: 800; }
+
+      /* fotos (renders) empilhando */
+      #fotos { position: absolute; left: 1330px; top: 730px; width: 500px;
+        display: flex; gap: 22px; justify-content: center; }
+      .foto { width: 92px; height: 108px; background: #f4f4f8; border-radius: 8px;
+        display: flex; flex-direction: column; align-items: center;
+        box-shadow: 0 8px 22px rgba(0,0,0,0.45); }
+      .foto .ph { margin-top: 8px; width: 76px; height: 62px; background: var(--surface2);
+        border-radius: 4px; display: flex; align-items: center; justify-content: center;
+        color: var(--react); font-size: 34px; font-weight: 800; }
+      .foto .fl { color: #33334a; font-size: 15px; font-weight: 700; margin-top: 5px; }
+
+      #caption { position: absolute; bottom: 56px; left: 0; width: 100%; text-align: center;
+        font-size: 31px; font-weight: 700; }
+      #caption .y { color: var(--js); } #caption .t { color: var(--teal); }
+      #caption .r { color: var(--react); }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="14"
+      data-width="1920" data-height="1080">
+
+      <div id="bg" class="clip" data-start="0" data-duration="14" data-track-index="0"></div>
+      <div id="grid" class="clip" data-start="0" data-duration="14" data-track-index="1"></div>
+
+      <div id="title" class="clip" data-start="0" data-duration="14" data-track-index="2">
+        O ciclo do <span class="hook mono">estado</span>
+      </div>
+
+      <!-- ATO 1: a dor (let não redesenha) -->
+      <div id="scene-a" class="clip" data-start="0" data-duration="14" data-track-index="3">
+        <div id="console-a" class="mono">
+          <div class="hd">⌥ console</div>
+          <div class="bd">
+            <div class="decl"><span class="kw">let</span> contador = 0</div>
+            <div class="log l1">contador: <span class="n">1</span></div>
+            <div class="log l2">contador: <span class="n">2</span></div>
+            <div class="log l3">contador: <span class="n">3</span></div>
+          </div>
+        </div>
+        <div id="browser-a" class="browser">
+          <div class="bar"><span class="d r"></span><span class="d a"></span><span class="d g"></span>
+            <span class="url mono">localhost:5173</span></div>
+          <div class="num mono">0</div>
+          <div class="b1 mono">+1</div>
+        </div>
+        <div id="cursor-a">👆</div>
+        <div id="dor">a tela NÃO muda 😐</div>
+      </div>
+
+      <!-- ATOS 2–3: o ciclo completo -->
+      <div id="scene-b" class="clip" data-start="0" data-duration="14" data-track-index="4">
+        <div id="ok-chip">✓ agora com useState</div>
+
+        <div class="node mono" id="n1">👆 clique</div>
+        <div class="conn" id="c12"></div>
+        <div class="node mono" id="n2">onClick</div>
+        <div class="conn" id="c23"></div>
+        <div class="node mono" id="n3">setContador(<span class="digit"><span class="d1">1</span><span class="d2">2</span></span>)</div>
+        <div class="conn" id="c34"></div>
+        <div class="node" id="n4">📸 <span class="mono">novo render</span></div>
+        <div id="pulse-b"></div>
+
+        <div id="browser-b" class="browser">
+          <div class="bar"><span class="d r"></span><span class="d a"></span><span class="d g"></span>
+            <span class="url mono">localhost:5173</span></div>
+          <div class="stage mono"><span class="v0">0</span><span class="v1">1</span><span class="v2">2</span></div>
+          <div class="b1 mono">+1</div>
+          <div id="flash"></div>
+        </div>
+        <div id="cursor-b">👆</div>
+
+        <div id="fotos">
+          <div class="foto f0"><div class="ph mono">0</div><div class="fl">foto 1</div></div>
+          <div class="foto f1"><div class="ph mono">1</div><div class="fl">foto 2</div></div>
+          <div class="foto f2"><div class="ph mono">2</div><div class="fl">foto 3</div></div>
+        </div>
+      </div>
+
+      <div id="caption" class="clip" data-start="0" data-duration="14" data-track-index="5">
+        <span class="y">clique</span> → <span class="t">set</span> →
+        <span class="r">📸 nova foto</span> → tela nova
+      </div>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      /* ---------- estados iniciais ---------- */
+      tl.set("#title", { opacity: 0, y: -18 }, 0);
+      tl.set("#console-a", { opacity: 0, y: 40 }, 0);
+      tl.set("#browser-a", { opacity: 0, y: 40 }, 0);
+      tl.set("#console-a .log", { opacity: 0, x: -18 }, 0);
+      tl.set("#cursor-a", { opacity: 0, scale: 0.5 }, 0);
+      tl.set("#dor", { opacity: 0, scale: 0.8 }, 0);
+      tl.set("#scene-b", { x: 420, opacity: 0 }, 0);
+      tl.set("#scene-b .node, #scene-b .conn, #browser-b", { opacity: 0, y: 30 }, 0);
+      tl.set("#ok-chip", { opacity: 0, y: 16 }, 0);
+      tl.set("#pulse-b", { opacity: 0 }, 0);
+      tl.set("#flash", { opacity: 0 }, 0);
+      tl.set("#cursor-b", { opacity: 0, scale: 0.5 }, 0);
+      tl.set("#browser-b .stage .v1, #browser-b .stage .v2", { opacity: 0, x: 90 }, 0);
+      tl.set("#n3 .digit .d2", { opacity: 0, y: -20 }, 0);
+      tl.set(".foto", { opacity: 0, scale: 0.5, rotation: -6 }, 0);
+      tl.set("#caption", { opacity: 0, y: 16 }, 0);
+
+      /* ── ATO 1 · a dor: let muda no console, tela parada (0–4.6s) ── */
+      tl.to("#title", { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 0.2);
+      tl.to("#console-a", { opacity: 1, y: 0, duration: 0.6, ease: "back.out(1.4)" }, 0.4);
+      tl.to("#browser-a", { opacity: 1, y: 0, duration: 0.6, ease: "back.out(1.4)" }, 0.55);
+      tl.to("#cursor-a", { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2)" }, 0.95);
+
+      const clickA = (t, logSel) => {
+        tl.to("#cursor-a", { scale: 0.72, rotation: -10, duration: 0.11, yoyo: true, repeat: 1, ease: "power2.in" }, t);
+        tl.to("#browser-a .b1", { scale: 0.92, duration: 0.11, yoyo: true, repeat: 1, ease: "power2.in" }, t + 0.02);
+        tl.to(logSel, { opacity: 1, x: 0, duration: 0.3, ease: "power2.out" }, t + 0.2);
+      };
+      clickA(1.25, "#console-a .l1");
+      clickA(2.0, "#console-a .l2");
+      clickA(2.75, "#console-a .l3");
+
+      /* a tela continua 0: shake + dor */
+      tl.to("#browser-a", { x: 9, duration: 0.07, yoyo: true, repeat: 5, ease: "sine.inOut" }, 3.25);
+      tl.to("#dor", { opacity: 1, scale: 1, duration: 0.45, ease: "back.out(2.2)" }, 3.45);
+
+      /* cena sai */
+      tl.to("#scene-a", { x: -440, opacity: 0, duration: 0.55, ease: "power2.in" }, 4.35);
+
+      /* ── ATO 2 · o ciclo entra (4.7s) ── */
+      tl.to("#scene-b", { x: 0, opacity: 1, duration: 0.6, ease: "power3.out" }, 4.7);
+      tl.to("#scene-b .node, #scene-b .conn, #browser-b",
+        { opacity: 1, y: 0, duration: 0.55, ease: "back.out(1.5)", stagger: 0.1 }, 4.8);
+      tl.to("#ok-chip", { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, 5.35);
+      tl.to("#fotos .f0", { opacity: 1, scale: 1, rotation: 0, duration: 0.45, ease: "back.out(2)" }, 5.6);
+      tl.to("#cursor-b", { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2)" }, 5.7);
+
+      /* helper: um ciclo completo pela esteira */
+      const NODES = ["#n1", "#n2", "#n3", "#n4"];
+      const PX = { "#n1": 190, "#n2": 460, "#n3": 785, "#n4": 1152 }; /* centro-x de cada nó */
+      const light = (sel, t, color) => {
+        tl.to(sel, { borderColor: color, duration: 0.18 }, t);
+        tl.to(sel, { scale: 1.09, duration: 0.16, yoyo: true, repeat: 1, ease: "back.out(2.5)" }, t);
+        tl.to(sel, { borderColor: "#262640", duration: 0.35 }, t + 0.75);
+      };
+      const cycle = (t0, sOld, sNew, speed, fotoSel) => {
+        const k = speed; /* 1 = lento, <1 = mais rápido */
+        /* clique no navegador */
+        tl.to("#cursor-b", { scale: 0.72, rotation: -10, duration: 0.11, yoyo: true, repeat: 1, ease: "power2.in" }, t0);
+        tl.to("#browser-b .b1", { scale: 0.92, duration: 0.11, yoyo: true, repeat: 1, ease: "power2.in" }, t0 + 0.02);
+        /* esteira acende em sequência */
+        light("#n1", t0 + 0.18 * k, "#f7df1e");
+        tl.set("#pulse-b", { x: 0, opacity: 0 }, t0 + 0.2);
+        tl.to("#pulse-b", { opacity: 1, duration: 0.08 }, t0 + 0.3 * k);
+        tl.to("#pulse-b", { x: PX["#n2"] - PX["#n1"], duration: 0.3 * k, ease: "power1.inOut" }, t0 + 0.34 * k);
+        light("#n2", t0 + 0.62 * k, "#f7df1e");
+        tl.to("#pulse-b", { x: PX["#n3"] - PX["#n1"], duration: 0.3 * k, ease: "power1.inOut" }, t0 + 0.72 * k);
+        light("#n3", t0 + 1.0 * k, "#4ecdc4");
+        tl.to("#pulse-b", { x: PX["#n4"] - PX["#n1"], duration: 0.3 * k, ease: "power1.inOut" }, t0 + 1.12 * k);
+        tl.to("#pulse-b", { opacity: 0, duration: 0.12 }, t0 + 1.42 * k);
+        light("#n4", t0 + 1.42 * k, "#61dafb");
+        /* 📸 flash + troca do render */
+        const tF = t0 + 1.55 * k;
+        tl.to("#flash", { opacity: 0.85, duration: 0.09 }, tF);
+        tl.to("#flash", { opacity: 0, duration: 0.28, ease: "power2.out" }, tF + 0.09);
+        tl.to(sOld, { x: -90, opacity: 0, duration: 0.4, ease: "power2.in" }, tF + 0.05);
+        tl.to(sNew, { x: 0, opacity: 1, duration: 0.5, ease: "back.out(1.8)" }, tF + 0.18);
+        tl.to(fotoSel, { opacity: 1, scale: 1, rotation: 0, duration: 0.45, ease: "back.out(2)" }, tF + 0.45);
+      };
+
+      /* ciclo 1 · 0 → 1 (lento, didático) */
+      cycle(6.1, "#browser-b .stage .v0", "#browser-b .stage .v1", 1, "#fotos .f1");
+
+      /* ciclo 2 · 1 → 2 (mais rápido) + dígito do set vira 2 */
+      tl.to("#n3 .digit .d1", { opacity: 0, y: 20, duration: 0.25, ease: "power2.in" }, 9.55);
+      tl.to("#n3 .digit .d2", { opacity: 1, y: 0, duration: 0.3, ease: "back.out(2)" }, 9.7);
+      cycle(9.6, "#browser-b .stage .v1", "#browser-b .stage .v2", 0.7, "#fotos .f2");
+
+      /* ── ATO 3 · payoff + respiro ── */
+      tl.to("#caption", { opacity: 1, y: 0, duration: 0.55, ease: "power2.out" }, 11.6);
+      tl.to("#browser-b", { scale: 1.02, duration: 0.7, yoyo: true, repeat: 1, ease: "sine.inOut" }, 12.3);
+      tl.to("#fotos", { y: -8, duration: 0.65, yoyo: true, repeat: 1, ease: "sine.inOut" }, 12.5);
+
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

@@ -33,6 +33,7 @@
   background:var(--code-bg);color:#c9d1d9;border:none;outline:none;
   font-family:'JetBrains Mono',monospace;font-size:0.82rem;line-height:1.7;
   padding:14px 16px;tab-size:2;white-space:pre;
+  font-variant-ligatures:none;font-feature-settings:"liga" 0,"clig" 0,"calt" 0;
 }
 .pg-code.active{display:block}
 .pg-code::selection{background:rgba(108,99,255,0.4)}
@@ -48,3 +49,18 @@
 .pg-hint{font-size:0.7rem;color:var(--text-dim);padding:6px 12px;background:rgba(255,255,255,0.02);
   border-top:1px solid rgba(255,255,255,0.05);display:flex;align-items:center;gap:6px}
 @media(max-width:640px){.pg-body{grid-template-columns:1fr}.pg-editors{border-right:none;border-bottom:1px solid rgba(255,255,255,0.06)}}
+
+/* ── modo React (laboratório ⚛️) ── */
+.pg-react{display:flex;flex-direction:column;min-height:230px;background:#fff}
+.pg-react-stage{flex:1;padding:14px;font-family:system-ui,Arial,sans-serif;color:#1a1a1a;overflow:auto}
+.pg-react-stage .ph{color:#889;font-style:italic;font-size:.85rem}
+.pg-react-stage button{font:inherit;padding:6px 14px;border-radius:8px;border:1px solid #cbd5e1;background:#f1f5f9;cursor:pointer}
+.pg-react-stage input{font:inherit;padding:6px 10px;border-radius:8px;border:1px solid #cbd5e1}
+.pg-rerr{background:#2a0d12;color:#ff8b8b;font-family:'JetBrains Mono',monospace;font-variant-ligatures:none;
+  font-feature-settings:"liga" 0,"clig" 0,"calt" 0;font-size:.75rem;padding:8px 12px;white-space:pre-wrap}
+.pg-rconsole{background:#06060c;border-top:1px solid rgba(255,255,255,0.08);max-height:110px;overflow:auto;
+  padding:8px 12px;font-family:'JetBrains Mono',monospace;font-variant-ligatures:none;
+  font-feature-settings:"liga" 0,"clig" 0,"calt" 0;font-size:.72rem}
+.pg-rconsole .ln{padding:1px 0;color:#c9d1d9;white-space:pre-wrap}
+.pg-rconsole .ln::before{content:'›';color:var(--accent5);margin-right:8px}
+.pg-rconsole .ph{color:var(--text-dim);font-style:italic}

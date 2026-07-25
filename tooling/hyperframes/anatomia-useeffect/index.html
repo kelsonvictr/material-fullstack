@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      :root {
+        --bg: #0a0a12;
+        --surface: #12121e;
+        --surface2: #1a1a2e;
+        --code-bg: #0d0d1a;
+        --text: #eef0f8;
+        --dim: #8892b0;
+        --line: #262640;
+        --accent: #6c63ff;
+        --react: #61dafb;   /* função = O QUE (cor do capítulo) */
+        --amber: #f7b731;   /* array = QUANDO (cor do capítulo) */
+        --js: #f7df1e;
+      }
+      /* Ligaduras OFF: o => deve ser = seguido de > (nunca ⇒) */
+      pre, code, .mono {
+        font-variant-ligatures: none;
+        font-feature-settings: "liga" 0, "clig" 0, "calt" 0;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        width: 1920px; height: 1080px; overflow: hidden;
+        background: var(--bg);
+        font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        color: var(--text);
+      }
+      .mono { font-family: "JetBrains Mono", ui-monospace, "Menlo", monospace; }
+
+      #bg {
+        position: absolute; inset: 0;
+        background:
+          radial-gradient(1100px 700px at 50% 20%, #14142a 0%, rgba(20,20,42,0) 65%),
+          linear-gradient(180deg, #0b0b16 0%, #0a0a12 100%);
+      }
+      #grid {
+        position: absolute; inset: 0;
+        background-image:
+          linear-gradient(rgba(38,38,64,0.5) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(38,38,64,0.5) 1px, transparent 1px);
+        background-size: 44px 44px;
+        opacity: 0.5;
+        mask-image: radial-gradient(1400px 900px at 50% 45%, #000 55%, transparent 100%);
+        -webkit-mask-image: radial-gradient(1400px 900px at 50% 45%, #000 55%, transparent 100%);
+      }
+
+      #title { position: absolute; top: 52px; left: 0; width: 100%; text-align: center;
+        font-size: 46px; font-weight: 900; }
+      #title .hook { color: var(--accent); }
+
+      /* ===== a moldura ===== */
+      #frame-line {
+        position: absolute; top: 380px; left: 0; width: 100%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 60px;
+      }
+      #frame-line .tk { display: inline-flex; align-items: center; }
+      #tk-hook { color: var(--accent); }
+      #tk-close { color: var(--accent); }
+      #tk-comma { color: var(--text); margin: 0 18px; font-weight: 700; }
+
+      .slot {
+        position: relative; display: inline-flex; align-items: center; justify-content: center;
+        height: 112px; border-radius: 16px; border: 3px dashed;
+      }
+      #slot1 { width: 420px; border-color: rgba(97,218,251,0.55); margin-left: 10px; }
+      #slot2 { width: 250px; border-color: rgba(247,183,49,0.55); margin-right: 10px; }
+      .slot .ghost { position: absolute; font-size: 44px; color: var(--dim); opacity: 0.4; }
+
+      /* chips que caem nos slots */
+      #chip-oq { position: absolute; font-size: 44px; color: var(--react);
+        background: rgba(97,218,251,0.10); border-radius: 12px; padding: 14px 24px; }
+      #chip-qd { position: absolute; font-size: 44px; color: var(--amber);
+        background: rgba(247,183,49,0.10); border-radius: 12px; padding: 14px 20px; }
+      #chip-qd > span { position: absolute; left: 0; top: 0; width: 100%; height: 100%;
+        display: flex; align-items: center; justify-content: center; }
+      #chip-qd { width: 210px; height: 76px; }
+      #chip-qd .m3 .dep { color: var(--js); }
+
+      /* labels O QUE / QUANDO */
+      #lbl-oq { position: absolute; top: 288px; font-size: 32px; font-weight: 900;
+        color: var(--react); letter-spacing: 1px; }
+      #lbl-qd { position: absolute; top: 288px; font-size: 32px; font-weight: 900;
+        color: var(--amber); letter-spacing: 1px; }
+
+      /* card dos 3 modos */
+      #modes { position: absolute; top: 600px; left: 50%; width: 980px; margin-left: -490px;
+        height: 118px; background: var(--surface); border: 2px solid var(--line);
+        border-radius: 18px; }
+      #modes .led { position: absolute; left: 34px; top: 44px; width: 26px; height: 26px;
+        border-radius: 50%; background: #3a3a55; }
+      #modes .m { position: absolute; left: 96px; top: 0; width: 850px; height: 100%;
+        display: flex; align-items: center; gap: 20px; font-size: 33px; }
+      #modes .m .k { font-weight: 700; color: var(--amber); }
+      #modes .m .d { color: var(--text); font-weight: 600; }
+      #modes .m1 .k { color: var(--dim); }
+      #modes .m .d b { color: var(--react); font-weight: 900; }
+
+      /* mnemônico */
+      #mnemo { position: absolute; top: 852px; left: 0; width: 100%; text-align: center;
+        font-size: 46px; font-weight: 700; }
+      #mnemo .h { color: var(--accent); }
+      #mnemo .oq { color: var(--react); font-weight: 900; }
+      #mnemo .qd { color: var(--amber); font-weight: 900; }
+      #mnemo .c { color: var(--text); }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="14"
+      data-width="1920" data-height="1080">
+
+      <div id="bg" class="clip" data-start="0" data-duration="14" data-track-index="0"></div>
+      <div id="grid" class="clip" data-start="0" data-duration="14" data-track-index="1"></div>
+
+      <div id="title" class="clip" data-start="0" data-duration="14" data-track-index="2">
+        Anatomia do <span class="hook mono">useEffect</span>
+      </div>
+
+      <!-- a moldura com os 2 slots -->
+      <div id="frame-line" class="clip mono" data-start="0" data-duration="14" data-track-index="3">
+        <span class="tk" id="tk-hook">useEffect(</span>
+        <span class="slot" id="slot1"><span class="ghost">?</span></span>
+        <span class="tk" id="tk-comma">,</span>
+        <span class="slot" id="slot2"><span class="ghost">?</span></span>
+        <span class="tk" id="tk-close">)</span>
+      </div>
+
+      <!-- chips (posicionados por JS sobre os slots) -->
+      <div id="chip-oq" class="clip mono" data-start="0" data-duration="14" data-track-index="4"
+        data-layout-allow-overlap>() =&gt; { ... }</div>
+      <div id="chip-qd" class="clip mono" data-start="0" data-duration="14" data-track-index="5"
+        data-layout-allow-overlap>
+        <span class="m2">[ ]</span>
+        <span class="m3">[<span class="dep">busca</span>]</span>
+      </div>
+
+      <div id="lbl-oq" class="clip" data-start="0" data-duration="14" data-track-index="6"
+        data-layout-allow-overlap>O QUE fazer</div>
+      <div id="lbl-qd" class="clip" data-start="0" data-duration="14" data-track-index="7"
+        data-layout-allow-overlap>QUANDO fazer</div>
+
+      <!-- os 3 modos do QUANDO -->
+      <div id="modes" class="clip" data-start="0" data-duration="14" data-track-index="8">
+        <div class="led"></div>
+        <div class="m m1"><span class="k mono">sem array</span>
+          <span class="d">→ roda em <b>TODA</b> renderização</span></div>
+        <div class="m m2"><span class="k mono">[ ]</span>
+          <span class="d">→ roda <b>SÓ</b> quando o componente nasce</span></div>
+        <div class="m m3"><span class="k mono">[busca]</span>
+          <span class="d">→ roda quando <b>busca</b> mudar</span></div>
+      </div>
+
+      <!-- mnemônico do capítulo -->
+      <div id="mnemo" class="clip mono" data-start="0" data-duration="14" data-track-index="9">
+        <span class="h">useEffect(</span><span class="oq">O QUE</span><span class="c">,</span>
+        <span class="qd">QUANDO</span><span class="h">)</span>
+      </div>
+    </div>
+
+    <script>
+      /* ---------- geometria (1x no load) ---------- */
+      const rect = (el) => el.getBoundingClientRect();
+      const slot1 = rect(document.getElementById("slot1"));
+      const slot2 = rect(document.getElementById("slot2"));
+      const chipOq = document.getElementById("chip-oq");
+      const chipQd = document.getElementById("chip-qd");
+      const lblOq = document.getElementById("lbl-oq");
+      const lblQd = document.getElementById("lbl-qd");
+
+      /* centraliza cada chip sobre o seu slot */
+      const rOq = rect(chipOq);
+      chipOq.style.left = (slot1.left + slot1.width / 2 - rOq.width / 2) + "px";
+      chipOq.style.top = (slot1.top + slot1.height / 2 - rOq.height / 2) + "px";
+      chipQd.style.left = (slot2.left + slot2.width / 2 - 105) + "px";
+      chipQd.style.top = (slot2.top + slot2.height / 2 - 38) + "px";
+
+      /* labels centrados sobre os slots */
+      const rLOq = rect(lblOq), rLQd = rect(lblQd);
+      lblOq.style.left = (slot1.left + slot1.width / 2 - rLOq.width / 2) + "px";
+      lblQd.style.left = (slot2.left + slot2.width / 2 - rLQd.width / 2) + "px";
+
+      /* ---------- timeline ---------- */
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      tl.set("#title", { opacity: 0, y: -18 }, 0);
+      tl.set("#frame-line .tk", { opacity: 0, scale: 0.6, transformOrigin: "50% 50%" }, 0);
+      tl.set(".slot", { opacity: 0, scale: 0.7, transformOrigin: "50% 50%" }, 0);
+      tl.set("#chip-oq", { opacity: 0, y: -270 }, 0);
+      tl.set("#chip-qd", { opacity: 0, y: -270 }, 0);
+      tl.set("#chip-qd .m3", { opacity: 0 }, 0);
+      tl.set("#lbl-oq, #lbl-qd", { opacity: 0, y: 14 }, 0);
+      tl.set("#modes", { opacity: 0, y: 30 }, 0);
+      tl.set("#modes .m", { opacity: 0 }, 0);
+      tl.set("#mnemo", { opacity: 0, y: 20 }, 0);
+
+      /* ── ATO 1 · a moldura nasce vazia (0–2.4s) ── */
+      tl.to("#title", { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 0.2);
+      tl.to("#tk-hook", { opacity: 1, scale: 1, duration: 0.55, ease: "back.out(2)" }, 0.65);
+      tl.to("#slot1", { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.8)" }, 0.95);
+      tl.to("#tk-comma", { opacity: 1, scale: 1, duration: 0.45, ease: "back.out(2.2)" }, 1.2);
+      tl.to("#slot2", { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.8)" }, 1.4);
+      tl.to("#tk-close", { opacity: 1, scale: 1, duration: 0.45, ease: "back.out(2)" }, 1.6);
+      /* os "?" respiram */
+      tl.to(".slot .ghost", { opacity: 0.7, duration: 0.5, yoyo: true, repeat: 1, ease: "sine.inOut" }, 1.9);
+
+      /* ── ATO 2 · slot 1 = O QUE · vírgula · slot 2 = QUANDO (2.4–6.8s) ── */
+      tl.to("#slot1 .ghost", { opacity: 0, duration: 0.25 }, 2.45);
+      tl.to("#chip-oq", { opacity: 1, y: 0, duration: 0.75, ease: "back.out(1.5)" }, 2.55);
+      tl.to("#slot1", { borderColor: "#61dafb", duration: 0.3 }, 3.1);
+      tl.to("#lbl-oq", { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, 3.25);
+
+      /* a vírgula pisca — ela separa O QUE do QUANDO */
+      tl.to("#tk-comma", { scale: 1.6, color: "#f7b731", duration: 0.18, yoyo: true, repeat: 5, ease: "sine.inOut" }, 4.0);
+
+      tl.to("#slot2 .ghost", { opacity: 0, duration: 0.25 }, 5.1);
+      tl.to("#chip-qd", { opacity: 1, y: 0, duration: 0.75, ease: "back.out(1.5)" }, 5.2);
+      tl.to("#slot2", { borderColor: "#f7b731", duration: 0.3 }, 5.75);
+      tl.to("#lbl-qd", { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, 5.9);
+
+      /* mnemônico do capítulo */
+      tl.to("#mnemo", { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 6.5);
+
+      /* ── ATO 3 · os 3 modos do QUANDO (7.2–13s) ── */
+      tl.to("#modes", { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.5)" }, 7.2);
+
+      const led = (t, n) => {
+        for (let i = 0; i < n; i++) {
+          tl.to("#modes .led", { backgroundColor: "#f7b731", duration: 0.1 }, t + i * 0.36);
+          tl.to("#modes .led", { backgroundColor: "#3a3a55", duration: 0.16 }, t + i * 0.36 + 0.14);
+        }
+      };
+
+      /* modo 1: SEM array — o chip sai, slot fica vazio */
+      tl.to("#chip-qd", { opacity: 0, y: -60, duration: 0.4, ease: "power2.in" }, 7.5);
+      tl.to("#slot2", { borderColor: "rgba(247,183,49,0.55)", duration: 0.3 }, 7.6);
+      tl.to("#modes .m1", { opacity: 1, duration: 0.4 }, 7.7);
+      tl.to("#slot2", { scale: 1.06, duration: 0.16, yoyo: true, repeat: 5, ease: "sine.inOut" }, 7.8);
+      led(7.9, 4);
+
+      /* modo 2: [] — chip volta */
+      tl.to("#modes .m1", { opacity: 0, duration: 0.3 }, 9.6);
+      tl.to("#chip-qd", { opacity: 1, y: 0, duration: 0.55, ease: "back.out(1.8)" }, 9.75);
+      tl.to("#slot2", { borderColor: "#f7b731", duration: 0.3 }, 10.0);
+      tl.to("#modes .m2", { opacity: 1, duration: 0.4 }, 10.05);
+      led(10.35, 1);
+
+      /* modo 3: [busca] */
+      tl.to("#modes .m2", { opacity: 0, duration: 0.3 }, 11.7);
+      tl.to("#chip-qd .m2", { opacity: 0, duration: 0.3 }, 11.85);
+      tl.to("#chip-qd .m3", { opacity: 1, duration: 0.35 }, 12.0);
+      tl.to("#chip-qd", { scale: 1.1, duration: 0.2, yoyo: true, repeat: 1, ease: "back.out(2)" }, 12.0);
+      tl.to("#modes .m3", { opacity: 1, duration: 0.4 }, 12.15);
+      led(12.45, 2);
+
+      /* respiro final */
+      tl.to("#slot1", { scale: 1.03, duration: 0.6, yoyo: true, repeat: 1, ease: "sine.inOut" }, 13.1);
+      tl.to("#slot2", { scale: 1.03, duration: 0.6, yoyo: true, repeat: 1, ease: "sine.inOut" }, 13.2);
+
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

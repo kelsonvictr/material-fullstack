@@ -1,0 +1,1592 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cap 07 — Dados de verdade: useEffect &amp; fetch | Curso Fullstack</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=JetBrains+Mono:wght@400;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../shared/styles.css">
+<link rel="stylesheet" href="../../shared/components.css">
+<link rel="stylesheet" href="../../shared/animations.css">
+<link rel="stylesheet" href="../../shared/playground.css">
+<style>
+  /* ── mono didático: SEMPRE sem ligaduras (=> não vira ⇒, >= não vira ≥) ── */
+  .mono,.lp-code,.lp-console,.bd-piece,.bd-line,.pn-code,.pn-console,.dv-label,.sm-line,.anat-code,.anat-piece,.recipe-code{
+    font-family:'JetBrains Mono',monospace;
+    font-variant-ligatures:none;font-feature-settings:"liga" 0,"clig" 0,"calt" 0}
+
+  /* nome de componente dentro do JSX (sempre Maiúsculo) */
+  .cmp{color:var(--react);font-weight:600}
+  .del{text-decoration:line-through;opacity:.55}
+
+  /* ── videoclipes (Remotion/HyperFrames) ── */
+  .clip{margin:18px 0 4px}
+  .clip video{width:100%;border-radius:14px;border:1px solid rgba(97,218,251,0.25);
+    box-shadow:0 18px 50px rgba(0,0,0,0.45);display:block;background:#0a0a12}
+  .clip figcaption{font-size:0.78rem;color:var(--text-dim);text-align:center;margin-top:8px}
+
+  /* ═══ 🧬 Anatomia do useEffect (leitura guiada colorida) ═══ */
+  .anat{background:linear-gradient(180deg,#0b1020,#0d0d1a);border:1px solid rgba(97,218,251,0.25);
+    border-radius:16px;padding:20px 16px;margin:14px 0;text-align:center;overflow-x:auto}
+  .anat-code{font-size:clamp(0.72rem,2.5vw,1.05rem);white-space:nowrap;color:#cdd6f4}
+  .anat-code .a-oque{color:var(--react);font-weight:700}
+  .anat-code .a-quando{color:var(--accent5);font-weight:700}
+  .anat-code .a-hook{color:#a78bfa;font-weight:700}
+  .anat-legend{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:14px}
+  .anat-piece{font-size:0.72rem;border-radius:10px;padding:6px 12px;border:1px solid}
+  .anat-piece.p-oque{color:var(--react);border-color:rgba(97,218,251,0.45);background:rgba(97,218,251,0.08)}
+  .anat-piece.p-quando{color:var(--accent5);border-color:rgba(247,183,49,0.45);background:rgba(247,183,49,0.08)}
+  .anat-piece.p-hook{color:#a78bfa;border-color:rgba(167,139,250,0.45);background:rgba(167,139,250,0.08)}
+
+  /* ═══ 🪜 A receita da moldura ═══ */
+  .recipe{background:linear-gradient(180deg,#0b1020,#0d0d1a);border:1px solid rgba(167,139,250,0.3);
+    border-radius:16px;padding:16px;margin:14px 0}
+  .recipe-row{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;
+    background:#0b0b14;border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 14px;margin-bottom:8px}
+  .recipe-row:last-child{margin-bottom:0}
+  .recipe-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-weight:900;font-size:0.8rem;background:rgba(167,139,250,0.15);color:#a78bfa;border:1px solid rgba(167,139,250,0.4)}
+  .recipe-code{font-size:0.78rem;color:#cdd6f4;white-space:pre-wrap}
+  .recipe-code .r-oque{color:var(--react)}
+  .recipe-code .r-quando{color:var(--accent5)}
+  .recipe-say{font-size:0.7rem;color:var(--text-dim);text-align:right;max-width:150px}
+  @media (max-width:640px){.recipe-row{grid-template-columns:auto 1fr}.recipe-say{display:none}}
+
+  /* ═══ 🌀 Loop Infinito ═══ */
+  .loopm{background:linear-gradient(180deg,#1a0d12,#0d0d1a);border:1px solid rgba(255,71,87,0.35);
+    border-radius:16px;padding:18px;margin:14px 0}
+  .lp-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+  @media (max-width:640px){.lp-grid{grid-template-columns:1fr}}
+  .lp-cycle{display:flex;flex-direction:column;gap:6px}
+  .lp-step{display:flex;align-items:center;gap:8px;background:#0b0b14;border:1px solid rgba(255,255,255,0.1);
+    border-radius:10px;padding:7px 12px;font-size:0.78rem;color:var(--text-dim);transition:all .18s}
+  .lp-step.lit{border-color:rgba(255,71,87,0.65);background:rgba(255,71,87,0.12);color:#fff}
+  .lp-step.ok-lit{border-color:rgba(70,211,154,0.6);background:rgba(70,211,154,0.1);color:#fff}
+  .lp-meter{background:#0b0b14;border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:14px;text-align:center}
+  .lp-meter-label{font-size:0.72rem;color:var(--text-dim);font-weight:700}
+  .lp-count{font-size:2.4rem;font-weight:900;color:#ff8b8b;font-family:'JetBrains Mono',monospace;
+    font-variant-ligatures:none;font-feature-settings:"liga" 0,"clig" 0,"calt" 0;transition:color .3s}
+  .lp-count.ok{color:#46d39a}
+  .lp-fan{font-size:1.6rem;display:inline-block}
+  .lp-fan.spin{animation:lpspin .5s linear infinite}
+  .lp-fan.spin-fast{animation:lpspin .12s linear infinite}
+  @keyframes lpspin{to{transform:rotate(360deg)}}
+  .lp-console{margin-top:10px;background:#06060c;border:1px solid rgba(255,255,255,0.1);border-radius:10px;
+    padding:10px 12px;font-size:0.68rem;color:#ff8b8b;min-height:40px;max-height:84px;overflow:auto;white-space:pre-wrap}
+  .lp-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px;font-size:0.78rem;color:var(--text-dim)}
+  .lp-controls button{border:1px solid rgba(255,71,87,0.5);background:var(--surface2);color:#ff8b8b;
+    font-family:'JetBrains Mono',monospace;font-weight:700;font-size:0.78rem;padding:8px 14px;border-radius:10px;cursor:pointer;transition:all .2s}
+  .lp-controls button:hover{transform:translateY(-2px)}
+  .lp-controls button.save{border-color:rgba(70,211,154,0.55);color:#46d39a}
+
+  /* ═══ 🧩 Montador do useEffect ═══ */
+  .builder{background:linear-gradient(180deg,#0b1020,#0d0d1a);border:1px solid rgba(167,139,250,0.35);
+    border-radius:16px;padding:18px;margin:14px 0;text-align:center}
+  .bd-line{font-size:clamp(0.8rem,2.6vw,1.05rem);color:#cdd6f4;margin-bottom:14px;white-space:nowrap;overflow-x:auto;padding:12px;
+    background:#06060c;border:1px solid rgba(255,255,255,0.1);border-radius:12px}
+  .bd-slot{display:inline-block;min-width:64px;border-bottom:2px dashed rgba(255,255,255,0.35);color:rgba(255,255,255,0.25);
+    margin:0 4px;transition:all .25s}
+  .bd-slot.filled-oque{color:var(--react);border-bottom-color:transparent;font-weight:700}
+  .bd-slot.filled-virgula{color:#fff;border-bottom-color:transparent;font-weight:700;min-width:auto}
+  .bd-slot.filled-quando{color:var(--accent5);border-bottom-color:transparent;font-weight:700}
+  .bd-pieces{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:12px}
+  .bd-piece{border:1px solid rgba(167,139,250,0.5);background:var(--surface2);color:#e6e0ff;
+    font-weight:700;font-size:0.82rem;padding:10px 16px;border-radius:12px;cursor:pointer;transition:all .2s}
+  .bd-piece:hover{transform:translateY(-3px);background:rgba(167,139,250,0.12)}
+  .bd-piece.used{opacity:.25;pointer-events:none;transform:none}
+  .bd-piece.shake{animation:bdshake .4s}
+  @keyframes bdshake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+  .bd-note{background:#0b0b14;border:1px solid rgba(255,255,255,0.1);border-radius:10px;
+    padding:10px 12px;font-size:0.82rem;color:#cdd6f4;min-height:40px}
+  .bd-note .bad{color:#ff8b8b;font-weight:800}.bd-note .ok{color:#46d39a;font-weight:800}
+  .bd-controls{margin-top:12px}
+  .bd-controls button{border:1px solid rgba(167,139,250,0.5);background:var(--surface2);color:#a78bfa;
+    font-family:'JetBrains Mono',monospace;font-weight:700;font-size:0.78rem;padding:8px 14px;border-radius:10px;cursor:pointer}
+
+  /* ═══ 🎛️ Painel do useEffect ═══ */
+  .panel{background:linear-gradient(180deg,#0b1020,#0d0d1a);border:1px solid rgba(247,183,49,0.3);
+    border-radius:16px;padding:18px;margin:14px 0}
+  .pn-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+  .pn-lab{font-size:0.74rem;color:var(--text-dim);font-weight:700}
+  .pn-chip{border:1px solid rgba(247,183,49,0.45);background:var(--surface2);color:var(--accent5);
+    font-family:'JetBrains Mono',monospace;font-variant-ligatures:none;font-feature-settings:"liga" 0,"clig" 0,"calt" 0;
+    font-weight:700;font-size:0.74rem;padding:8px 12px;border-radius:10px;cursor:pointer;transition:all .2s}
+  .pn-chip:hover{transform:translateY(-2px)}
+  .pn-chip.active{border-color:#fff;color:#fff;background:rgba(255,255,255,0.08)}
+  .pn-grid{display:grid;grid-template-columns:1.15fr 1fr;gap:14px;align-items:start}
+  @media (max-width:640px){.pn-grid{grid-template-columns:1fr}}
+  .pn-code{background:#06060c;border:1px solid rgba(255,255,255,0.1);border-radius:10px;
+    padding:12px;font-size:0.72rem;color:#cdd6f4;white-space:pre-wrap;line-height:1.7}
+  .pn-code .p-oque{color:var(--react)}
+  .pn-code .p-quando{color:var(--accent5)}
+  .pn-right{display:flex;flex-direction:column;gap:10px}
+  .pn-led-row{display:flex;align-items:center;gap:10px;background:#0b0b14;border:1px solid rgba(255,255,255,0.1);
+    border-radius:10px;padding:10px 12px}
+  .pn-led{width:16px;height:16px;border-radius:50%;background:#2a2a3a;transition:all .15s;flex-shrink:0}
+  .pn-led.on{background:#46d39a;box-shadow:0 0 14px rgba(70,211,154,0.9)}
+  .pn-led-txt{font-size:0.78rem;color:var(--text-dim)}
+  .pn-led-txt b{color:#fff}
+  .pn-console{background:#06060c;border:1px solid rgba(255,255,255,0.1);border-radius:10px;
+    padding:10px 12px;font-size:0.68rem;color:#7ef0c4;min-height:84px;max-height:120px;overflow:auto;white-space:pre-wrap}
+  .pn-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .pn-actions button{border:1px solid rgba(97,218,251,0.45);background:var(--surface2);color:#61dafb;
+    font-weight:700;font-size:0.76rem;padding:8px 14px;border-radius:10px;cursor:pointer;transition:all .2s;font-family:'Nunito',sans-serif}
+  .pn-actions button:hover{transform:translateY(-2px)}
+  .pn-note{margin-top:10px;background:#0b0b14;border:1px solid rgba(255,255,255,0.1);border-radius:10px;
+    padding:10px 12px;font-size:0.82rem;color:#cdd6f4;text-align:center;min-height:40px}
+
+  /* ═══ 🚚 Entrega ao Vivo ═══ */
+  .delivery{background:linear-gradient(180deg,#0b1020,#0d0d1a);border:1px solid rgba(97,218,251,0.3);
+    border-radius:16px;padding:18px;margin:14px 0}
+  .dv-stage{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center}
+  @media (max-width:640px){.dv-stage{grid-template-columns:1fr;justify-items:center}}
+  .dv-app{background:#fff;border-radius:12px;padding:12px;min-height:132px;width:100%}
+  .dv-app-title{font-family:'Nunito',sans-serif;font-weight:800;color:#111;font-size:0.82rem;margin-bottom:8px}
+  .dv-cards{display:flex;gap:8px;flex-wrap:wrap}
+  .dv-sk{width:74px;height:84px;border-radius:8px;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);
+    background-size:200% 100%;animation:dvshimmer 1.1s infinite}
+  @keyframes dvshimmer{to{background-position:-200% 0}}
+  .dv-card{width:74px;border-radius:8px;border:1px solid #e2e8f0;padding:6px;text-align:center;
+    font-family:'Nunito',sans-serif;color:#111;opacity:0;transform:translateY(8px);transition:all .3s}
+  .dv-card.in{opacity:1;transform:translateY(0)}
+  .dv-card .e{font-size:22px}.dv-card .n{font-size:0.56rem;font-weight:800}.dv-card .p{font-size:0.56rem;color:#16a34a;font-weight:800}
+  .dv-err{font-family:'Nunito',sans-serif;color:#b91c1c;font-weight:800;font-size:0.8rem;text-align:center;padding:22px 6px}
+  .dv-road{position:relative;width:130px;height:40px}
+  @media (max-width:640px){.dv-road{transform:rotate(90deg);margin:14px 0}}
+  .dv-road::before{content:'';position:absolute;left:0;right:0;top:50%;border-top:2px dashed rgba(255,255,255,0.25)}
+  .dv-truck{position:absolute;top:50%;left:0;transform:translateY(-58%);font-size:1.5rem;transition:left 1s ease-in-out}
+  .dv-packet{position:absolute;top:50%;right:0;transform:translateY(-58%);font-size:1.1rem;opacity:0;transition:right 1s ease-in-out,opacity .2s}
+  .dv-server{background:#0b0b14;border:1px solid rgba(247,183,49,0.45);border-radius:12px;padding:12px;text-align:center;width:100%}
+  .dv-server.off{border-color:rgba(255,71,87,0.5);opacity:.6}
+  .dv-server .s-ico{font-size:1.7rem}
+  .dv-label{font-size:0.66rem;color:var(--accent5);font-weight:700;margin-top:4px}
+  .dv-server.off .dv-label{color:#ff8b8b}
+  .dv-steps{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:12px}
+  .dv-step{font-size:0.7rem;color:var(--text-dim);background:#0b0b14;border:1px solid rgba(255,255,255,0.1);
+    border-radius:999px;padding:5px 12px;transition:all .25s}
+  .dv-step.lit{border-color:rgba(97,218,251,0.6);background:rgba(97,218,251,0.12);color:#fff}
+  .dv-step.err-lit{border-color:rgba(255,71,87,0.6);background:rgba(255,71,87,0.12);color:#fff}
+  .dv-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px;font-size:0.78rem;color:var(--text-dim)}
+  .dv-controls button{border:1px solid rgba(97,218,251,0.45);background:var(--surface2);color:#61dafb;
+    font-family:'JetBrains Mono',monospace;font-weight:700;font-size:0.76rem;padding:8px 14px;border-radius:10px;cursor:pointer;transition:all .2s}
+  .dv-controls button:hover{transform:translateY(-2px)}
+  .dv-controls button.off-btn{border-color:rgba(255,71,87,0.5);color:#ff8b8b}
+
+  /* ═══ ⏳ Semáforo do Carregamento ═══ */
+  .semaphore{background:linear-gradient(180deg,#0b1020,#0d0d1a);border:1px solid rgba(70,211,154,0.3);
+    border-radius:16px;padding:18px;margin:14px 0}
+  .sm-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+  .sm-chip{border:1px solid rgba(70,211,154,0.45);background:var(--surface2);color:#7ef0c4;
+    font-weight:700;font-size:0.78rem;padding:8px 14px;border-radius:10px;cursor:pointer;transition:all .2s;font-family:'Nunito',sans-serif}
+  .sm-chip:hover{transform:translateY(-2px)}
+  .sm-chip.active{border-color:#fff;color:#fff;background:rgba(255,255,255,0.08)}
+  .sm-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:14px;align-items:start}
+  @media (max-width:640px){.sm-grid{grid-template-columns:1fr}}
+  .sm-code{background:#06060c;border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px;font-size:0.7rem;color:#cdd6f4}
+  .sm-line{padding:4px 8px;border-radius:6px;white-space:pre-wrap;transition:background .3s,box-shadow .3s,opacity .3s}
+  .sm-line.lit{background:rgba(70,211,154,0.14);box-shadow:inset 0 0 0 1px rgba(70,211,154,0.5)}
+  .sm-line.off{opacity:.4}
+  .sm-screen{background:#fff;border-radius:12px;padding:14px;min-height:120px;font-family:'Nunito',sans-serif;color:#111;text-align:center}
+  .sm-note{margin-top:12px;background:#0b0b14;border:1px solid rgba(255,255,255,0.1);border-radius:10px;
+    padding:10px 12px;font-size:0.82rem;color:#cdd6f4;text-align:center;min-height:40px}
+
+  @media (prefers-reduced-motion: reduce){
+    .lp-step,.lp-fan,.bd-piece,.bd-slot,.pn-led,.dv-truck,.dv-packet,.dv-card,.dv-step,.sm-line{transition:none;animation:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-orbs"><div class="orb"></div><div class="orb"></div><div class="orb"></div></div>
+<div class="progress-track"><div class="progress-bar"></div></div>
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<button class="menu-toggle" onclick="openSidebar()" aria-label="Abrir menu">☰</button>
+<div class="sidebar-overlay"></div>
+<nav class="sidebar-nav">
+  <button class="sidebar-close" onclick="closeSidebar()" aria-label="Fechar">✕</button>
+  <div class="sidebar-header">
+    <h3>🚀 Cap 07 · Dados de verdade</h3>
+    <a class="sidebar-back" href="../../index.html">← Voltar ao hub</a>
+  </div>
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Neste capítulo</div>
+    <a class="sidebar-link" onclick="goTo('aquecimento')"><span class="dot" style="background:var(--accent5)"></span> Aquecimento</a>
+    <a class="sidebar-link" onclick="goTo('loop')"><span class="dot" style="background:var(--bug)"></span> 🌀 O loop infinito</a>
+    <a class="sidebar-link" onclick="goTo('anatomia')"><span class="dot" style="background:var(--accent6)"></span> 🧬 Anatomia do useEffect</a>
+    <a class="sidebar-link" onclick="goTo('modos')"><span class="dot" style="background:var(--accent5)"></span> ⏰ Os 3 modos do QUANDO</a>
+    <a class="sidebar-link" onclick="goTo('jsonserver')"><span class="dot" style="background:var(--json)"></span> 📦 json-server</a>
+    <a class="sidebar-link" onclick="goTo('magia')"><span class="dot" style="background:var(--react)"></span> 🚀 Apague o const!</a>
+    <a class="sidebar-link" onclick="goTo('estados')"><span class="dot" style="background:var(--accent7)"></span> ⏳ Carregando &amp; erro</a>
+    <a class="sidebar-link" onclick="goTo('bugzilla')"><span class="dot" style="background:var(--bug)"></span> BugZilla 🐛</a>
+    <a class="sidebar-link" onclick="goTo('treino')"><span class="dot" style="background:var(--react)"></span> ⌨️ Treino: loja conectada</a>
+    <a class="sidebar-link" onclick="goTo('resumo')"><span class="dot" style="background:var(--accent7)"></span> Resumo</a>
+  </div>
+</nav>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section class="hero">
+  <div class="hero-icons" data-motion="float"><img src="../../assets/svg/react.svg" alt="React" width="46" height="46" style="vertical-align:middle"> 🚀 📦</div>
+  <span class="hero-badge react">Capítulo 07 · Curso Fullstack</span>
+  <h1>Dados de <span style="color:var(--react)">verdade</span>: useEffect &amp; fetch</h1>
+  <p class="subtitle">
+    Desde o Cap 4 seus produtos moram num <code>const</code> dentro do código. Hoje é o dia da
+    promessa: você vai <strong style="color:var(--accent2)">apagar esse array</strong> e buscar tudo de
+    uma <strong style="color:var(--accent5)">API rodando na sua máquina</strong> — com o
+    <code>fetch</code> do Cap 3 morando no lugar certo: o <strong style="color:var(--react)">useEffect</strong>.
+  </p>
+  <div class="hero-stack">
+    <span class="stack-chip react">🌀 useEffect</span>
+    <span class="stack-chip js">⏰ [dependências]</span>
+    <span class="stack-chip node">📦 json-server</span>
+    <span class="stack-chip react">🚀 fetch</span>
+    <span class="stack-chip js">⏳ loading &amp; erro</span>
+  </div>
+</section>
+
+<div class="container">
+
+  <!-- ═══════════════ AQUECIMENTO ═══════════════ -->
+  <section class="step-section" id="aquecimento">
+    <div class="step-header">
+      <div class="step-number sn-yellow">🤔</div>
+      <div>
+        <div class="step-title">Aquecimento</div>
+        <div class="step-sub">A pergunta que o capítulo inteiro responde</div>
+      </div>
+    </div>
+    <div class="quiz">
+      <div class="quiz-q"><span class="q-emoji">1️⃣</span> Você quer que a loja busque os produtos da API <strong>assim que a página abrir</strong>. Onde o <code>fetch</code> deve morar?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz(this,false)">Solto no corpo do componente — ele roda quando o componente roda, ué</button>
+        <button class="quiz-opt" onclick="checkQuiz(this,false)">Dentro de um onClick — o usuário clica em "carregar"</button>
+        <button class="quiz-opt" data-correct="true" onclick="checkQuiz(this,true)">Num lugar que rode na hora certa: quando o componente NASCER (e só aí)</button>
+        <button class="quiz-opt" onclick="checkQuiz(this,false)">No index.html, antes do React</button>
+      </div>
+      <div class="quiz-feedback" data-correct="Isso! E esse 'lugar que roda na hora certa' é o useEffect." data-wrong="Hmm… o corpo roda MUITO mais vezes do que você imagina (lembra das fotos 📸?)." data-explain="O corpo do componente roda a CADA renderização — fetch solto ali vira um desastre que você já vai ver. O onClick funcionaria, mas obrigar o usuário a clicar pra ver a loja é ruim. O React tem um lugar próprio pra 'faça isso quando o componente nascer': o useEffect."></div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ O LOOP INFINITO ═══════════════ -->
+  <section class="step-section" id="loop">
+    <div class="step-header">
+      <div class="step-number sn-red">🌀</div>
+      <div>
+        <div class="step-title">A dor: o loop infinito</div>
+        <div class="step-sub">Por que o fetch NÃO pode ficar solto no componente</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p>Só de olhar, essa tentativa parece certíssima — o fetch do Cap 3, o <code>set</code> do Cap 6,
+      tudo no lugar… <strong>né?</strong></p>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx — tentativa ingênua 🙈 (NÃO faça!)</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">const</span> <span class="fn">App</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">const</span> [<span class="var">produtos</span>, <span class="var">setProdutos</span>] <span class="op">=</span> <span class="fn">useState</span>([])
+
+  <span class="cm">// 💣 fetch SOLTO no corpo do componente</span>
+  <span class="fn">fetch</span>(<span class="st">"http://localhost:3000/produtos"</span>)
+    .<span class="fn">then</span>((<span class="var">res</span>) <span class="op">=&gt;</span> <span class="var">res</span>.<span class="fn">json</span>())
+    .<span class="fn">then</span>((<span class="var">dados</span>) <span class="op">=&gt;</span> <span class="fn">setProdutos</span>(<span class="var">dados</span>))
+
+  <span class="kw">return</span> <span class="punc">(</span> <span class="cm">/* ...a vitrine... */</span> <span class="punc">)</span>
+<span class="punc">}</span></pre>
+      </div>
+
+      <p>Agora pensa com a lição do Cap 6: <strong>o corpo do componente roda a cada foto 📸</strong>.
+      Siga a bola de neve:</p>
+
+      <ul class="about-bullets">
+        <li><div>o componente renderiza → o corpo roda → <strong>o fetch dispara</strong>;</div></li>
+        <li><div>a resposta chega → <code>setProdutos(dados)</code> → o React tira <strong>nova foto</strong>;</div></li>
+        <li><div>nova foto = o corpo roda DE NOVO → <strong>outro fetch</strong> → outro set → outra foto → … <strong>∞</strong> 🔥</div></li>
+      </ul>
+
+      <p style="color:var(--text-dim);margin:14px 0 4px">Aperte o botão vermelho e veja a bola de neve
+      (pode apertar, aqui é simulação — no seu PC seria a ventoinha decolando ✈️) 👇</p>
+
+      <div class="loopm" id="loopm">
+        <div class="lp-grid">
+          <div class="lp-cycle">
+            <div class="lp-step" id="lp-s1"><span>📸</span> <span>renderiza (o corpo roda)</span></div>
+            <div class="lp-step" id="lp-s2"><span>📡</span> <span>fetch dispara</span></div>
+            <div class="lp-step" id="lp-s3"><span>📦</span> <span>resposta chega → setProdutos(dados)</span></div>
+            <div class="lp-step" id="lp-s4"><span>🔁</span> <span>set = NOVA foto… e tudo de novo</span></div>
+          </div>
+          <div class="lp-meter">
+            <div class="lp-meter-label">RENDERIZAÇÕES <span class="lp-fan" id="lp-fan">🌀</span></div>
+            <div class="lp-count" id="lp-count">0</div>
+            <div class="lp-console" id="lp-console">// aperte "rodar a tentativa ingênua"…</div>
+          </div>
+        </div>
+        <div class="lp-controls">
+          <button id="lp-run">💣 rodar a tentativa ingênua</button>
+          <button id="lp-save" class="save">🧯 salvar com useEffect</button>
+          <button id="lp-reset">↺ recomeçar</button>
+          <span id="lp-note"></span>
+        </div>
+      </div>
+
+      <div class="concept">
+        <div class="concept-title">💡 O nome do problema (e da solução)</div>
+        <p>Buscar dados, mudar o título da aba, ligar um timer… são <strong>efeitos colaterais</strong>:
+        coisas que saem do componente e mexem com o mundo lá fora. Efeito colateral <strong>não pode
+        morar no corpo</strong> (que roda a cada foto). O React tem um quarto separado pra isso, com
+        campainha própria: o <strong style="color:var(--react)">useEffect</strong>.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ ANATOMIA DO USEEFFECT ═══════════════ -->
+  <section class="step-section" id="anatomia">
+    <div class="step-header">
+      <div class="step-number sn-react" style="background:linear-gradient(135deg,var(--accent6),#8b91ff)">🧬</div>
+      <div>
+        <div class="step-title">Anatomia do useEffect — O QUE e QUANDO</div>
+        <div class="step-sub">A sintaxe que confunde todo mundo, desmontada de vez</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="analogy">
+        <div class="analogy-title">⏰ O despertador</div>
+        <p>Configurar um despertador são sempre <strong>duas decisões</strong>: <strong>O QUE</strong>
+        tocar (o alarme, a música) e <strong>QUANDO</strong> tocar (7h todo dia? só uma vez amanhã?).
+        O <code>useEffect</code> é o despertador do componente — e recebe exatamente essas duas coisas,
+        nessa ordem: <strong style="color:var(--react)">a função com O QUE fazer</strong> e
+        <strong style="color:var(--accent5)">o array com QUANDO fazer</strong>.</p>
+      </div>
+
+      <div class="anat" data-motion="rise">
+        <div class="anat-code"><span class="a-hook">useEffect</span>( <span class="a-oque">() =&gt; { ...o que fazer... }</span> , <span class="a-quando">[ quando fazer ]</span> )</div>
+        <div class="anat-legend">
+          <span class="anat-piece p-oque">1º argumento → a FUNÇÃO: o que fazer</span>
+          <span class="anat-piece p-quando">2º argumento → o ARRAY: quando fazer</span>
+          <span class="anat-piece p-hook">useEffect → o despertador do componente</span>
+        </div>
+      </div>
+
+      <figure class="clip" data-motion="rise">
+        <video controls autoplay loop muted playsinline poster="../../assets/video/anatomia-useeffect.png">
+          <source src="../../assets/video/anatomia-useeffect.mp4" type="video/mp4">
+          Seu navegador não reproduz o vídeo. <a href="../../assets/video/anatomia-useeffect.mp4">Baixe o clipe aqui.</a>
+        </video>
+        <figcaption>🧬 a moldura recebe as duas peças: a <span style="color:var(--react)">função (O QUE)</span> e o <span style="color:var(--accent5)">array (QUANDO)</span> — sempre nessa ordem</figcaption>
+      </figure>
+
+      <p><strong>Por que todo mundo se enrola?</strong> Porque é parêntese + arrow + chave + vírgula +
+      colchete, tudo na mesma linha. O antídoto é <strong>nunca digitar de dentro pra fora</strong>.
+      Digite <strong>a moldura antes do quadro</strong>, sempre na MESMA ordem:</p>
+
+      <div class="recipe" data-motion="rise">
+        <div class="recipe-row">
+          <span class="recipe-num">1</span>
+          <span class="recipe-code">useEffect()</span>
+          <span class="recipe-say">a moldura do hook</span>
+        </div>
+        <div class="recipe-row">
+          <span class="recipe-num">2</span>
+          <span class="recipe-code">useEffect(<span class="r-oque">() =&gt; {}</span>)</span>
+          <span class="recipe-say">O QUE (a função-recado)</span>
+        </div>
+        <div class="recipe-row">
+          <span class="recipe-num">3</span>
+          <span class="recipe-code">useEffect(<span class="r-oque">() =&gt; {}</span>, <span class="r-quando">[]</span>)</span>
+          <span class="recipe-say">a vírgula + o QUANDO</span>
+        </div>
+        <div class="recipe-row">
+          <span class="recipe-num">4</span>
+          <span class="recipe-code">useEffect(<span class="r-oque">() =&gt; {
+  console.log("montou! 🎉")
+}</span>, <span class="r-quando">[]</span>)</span>
+          <span class="recipe-say">só AGORA o corpo</span>
+        </div>
+      </div>
+
+      <div class="tip">
+        <span class="tip-icon">🧠</span>
+        <div class="tip-content">
+          <strong>Mnemônico do capítulo:</strong> <code>useEffect(O QUE, QUANDO)</code>. Se você se
+          perder no meio dos símbolos, pare, apague e recomece pela moldura. Vale até pra quem já
+          programa há anos — sério. 😅
+        </div>
+      </div>
+
+      <div class="warning">
+        <span class="warning-icon">⌨️</span>
+        <div class="warning-content">
+          A arrow <code>=&gt;</code> de novo (é a função O QUE). Sua IDE pode <strong>desenhar</strong>
+          <code>⇒</code>, mas são dois caracteres: <kbd>=</kbd> e <kbd>&gt;</kbd>. E não confunda os
+          irmãos: <code>{ }</code> chaves = corpo da função · <code>[ ]</code> colchetes = array do quando.
+        </div>
+      </div>
+
+      <p>Seu primeiro useEffect de verdade — digite junto com o prof (pela receita! 1, 2, 3, 4):</p>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">import</span> <span class="punc">{</span> <span class="var">useState</span>, <span class="var">useEffect</span> <span class="punc">}</span> <span class="kw">from</span> <span class="st">"react"</span>
+
+<span class="kw">const</span> <span class="fn">App</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
+
+  <span class="fn">useEffect</span>(() <span class="op">=&gt;</span> <span class="punc">{</span>
+    <span class="var">console</span>.<span class="fn">log</span>(<span class="st">"o componente montou! 🎉"</span>)
+  <span class="punc">}</span>, [])
+
+  <span class="kw">return</span> <span class="punc">(</span> <span class="cm">/* ...a vitrine de sempre... */</span> <span class="punc">)</span>
+<span class="punc">}</span></pre>
+      </div>
+
+      <p style="color:var(--text-dim);margin:14px 0 4px">Treine a montagem: clique as peças
+      <strong>na ordem da receita</strong>. Errar também ensina — repara no que o React diria 👇</p>
+
+      <div class="builder" id="builder">
+        <div class="bd-line">useEffect( <span class="bd-slot" id="bd-slot1">1º…</span><span class="bd-slot" id="bd-slot2">&nbsp;</span> <span class="bd-slot" id="bd-slot3">2º…</span> )</div>
+        <div class="bd-pieces">
+          <button class="bd-piece" data-p="quando">[ ]</button>
+          <button class="bd-piece" data-p="oque">() =&gt; { ... }</button>
+          <button class="bd-piece" data-p="virgula">,</button>
+        </div>
+        <div class="bd-note" id="bd-note">monte: primeiro O QUE (a função), depois a vírgula, depois o QUANDO (o array)</div>
+        <div class="bd-controls"><button id="bd-reset">↺ montar de novo</button></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ OS 3 MODOS ═══════════════ -->
+  <section class="step-section" id="modos">
+    <div class="step-header">
+      <div class="step-number sn-yellow">⏰</div>
+      <div>
+        <div class="step-title">Os 3 modos do QUANDO</div>
+        <div class="step-sub">O array de dependências decide quando o despertador toca</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p>O <strong style="color:var(--accent5)">array do QUANDO</strong> tem só três configurações.
+      Uma por vez:</p>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">modo 1 — SEM array (quase sempre é bug!)</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="fn">useEffect</span>(() <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="var">console</span>.<span class="fn">log</span>(<span class="st">"rodei!"</span>)
+<span class="punc">}</span>)   <span class="cm">// sem o 2º argumento → roda a CADA foto 📸📸📸</span></pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">modo 2 — array VAZIO [] (o modo do fetch!)</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="fn">useEffect</span>(() <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="var">console</span>.<span class="fn">log</span>(<span class="st">"rodei!"</span>)
+<span class="punc">}</span>, [])   <span class="cm">// [] → roda UMA vez, quando o componente NASCE</span></pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">modo 3 — COM dependências [busca]</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="fn">useEffect</span>(() <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="var">console</span>.<span class="fn">log</span>(<span class="st">"a busca mudou:"</span>, <span class="var">busca</span>)
+<span class="punc">}</span>, [<span class="var">busca</span>])   <span class="cm">// roda ao nascer E sempre que busca mudar</span></pre>
+      </div>
+
+      <ul class="about-bullets">
+        <li><div><strong>Sem array</strong> — "toque toda hora": roda em <em>toda</em> renderização. Quase nunca é o que você quer (e com fetch, é o loop 🌀).</div></li>
+        <li><div><strong><code>[]</code> vazio</strong> — "toque uma vez, ao ligar": roda só quando o componente <strong>monta</strong>. É O modo pra buscar dados iniciais.</div></li>
+        <li><div><strong><code>[busca]</code></strong> — "toque quando ISSO mudar": roda ao montar e a cada mudança das dependências listadas.</div></li>
+      </ul>
+
+      <p style="color:var(--text-dim);margin:14px 0 4px">Descubra a tabela na prática: escolha o modo,
+      provoque o componente e olhe o LED + o console 👇</p>
+
+      <div class="panel" id="panel">
+        <div class="pn-chips">
+          <span class="pn-lab">modo:</span>
+          <button class="pn-chip" data-m="none">sem array</button>
+          <button class="pn-chip active" data-m="empty">, [ ]</button>
+          <button class="pn-chip" data-m="dep">, [busca]</button>
+        </div>
+        <div class="pn-grid">
+          <div class="pn-code" id="pn-code"></div>
+          <div class="pn-right">
+            <div class="pn-led-row"><span class="pn-led" id="pn-led"></span><span class="pn-led-txt">efeito disparou <b id="pn-count">0</b>x</span></div>
+            <div class="pn-console" id="pn-console">// provoque o componente 👇</div>
+          </div>
+        </div>
+        <div class="pn-actions">
+          <button id="pn-mount">▶️ montar o componente (F5)</button>
+          <button id="pn-type">⌨️ digitar na busca</button>
+          <button id="pn-click">🖱️ re-render qualquer (+1 no carrinho)</button>
+        </div>
+        <div class="pn-note" id="pn-note">…</div>
+      </div>
+
+      <div class="quiz" style="margin-top:16px">
+        <div class="quiz-q"><span class="q-emoji">⏰</span> Buscar os produtos da API <strong>uma vez, quando a loja abre</strong>: qual modo?</div>
+        <div class="quiz-options">
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">Sem array — quero garantir que busca sempre</button>
+          <button class="quiz-opt" data-correct="true" onclick="checkQuiz(this,true)">Array vazio [] — roda uma vez, quando o componente nasce</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">[produtos] — afinal o efeito mexe em produtos</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">Tanto faz, o React entende a intenção</button>
+        </div>
+        <div class="quiz-feedback" data-correct="Modo do fetch inicial: []. Decorou, ganhou." data-wrong="Revê a tabela dos 3 modos…" data-explain="Sem array = roda toda renderização (com fetch+set, loop 🌀). [produtos] tem pegadinha: o efeito MUDA produtos → produtos mudou → efeito roda → … loop de novo! Pra 'uma vez ao nascer', o quando é o array vazio []."></div>
+      </div>
+
+      <p style="color:var(--text-dim);margin:16px 0 4px">🧪 <strong>Laboratório</strong> — o painel de
+      verdade, editável: troque o array do useEffect (<code>[busca]</code> → <code>[]</code> → sem array),
+      digite no campo, clique no re-render e observe o console 👇</p>
+
+      <div class="playground" data-mode="react" data-title="Laboratório React — useEffect">
+<textarea data-pg="jsx">const App = () => {
+  const [busca, setBusca] = useState("")
+  const [carrinho, setCarrinho] = useState(0)
+
+  // 🎛️ troque o QUANDO: [busca]  ·  []  ·  (sem array)
+  useEffect(() => {
+    console.log("efeito rodou! busca =", busca)
+  }, [busca])
+
+  return (
+    <div>
+      <input
+        value={busca}
+        onChange={(e) => setBusca(e.target.value)}
+        placeholder="digite aqui..."
+      />
+      <button onClick={() => setCarrinho(carrinho + 1)}>
+        re-render qualquer ({carrinho})
+      </button>
+    </div>
+  )
+}</textarea>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ JSON-SERVER ═══════════════ -->
+  <section class="step-section" id="jsonserver">
+    <div class="step-header">
+      <div class="step-number sn-js">📦</div>
+      <div>
+        <div class="step-title">json-server — sua primeira API local</div>
+        <div class="step-sub">Uma cozinha de treino rodando na SUA máquina</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="analogy">
+        <div class="analogy-title">🍽️ Da cozinha dos outros pra sua cozinha de treino</div>
+        <p>No Cap 3 você comeu no restaurante dos outros: fez <code>fetch</code> na
+        <code>fakestoreapi.com</code>, uma <strong>API pública</strong> na internet. Relembrando em 3
+        linhas: <strong>API</strong> = o garçom que recebe pedidos num endereço (<strong>endpoint</strong>)
+        e devolve dados em <strong>JSON</strong>. Hoje você ganha uma <strong>cozinha de treino em
+        casa</strong>: o <code>json-server</code> transforma um arquivo <code>db.json</code> numa API
+        completa rodando no seu PC — com direito a endereço e tudo.</p>
+      </div>
+
+      <p><strong>Passo 1:</strong> na pasta do projeto (fora do <code>src/</code>), crie o cardápio — um
+      arquivo <code>db.json</code>. Olha o formato: os mesmos campos de sempre, porque esse é o shape
+      dos dados do <strong>ERP</strong> que vem aí:</p>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">db.json (na raiz do projeto, do lado do package.json)</span><span class="lang-badge js">JSON</span></div>
+<pre><span class="punc">{</span>
+  <span class="st">"produtos"</span><span class="punc">:</span> [
+    <span class="punc">{</span> <span class="st">"id"</span><span class="punc">:</span> <span class="num">1</span>, <span class="st">"nome"</span><span class="punc">:</span> <span class="st">"Teclado Mecânico"</span>, <span class="st">"preco"</span><span class="punc">:</span> <span class="num">320</span>, <span class="st">"imagem"</span><span class="punc">:</span> <span class="st">"/teclado.jpg"</span>, <span class="st">"emEstoque"</span><span class="punc">:</span> <span class="kw">true</span> <span class="punc">}</span>,
+    <span class="punc">{</span> <span class="st">"id"</span><span class="punc">:</span> <span class="num">2</span>, <span class="st">"nome"</span><span class="punc">:</span> <span class="st">"Monitor 27 pol"</span>, <span class="st">"preco"</span><span class="punc">:</span> <span class="num">1450</span>, <span class="st">"imagem"</span><span class="punc">:</span> <span class="st">"/monitor.jpg"</span>, <span class="st">"emEstoque"</span><span class="punc">:</span> <span class="kw">true</span> <span class="punc">}</span>,
+    <span class="punc">{</span> <span class="st">"id"</span><span class="punc">:</span> <span class="num">3</span>, <span class="st">"nome"</span><span class="punc">:</span> <span class="st">"Cadeira Gamer"</span>, <span class="st">"preco"</span><span class="punc">:</span> <span class="num">980</span>, <span class="st">"imagem"</span><span class="punc">:</span> <span class="st">"/cadeira.jpg"</span>, <span class="st">"emEstoque"</span><span class="punc">:</span> <span class="kw">false</span> <span class="punc">}</span>
+  ]
+<span class="punc">}</span></pre>
+      </div>
+
+      <p><strong>Passo 2:</strong> num terminal <strong>NOVO</strong> (deixe o <code>npm run dev</code>
+      rodando no outro!), suba o servidor:</p>
+
+      <div class="terminal" data-typewriter>
+        <div class="code-header" style="background:rgba(255,255,255,0.04);padding:8px 14px;border-radius:14px 14px 0 0">
+          <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+          <span class="filename">Terminal 2 do VSCode (o Terminal 1 segue com o npm run dev)</span>
+        </div>
+        <div class="terminal-body">
+          <span class="prompt">$</span> <span class="typed" data-text="npx json-server db.json"></span><span class="cursor"></span>
+          <br><span class="out">JSON Server started on PORT :3000</span>
+          <br><span class="out">Endpoints:</span>
+          <br><span class="out">http://localhost:3000/produtos</span>
+        </div>
+      </div>
+
+      <p style="margin-top:14px"><strong>Passo 3:</strong> visite <code>http://localhost:3000/produtos</code>
+      no navegador. Isso que aparece é a sua API <strong>respondendo JSON cru</strong> — igualzinho a
+      fakestore do Cap 3, só que é SUA:</p>
+
+      <div class="mini-browser" data-url="localhost:3000/produtos">
+<script type="text/html" data-mp="html">
+  <pre style="margin:0;font-family:monospace;font-size:12px;color:#0b7261">[
+  { "id": 1, "nome": "Teclado Mecânico", "preco": 320, "imagem": "/teclado.jpg", "emEstoque": true },
+  { "id": 2, "nome": "Monitor 27 pol", "preco": 1450, "imagem": "/monitor.jpg", "emEstoque": true },
+  { "id": 3, "nome": "Cadeira Gamer", "preco": 980, "imagem": "/cadeira.jpg", "emEstoque": false }
+]</pre>
+</script>
+      </div>
+
+      <div class="concept">
+        <div class="concept-title">🔮 Cozinha de treino ≠ cozinha de verdade</div>
+        <p>O <code>json-server</code> é um servidor <strong>de mentirinha</strong>, perfeito pra treinar o
+        lado do front. A cozinha de verdade — com regras, banco e segurança — é o <strong>back-end</strong>
+        que você vai construir (em Java/Spring) na próxima metade do curso. E no <strong>Cap 9</strong>, este
+        mesmo endereço <code>localhost:3000</code> vira a URL da SUA API do ERP. O código do front quase
+        não muda — é essa a beleza.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ APAGUE O CONST ═══════════════ -->
+  <section class="step-section" id="magia">
+    <div class="step-header">
+      <div class="step-number sn-react">🚀</div>
+      <div>
+        <div class="step-title">O momento mágico: apague o const</div>
+        <div class="step-sub">useState vazio + useEffect com fetch + o .map() de sempre</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p>Chegou a hora. O padrão que conecta <strong>tudo</strong> que você aprendeu — Cap 3 (fetch),
+      Cap 5 (.map) e Cap 6 (estado) — em <strong>três passos</strong>:</p>
+
+      <ul class="about-bullets">
+        <li><div><strong>1. A vitrine nasce vazia:</strong> <code>useState([])</code> — sem dados ainda, mas o <code>.map()</code> de um array vazio só desenha… nada. Sem erro.</div></li>
+        <li><div><strong>2. O useEffect busca:</strong> modo <code>[]</code> (uma vez, ao nascer) + o fetch do Cap 3 + <code>setProdutos(dados)</code> no final.</div></li>
+        <li><div><strong>3. O .map() nem percebe:</strong> quando o set roda, vem a nova foto 📸 — e a MESMA vitrine desenha os dados que chegaram.</div></li>
+      </ul>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx — o padrão canônico ⭐ (decore este bloco!)</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">import</span> <span class="punc">{</span> <span class="var">useState</span>, <span class="var">useEffect</span> <span class="punc">}</span> <span class="kw">from</span> <span class="st">"react"</span>
+
+<span class="cm del">// const produtos = [ {...}, {...}, {...} ]   ⚰️ APAGUE!</span>
+<span class="cm">// (com carinho — ele te serviu bem desde o Cap 4)</span>
+
+<span class="kw">const</span> <span class="fn">App</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">const</span> [<span class="var">produtos</span>, <span class="var">setProdutos</span>] <span class="op">=</span> <span class="fn">useState</span>([])      <span class="cm">// 1. nasce vazio</span>
+
+  <span class="fn">useEffect</span>(() <span class="op">=&gt;</span> <span class="punc">{</span>                                   <span class="cm">// 2. busca ao nascer</span>
+    <span class="fn">fetch</span>(<span class="st">"http://localhost:3000/produtos"</span>)
+      .<span class="fn">then</span>((<span class="var">res</span>) <span class="op">=&gt;</span> <span class="var">res</span>.<span class="fn">json</span>())
+      .<span class="fn">then</span>((<span class="var">dados</span>) <span class="op">=&gt;</span> <span class="fn">setProdutos</span>(<span class="var">dados</span>))
+  <span class="punc">}</span>, [])
+
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span>
+      {<span class="var">produtos</span>.<span class="fn">map</span>((<span class="var">p</span>) <span class="op">=&gt;</span> (                          <span class="cm">// 3. o mesmo .map()!</span>
+        <span class="tag">&lt;</span><span class="cmp">CartaoProduto</span> <span class="atr">key</span><span class="op">=</span>{<span class="var">p</span>.<span class="var">id</span>} <span class="atr">nome</span><span class="op">=</span>{<span class="var">p</span>.<span class="var">nome</span>} <span class="atr">preco</span><span class="op">=</span>{<span class="var">p</span>.<span class="var">preco</span>} <span class="tag">/&gt;</span>
+      ))}
+    <span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span></pre>
+      </div>
+
+      <div class="tip">
+        <span class="tip-icon">🗣️</span>
+        <div class="tip-content">
+          Leia em voz alta: "<em>nasce vazio → quando o componente montar, busca na API e guarda no
+          estado → o set avisa o React → a nova foto desenha os cards</em>". São
+          <strong>3 linhas trocadas</strong> — e a loja sai do código e entra no mundo real.
+        </div>
+      </div>
+
+      <figure class="clip" data-motion="rise">
+        <video controls autoplay loop muted playsinline poster="../../assets/video/vida-do-componente.png">
+          <source src="../../assets/video/vida-do-componente.mp4" type="video/mp4">
+          Seu navegador não reproduz o vídeo. <a href="../../assets/video/vida-do-componente.mp4">Baixe o clipe aqui.</a>
+        </video>
+        <figcaption>🎬 a vida do componente: monta → render vazio → useEffect acorda → fetch no json-server → setProdutos → nova foto com cards → o <code>[]</code> segura a porta</figcaption>
+      </figure>
+
+      <p style="color:var(--text-dim);margin:14px 0 4px">Roda a cena você mesmo — e experimenta
+      <strong>desligar o servidor</strong> pra ver o outro final 👇</p>
+
+      <div class="delivery" id="delivery">
+        <div class="dv-stage">
+          <div class="dv-app">
+            <div class="dv-app-title">Mini-loja 🛒 <span style="font-weight:600;color:#64748b">(localhost:5173)</span></div>
+            <div class="dv-cards" id="dv-cards"></div>
+          </div>
+          <div class="dv-road">
+            <span class="dv-truck" id="dv-truck">🚚</span>
+            <span class="dv-packet" id="dv-packet">📦 JSON</span>
+          </div>
+          <div class="dv-server" id="dv-server">
+            <div class="s-ico" id="dv-sico">🗄️</div>
+            <div class="dv-label" id="dv-slabel">json-server :3000</div>
+          </div>
+        </div>
+        <div class="dv-steps">
+          <span class="dv-step" id="dv-st1">1. monta (vazio)</span>
+          <span class="dv-step" id="dv-st2">2. useEffect roda</span>
+          <span class="dv-step" id="dv-st3">3. fetch 🚚</span>
+          <span class="dv-step" id="dv-st4">4. JSON volta 📦</span>
+          <span class="dv-step" id="dv-st5">5. setProdutos → 📸</span>
+        </div>
+        <div class="dv-controls">
+          <button id="dv-run">▶️ montar o componente</button>
+          <button id="dv-power" class="off-btn">🔌 desligar o servidor</button>
+          <span id="dv-note">aperte ▶️ e acompanhe a entrega</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ CARREGANDO & ERRO ═══════════════ -->
+  <section class="step-section" id="estados">
+    <div class="step-header">
+      <div class="step-number sn-green">⏳</div>
+      <div>
+        <div class="step-title">Carregando &amp; deu ruim — o acabamento profissional</div>
+        <div class="step-sub">O que o usuário vê enquanto o dado viaja (ou quando não chega)</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p>Entre o "monta vazio" e o "cards na tela" existe uma viagem — e às vezes ela
+      <strong>falha</strong>. Site amador mostra tela branca; site profissional conta o que está
+      acontecendo. São só <strong>dois estados a mais</strong> + os porteiros do Cap 5:</p>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx — com carregando e erro</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">const</span> [<span class="var">produtos</span>, <span class="var">setProdutos</span>] <span class="op">=</span> <span class="fn">useState</span>([])
+<span class="kw">const</span> [<span class="var">carregando</span>, <span class="var">setCarregando</span>] <span class="op">=</span> <span class="fn">useState</span>(<span class="kw">true</span>)
+<span class="kw">const</span> [<span class="var">erro</span>, <span class="var">setErro</span>] <span class="op">=</span> <span class="fn">useState</span>(<span class="kw">false</span>)
+
+<span class="fn">useEffect</span>(() <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="fn">fetch</span>(<span class="st">"http://localhost:3000/produtos"</span>)
+    .<span class="fn">then</span>((<span class="var">res</span>) <span class="op">=&gt;</span> <span class="var">res</span>.<span class="fn">json</span>())
+    .<span class="fn">then</span>((<span class="var">dados</span>) <span class="op">=&gt;</span> <span class="punc">{</span>
+      <span class="fn">setProdutos</span>(<span class="var">dados</span>)
+      <span class="fn">setCarregando</span>(<span class="kw">false</span>)      <span class="cm">// chegou! apaga o ⏳</span>
+    <span class="punc">}</span>)
+    .<span class="fn">catch</span>(() <span class="op">=&gt;</span> <span class="punc">{</span>              <span class="cm">// a viagem falhou 😵</span>
+      <span class="fn">setErro</span>(<span class="kw">true</span>)
+      <span class="fn">setCarregando</span>(<span class="kw">false</span>)
+    <span class="punc">}</span>)
+<span class="punc">}</span>, [])</pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">no return — os porteiros do Cap 5 decidem a tela</span><span class="lang-badge jsx">JSX</span></div>
+<pre>{<span class="var">carregando</span> <span class="op">&amp;&amp;</span> <span class="tag">&lt;p&gt;</span>⏳ Carregando produtos...<span class="tag">&lt;/p&gt;</span>}
+{<span class="var">erro</span> <span class="op">&amp;&amp;</span> <span class="tag">&lt;p&gt;</span>😵 Ops! Não consegui falar com a API. O json-server está rodando?<span class="tag">&lt;/p&gt;</span>}
+{<span class="op">!</span><span class="var">carregando</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="var">erro</span> <span class="op">&amp;&amp;</span> <span class="tag">&lt;div&gt;</span>{<span class="cm">/* ...a vitrine com o .map()... */</span>}<span class="tag">&lt;/div&gt;</span>}</pre>
+      </div>
+
+      <p style="color:var(--text-dim);margin:14px 0 4px">Alterne os cenários e repare <strong>qual porteiro
+      acende</strong> pra desenhar cada tela 👇</p>
+
+      <div class="semaphore" id="semaphore">
+        <div class="sm-chips">
+          <button class="sm-chip active" data-c="loading">⏳ carregando</button>
+          <button class="sm-chip" data-c="ok">✅ chegou</button>
+          <button class="sm-chip" data-c="err">😵 deu ruim</button>
+        </div>
+        <div class="sm-grid">
+          <div class="sm-code">
+            <div class="sm-line" id="sm-l1">{carregando &amp;&amp; &lt;p&gt;⏳ Carregando...&lt;/p&gt;}</div>
+            <div class="sm-line" id="sm-l2">{erro &amp;&amp; &lt;p&gt;😵 Ops! A API respondeu?&lt;/p&gt;}</div>
+            <div class="sm-line" id="sm-l3">{!carregando &amp;&amp; !erro &amp;&amp; &lt;vitrine /&gt;}</div>
+          </div>
+          <div class="sm-screen" id="sm-screen"></div>
+        </div>
+        <div class="sm-note" id="sm-note">…</div>
+      </div>
+
+      <div class="tip">
+        <span class="tip-icon">🐢</span>
+        <div class="tip-content">
+          <strong>"Mas carrega rápido demais, nem vejo o ⏳!"</strong> — no localhost é instantâneo mesmo.
+          Pra ensaiar como usuário de internet lenta: suba o servidor com atraso proposital —
+          <code>npx json-server db.json --delay 800</code> — e veja seu loading brilhar.
+        </div>
+      </div>
+
+      <div class="concept">
+        <div class="concept-title">🧹 Dois vizinhos que você ainda vai conhecer</div>
+        <p><strong>1) A faxina:</strong> o useEffect aceita um <code>return () =&gt; {...}</code> — uma
+        função de <strong>limpeza</strong> que roda quando o componente sai de cena (útil pra desligar
+        timers, por exemplo). Guarde que existe; usaremos quando precisar. <strong>2) async/await:</strong>
+        outro jeito de escrever o fetch, sem <code>.then()</code>. Vamos adotá-lo no <strong>Cap 9</strong>,
+        junto com o axios e o login. Por enquanto, <code>.then()</code> firme e forte.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ BUGZILLA ═══════════════ -->
+  <section class="step-section" id="bugzilla">
+    <div class="step-header">
+      <div class="step-number sn-red">🐛</div>
+      <div>
+        <div class="step-title">BugZilla ataca os efeitos!</div>
+        <div class="step-sub">Os 5 tropeços clássicos do useEffect + fetch</div>
+      </div>
+    </div>
+
+    <div class="bug-box">
+      <span class="bug-icon">🐛</span>
+      <div class="bug-content">
+        <strong>Bug 1 — fetch solto no corpo:</strong> o loop infinito 🌀 (render → fetch → set →
+        render → …). A aba Network vira uma metralhadora. <strong>Conserto:</strong> fetch SEMPRE dentro
+        do <code>useEffect(() =&gt; {...}, [])</code>.
+      </div>
+    </div>
+
+    <div class="bug-box" style="margin-top:14px">
+      <span class="bug-icon">🐛</span>
+      <div class="bug-content">
+        <strong>Bug 2 — esqueceu o array do QUANDO:</strong> <code>useEffect(() =&gt; {...})</code>
+        <em>funciona</em>… rodando a <strong>cada renderização</strong> (o bug silencioso: a loja "funciona"
+        mas busca a API a cada tecla da busca!). <strong>Conserto:</strong> receita da moldura — a vírgula
+        e o <code>[]</code> fazem parte do molde, não são opcionais.
+      </div>
+    </div>
+
+    <div class="bug-box" style="margin-top:14px">
+      <span class="bug-icon">🐛</span>
+      <div class="bug-content">
+        <strong>Bug 3 — esqueceu o import:</strong> "useEffect is not defined". <strong>Conserto:</strong>
+        os dois juntos na mesma linha: <code>import { useState, useEffect } from "react"</code>.
+      </div>
+    </div>
+
+    <div class="bug-box" style="margin-top:14px">
+      <span class="bug-icon">🐛</span>
+      <div class="bug-content">
+        <strong>Bug 4 — esqueceu o <code>res.json()</code>:</strong> "meus produtos são uma
+        <em>Response</em>?!" — o <code>.map()</code> quebra na hora ("produtos.map is not a function").
+        <strong>Conserto:</strong> o primeiro <code>.then((res) =&gt; res.json())</code>
+        <strong>traduz</strong> a resposta pra JSON; só o segundo <code>.then</code> recebe os dados.
+        (Igualzinho no Cap 3!)
+      </div>
+    </div>
+
+    <div class="bug-box" style="margin-top:14px">
+      <span class="bug-icon">🐛</span>
+      <div class="bug-content">
+        <strong>Bug 5 — "Failed to fetch":</strong> o erro nº 1 da aula ao vivo. Quase sempre significa:
+        <strong>o json-server não está rodando</strong> (ou parou quando você fechou o terminal).
+        <strong>Conserto:</strong> olhe o Terminal 2 — tem que estar vivo, mostrando a porta :3000. Teste
+        o endereço direto no navegador antes de culpar o React.
+      </div>
+    </div>
+
+    <div class="toggler" style="margin-top:14px">
+      <div class="toggler-header" onclick="toggleSection(this)">
+        <span>👀 Macete de ouro do BugZilla</span><span class="toggler-arrow">▼</span>
+      </div>
+      <div class="toggler-body">
+        <div class="tip" style="margin:0">
+          <span class="tip-icon">🔦</span>
+          <div class="tip-content">
+            Vitrine vazia? Investigue <strong>na ordem da viagem</strong>: 1) o json-server está de pé?
+            (abra <code>localhost:3000/produtos</code> no navegador) · 2) o fetch está DENTRO do
+            useEffect com <code>[]</code>? · 3) tem o <code>res.json()</code>? · 4) o
+            <code>console.log(dados)</code> dentro do último <code>.then</code> mostra o array? Se os 4
+            passarem, o problema está na vitrine (Cap 5), não nos dados.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ PROGRAMAÇÃO É PRÁTICA ═══════════════ -->
+  <section class="step-section">
+    <div class="card" style="text-align:center;background:linear-gradient(135deg,rgba(97,218,251,0.10),rgba(100,108,255,0.06));border-color:rgba(97,218,251,0.22)">
+      <div style="font-family:'Caveat',cursive;font-size:clamp(2rem,6vw,3rem);color:var(--react);font-weight:700;line-height:1.1">
+        PROGRAMAÇÃO É PRÁTICA 💪
+      </div>
+      <p class="text-dim" style="max-width:560px;margin:10px auto 0">
+        Dois terminais abertos no VSCode (<code>npm run dev</code> + <code>json-server</code>), a
+        Mini-loja na tela e a cerimônia do capítulo te esperando: <strong style="color:var(--text)">apagar
+        o const</strong>. ⚰️🚀
+      </p>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ TREINO ENCADEADO ═══════════════ -->
+  <section class="step-section" id="treino">
+    <div class="step-header">
+      <div class="step-number sn-react">⌨️</div>
+      <div>
+        <div class="step-title">Treino — a Mini-loja conectada</div>
+        <div class="step-sub">Continua o projeto dos Caps 4–6. Hoje ela ganha uma API</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="warning">
+        <span class="warning-icon">▶️</span>
+        <div class="warning-content">
+          Mesma pasta <code>mini-loja</code> de sempre — agora com <strong>DOIS terminais</strong>:
+          o 1 com <code>npm run dev</code> e o 2 com o json-server. Partimos da loja completa do Cap 6
+          (busca, curtir, carrinho). O 👀 mostra a solução e o mini-navegador, o resultado.
+        </div>
+      </div>
+
+      <!-- trilha de progresso -->
+      <div class="arena-track">
+        <span class="at-dot lv1">1</span><span class="at-arrow">→</span>
+        <span class="at-dot lv1">2</span><span class="at-arrow">→</span>
+        <span class="at-dot lv2">3</span><span class="at-arrow">→</span>
+        <span class="at-dot lv2">4</span><span class="at-arrow">→</span>
+        <span class="at-dot lv2">5</span><span class="at-arrow">→</span>
+        <span class="at-dot lv3">6</span><span class="at-arrow">→</span>
+        <span class="at-dot lv3">7</span><span class="at-arrow">→</span>
+        <span class="at-dot lv3">🏆</span>
+      </div>
+
+      <!-- 1. guided — db.json + json-server -->
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">👨‍🏫</span><div>
+          <div class="exercise-title">Passo 1 — suba a sua API (com o prof)</div>
+          <div class="exercise-sub">db.json + json-server + teste no navegador</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>1) Crie o <code>db.json</code> na <strong>raiz</strong> do projeto (do lado do package.json) com a chave <code>"produtos"</code> e os <strong>mesmos produtos</strong> do seu array do App (copie e cole o array e ajuste pro formato JSON: aspas duplas nas chaves!). 2) No Terminal 2: <code>npx json-server db.json</code>. 3) Prove que funciona: abra <code>localhost:3000/produtos</code> no navegador e veja seu JSON.</p></div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">db.json</span><span class="lang-badge js">JSON</span></div>
+<pre><span class="punc">{</span>
+  <span class="st">"produtos"</span><span class="punc">:</span> [
+    <span class="punc">{</span> <span class="st">"id"</span><span class="punc">:</span> <span class="num">1</span>, <span class="st">"nome"</span><span class="punc">:</span> <span class="st">"Teclado Mecânico"</span>, <span class="st">"preco"</span><span class="punc">:</span> <span class="num">320</span>, <span class="st">"imagem"</span><span class="punc">:</span> <span class="st">"/teclado.jpg"</span>, <span class="st">"emEstoque"</span><span class="punc">:</span> <span class="kw">true</span> <span class="punc">}</span>,
+    <span class="punc">{</span> <span class="st">"id"</span><span class="punc">:</span> <span class="num">2</span>, <span class="st">"nome"</span><span class="punc">:</span> <span class="st">"Monitor 27 pol"</span>, <span class="st">"preco"</span><span class="punc">:</span> <span class="num">1450</span>, <span class="st">"imagem"</span><span class="punc">:</span> <span class="st">"/monitor.jpg"</span>, <span class="st">"emEstoque"</span><span class="punc">:</span> <span class="kw">true</span> <span class="punc">}</span>,
+    <span class="punc">{</span> <span class="st">"id"</span><span class="punc">:</span> <span class="num">3</span>, <span class="st">"nome"</span><span class="punc">:</span> <span class="st">"Cadeira Gamer"</span>, <span class="st">"preco"</span><span class="punc">:</span> <span class="num">980</span>, <span class="st">"imagem"</span><span class="punc">:</span> <span class="st">"/cadeira.jpg"</span>, <span class="st">"emEstoque"</span><span class="punc">:</span> <span class="kw">false</span> <span class="punc">}</span>,
+    <span class="punc">{</span> <span class="st">"id"</span><span class="punc">:</span> <span class="num">4</span>, <span class="st">"nome"</span><span class="punc">:</span> <span class="st">"Mouse Gamer"</span>, <span class="st">"preco"</span><span class="punc">:</span> <span class="num">180</span>, <span class="st">"imagem"</span><span class="punc">:</span> <span class="st">"/mouse.jpg"</span>, <span class="st">"emEstoque"</span><span class="punc">:</span> <span class="kw">true</span> <span class="punc">}</span>
+  ]
+<span class="punc">}</span></pre>
+        </div>
+        <div class="tip"><span class="tip-icon">📛</span><div class="tip-content">Erro "EADDRINUSE :3000"? Já tem OUTRO json-server vivo (algum terminal esquecido). Feche-o, ou suba na porta 3001: <code>npx json-server db.json --port 3001</code> (aí o fetch usa :3001 também).</div></div>
+      </div>
+
+      <!-- 2. guided — primeiro useEffect -->
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">👨‍🏫</span><div>
+          <div class="exercise-title">Passo 2 — o primeiro useEffect (com o prof)</div>
+          <div class="exercise-sub">A receita da moldura, no seu teclado</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>No <code>App.jsx</code>: complete o import (<code>useEffect</code> junto do <code>useState</code>) e monte, <strong>pela receita</strong> (moldura → função → vírgula+array → corpo), um efeito com <code>console.log("a loja montou! 🎉")</code> e o QUANDO <code>[]</code>. Teste no console (F12): dê F5 (roda 1x), digite na busca (NÃO roda de novo). Agora <strong>apague a vírgula e o array</strong> e repita: o console mostra a diferença. Devolva o <code>[]</code> no final!</p></div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx (topo do componente)</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">import</span> <span class="punc">{</span> <span class="var">useState</span>, <span class="var">useEffect</span> <span class="punc">}</span> <span class="kw">from</span> <span class="st">"react"</span>
+
+<span class="cm">// dentro do App, antes do return:</span>
+<span class="fn">useEffect</span>(() <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="var">console</span>.<span class="fn">log</span>(<span class="st">"a loja montou! 🎉"</span>)
+<span class="punc">}</span>, [])</pre>
+        </div>
+        <p class="text-dim" style="font-size:0.82rem;margin:10px 0 4px">No console do navegador 👇</p>
+        <div class="mini-browser console" data-url="Console">
+<script type="text/plain" data-mp="out">a loja montou! 🎉
+> (digitando na busca… nada acontece — o [] segurou! ✅)
+> (agora SEM o array: apaguei a vírgula e o [])
+a loja montou! 🎉
+a loja montou! 🎉
+a loja montou! 🎉
+! ⚠️ rodou a cada tecla! Devolve o [] …</script>
+        </div>
+      </div>
+
+      <!-- 3. solo — document.title com [busca] -->
+      <div class="exercise solo">
+        <div class="exercise-header"><span class="exercise-icon">🧑‍💻</span><div>
+          <div class="exercise-title">Passo 3 — a aba que reage à busca (sozinho/a)</div>
+          <div class="exercise-sub">O modo [busca] com resultado visível na aba do navegador</div></div>
+        </div>
+        <div class="drill-tags"><span class="drill-level lv2"><span class="stars">★★</span> médio</span><span class="drill-tag">useEffect</span><span class="drill-tag">[dependência]</span><span class="drill-tag">DOM do Cap 3</span></div>
+        <div class="concept"><div class="concept-title">💡 Dica</div><p>Crie um <strong>segundo</strong> useEffect (pode! cada um com seu QUANDO) que muda o título da aba: <code>document.title = ...</code> (o velho DOM do Cap 3!). Quando a busca estiver vazia, o título é <code>"Mini-loja 🛒"</code>; senão, <code>"Buscando: " + busca</code> (capriche: template string ou ternário). O QUANDO certo é o que faz o efeito rodar <strong>a cada mudança da busca</strong>… qual é?</p></div>
+        <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Tenta antes!</strong> Digite na busca olhando pra ABA do navegador. Quando ela obedecer, você dominou o modo 3.</div></div>
+        <div class="toggler">
+          <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — Ver solução</span><span class="toggler-arrow">▼</span></div>
+          <div class="toggler-body"><div class="code-block">
+            <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx (o segundo efeito)</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="fn">useEffect</span>(() <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="var">document</span>.<span class="var">title</span> <span class="op">=</span> <span class="var">busca</span> <span class="op">?</span> <span class="st">"Buscando: "</span> <span class="op">+</span> <span class="var">busca</span> <span class="op">:</span> <span class="st">"Mini-loja 🛒"</span>
+<span class="punc">}</span>, [<span class="var">busca</span>])</pre>
+          </div>
+          <div class="tip" style="margin-top:10px"><span class="tip-icon">🧠</span><div class="tip-content">Mexer no <code>document.title</code> é um efeito colateral clássico (sai do componente e mexe no navegador) — por isso mora no useEffect, com <code>[busca]</code> no QUANDO: roda ao nascer e a cada mudança dela.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. guided — apagar o const -->
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">👨‍🏫</span><div>
+          <div class="exercise-title">Passo 4 — a cerimônia: apague o const (com o prof) ⚰️🚀</div>
+          <div class="exercise-sub">O momento prometido desde o Cap 4</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>Com o json-server de pé: 1) <code>const [produtos, setProdutos] = useState([])</code>; 2) o useEffect com o fetch (padrão canônico, QUANDO = <code>[]</code>); 3) <strong>apague o array <code>const produtos = [...]</code></strong> — adeus, velho amigo. Salve e assista: a vitrine pisca vazia e… os cards chegam <strong>da API</strong>. 🎉 (A busca do Cap 6 segue funcionando — o <code>filter</code> roda sobre o estado!)</p></div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">const</span> [<span class="var">produtos</span>, <span class="var">setProdutos</span>] <span class="op">=</span> <span class="fn">useState</span>([])
+
+<span class="fn">useEffect</span>(() <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="fn">fetch</span>(<span class="st">"http://localhost:3000/produtos"</span>)
+    .<span class="fn">then</span>((<span class="var">res</span>) <span class="op">=&gt;</span> <span class="var">res</span>.<span class="fn">json</span>())
+    .<span class="fn">then</span>((<span class="var">dados</span>) <span class="op">=&gt;</span> <span class="fn">setProdutos</span>(<span class="var">dados</span>))
+<span class="punc">}</span>, [])</pre>
+        </div>
+        <p class="text-dim" style="font-size:0.82rem;margin:10px 0 4px">No navegador (aperte ⟳ pra reviver a chegada 🖱️) 👇</p>
+        <div class="mini-browser" data-url="localhost:5173" data-h="230">
+<script type="text/html" data-mp="html">
+  <div style="font-family:sans-serif">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <h3 style="margin:0">Mini-loja 🛒</h3>
+      <button id="re" style="cursor:pointer">⟳ recarregar</button>
+    </div>
+    <div id="v" style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:10px"></div>
+  </div>
+</script>
+<script type="text/plain" data-mp="js">
+  var v = document.getElementById('v');
+  var prods = [
+    {e:'⌨️', n:'Teclado Mecânico', p:320},
+    {e:'🖥️', n:'Monitor 27 pol', p:1450},
+    {e:'🪑', n:'Cadeira Gamer', p:980},
+    {e:'🖱️', n:'Mouse Gamer', p:180}
+  ];
+  function carregar(){
+    v.innerHTML = '<p style="color:#64748b">⏳ buscando na API…</p>';
+    setTimeout(function(){
+      v.innerHTML = prods.map(function(p){
+        return '<div style="border:1px solid #e2e8f0;border-radius:10px;padding:10px 14px;text-align:center"><div style="font-size:26px">' + p.e + '</div><strong style="font-size:12px">' + p.n + '</strong><p style="margin:2px 0 0;color:#16a34a;font-size:12px;font-weight:700">R$ ' + p.p + '</p></div>';
+      }).join('');
+    }, 900);
+  }
+  document.getElementById('re').onclick = carregar;
+  carregar();
+</script>
+        </div>
+      </div>
+
+      <!-- 5. solo — carregando -->
+      <div class="exercise solo">
+        <div class="exercise-header"><span class="exercise-icon">🧑‍💻</span><div>
+          <div class="exercise-title">Passo 5 — o ⏳ enquanto a API responde (sozinho/a)</div>
+          <div class="exercise-sub">Estado carregando + porteiro</div></div>
+        </div>
+        <div class="drill-tags"><span class="drill-level lv2"><span class="stars">★★</span> médio</span><span class="drill-tag">useState(true)</span><span class="drill-tag">porteiro &amp;&amp;</span></div>
+        <div class="concept"><div class="concept-title">💡 Dica</div><p>1) Estado <code>carregando</code> nascendo <code>true</code>. 2) No <strong>último</strong> <code>.then</code>, depois do <code>setProdutos</code>: <code>setCarregando(false)</code>. 3) No return, o porteiro: <code>{carregando &amp;&amp; &lt;p&gt;⏳ Carregando produtos...&lt;/p&gt;}</code>. 4) Pra VER funcionando: derrube o json-server e suba com <code>--delay 800</code>.</p></div>
+        <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Tenta antes!</strong> São 3 linhas — uma de estado, uma no .then, uma de porteiro.</div></div>
+        <div class="toggler">
+          <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — Ver solução</span><span class="toggler-arrow">▼</span></div>
+          <div class="toggler-body"><div class="code-block">
+            <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">const</span> [<span class="var">carregando</span>, <span class="var">setCarregando</span>] <span class="op">=</span> <span class="fn">useState</span>(<span class="kw">true</span>)
+
+<span class="fn">useEffect</span>(() <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="fn">fetch</span>(<span class="st">"http://localhost:3000/produtos"</span>)
+    .<span class="fn">then</span>((<span class="var">res</span>) <span class="op">=&gt;</span> <span class="var">res</span>.<span class="fn">json</span>())
+    .<span class="fn">then</span>((<span class="var">dados</span>) <span class="op">=&gt;</span> <span class="punc">{</span>
+      <span class="fn">setProdutos</span>(<span class="var">dados</span>)
+      <span class="fn">setCarregando</span>(<span class="kw">false</span>)
+    <span class="punc">}</span>)
+<span class="punc">}</span>, [])
+
+<span class="cm">// no return, antes da vitrine:</span>
+{<span class="var">carregando</span> <span class="op">&amp;&amp;</span> <span class="tag">&lt;p&gt;</span>⏳ Carregando produtos...<span class="tag">&lt;/p&gt;</span>}</pre>
+          </div></div>
+        </div>
+      </div>
+
+      <!-- 6. solo — erro -->
+      <div class="exercise solo">
+        <div class="exercise-header"><span class="exercise-icon">🧑‍💻</span><div>
+          <div class="exercise-title">Passo 6 — quando a API cai (sozinho/a)</div>
+          <div class="exercise-sub">.catch + tela de erro amigável + teste de verdade</div></div>
+        </div>
+        <div class="drill-tags"><span class="drill-level lv3"><span class="stars">★★★</span> desafio</span><span class="drill-tag">.catch</span><span class="drill-tag">estado erro</span></div>
+        <div class="concept"><div class="concept-title">💡 Dica</div><p>1) Estado <code>erro</code> nascendo <code>false</code>. 2) Pendure um <code>.catch(() =&gt; {...})</code> no fim da corrente do fetch: dentro, <code>setErro(true)</code> e <code>setCarregando(false)</code>. 3) Porteiro no return com uma mensagem que AJUDE ("o json-server está rodando?"). 4) O teste de fogo: <strong>mate o json-server</strong> (Ctrl+C no Terminal 2), dê F5 na loja e veja sua tela de erro. Suba o servidor de novo, F5 — voltou. 🔥</p></div>
+        <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Tenta antes!</strong> Derrubar o próprio servidor de propósito é o teste mais divertido do capítulo.</div></div>
+        <div class="toggler">
+          <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — Ver solução</span><span class="toggler-arrow">▼</span></div>
+          <div class="toggler-body"><div class="code-block">
+            <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">const</span> [<span class="var">erro</span>, <span class="var">setErro</span>] <span class="op">=</span> <span class="fn">useState</span>(<span class="kw">false</span>)
+
+<span class="fn">useEffect</span>(() <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="fn">fetch</span>(<span class="st">"http://localhost:3000/produtos"</span>)
+    .<span class="fn">then</span>((<span class="var">res</span>) <span class="op">=&gt;</span> <span class="var">res</span>.<span class="fn">json</span>())
+    .<span class="fn">then</span>((<span class="var">dados</span>) <span class="op">=&gt;</span> <span class="punc">{</span>
+      <span class="fn">setProdutos</span>(<span class="var">dados</span>)
+      <span class="fn">setCarregando</span>(<span class="kw">false</span>)
+    <span class="punc">}</span>)
+    .<span class="fn">catch</span>(() <span class="op">=&gt;</span> <span class="punc">{</span>
+      <span class="fn">setErro</span>(<span class="kw">true</span>)
+      <span class="fn">setCarregando</span>(<span class="kw">false</span>)
+    <span class="punc">}</span>)
+<span class="punc">}</span>, [])
+
+<span class="cm">// no return:</span>
+{<span class="var">erro</span> <span class="op">&amp;&amp;</span> <span class="tag">&lt;p&gt;</span>😵 Não consegui falar com a API. O json-server está rodando?<span class="tag">&lt;/p&gt;</span>}</pre>
+          </div>
+          <div class="mini-browser" data-url="localhost:5173">
+<script type="text/html" data-mp="html">
+  <div style="font-family:sans-serif;text-align:center;padding:14px">
+    <h3 style="margin:0 0 6px">Mini-loja 🛒</h3>
+    <p style="background:#fef2f2;border:1px solid #fecaca;color:#b91c1c;border-radius:10px;padding:12px;display:inline-block">😵 Não consegui falar com a API.<br>O json-server está rodando?</p>
+  </div>
+</script>
+          </div></div>
+        </div>
+      </div>
+
+      <!-- 7. solo chefão — integração -->
+      <div class="exercise solo">
+        <div class="exercise-header"><span class="exercise-icon">🏆</span><div>
+          <div class="exercise-title">Passo 7 — CHEFÃO: a loja completa (sozinho/a)</div>
+          <div class="exercise-sub">Caps 5 + 6 + 7 funcionando JUNTOS sobre dados da API</div></div>
+        </div>
+        <div class="drill-tags"><span class="drill-level lv3"><span class="stars">★★★</span> desafio</span><span class="drill-tag">integração</span><span class="drill-tag">.length</span></div>
+        <div class="concept"><div class="concept-title">💡 Missão</div><p>Rodada de acabamento, tudo sobre os dados que VÊM DA API: 1) no Cabecalho, o badge <code>{produtos.length} produtos</code> (passe a prop!) — repare que ele mostra 0 durante o carregamento e "acorda" quando os dados chegam; 2) confira a tríade do Cap 6 viva: busca filtrando, curtir curtindo, carrinho somando — sobre dados da API; 3) toque final: quando o <code>filter</code> não achar nada, mostre <code>"nenhum produto encontrado 😢"</code> (porteiro na <code>filtrados.length === 0</code>).</p></div>
+        <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Tenta antes!</strong> Se tudo funcionar, para e olha o que você construiu: uma loja que carrega da API, trata erro, busca, curte e vende. Isso é um SISTEMA. 👏</div></div>
+        <div class="toggler">
+          <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — Ver solução</span><span class="toggler-arrow">▼</span></div>
+          <div class="toggler-body">
+            <div class="code-block">
+              <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx (os retoques)</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="cm">// o badge no Cabecalho (produtos.length "acorda" com a API):</span>
+<span class="tag">&lt;</span><span class="cmp">Cabecalho</span> <span class="atr">total</span><span class="op">=</span>{<span class="var">carrinho</span>} <span class="atr">qtdProdutos</span><span class="op">=</span>{<span class="var">produtos</span>.<span class="var">length</span>} <span class="tag">/&gt;</span>
+
+<span class="cm">// vitrine vazia depois do filtro? avisa em vez de tela branca:</span>
+{<span class="op">!</span><span class="var">carregando</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="var">erro</span> <span class="op">&amp;&amp;</span> <span class="var">filtrados</span>.<span class="var">length</span> <span class="op">===</span> <span class="num">0</span> <span class="op">&amp;&amp;</span>
+  <span class="tag">&lt;p&gt;</span>nenhum produto encontrado 😢<span class="tag">&lt;/p&gt;</span>}</pre>
+            </div>
+            <div class="code-block">
+              <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/Cabecalho.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">const</span> <span class="fn">Cabecalho</span> <span class="op">=</span> (<span class="punc">{</span> <span class="var">total</span>, <span class="var">qtdProdutos</span> <span class="punc">}</span>) <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;header&gt;</span>
+      <span class="tag">&lt;h1&gt;</span>Mini-loja 🛒<span class="tag">&lt;/h1&gt;</span>
+      <span class="tag">&lt;span&gt;</span>{<span class="var">qtdProdutos</span>} produtos<span class="tag">&lt;/span&gt;</span>
+      <span class="tag">&lt;span&gt;</span>🛒 {<span class="var">total</span>}<span class="tag">&lt;/span&gt;</span>
+    <span class="tag">&lt;/header&gt;</span>
+  )
+<span class="punc">}</span></pre>
+            </div>
+            <div class="mini-browser" data-url="localhost:5173" data-h="260">
+<script type="text/html" data-mp="html">
+  <div style="font-family:sans-serif">
+    <header style="display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #e2e8f0;padding-bottom:8px;gap:8px">
+      <h3 style="margin:0">Mini-loja 🛒</h3>
+      <span style="color:#64748b;font-size:13px"><span id="qp">0</span> produtos</span>
+      <span style="background:#0ea5e9;color:#fff;border-radius:999px;padding:3px 10px;font-weight:800;font-size:13px">🛒 <span id="tot">0</span></span>
+    </header>
+    <input id="b" placeholder="🔎 Buscar..." style="margin-top:8px;font-size:13px;padding:5px 10px;border:1px solid #cbd5e1;border-radius:8px;width:60%">
+    <div id="v" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:8px"></div>
+  </div>
+</script>
+<script type="text/plain" data-mp="js">
+  var prods = [], t = 0;
+  var v = document.getElementById('v'), b = document.getElementById('b');
+  var qp = document.getElementById('qp'), tot = document.getElementById('tot');
+  function render(){
+    var f = prods.filter(function(p){ return p.n.toLowerCase().indexOf(b.value.toLowerCase()) !== -1; });
+    qp.textContent = prods.length;
+    if (!prods.length){ v.innerHTML = '<p style="color:#64748b">⏳ Carregando produtos…</p>'; return; }
+    v.innerHTML = f.map(function(p, i){
+      return '<div style="border:1px solid #e2e8f0;border-radius:10px;padding:8px 12px;text-align:center"><div style="font-size:24px">' + p.e + '</div><strong style="font-size:11px">' + p.n + '</strong><p style="margin:2px 0 4px;color:#16a34a;font-size:11px;font-weight:700">R$ ' + p.p + '</p><button data-i="' + i + '" style="font-size:11px;cursor:pointer">🛒 Adicionar</button></div>';
+    }).join('') || '<p style="color:#94a3b8">nenhum produto encontrado 😢</p>';
+    v.querySelectorAll('button').forEach(function(btn){
+      btn.onclick = function(){ t++; tot.textContent = t; };
+    });
+  }
+  b.oninput = render;
+  render();
+  setTimeout(function(){
+    prods = [
+      {e:'⌨️', n:'Teclado Mecânico', p:320},
+      {e:'🖥️', n:'Monitor 27 pol', p:1450},
+      {e:'🪑', n:'Cadeira Gamer', p:980},
+      {e:'🖱️', n:'Mouse Gamer', p:180}
+    ];
+    render();
+  }, 900);
+</script>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- desafio para casa -->
+      <div class="exercise home" style="margin-top:18px">
+        <div class="exercise-header"><span class="exercise-icon">🏠</span><div>
+          <div class="exercise-title">Desafio para Casa — o dado que atravessa a stack</div>
+          <div class="exercise-sub">Do db.json até o porteiro do card</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">💡 Missão</div><p>1) Adicione um produto novo no <code>db.json</code> com <code>"emEstoque": false</code>, dê F5 na loja e observe: o dado atravessou <strong>API → fetch → estado → .map() → porteiro</strong> e o card já nasceu esgotado (cinza, sem botão) — sem você tocar no React. Sinta o poder. 2) Bônus ★★★: um botão <code>🔄 Recarregar</code> no App — extraia o fetch pra uma função <code>carregarProdutos</code>, chame ela no useEffect E no onClick do botão (mostrando o ⏳ de novo a cada clique). Traga no próximo sábado! 🚀</p></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ RESUMO ═══════════════ -->
+  <section class="step-section" id="resumo">
+    <div class="step-header">
+      <div class="step-number sn-mint">🎒</div>
+      <div>
+        <div class="step-title">O que você leva deste capítulo</div>
+        <div class="step-sub">Sua loja saiu do código e entrou no mundo real</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <ul class="about-bullets">
+        <li><div><strong>Efeito colateral</strong> (buscar dado, mexer no title, timers) não mora no corpo do componente — o corpo roda a cada foto 📸 (fetch solto = loop 🌀).</div></li>
+        <li><div><strong>useEffect(O QUE, QUANDO):</strong> a função e o array, sempre nessa ordem — e sempre digitados pela <strong>receita da moldura</strong> (1 moldura → 2 função → 3 vírgula+array → 4 corpo).</div></li>
+        <li><div><strong>Os 3 modos do QUANDO:</strong> sem array = toda renderização (quase sempre bug) · <code>[]</code> = uma vez ao nascer (o modo do fetch) · <code>[busca]</code> = quando a dependência mudar.</div></li>
+        <li><div><strong>O padrão canônico:</strong> <code>useState([])</code> + fetch no <code>useEffect(..., [])</code> + o <code>.map()</code> de sempre. Três linhas trocadas, loja viva.</div></li>
+        <li><div><strong>json-server:</strong> <code>npx json-server db.json</code> — sua API de treino em <code>localhost:3000</code>, no shape do ERP que vem aí.</div></li>
+        <li><div><strong>Loading &amp; erro:</strong> estados <code>carregando</code>/<code>erro</code> + porteiros = a diferença entre site amador e profissional.</div></li>
+      </ul>
+
+      <div class="quiz" style="margin-top:16px">
+        <div class="quiz-q"><span class="q-emoji">🎫</span> Quiz de saída: este useEffect tem UM bug. Qual?<br><code style="font-size:0.82em">useEffect(() =&gt; { fetch(url).then((res) =&gt; res.json()).then((d) =&gt; setProdutos(d)) })</code></div>
+        <div class="quiz-options">
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">Faltou o async/await — .then não funciona em useEffect</button>
+          <button class="quiz-opt" data-correct="true" onclick="checkQuiz(this,true)">Faltou o QUANDO: sem a vírgula + [], o efeito roda a cada renderização</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">O fetch não pode ficar dentro do useEffect</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">Não tem bug — está perfeito</button>
+        </div>
+        <div class="quiz-feedback" data-correct="Olho de águia! 🦅 Sem o [] é quase-loop." data-wrong="Passa o olho na moldura de novo (o passo 3 da receita)…" data-explain="A função O QUE está certa (.then funciona sim). O que falta é o 2º argumento: a vírgula + []. Sem ele, o efeito roda a CADA renderização — cada set, cada tecla = novo fetch. Com [], roda uma vez ao nascer."></div>
+      </div>
+
+      <div class="tip" style="margin-top:16px">
+        <span class="tip-icon">➡️</span>
+        <div class="tip-content">
+          <strong>No próximo capítulo (Cap 8):</strong> sua loja é poderosa… mas mora numa página só.
+          Clicar num produto e abrir a <strong>página de detalhes</strong>? Uma tela de
+          <strong>carrinho</strong>? Isso é navegação — e em SPA quem cuida dela é o
+          <strong>React Router</strong>. Sua loja vai virar um site de verdade, com endereços e tudo. 🧭
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:22px;display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+        <a href="../../index.html" style="display:inline-block;padding:14px 28px;background:var(--surface2);color:var(--text);font-weight:800;border-radius:50px;font-size:1rem;text-decoration:none;border:1px solid rgba(255,255,255,0.12)">
+          ← voltar ao hub
+        </a>
+        <span style="display:inline-block;padding:14px 32px;background:var(--surface2);color:var(--text-dim);font-weight:900;border-radius:50px;font-size:1rem;border:1px dashed rgba(255,255,255,0.2);cursor:default">
+          Próximo: Cap 08 — Navegação 🔒 em breve
+        </span>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="footer">
+  Feito com <span class="heart">♥</span> pela <strong style="color:var(--text)">programa AI</strong> ·
+  <a href="../../index.html">Hub do curso</a> · Cap 07 — Dados de verdade: useEffect &amp; fetch
+</footer>
+
+<script src="../../shared/scripts.js" defer></script>
+<script src="../../shared/playground.js" defer></script>
+<script type="module" src="../../shared/motion-fx.js"></script>
+<script type="module">
+  // ── Motor das máquinas didáticas do Cap 07 ──
+  // Motion (CDN) dá o tempero quando carrega; se a internet da sala falhar,
+  // TUDO continua funcionando (transições CSS + Web Animations nativas).
+  let animate=null;
+  try{ ({animate}=await import('https://cdn.jsdelivr.net/npm/motion@11/+esm')); }catch(e){}
+  const onView=(el,fn)=>{ if(!el) return;
+    const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){fn();io.disconnect();}})},{threshold:.3});
+    io.observe(el); };
+
+  /* ════ 🌀 Loop Infinito ════ */
+  (()=>{
+    const root=document.getElementById('loopm'); if(!root) return;
+    const steps=['lp-s1','lp-s2','lp-s3','lp-s4'].map(id=>root.querySelector('#'+id));
+    const countEl=root.querySelector('#lp-count');
+    const fan=root.querySelector('#lp-fan');
+    const consoleEl=root.querySelector('#lp-console');
+    const note=root.querySelector('#lp-note');
+    let timer=null, n=0, speed=520;
+    const stop=()=>{ if(timer){clearTimeout(timer); timer=null;} };
+    const clearLit=()=>steps.forEach(s=>s.classList.remove('lit','ok-lit'));
+    const log=(txt)=>{
+      if(consoleEl.textContent.startsWith('//')) consoleEl.textContent='';
+      consoleEl.textContent+=txt+'\n';
+      const lines=consoleEl.textContent.split('\n');
+      if(lines.length>5) consoleEl.textContent=lines.slice(-5).join('\n');
+      consoleEl.scrollTop=consoleEl.scrollHeight;
+    };
+    const reset=()=>{
+      stop(); clearLit(); n=0; speed=520;
+      countEl.textContent='0'; countEl.classList.remove('ok');
+      fan.classList.remove('spin','spin-fast');
+      consoleEl.textContent='// aperte "rodar a tentativa ingênua"…';
+      note.textContent='';
+    };
+    const spin=(i)=>{
+      clearLit();
+      steps[i%4].classList.add('lit');
+      if(i%4===0){ n++; countEl.textContent=String(n);
+        if(n===3) log('📡 fetch #'+n+' … de novo?');
+        else if(n===6){ log('🔥 fetch #'+n+' — a aba Network chora'); fan.classList.remove('spin'); fan.classList.add('spin-fast'); }
+        else if(n>6 && n%4===0) log('🔥 fetch #'+n+' …');
+        else if(n<3) log('📡 fetch #'+n);
+        note.textContent=n>5?'isso NUNCA para sozinho — só fechando a aba (ou consertando o código)':'';
+      }
+      speed=Math.max(70,speed*0.9);
+      timer=setTimeout(()=>spin(i+1),speed);
+    };
+    root.querySelector('#lp-run').addEventListener('click',()=>{
+      reset(); fan.classList.add('spin');
+      log('📸 render #1 → o corpo rodou');
+      spin(0);
+    });
+    root.querySelector('#lp-save').addEventListener('click',()=>{
+      stop(); clearLit();
+      fan.classList.remove('spin','spin-fast');
+      steps[0].classList.add('ok-lit');
+      const total=n+1;
+      countEl.textContent=String(Math.max(total,2)); countEl.classList.add('ok');
+      log('🧯 fetch movido pro useEffect(() => {...}, [])');
+      log('✅ montou → buscou 1x → set → render final. FIM.');
+      note.textContent='com o useEffect e o [], o efeito rodou UMA vez. O contador parou. Respira. 😮‍💨';
+    });
+    root.querySelector('#lp-reset').addEventListener('click',reset);
+    onView(root,()=>{});
+  })();
+
+  /* ════ 🧩 Montador do useEffect ════ */
+  (()=>{
+    const root=document.getElementById('builder'); if(!root) return;
+    const slots=[root.querySelector('#bd-slot1'),root.querySelector('#bd-slot2'),root.querySelector('#bd-slot3')];
+    const pieces=[...root.querySelectorAll('.bd-piece')];
+    const note=root.querySelector('#bd-note');
+    const ORDER=['oque','virgula','quando'];
+    const LABEL={oque:'() =&gt; { ... }',virgula:',',quando:'[ ]'};
+    const ERRO={
+      quando:'<span class="bad">💥 array primeiro?</span> O React esperava uma FUNÇÃO no 1º lugar: "useEffect(fn, deps)". Começa pelo O QUE.',
+      virgula:'<span class="bad">💥 vírgula solta?</span> Vírgula separa os DOIS argumentos — primeiro vem a função O QUE.',
+      oque:'<span class="bad">💥 calma!</span> A função já está no lugar — agora falta separar com a vírgula.'
+    };
+    let idx=0;
+    const reset=()=>{
+      idx=0;
+      slots[0].textContent='1º…'; slots[0].className='bd-slot';
+      slots[1].innerHTML='&nbsp;'; slots[1].className='bd-slot';
+      slots[2].textContent='2º…'; slots[2].className='bd-slot';
+      pieces.forEach(p=>p.classList.remove('used'));
+      note.innerHTML='monte: primeiro O QUE (a função), depois a vírgula, depois o QUANDO (o array)';
+    };
+    pieces.forEach(p=>p.addEventListener('click',()=>{
+      const kind=p.dataset.p;
+      if(kind!==ORDER[idx]){
+        p.classList.add('shake'); setTimeout(()=>p.classList.remove('shake'),450);
+        note.innerHTML=ERRO[kind]||ERRO.oque;
+        return;
+      }
+      p.classList.add('used');
+      const slot=slots[idx];
+      slot.innerHTML=LABEL[kind];
+      slot.classList.add('filled-'+kind);
+      idx++;
+      if(idx===1) note.innerHTML='<span class="ok">✅ O QUE no lugar!</span> Agora o separador…';
+      else if(idx===2) note.innerHTML='<span class="ok">✅ vírgula!</span> Falta o QUANDO…';
+      else{
+        note.innerHTML='<span class="ok">🎉 useEffect(O QUE, QUANDO) montado!</span> Agora sim: pode escrever o corpo dentro das chaves.';
+        if(typeof confettiAt==='function') confettiAt(root);
+      }
+    }));
+    root.querySelector('#bd-reset').addEventListener('click',reset);
+    onView(root,reset);
+  })();
+
+  /* ════ 🎛️ Painel do useEffect ════ */
+  (()=>{
+    const root=document.getElementById('panel'); if(!root) return;
+    const chips=[...root.querySelectorAll('.pn-chip')];
+    const codeEl=root.querySelector('#pn-code');
+    const led=root.querySelector('#pn-led');
+    const countEl=root.querySelector('#pn-count');
+    const consoleEl=root.querySelector('#pn-console');
+    const note=root.querySelector('#pn-note');
+    let mode='empty', count=0, busca='';
+    const CODE={
+      none:'<span class="p-oque">useEffect(() =&gt; {\n  console.log("efeito!")\n}</span>)  <span style="color:#6b7394">// SEM o quando</span>',
+      empty:'<span class="p-oque">useEffect(() =&gt; {\n  console.log("efeito!")\n}</span>, <span class="p-quando">[]</span>)  <span style="color:#6b7394">// uma vez, ao nascer</span>',
+      dep:'<span class="p-oque">useEffect(() =&gt; {\n  console.log("efeito!", busca)\n}</span>, <span class="p-quando">[busca]</span>)  <span style="color:#6b7394">// quando busca mudar</span>'
+    };
+    const NOTE={
+      none:'sem array: o despertador toca em TODA renderização — qualquer set, de qualquer estado.',
+      empty:'[] vazio: toca UMA vez, quando o componente nasce. F5 de novo = nasceu de novo = toca de novo.',
+      dep:'[busca]: toca ao nascer E sempre que a busca mudar. Outros re-renders não acordam ele.'
+    };
+    const log=(txt)=>{
+      if(consoleEl.textContent.startsWith('//')) consoleEl.textContent='';
+      consoleEl.textContent+=txt+'\n';
+      const lines=consoleEl.textContent.split('\n');
+      if(lines.length>7) consoleEl.textContent=lines.slice(-7).join('\n');
+      consoleEl.scrollTop=consoleEl.scrollHeight;
+    };
+    const fire=(why)=>{
+      count++; countEl.textContent=String(count);
+      led.classList.add('on'); setTimeout(()=>led.classList.remove('on'),450);
+      log('🔔 efeito! ('+why+')');
+    };
+    const quiet=(what)=>log('… '+what+' → efeito NÃO rodou');
+    const setMode=(m)=>{
+      mode=m; count=0; countEl.textContent='0'; busca='';
+      chips.forEach(c=>c.classList.toggle('active',c.dataset.m===m));
+      codeEl.innerHTML=CODE[m];
+      consoleEl.textContent='// provoque o componente 👇';
+      note.textContent=NOTE[m];
+    };
+    root.querySelector('#pn-mount').addEventListener('click',()=>{
+      log('📸 F5: componente montou');
+      fire('montou');
+    });
+    root.querySelector('#pn-type').addEventListener('click',()=>{
+      busca+='a';
+      log('📸 re-render: busca = "'+busca+'"');
+      if(mode==='none') fire('toda renderização');
+      else if(mode==='dep') fire('busca mudou');
+      else quiet('busca mudou');
+    });
+    root.querySelector('#pn-click').addEventListener('click',()=>{
+      log('📸 re-render: carrinho +1');
+      if(mode==='none') fire('toda renderização');
+      else quiet('carrinho mudou (não é dependência)');
+    });
+    chips.forEach(c=>c.addEventListener('click',()=>setMode(c.dataset.m)));
+    onView(root,()=>setMode('empty'));
+  })();
+
+  /* ════ 🚚 Entrega ao Vivo ════ */
+  (()=>{
+    const root=document.getElementById('delivery'); if(!root) return;
+    const cards=root.querySelector('#dv-cards');
+    const truck=root.querySelector('#dv-truck');
+    const packet=root.querySelector('#dv-packet');
+    const server=root.querySelector('#dv-server');
+    const sico=root.querySelector('#dv-sico');
+    const slabel=root.querySelector('#dv-slabel');
+    const steps=['dv-st1','dv-st2','dv-st3','dv-st4','dv-st5'].map(id=>root.querySelector('#'+id));
+    const note=root.querySelector('#dv-note');
+    const powerBtn=root.querySelector('#dv-power');
+    let ligado=true, rodando=false;
+    const PRODS=[['⌨️','Teclado','320'],['🖥️','Monitor','1450'],['🪑','Cadeira','980']];
+    const clearSteps=()=>steps.forEach(s=>s.classList.remove('lit','err-lit'));
+    const skeleton=()=>{ cards.innerHTML='';
+      for(let i=0;i<3;i++){ const d=document.createElement('div'); d.className='dv-sk'; cards.appendChild(d);} };
+    const run=()=>{
+      if(rodando) return; rodando=true;
+      clearSteps();
+      truck.style.left='0'; packet.style.opacity='0'; packet.style.right='0';
+      skeleton();
+      steps[0].classList.add('lit');
+      note.textContent='montou: a vitrine nasce vazia (useState([]))…';
+      setTimeout(()=>{ steps[1].classList.add('lit'); note.textContent='useEffect acordou (o [] diz: só nesta primeira vez)…'; },700);
+      setTimeout(()=>{ steps[2].classList.add('lit'); truck.style.left='calc(100% - 26px)'; note.textContent='fetch a caminho do json-server…'; },1400);
+      setTimeout(()=>{
+        if(!ligado){
+          steps[2].classList.remove('lit'); steps[2].classList.add('err-lit');
+          cards.innerHTML='<div class="dv-err">😵 Failed to fetch<br><small style="font-weight:600">o json-server está rodando?</small></div>';
+          note.textContent='ninguém atendeu na :3000 → o fetch rejeita → é o .catch que salva a tela (próxima seção!)';
+          rodando=false; return;
+        }
+        steps[3].classList.add('lit');
+        packet.style.opacity='1'; packet.style.right='calc(100% - 54px)';
+        note.textContent='o JSON voltou na caçamba 📦…';
+      },2500);
+      setTimeout(()=>{
+        if(!ligado) return;
+        steps[4].classList.add('lit');
+        cards.innerHTML='';
+        PRODS.forEach((p,i)=>{
+          const d=document.createElement('div'); d.className='dv-card';
+          d.innerHTML='<div class="e">'+p[0]+'</div><div class="n">'+p[1]+'</div><div class="p">R$ '+p[2]+'</div>';
+          cards.appendChild(d);
+          setTimeout(()=>d.classList.add('in'),i*160);
+        });
+        note.textContent='setProdutos(dados) → nova foto 📸 → o .map() desenhou os cards. Entrega concluída! 🎉';
+        rodando=false;
+      },3400);
+    };
+    powerBtn.addEventListener('click',()=>{
+      ligado=!ligado;
+      server.classList.toggle('off',!ligado);
+      sico.textContent=ligado?'🗄️':'💤';
+      slabel.textContent=ligado?'json-server :3000':'servidor DESLIGADO';
+      powerBtn.textContent=ligado?'🔌 desligar o servidor':'⚡ religar o servidor';
+      note.textContent=ligado?'servidor de pé — aperta ▶️ de novo':'agora aperta ▶️ e vê o que acontece sem servidor… 😈';
+    });
+    root.querySelector('#dv-run').addEventListener('click',run);
+    onView(root,()=>{ skeleton(); });
+  })();
+
+  /* ════ ⏳ Semáforo do Carregamento ════ */
+  (()=>{
+    const root=document.getElementById('semaphore'); if(!root) return;
+    const chips=[...root.querySelectorAll('.sm-chip')];
+    const l1=root.querySelector('#sm-l1');
+    const l2=root.querySelector('#sm-l2');
+    const l3=root.querySelector('#sm-l3');
+    const screen=root.querySelector('#sm-screen');
+    const note=root.querySelector('#sm-note');
+    const SCREEN={
+      loading:'<p style="color:#64748b;margin:30px 0">⏳ Carregando produtos...</p>',
+      ok:'<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:6px">'+
+        '<div style="border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px"><div style="font-size:22px">⌨️</div><small><b>Teclado</b></small><p style="margin:0;color:#16a34a;font-size:11px;font-weight:800">R$ 320</p></div>'+
+        '<div style="border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px"><div style="font-size:22px">🖥️</div><small><b>Monitor</b></small><p style="margin:0;color:#16a34a;font-size:11px;font-weight:800">R$ 1450</p></div></div>',
+      err:'<p style="background:#fef2f2;border:1px solid #fecaca;color:#b91c1c;border-radius:10px;padding:12px;display:inline-block;margin:20px 0;font-size:0.85rem">😵 Não consegui falar com a API.<br>O json-server está rodando?</p>'
+    };
+    const NOTE={
+      loading:'carregando=true → o 1º porteiro deixou o ⏳ entrar; a vitrine (3ª linha) ficou barrada.',
+      ok:'carregando=false e erro=false → só a 3ª linha passa: a vitrine com os dados.',
+      err:'erro=true → o 2º porteiro acendeu a mensagem amiga. Tela branca nunca mais.'
+    };
+    const set=(c)=>{
+      chips.forEach(x=>x.classList.toggle('active',x.dataset.c===c));
+      l1.classList.toggle('lit',c==='loading'); l1.classList.toggle('off',c!=='loading');
+      l2.classList.toggle('lit',c==='err');     l2.classList.toggle('off',c!=='err');
+      l3.classList.toggle('lit',c==='ok');      l3.classList.toggle('off',c!=='ok');
+      screen.innerHTML=SCREEN[c];
+      note.textContent=NOTE[c];
+      if(animate) animate(screen,{opacity:[0.4,1]},{duration:.3});
+    };
+    chips.forEach(c=>c.addEventListener('click',()=>set(c.dataset.c)));
+    onView(root,()=>set('loading'));
+  })();
+
+  /* ════ ▶️ vídeos: dão play sozinhos ao aparecer e pausam ao sair da tela ════ */
+  (()=>{
+    const vids=[...document.querySelectorAll('.clip video')];
+    if(!vids.length || !('IntersectionObserver' in window)) return;
+    const io=new IntersectionObserver((es)=>{
+      es.forEach((e)=>{
+        const v=e.target;
+        if(e.isIntersecting){ const p=v.play(); if(p&&p.catch) p.catch(()=>{}); }
+        else { v.pause(); }
+      });
+    },{threshold:0.4});
+    vids.forEach((v)=>io.observe(v));
+  })();
+</script>
+</body>
+</html>
