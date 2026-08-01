@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cap 08 — Navegação: React Router | Curso Fullstack</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=JetBrains+Mono:wght@400;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../shared/styles.css">
+<link rel="stylesheet" href="../../shared/components.css">
+<link rel="stylesheet" href="../../shared/animations.css">
+<style>
+  /* ── mono didático: SEMPRE sem ligaduras (=> não vira ⇒, >= não vira ≥) ── */
+  .mono,.gp-url,.gp-route,.nv-console,.pm-code,.pm-out,.anat-code,.anat-piece{
+    font-family:'JetBrains Mono',monospace;
+    font-variant-ligatures:none;font-feature-settings:"liga" 0,"clig" 0,"calt" 0}
+
+  /* nome de componente dentro do JSX (sempre Maiúsculo) */
+  .cmp{color:var(--react);font-weight:600}
+
+  /* ═══ 🧬 Anatomia (mesma leitura colorida do Cap 7) ═══ */
+  .anat{background:linear-gradient(180deg,#0b1020,#0d0d1a);border:1px solid rgba(97,218,251,0.25);
+    border-radius:16px;padding:20px 16px;margin:14px 0;text-align:center;overflow-x:auto}
+  .anat-code{font-size:clamp(0.72rem,2.5vw,1.05rem);white-space:nowrap;color:#cdd6f4}
+  .anat-code .a-oque{color:var(--react);font-weight:700}
+  .anat-code .a-quando{color:var(--accent5);font-weight:700}
+  .anat-code .a-hook{color:#a78bfa;font-weight:700}
+  .anat-legend{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:14px}
+  .anat-piece{font-size:0.72rem;border-radius:10px;padding:6px 12px;border:1px solid}
+  .anat-piece.p-oque{color:var(--react);border-color:rgba(97,218,251,0.45);background:rgba(97,218,251,0.08)}
+  .anat-piece.p-quando{color:var(--accent5);border-color:rgba(247,183,49,0.45);background:rgba(247,183,49,0.08)}
+  .anat-piece.p-hook{color:#a78bfa;border-color:rgba(167,139,250,0.45);background:rgba(167,139,250,0.08)}
+
+  /* ═══ 🗺️ GPS das Rotas ═══ */
+  .gpsm{background:linear-gradient(180deg,#0b1020,#0d0d1a);border:1px solid rgba(97,218,251,0.3);
+    border-radius:16px;padding:18px;margin:14px 0}
+  .gp-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+  .gp-lab{font-size:0.74rem;color:var(--text-dim);font-weight:700}
+  .gp-chip{border:1px solid rgba(97,218,251,0.45);background:var(--surface2);color:#61dafb;
+    font-family:'JetBrains Mono',monospace;font-variant-ligatures:none;font-feature-settings:"liga" 0,"clig" 0,"calt" 0;
+    font-weight:700;font-size:0.74rem;padding:8px 12px;border-radius:10px;cursor:pointer;transition:all .2s}
+  .gp-chip:hover{transform:translateY(-2px)}
+  .gp-chip.active{border-color:#fff;color:#fff;background:rgba(255,255,255,0.08)}
+  .gp-bar{display:flex;align-items:center;gap:8px;background:#06060c;border:1px solid rgba(255,255,255,0.12);
+    border-radius:999px;padding:8px 16px;margin-bottom:12px}
+  .gp-url{font-size:0.8rem;color:#cdd6f4}
+  .gp-url b{color:var(--accent5);font-weight:700}
+  .gp-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:14px;align-items:start}
+  @media (max-width:640px){.gp-grid{grid-template-columns:1fr}}
+  .gp-routes{display:flex;flex-direction:column;gap:6px}
+  .gp-route{display:flex;align-items:center;gap:8px;background:#0b0b14;border:1px solid rgba(255,255,255,0.1);
+    border-radius:10px;padding:9px 12px;font-size:0.72rem;color:var(--text-dim);transition:all .2s;white-space:nowrap;overflow-x:auto}
+  .gp-route.hit{border-color:rgba(70,211,154,0.65);background:rgba(70,211,154,0.1);color:#fff}
+  .gp-route.miss{opacity:.45}
+  .gp-route .r-path{color:var(--accent5);font-weight:700}
+  .gp-route .r-el{color:var(--react);font-weight:700}
+  .gp-screen{background:#fff;border-radius:12px;padding:14px;min-height:130px;font-family:'Nunito',sans-serif;color:#111;text-align:center}
+  .gp-note{margin-top:12px;background:#0b0b14;border:1px solid rgba(255,255,255,0.1);border-radius:10px;
+    padding:10px 12px;font-size:0.82rem;color:#cdd6f4;text-align:center;min-height:40px}
+
+  /* ═══ ⚓×🔗 Duelo de Navegação ═══ */
+  .navm{background:linear-gradient(180deg,#0b1020,#0d0d1a);border:1px solid rgba(247,183,49,0.3);
+    border-radius:16px;padding:18px;margin:14px 0}
+  .nv-window{background:#fff;border-radius:12px;overflow:hidden;position:relative}
+  .nv-top{display:flex;align-items:center;gap:8px;background:#e2e8f0;padding:7px 12px}
+  .nv-dots{display:flex;gap:4px}
+  .nv-dots span{width:9px;height:9px;border-radius:50%;background:#cbd5e1}
+  .nv-addr{flex:1;background:#fff;border-radius:999px;padding:3px 12px;font-family:'JetBrains Mono',monospace;
+    font-variant-ligatures:none;font-size:0.68rem;color:#334155}
+  .nv-body{padding:14px;min-height:120px;font-family:'Nunito',sans-serif;color:#111;position:relative}
+  .nv-head{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #e2e8f0;padding-bottom:6px;margin-bottom:8px}
+  .nv-head b{font-size:0.85rem}
+  .nv-cart{background:#0ea5e9;color:#fff;border-radius:999px;padding:2px 10px;font-weight:800;font-size:0.75rem}
+  .nv-flash{position:absolute;inset:0;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:8px;opacity:0;pointer-events:none;transition:opacity .15s;font-family:'Nunito',sans-serif;color:#64748b;font-size:0.8rem}
+  .nv-flash.on{opacity:1;pointer-events:auto}
+  .nv-spin{width:26px;height:26px;border:3px solid #e2e8f0;border-top-color:#0ea5e9;border-radius:50%;animation:nvspin .7s linear infinite}
+  @keyframes nvspin{to{transform:rotate(360deg)}}
+  .nv-console{margin-top:10px;background:#06060c;border:1px solid rgba(255,255,255,0.1);border-radius:10px;
+    padding:10px 12px;font-size:0.68rem;color:#7ef0c4;min-height:64px;max-height:96px;overflow:auto;white-space:pre-wrap}
+  .nv-controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center}
+  .nv-controls button{border:1px solid rgba(97,218,251,0.45);background:var(--surface2);color:#61dafb;
+    font-weight:700;font-size:0.76rem;padding:8px 14px;border-radius:10px;cursor:pointer;transition:all .2s;font-family:'Nunito',sans-serif}
+  .nv-controls button:hover{transform:translateY(-2px)}
+  .nv-controls button.anchor{border-color:rgba(255,71,87,0.5);color:#ff8b8b}
+  .nv-controls button.cart{border-color:rgba(247,183,49,0.5);color:var(--accent5)}
+  .nv-note{margin-top:10px;background:#0b0b14;border:1px solid rgba(255,255,255,0.1);border-radius:10px;
+    padding:10px 12px;font-size:0.82rem;color:#cdd6f4;text-align:center;min-height:40px}
+
+  /* ═══ 🎯 Leitor de Placas (useParams) ═══ */
+  .prm{background:linear-gradient(180deg,#0b1020,#0d0d1a);border:1px solid rgba(167,139,250,0.35);
+    border-radius:16px;padding:18px;margin:14px 0}
+  .pm-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:14px;align-items:start}
+  @media (max-width:640px){.pm-grid{grid-template-columns:1fr}}
+  .pm-code{background:#06060c;border:1px solid rgba(255,255,255,0.1);border-radius:10px;
+    padding:12px;font-size:0.72rem;color:#cdd6f4;white-space:pre-wrap;line-height:1.7}
+  .pm-code .p-id{color:#a78bfa;font-weight:700}
+  .pm-out{background:#0b0b14;border:1px solid rgba(167,139,250,0.4);border-radius:10px;padding:12px;
+    font-size:0.9rem;color:#e6e0ff;text-align:center;margin-top:10px}
+  .pm-out .p-str{color:#46d39a;font-weight:700}
+  .pm-screen{background:#fff;border-radius:12px;padding:14px;min-height:120px;font-family:'Nunito',sans-serif;color:#111;text-align:center}
+  .pm-note{margin-top:12px;background:#0b0b14;border:1px solid rgba(255,255,255,0.1);border-radius:10px;
+    padding:10px 12px;font-size:0.82rem;color:#cdd6f4;text-align:center;min-height:40px}
+
+  @media (prefers-reduced-motion: reduce){
+    .gp-chip,.gp-route,.nv-flash,.nv-spin,.nv-controls button{transition:none;animation:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-orbs"><div class="orb"></div><div class="orb"></div><div class="orb"></div></div>
+<div class="progress-track"><div class="progress-bar"></div></div>
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<button class="menu-toggle" onclick="openSidebar()" aria-label="Abrir menu">☰</button>
+<div class="sidebar-overlay"></div>
+<nav class="sidebar-nav">
+  <button class="sidebar-close" onclick="closeSidebar()" aria-label="Fechar">✕</button>
+  <div class="sidebar-header">
+    <h3>🧭 Cap 08 · Navegação</h3>
+    <a class="sidebar-back" href="../../index.html">← Voltar ao hub</a>
+  </div>
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Neste capítulo</div>
+    <a class="sidebar-link" onclick="goTo('dor')"><span class="dot" style="background:var(--bug)"></span> 🚪 A dor: uma página só</a>
+    <a class="sidebar-link" onclick="goTo('instalar')"><span class="dot" style="background:var(--json)"></span> 📦 Instalar o Router</a>
+    <a class="sidebar-link" onclick="goTo('rotas')"><span class="dot" style="background:var(--accent5)"></span> 🗺️ Routes &amp; Route</a>
+    <a class="sidebar-link" onclick="goTo('link')"><span class="dot" style="background:var(--react)"></span> 🔗 Link: navegar sem F5</a>
+    <a class="sidebar-link" onclick="goTo('detalhes')"><span class="dot" style="background:var(--accent6)"></span> 🎯 Rota com :id + useParams</a>
+    <a class="sidebar-link" onclick="goTo('quatrocentos')"><span class="dot" style="background:var(--accent5)"></span> 🕳️ A rota curinga (404)</a>
+    <a class="sidebar-link" onclick="goTo('bugzilla')"><span class="dot" style="background:var(--bug)"></span> BugZilla 🐛</a>
+    <a class="sidebar-link" onclick="goTo('treino')"><span class="dot" style="background:var(--react)"></span> ⌨️ Treino: a loja navegável</a>
+    <a class="sidebar-link" onclick="goTo('resumo')"><span class="dot" style="background:var(--accent7)"></span> Resumo</a>
+  </div>
+</nav>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section class="hero">
+  <div class="hero-icons" data-motion="float"><img src="../../assets/svg/react.svg" alt="React" width="46" height="46" style="vertical-align:middle"> 🧭 🗺️</div>
+  <span class="hero-badge react">Capítulo 08 · Curso Fullstack</span>
+  <h1><span style="color:var(--react)">Navegação</span>: sua loja vira um site de verdade</h1>
+  <p class="subtitle">
+    Sua loja busca dados da API, trata erro, filtra… mas mora <strong>numa página só</strong>.
+    Hoje ela ganha <strong style="color:var(--accent5)">endereços</strong>: uma página inicial, uma
+    página "sobre" e uma página de <strong style="color:var(--accent2)">detalhes pra cada
+    produto</strong> — tudo com o <strong style="color:var(--react)">React Router</strong>, sem
+    nunca recarregar a tela.
+  </p>
+  <div class="hero-stack">
+    <span class="stack-chip react">🗺️ Routes &amp; Route</span>
+    <span class="stack-chip js">🔗 Link</span>
+    <span class="stack-chip react">🎯 useParams</span>
+    <span class="stack-chip node">📦 react-router-dom</span>
+    <span class="stack-chip js">🕳️ rota 404</span>
+  </div>
+</section>
+
+<div class="container">
+
+  <!-- ═══════════════ A DOR ═══════════════ -->
+  <section class="step-section" id="dor">
+    <div class="step-header">
+      <div class="step-number sn-red">🚪</div>
+      <div>
+        <div class="step-title">A dor: sua loja mora numa página só</div>
+        <div class="step-sub">E todo site de verdade tem VÁRIAS — cada uma com seu endereço</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p>Abre qualquer site que você usa e repara na <strong>barra de endereço</strong>: cada tela tem
+      um endereço próprio. Na loja de verdade seria assim:</p>
+
+      <ul class="about-bullets">
+        <li><div><code>meusite.com/</code> — a página inicial, com a vitrine;</div></li>
+        <li><div><code>meusite.com/sobre</code> — quem somos;</div></li>
+        <li><div><code>meusite.com/produtos/2</code> — os detalhes do produto 2 (cada produto com o SEU endereço, que dá até pra mandar no WhatsApp!).</div></li>
+      </ul>
+
+      <p>Já a sua Mini-loja… é <code>localhost:5173</code> e acabou. 😅 Clicou, rolou, filtrou —
+      o endereço não muda, e não existe "outra página" pra ir.</p>
+
+      <div class="concept">
+        <div class="concept-title">🤔 Peraí — o React não era "uma página só"?</div>
+        <p>Era e continua sendo! Lá no Cap 4 você aprendeu que um app React é uma
+        <strong>SPA</strong> (<em>Single Page Application</em>): o navegador baixa UMA página, e o
+        React vai <strong>trocando o que aparece</strong> dentro dela. O truque de hoje é fazer essa
+        troca <strong>obedecer à barra de endereço</strong>: URL mudou → o React troca o componente —
+        <strong>sem recarregar nada</strong>. Quem faz essa mágica é uma peça chamada
+        <strong style="color:var(--react)">React Router</strong>.</p>
+      </div>
+
+      <div class="analogy">
+        <div class="analogy-title">🏬 O shopping e o recepcionista</div>
+        <p>Pensa num shopping com um recepcionista na porta. Você chega e diz um destino
+        ("<em>loja de games</em>", "<em>praça de alimentação</em>") e ele te aponta a área certa —
+        <strong>sem você sair do prédio</strong>. O React Router é esse recepcionista: ele olha a URL
+        (o destino) e decide <strong>qual componente entra em cena</strong>. O prédio (seu app) é um
+        só; as "páginas" são áreas dele.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ INSTALAR ═══════════════ -->
+  <section class="step-section" id="instalar">
+    <div class="step-header">
+      <div class="step-number sn-js">📦</div>
+      <div>
+        <div class="step-title">Contratando o recepcionista</div>
+        <div class="step-sub">npm install + o abraço do BrowserRouter no main.jsx</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p>Assim como o axios, o Router <strong>não vem de fábrica</strong> — é mais uma peça pronta.
+      Você já sabe o ritual:</p>
+
+      <div class="terminal" data-typewriter>
+        <div class="code-header" style="background:rgba(255,255,255,0.04);padding:8px 14px;border-radius:14px 14px 0 0">
+          <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+          <span class="filename">Terminal do VSCode (na pasta do projeto)</span>
+        </div>
+        <div class="terminal-body">
+          <span class="prompt">$</span> <span class="typed" data-text="npm install react-router-dom"></span><span class="cursor"></span>
+          <br><span class="out">added 4 packages in 2s</span>
+        </div>
+      </div>
+
+      <p style="margin-top:14px">Agora o passo que <strong>liga</strong> o Router no app inteiro: no
+      <code>main.jsx</code> (lembra dele? o plugue 🔌 do Cap 4), o <code>BrowserRouter</code>
+      <strong>abraça</strong> o <span class="cmp">&lt;App /&gt;</span>:</p>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/main.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">import</span> <span class="punc">{</span> <span class="var">createRoot</span> <span class="punc">}</span> <span class="kw">from</span> <span class="st">"react-dom/client"</span>
+<span class="kw">import</span> <span class="punc">{</span> <span class="var">BrowserRouter</span> <span class="punc">}</span> <span class="kw">from</span> <span class="st">"react-router-dom"</span>
+<span class="kw">import</span> <span class="var">App</span> <span class="kw">from</span> <span class="st">"./App.jsx"</span>
+<span class="kw">import</span> <span class="st">"./index.css"</span>
+
+<span class="fn">createRoot</span>(<span class="var">document</span>.<span class="fn">getElementById</span>(<span class="st">"root"</span>)).<span class="fn">render</span>(
+  <span class="tag">&lt;</span><span class="cmp">BrowserRouter</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;</span><span class="cmp">App</span> <span class="tag">/&gt;</span>
+  <span class="tag">&lt;/</span><span class="cmp">BrowserRouter</span><span class="tag">&gt;</span>
+)</pre>
+      </div>
+
+      <div class="tip">
+        <span class="tip-icon">🫂</span>
+        <div class="tip-content">
+          <strong>Por que o abraço?</strong> O <code>BrowserRouter</code> é quem fica
+          <strong>vigiando a barra de endereço</strong>. Tudo que estiver dentro do abraço ganha o
+          poder de reagir à URL. Fora dele, nada de rotas — esquecer esse abraço é o
+          <strong>Bug nº 1</strong> do capítulo (o BugZilla te mostra o estrago).
+        </div>
+      </div>
+
+      <div class="warning">
+        <span class="warning-icon">🧪</span>
+        <div class="warning-content">
+          Salvou e a loja continua igualzinha? <strong>Perfeito — era pra ser assim.</strong> O Router
+          está instalado e de olho na URL, mas ainda não demos nenhuma ordem pra ele. As ordens são a
+          próxima seção.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ ROUTES & ROUTE ═══════════════ -->
+  <section class="step-section" id="rotas">
+    <div class="step-header">
+      <div class="step-number sn-yellow">🗺️</div>
+      <div>
+        <div class="step-title">Routes &amp; Route — o mapa de páginas</div>
+        <div class="step-sub">Cada endereço aponta pra um componente. Simples assim.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p>Primeiro, as páginas precisam <strong>existir</strong>. Cada página é… um componente comum,
+      igual aos que você faz desde o Cap 4! Só muda o costume: páginas moram numa pasta
+      <code>src/pages/</code>:</p>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/pages/Sobre.jsx — uma página é só um componente (rafce!)</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">const</span> <span class="fn">Sobre</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span>
+      <span class="tag">&lt;h2&gt;</span>Sobre a Mini-loja 👋<span class="tag">&lt;/h2&gt;</span>
+      <span class="tag">&lt;p&gt;</span>Feita em React, com dados de uma API de verdade.<span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">Sobre</span></pre>
+      </div>
+
+      <p>Com as páginas criadas, o <code>App.jsx</code> vira o <strong>mapa</strong>: o
+      <span class="cmp">&lt;Routes&gt;</span> é o quadro de avisos do recepcionista, e cada
+      <span class="cmp">&lt;Route&gt;</span> é uma linha do quadro — "<em>este endereço → este
+      componente</em>":</p>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx — o mapa de rotas</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">import</span> <span class="punc">{</span> <span class="var">Routes</span>, <span class="var">Route</span> <span class="punc">}</span> <span class="kw">from</span> <span class="st">"react-router-dom"</span>
+<span class="kw">import</span> <span class="var">Home</span> <span class="kw">from</span> <span class="st">"./pages/Home.jsx"</span>
+<span class="kw">import</span> <span class="var">Sobre</span> <span class="kw">from</span> <span class="st">"./pages/Sobre.jsx"</span>
+
+<span class="kw">const</span> <span class="fn">App</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;</span><span class="cmp">Routes</span><span class="tag">&gt;</span>
+      <span class="tag">&lt;</span><span class="cmp">Route</span> <span class="atr">path</span><span class="op">=</span><span class="st">"/"</span> <span class="atr">element</span><span class="op">=</span>{<span class="tag">&lt;</span><span class="cmp">Home</span> <span class="tag">/&gt;</span>} <span class="tag">/&gt;</span>
+      <span class="tag">&lt;</span><span class="cmp">Route</span> <span class="atr">path</span><span class="op">=</span><span class="st">"/sobre"</span> <span class="atr">element</span><span class="op">=</span>{<span class="tag">&lt;</span><span class="cmp">Sobre</span> <span class="tag">/&gt;</span>} <span class="tag">/&gt;</span>
+    <span class="tag">&lt;/</span><span class="cmp">Routes</span><span class="tag">&gt;</span>
+  )
+<span class="punc">}</span></pre>
+      </div>
+
+      <p>A anatomia de UMA linha do mapa — repara que é o mesmo espírito do
+      <code>useEffect(O QUE, QUANDO)</code>, só que em JSX:</p>
+
+      <div class="anat" data-motion="rise">
+        <div class="anat-code"><span class="a-hook">&lt;Route</span> path=<span class="a-quando">"/sobre"</span> element=<span class="a-oque">{&lt;Sobre /&gt;}</span> <span class="a-hook">/&gt;</span></div>
+        <div class="anat-legend">
+          <span class="anat-piece p-quando">path → QUANDO: em qual endereço</span>
+          <span class="anat-piece p-oque">element → O QUE: qual componente entra em cena</span>
+          <span class="anat-piece p-hook">Route → uma linha do mapa</span>
+        </div>
+      </div>
+
+      <p style="color:var(--text-dim);margin:14px 0 4px">Brinca de recepcionista: escolha uma URL e
+      veja <strong>qual linha do mapa bate</strong> (e o que aparece na tela) 👇</p>
+
+      <div class="gpsm" id="gps1">
+        <div class="gp-chips">
+          <span class="gp-lab">URL:</span>
+          <button class="gp-chip active" data-u="/">/</button>
+          <button class="gp-chip" data-u="/sobre">/sobre</button>
+          <button class="gp-chip" data-u="/qualquer-coisa">/qualquer-coisa</button>
+        </div>
+        <div class="gp-bar">🔒 <span class="gp-url">localhost:5173<b id="gp1-url">/</b></span></div>
+        <div class="gp-grid">
+          <div class="gp-routes" id="gp1-routes"></div>
+          <div class="gp-screen" id="gp1-screen"></div>
+        </div>
+        <div class="gp-note" id="gp1-note">…</div>
+      </div>
+
+      <div class="quiz" style="margin-top:16px">
+        <div class="quiz-q"><span class="q-emoji">🗺️</span> O usuário está em <code>localhost:5173/sobre</code>. Quem decide o que aparece na tela?</div>
+        <div class="quiz-options">
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">O navegador baixa o arquivo sobre.html do servidor</button>
+          <button class="quiz-opt" data-correct="true" onclick="checkQuiz(this,true)">O Route cujo path bate com a URL — e o element dele entra em cena</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">O useEffect, no modo [sobre]</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">O json-server, que responde na porta 3000</button>
+        </div>
+        <div class="quiz-feedback" data-correct="Exato! path bateu → element aparece." data-wrong="Lembra do quadro de avisos do recepcionista…" data-explain="Numa SPA não existe sobre.html — existe UMA página, e o Router escolhe o componente: ele compara a URL com o path de cada Route e renderiza o element da linha que bater. A API (json-server) só entra quando alguma página pede dados."></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ LINK ═══════════════ -->
+  <section class="step-section" id="link">
+    <div class="step-header">
+      <div class="step-number sn-react">🔗</div>
+      <div>
+        <div class="step-title">Link — navegar sem apertar F5</div>
+        <div class="step-sub">O botão de teletransporte da SPA</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p>Digitar URL na mão funciona, mas usuário navega <strong>clicando</strong>. No HTML do Cap 1
+      você usaria um <code>&lt;a href="/sobre"&gt;</code>… só que o <code>&lt;a&gt;</code> tem um
+      "defeito" pra SPA: ele manda o navegador <strong>recarregar a página inteira</strong> — joga seu
+      app fora, baixa tudo de novo, zera todos os estados. 💥</p>
+
+      <p>O Router traz o substituto certo: o <span class="cmp">&lt;Link&gt;</span>. Por fora parece um
+      <code>&lt;a&gt;</code> (até vira um <code>&lt;a&gt;</code> no HTML final!), mas por dentro ele só
+      avisa o recepcionista: "<em>troca pra /sobre</em>" — e o React troca <strong>só o
+      miolo</strong>, instantâneo:</p>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">o antes e o depois</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="cm">// ❌ no site tradicional (recarrega TUDO):</span>
+<span class="tag">&lt;a</span> <span class="atr">href</span><span class="op">=</span><span class="st">"/sobre"</span><span class="tag">&gt;</span>Sobre<span class="tag">&lt;/a&gt;</span>
+
+<span class="cm">// ✅ na SPA (troca só o componente):</span>
+<span class="kw">import</span> <span class="punc">{</span> <span class="var">Link</span> <span class="punc">}</span> <span class="kw">from</span> <span class="st">"react-router-dom"</span>
+
+<span class="tag">&lt;</span><span class="cmp">Link</span> <span class="atr">to</span><span class="op">=</span><span class="st">"/sobre"</span><span class="tag">&gt;</span>Sobre<span class="tag">&lt;/</span><span class="cmp">Link</span><span class="tag">&gt;</span></pre>
+      </div>
+
+      <div class="tip">
+        <span class="tip-icon">👀</span>
+        <div class="tip-content">
+          Duas trocas pra decorar: a <strong>tag</strong> (<code>a</code> → <code>Link</code>, com L
+          maiúsculo — é um componente!) e o <strong>atributo</strong> (<code>href</code> →
+          <code>to</code>).
+        </div>
+      </div>
+
+      <p style="color:var(--text-dim);margin:14px 0 4px">Sinta a diferença na pele: encha o carrinho e
+      navegue dos dois jeitos 👇</p>
+
+      <div class="navm" id="navm">
+        <div class="nv-window">
+          <div class="nv-top">
+            <div class="nv-dots"><span></span><span></span><span></span></div>
+            <div class="nv-addr">localhost:5173<b id="nv-url">/</b></div>
+          </div>
+          <div class="nv-body">
+            <div class="nv-head"><b id="nv-title">Mini-loja 🛒</b><span class="nv-cart">🛒 <span id="nv-cart">0</span></span></div>
+            <div id="nv-content" style="font-size:0.8rem;color:#334155">⌨️ 🖥️ 🪑 🖱️ — a vitrine de sempre</div>
+            <div class="nv-flash" id="nv-flash"><div class="nv-spin"></div><span id="nv-flash-txt">baixando tudo de novo…</span></div>
+          </div>
+        </div>
+        <div class="nv-console" id="nv-console">// encha o carrinho e escolha um jeito de navegar 👇</div>
+        <div class="nv-controls">
+          <button class="cart" id="nv-add">🛒 +1 no carrinho</button>
+          <button id="nv-link">🔗 navegar com &lt;Link&gt;</button>
+          <button class="anchor" id="nv-anchor">⚓ navegar com &lt;a href&gt;</button>
+        </div>
+        <div class="nv-note" id="nv-note">…</div>
+      </div>
+
+      <div class="quiz" style="margin-top:16px">
+        <div class="quiz-q"><span class="q-emoji">🔗</span> Por que usar <code>&lt;Link&gt;</code> em vez de <code>&lt;a&gt;</code> dentro da SPA?</div>
+        <div class="quiz-options">
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">Porque &lt;a&gt; não funciona em JSX</button>
+          <button class="quiz-opt" data-correct="true" onclick="checkQuiz(this,true)">Porque o &lt;a&gt; recarrega o app inteiro (lento + estados zerados); o Link troca só o componente</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">Porque o Link é mais bonito</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">Tanto faz — os dois fazem a mesma coisa</button>
+        </div>
+        <div class="quiz-feedback" data-correct="Isso! F5 nunca mais." data-wrong="Repara no que aconteceu com o carrinho na máquina…" data-explain="O &lt;a&gt; funciona em JSX sim — mas dispara uma navegação de verdade: o navegador descarta o app, baixa tudo de novo e TODOS os estados voltam ao valor inicial (o carrinho zera!). O Link pede a troca pro Router, que só troca o componente em cena. Instantâneo, estado preservado."></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ ROTA DINÂMICA + USEPARAMS ═══════════════ -->
+  <section class="step-section" id="detalhes">
+    <div class="step-header">
+      <div class="step-number sn-react" style="background:linear-gradient(135deg,var(--accent6),#8b91ff)">🎯</div>
+      <div>
+        <div class="step-title">Rota com :id — uma página, mil produtos</div>
+        <div class="step-sub">O pedaço variável da URL + useParams pra ler ele</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p>Agora o pulo do gato do capítulo. A loja tem 4 produtos — e amanhã pode ter 400. Criar uma
+      rota pra cada (<code>/produtos/1</code>, <code>/produtos/2</code>, …) seria loucura. A solução:
+      <strong>UMA rota com um pedaço variável</strong>, marcado com dois-pontos:</p>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx — a linha nova do mapa</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="tag">&lt;</span><span class="cmp">Route</span> <span class="atr">path</span><span class="op">=</span><span class="st">"/produtos/:id"</span> <span class="atr">element</span><span class="op">=</span>{<span class="tag">&lt;</span><span class="cmp">Detalhes</span> <span class="tag">/&gt;</span>} <span class="tag">/&gt;</span></pre>
+      </div>
+
+      <div class="analogy">
+        <div class="analogy-title">🏨 O quarto de hotel</div>
+        <p>O hotel não constrói uma recepção por hóspede — tem UM corredor e portas numeradas.
+        <code>/produtos/:id</code> é o corredor; o <code>:id</code> é a <strong>plaquinha do
+        quarto</strong>, que muda a cada visita: <code>/produtos/1</code>, <code>/produtos/2</code>,
+        <code>/produtos/77</code>… todas caem na MESMA rota, e a página <span class="cmp">Detalhes</span>
+        lê a plaquinha pra saber qual produto mostrar.</p>
+      </div>
+
+      <p>E como a página lê a plaquinha? Com um hook novo do Router — o
+      <strong style="color:var(--accent6)">useParams</strong>:</p>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/pages/Detalhes.jsx — lendo o :id da URL</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">import</span> <span class="punc">{</span> <span class="var">useParams</span> <span class="punc">}</span> <span class="kw">from</span> <span class="st">"react-router-dom"</span>
+
+<span class="kw">const</span> <span class="fn">Detalhes</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">const</span> <span class="punc">{</span> <span class="var">id</span> <span class="punc">}</span> <span class="op">=</span> <span class="fn">useParams</span>()   <span class="cm">// na URL /produtos/2 → id vale "2"</span>
+
+  <span class="kw">return</span> <span class="tag">&lt;h2&gt;</span>Detalhes do produto {<span class="var">id</span>}<span class="tag">&lt;/h2&gt;</span>
+<span class="punc">}</span></pre>
+      </div>
+
+      <p style="color:var(--text-dim);margin:14px 0 4px">Passeia pelos quartos e repara no que o
+      <code>useParams</code> devolve 👇</p>
+
+      <div class="prm" id="prm">
+        <div class="gp-chips">
+          <span class="gp-lab">URL:</span>
+          <button class="gp-chip active" data-i="0">/produtos/1</button>
+          <button class="gp-chip" data-i="1">/produtos/2</button>
+          <button class="gp-chip" data-i="2">/produtos/3</button>
+        </div>
+        <div class="pm-grid">
+          <div>
+            <div class="pm-code">const { <span class="p-id">id</span> } = useParams()
+<span style="color:#6b7394">// a rota é /produtos/:id</span></div>
+            <div class="pm-out" id="pm-out"></div>
+          </div>
+          <div class="pm-screen" id="pm-screen"></div>
+        </div>
+        <div class="pm-note" id="pm-note">…</div>
+      </div>
+
+      <div class="warning">
+        <span class="warning-icon">🔤</span>
+        <div class="warning-content">
+          <strong>Reparou nas aspas?</strong> O useParams devolve o id como <strong>TEXTO</strong>
+          (<code>"2"</code>, não <code>2</code>) — tudo que vem de URL é texto. Pra montar a URL da API
+          isso não atrapalha em nada; só não vá comparar com <code>===</code> contra um número.
+        </div>
+      </div>
+
+      <p>Agora o gran finale: juntar o <code>:id</code> com o <strong>Cap 7 inteiro</strong>. O
+      json-server já sabe responder um produto só — teste no navegador:
+      <code>localhost:3000/produtos/2</code> devolve só o Monitor! Então a página
+      <span class="cmp">Detalhes</span> é o padrão canônico com o id na URL:</p>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/pages/Detalhes.jsx — completa (Cap 7 + Cap 8 juntos ⭐)</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">import</span> <span class="punc">{</span> <span class="var">useState</span>, <span class="var">useEffect</span> <span class="punc">}</span> <span class="kw">from</span> <span class="st">"react"</span>
+<span class="kw">import</span> <span class="punc">{</span> <span class="var">useParams</span>, <span class="var">Link</span> <span class="punc">}</span> <span class="kw">from</span> <span class="st">"react-router-dom"</span>
+<span class="kw">import</span> <span class="var">axios</span> <span class="kw">from</span> <span class="st">"axios"</span>
+
+<span class="kw">const</span> <span class="fn">Detalhes</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">const</span> <span class="punc">{</span> <span class="var">id</span> <span class="punc">}</span> <span class="op">=</span> <span class="fn">useParams</span>()
+  <span class="kw">const</span> [<span class="var">produto</span>, <span class="var">setProduto</span>] <span class="op">=</span> <span class="fn">useState</span>(<span class="kw">null</span>)   <span class="cm">// ainda não chegou</span>
+
+  <span class="fn">useEffect</span>(() <span class="op">=&gt;</span> <span class="punc">{</span>
+    <span class="var">axios</span>.<span class="fn">get</span>(<span class="st">"http://localhost:3000/produtos/"</span> <span class="op">+</span> <span class="var">id</span>)
+      .<span class="fn">then</span>((<span class="var">res</span>) <span class="op">=&gt;</span> <span class="fn">setProduto</span>(<span class="var">res</span>.<span class="var">data</span>))
+  <span class="punc">}</span>, [<span class="var">id</span>])   <span class="cm">// modo 3 do Cap 7: se o id mudar, busca de novo!</span>
+
+  <span class="kw">if</span> (<span class="op">!</span><span class="var">produto</span>) <span class="punc">{</span>
+    <span class="kw">return</span> <span class="tag">&lt;p&gt;</span>⏳ Carregando...<span class="tag">&lt;/p&gt;</span>   <span class="cm">// porteiro na porta</span>
+  <span class="punc">}</span>
+
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span>
+      <span class="tag">&lt;</span><span class="cmp">Link</span> <span class="atr">to</span><span class="op">=</span><span class="st">"/"</span><span class="tag">&gt;</span>← voltar pra loja<span class="tag">&lt;/</span><span class="cmp">Link</span><span class="tag">&gt;</span>
+      <span class="tag">&lt;h2&gt;</span>{<span class="var">produto</span>.<span class="var">nome</span>}<span class="tag">&lt;/h2&gt;</span>
+      <span class="tag">&lt;p&gt;</span>R$ {<span class="var">produto</span>.<span class="var">preco</span>}<span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">Detalhes</span></pre>
+      </div>
+
+      <div class="concept">
+        <div class="concept-title">🚪 O porteiro na porta (novidade pequena, honesta)</div>
+        <p>O produto começa <code>null</code> (a resposta ainda não chegou) — e
+        <code>null.nome</code> quebraria a página. O <code>if (!produto) { return ... }</code> é só o
+        <code>if</code> + <code>return</code> do Cap 2 usados na porta do componente: "se o dado ainda
+        não chegou, devolve o ⏳ e nem continua". Quando o axios responder, o set dispara nova foto 📸
+        e aí sim o resto roda.</p>
+      </div>
+
+      <p>Falta o começo da viagem: <strong>transformar cada card da vitrine num Link</strong> pro seu
+      próprio quarto. No <span class="cmp">CartaoProduto</span>, o nome vira link (repare: o
+      <code>to</code> é montado com o id, como a URL do axios):</p>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/CartaoProduto.jsx — o nome vira a porta de entrada</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">import</span> <span class="punc">{</span> <span class="var">Link</span> <span class="punc">}</span> <span class="kw">from</span> <span class="st">"react-router-dom"</span>
+
+<span class="cm">// no lugar do nome puro:</span>
+<span class="tag">&lt;</span><span class="cmp">Link</span> <span class="atr">to</span><span class="op">=</span>{<span class="st">"/produtos/"</span> <span class="op">+</span> <span class="var">id</span>}<span class="tag">&gt;</span>{<span class="var">nome</span>}<span class="tag">&lt;/</span><span class="cmp">Link</span><span class="tag">&gt;</span></pre>
+      </div>
+
+      <div class="quiz" style="margin-top:16px">
+        <div class="quiz-q"><span class="q-emoji">🎯</span> O usuário abriu <code>/produtos/4</code> (rota <code>/produtos/:id</code>). O que <code>useParams()</code> devolve?</div>
+        <div class="quiz-options">
+          <button class="quiz-opt" onclick="checkQuiz(this,false)"><code>4</code> — o número da URL</button>
+          <button class="quiz-opt" data-correct="true" onclick="checkQuiz(this,true)"><code>{ id: "4" }</code> — um objeto, com o id em TEXTO</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">O produto 4 inteiro, já buscado da API</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)"><code>"/produtos/4"</code> — a URL completa</button>
+        </div>
+        <div class="quiz-feedback" data-correct="Perfeito — objeto + texto. Por isso o { id } com chaves na frente!" data-wrong="Olha a máquina do useParams de novo…" data-explain="O useParams devolve um OBJETO com cada pedaço variável da rota — por isso pegamos com { id }. E o valor vem como texto ('4'), porque tudo que mora na URL é texto. Buscar o produto na API continua sendo trabalho do useEffect + axios."></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ 404 ═══════════════ -->
+  <section class="step-section" id="quatrocentos">
+    <div class="step-header">
+      <div class="step-number sn-yellow">🕳️</div>
+      <div>
+        <div class="step-title">A rota curinga — adeus, tela branca</div>
+        <div class="step-sub">O que aparece quando NENHUM endereço bate</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p>Lá na máquina do recepcionista você viu: URL sem rota = <strong>tela branca</strong>. 😱
+      Site profissional tem resposta até pro endereço errado — a famosa página
+      <strong>404</strong> ("não encontrei"). No Router, isso é uma rota com o
+      <strong>curinga <code>*</code></strong> no path:</p>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx — a última linha do mapa</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="tag">&lt;</span><span class="cmp">Routes</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;</span><span class="cmp">Route</span> <span class="atr">path</span><span class="op">=</span><span class="st">"/"</span> <span class="atr">element</span><span class="op">=</span>{<span class="tag">&lt;</span><span class="cmp">Home</span> <span class="tag">/&gt;</span>} <span class="tag">/&gt;</span>
+  <span class="tag">&lt;</span><span class="cmp">Route</span> <span class="atr">path</span><span class="op">=</span><span class="st">"/sobre"</span> <span class="atr">element</span><span class="op">=</span>{<span class="tag">&lt;</span><span class="cmp">Sobre</span> <span class="tag">/&gt;</span>} <span class="tag">/&gt;</span>
+  <span class="tag">&lt;</span><span class="cmp">Route</span> <span class="atr">path</span><span class="op">=</span><span class="st">"/produtos/:id"</span> <span class="atr">element</span><span class="op">=</span>{<span class="tag">&lt;</span><span class="cmp">Detalhes</span> <span class="tag">/&gt;</span>} <span class="tag">/&gt;</span>
+  <span class="tag">&lt;</span><span class="cmp">Route</span> <span class="atr">path</span><span class="op">=</span><span class="st">"*"</span> <span class="atr">element</span><span class="op">=</span>{<span class="tag">&lt;</span><span class="cmp">NaoEncontrada</span> <span class="tag">/&gt;</span>} <span class="tag">/&gt;</span>  <span class="cm">// pega TODO o resto</span>
+<span class="tag">&lt;/</span><span class="cmp">Routes</span><span class="tag">&gt;</span></pre>
+      </div>
+
+      <p style="color:var(--text-dim);margin:14px 0 4px">O mesmo mapa de antes, agora com o curinga de
+      plantão — repara que ele <strong>só entra quando ninguém mais bate</strong> 👇</p>
+
+      <div class="gpsm" id="gps2">
+        <div class="gp-chips">
+          <span class="gp-lab">URL:</span>
+          <button class="gp-chip active" data-u="/">/</button>
+          <button class="gp-chip" data-u="/sobre">/sobre</button>
+          <button class="gp-chip" data-u="/produtos/2">/produtos/2</button>
+          <button class="gp-chip" data-u="/produtoss">/produtoss (typo!)</button>
+        </div>
+        <div class="gp-bar">🔒 <span class="gp-url">localhost:5173<b id="gp2-url">/</b></span></div>
+        <div class="gp-grid">
+          <div class="gp-routes" id="gp2-routes"></div>
+          <div class="gp-screen" id="gp2-screen"></div>
+        </div>
+        <div class="gp-note" id="gp2-note">…</div>
+      </div>
+
+      <div class="tip">
+        <span class="tip-icon">💜</span>
+        <div class="tip-content">
+          <strong>Capriche na 404:</strong> uma boa página de erro tem tom amigável e um
+          <code>&lt;Link to="/"&gt;</code> de volta pra loja. Errar o endereço acontece — abandonar o
+          usuário na tela branca é que é crime. 😄
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ BUGZILLA ═══════════════ -->
+  <section class="step-section" id="bugzilla">
+    <div class="step-header">
+      <div class="step-number sn-red">🐛</div>
+      <div>
+        <div class="step-title">BugZilla ataca as rotas!</div>
+        <div class="step-sub">Os 5 tropeços clássicos do React Router</div>
+      </div>
+    </div>
+
+    <div class="bug-box">
+      <span class="bug-icon">🐛</span>
+      <div class="bug-content">
+        <strong>Bug 1 — esqueceu o abraço do BrowserRouter:</strong> a tela explode com
+        "useRoutes() may be used only in the context of a &lt;Router&gt;". Tradução: você usou
+        Routes/Link, mas ninguém está vigiando a URL. <strong>Conserto:</strong> no
+        <code>main.jsx</code>, o <span class="cmp">&lt;BrowserRouter&gt;</span> abraçando o
+        <span class="cmp">&lt;App /&gt;</span>.
+      </div>
+    </div>
+
+    <div class="bug-box" style="margin-top:14px">
+      <span class="bug-icon">🐛</span>
+      <div class="bug-content">
+        <strong>Bug 2 — usou <code>&lt;a&gt;</code> em vez de <code>&lt;Link&gt;</code>:</strong>
+        "funciona"… mas a cada clique a página <strong>pisca e recarrega</strong>, e todos os estados
+        zeram (adeus, carrinho). <strong>Conserto:</strong> dentro do app, navegação é com
+        <code>&lt;Link to="..."&gt;</code>. O <code>&lt;a&gt;</code> fica pra links que SAEM do site.
+      </div>
+    </div>
+
+    <div class="bug-box" style="margin-top:14px">
+      <span class="bug-icon">🐛</span>
+      <div class="bug-content">
+        <strong>Bug 3 — path escrito diferente do Link:</strong> Route com
+        <code>path="/Sobre"</code> e Link com <code>to="/sobre"</code> (ou um typo tipo
+        <code>/produto/:id</code> vs <code>/produtos/2</code>) → cai no 404 sem explicação.
+        <strong>Conserto:</strong> os endereços têm que bater LETRA POR LETRA. Na dúvida, copie e cole.
+      </div>
+    </div>
+
+    <div class="bug-box" style="margin-top:14px">
+      <span class="bug-icon">🐛</span>
+      <div class="bug-content">
+        <strong>Bug 4 — esqueceu o import:</strong> "Link is not defined", "Routes is not defined"…
+        <strong>Conserto:</strong> tudo do Router vem do mesmo lugar, <strong>com chaves</strong>:
+        <code>import { Routes, Route, Link, useParams } from "react-router-dom"</code> (cada arquivo
+        importa só o que usa).
+      </div>
+    </div>
+
+    <div class="bug-box" style="margin-top:14px">
+      <span class="bug-icon">🐛</span>
+      <div class="bug-content">
+        <strong>Bug 5 — comparar o id com número:</strong> <code>id === 2</code> dá
+        <code>false</code> mesmo na URL <code>/produtos/2</code> — porque o useParams devolve
+        <code>"2"</code> (texto!). <strong>Conserto:</strong> pra URL do axios, use o texto direto
+        (<code>"/produtos/" + id</code>); se um dia precisar do número, converta com
+        <code>Number(id)</code>.
+      </div>
+    </div>
+
+    <div class="toggler" style="margin-top:14px">
+      <div class="toggler-header" onclick="toggleSection(this)">
+        <span>👀 Macete de ouro do BugZilla</span><span class="toggler-arrow">▼</span>
+      </div>
+      <div class="toggler-body">
+        <div class="tip" style="margin:0">
+          <span class="tip-icon">🔦</span>
+          <div class="tip-content">
+            Página não aparece? Investigue <strong>na ordem do caminho</strong>: 1) o BrowserRouter está
+            abraçando o App no main.jsx? · 2) a URL na barra é EXATAMENTE o path do Route? · 3) o
+            componente do element foi importado no App? · 4) o Link aponta pro mesmo endereço do path?
+            Se os 4 passarem e a página de detalhes estiver vazia, o problema é o Cap 7 dela (json-server
+            de pé? <code>res.data</code>? porteiro do <code>null</code>?).
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ PROGRAMAÇÃO É PRÁTICA ═══════════════ -->
+  <section class="step-section">
+    <div class="card" style="text-align:center;background:linear-gradient(135deg,rgba(97,218,251,0.10),rgba(100,108,255,0.06));border-color:rgba(97,218,251,0.22)">
+      <div style="font-family:'Caveat',cursive;font-size:clamp(2rem,6vw,3rem);color:var(--react);font-weight:700;line-height:1.1">
+        PROGRAMAÇÃO É PRÁTICA 💪
+      </div>
+      <p class="text-dim" style="max-width:560px;margin:10px auto 0">
+        Dois terminais de pé (<code>npm run dev</code> + json-server), a Mini-loja aberta — e no fim
+        do treino ela vai ter <strong style="color:var(--text)">endereço pra cada produto</strong>. 🧭
+      </p>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ TREINO ENCADEADO ═══════════════ -->
+  <section class="step-section" id="treino">
+    <div class="step-header">
+      <div class="step-number sn-react">⌨️</div>
+      <div>
+        <div class="step-title">Treino — a Mini-loja navegável</div>
+        <div class="step-sub">Continua o projeto dos Caps 4–7. Hoje ela ganha páginas</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="warning">
+        <span class="warning-icon">▶️</span>
+        <div class="warning-content">
+          Mesma pasta <code>mini-loja</code>, mesmos DOIS terminais (<code>npm run dev</code> +
+          <code>npx json-server db.json</code>). Partimos da loja conectada do Cap 7. O 👀 mostra a
+          solução — só clique DEPOIS de tentar.
+        </div>
+      </div>
+
+      <!-- trilha de progresso -->
+      <div class="arena-track">
+        <span class="at-dot lv1">1</span><span class="at-arrow">→</span>
+        <span class="at-dot lv1">2</span><span class="at-arrow">→</span>
+        <span class="at-dot lv2">3</span><span class="at-arrow">→</span>
+        <span class="at-dot lv2">4</span><span class="at-arrow">→</span>
+        <span class="at-dot lv3">5</span><span class="at-arrow">→</span>
+        <span class="at-dot lv3">6</span><span class="at-arrow">→</span>
+        <span class="at-dot lv3">🏆</span>
+      </div>
+
+      <!-- 1. guided — instalar + BrowserRouter -->
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">👨‍🏫</span><div>
+          <div class="exercise-title">Passo 1 — contrate o Router (com o prof)</div>
+          <div class="exercise-sub">npm install + o abraço no main.jsx</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>1) No terminal: <code>npm install react-router-dom</code>. 2) No <code>main.jsx</code>: importe o <code>BrowserRouter</code> (com chaves, de <code>"react-router-dom"</code>) e faça ele <strong>abraçar</strong> o <span class="cmp">&lt;App /&gt;</span>. 3) Salve e confira: a loja deve continuar <strong>exatamente igual</strong> — Router instalado e de olho, esperando ordens.</p></div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/main.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">import</span> <span class="punc">{</span> <span class="var">BrowserRouter</span> <span class="punc">}</span> <span class="kw">from</span> <span class="st">"react-router-dom"</span>
+
+<span class="fn">createRoot</span>(<span class="var">document</span>.<span class="fn">getElementById</span>(<span class="st">"root"</span>)).<span class="fn">render</span>(
+  <span class="tag">&lt;</span><span class="cmp">BrowserRouter</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;</span><span class="cmp">App</span> <span class="tag">/&gt;</span>
+  <span class="tag">&lt;/</span><span class="cmp">BrowserRouter</span><span class="tag">&gt;</span>
+)</pre>
+        </div>
+      </div>
+
+      <!-- 2. guided — pages + Routes -->
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">👨‍🏫</span><div>
+          <div class="exercise-title">Passo 2 — a mudança: a loja vira a página Home (com o prof)</div>
+          <div class="exercise-sub">src/pages/ + o App virando mapa de rotas</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>1) Crie a pasta <code>src/pages/</code>. 2) Dentro dela, <code>Home.jsx</code> (rafce) — e faça a <strong>mudança</strong>: recorte TUDO que é da loja no <code>App.jsx</code> (os estados, o useEffect com axios, a vitrine com .map, os porteiros) e cole na <span class="cmp">Home</span>. Atenção aos imports: eles se mudam junto (useState/useEffect/axios saem do App e entram na Home; os componentes tipo <span class="cmp">CartaoProduto</span> agora são importados com <code>"../CartaoProduto.jsx"</code> — subiu uma pasta!). 3) Crie <code>Sobre.jsx</code>, simples (um h2 e um parágrafo). 4) O App enxuto vira o mapa: só <span class="cmp">Routes</span> com as duas primeiras linhas. 5) Teste digitando na barra: <code>localhost:5173/</code> e <code>localhost:5173/sobre</code>.</p></div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx — o App inteiro agora é só isto</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">import</span> <span class="punc">{</span> <span class="var">Routes</span>, <span class="var">Route</span> <span class="punc">}</span> <span class="kw">from</span> <span class="st">"react-router-dom"</span>
+<span class="kw">import</span> <span class="var">Home</span> <span class="kw">from</span> <span class="st">"./pages/Home.jsx"</span>
+<span class="kw">import</span> <span class="var">Sobre</span> <span class="kw">from</span> <span class="st">"./pages/Sobre.jsx"</span>
+
+<span class="kw">const</span> <span class="fn">App</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;</span><span class="cmp">Routes</span><span class="tag">&gt;</span>
+      <span class="tag">&lt;</span><span class="cmp">Route</span> <span class="atr">path</span><span class="op">=</span><span class="st">"/"</span> <span class="atr">element</span><span class="op">=</span>{<span class="tag">&lt;</span><span class="cmp">Home</span> <span class="tag">/&gt;</span>} <span class="tag">/&gt;</span>
+      <span class="tag">&lt;</span><span class="cmp">Route</span> <span class="atr">path</span><span class="op">=</span><span class="st">"/sobre"</span> <span class="atr">element</span><span class="op">=</span>{<span class="tag">&lt;</span><span class="cmp">Sobre</span> <span class="tag">/&gt;</span>} <span class="tag">/&gt;</span>
+    <span class="tag">&lt;/</span><span class="cmp">Routes</span><span class="tag">&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">App</span></pre>
+        </div>
+        <div class="tip"><span class="tip-icon">📛</span><div class="tip-content">Tela branca depois da mudança? 99% das vezes é um <strong>import que ficou pra trás</strong> — olha o terminal do <code>npm run dev</code>, ele aponta o arquivo e a linha.</div></div>
+      </div>
+
+      <!-- 3. guided — menu com Link -->
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">👨‍🏫</span><div>
+          <div class="exercise-title">Passo 3 — o menu que aparece em TODAS as páginas (com o prof)</div>
+          <div class="exercise-sub">Um componente Menu com Links, fora do Routes</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>1) Crie <code>src/Menu.jsx</code> (rafce): um <code>&lt;nav&gt;</code> com dois <span class="cmp">Link</span>s — "🛒 Loja" pra <code>/</code> e "👋 Sobre" pra <code>/sobre</code>. 2) No App, coloque <span class="cmp">&lt;Menu /&gt;</span> <strong>ACIMA do Routes</strong> (fora dele!) — o que está fora do mapa aparece em toda página. 3) Navegue clicando e repara: <strong>troca instantânea, sem piscar</strong>. 4) Experimento do prof: troque um Link por <code>&lt;a href&gt;</code>, clique (repara o piscar do reload!) e <strong>desfaça</strong>.</p></div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/Menu.jsx + a mudança no App.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="cm">// src/Menu.jsx</span>
+<span class="kw">import</span> <span class="punc">{</span> <span class="var">Link</span> <span class="punc">}</span> <span class="kw">from</span> <span class="st">"react-router-dom"</span>
+
+<span class="kw">const</span> <span class="fn">Menu</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;nav&gt;</span>
+      <span class="tag">&lt;</span><span class="cmp">Link</span> <span class="atr">to</span><span class="op">=</span><span class="st">"/"</span><span class="tag">&gt;</span>🛒 Loja<span class="tag">&lt;/</span><span class="cmp">Link</span><span class="tag">&gt;</span>
+      <span class="tag">&lt;</span><span class="cmp">Link</span> <span class="atr">to</span><span class="op">=</span><span class="st">"/sobre"</span><span class="tag">&gt;</span>👋 Sobre<span class="tag">&lt;/</span><span class="cmp">Link</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;/nav&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">Menu</span>
+
+<span class="cm">// src/App.jsx — dentro do return, Menu FORA do Routes:</span>
+<span class="tag">&lt;div&gt;</span>
+  <span class="tag">&lt;</span><span class="cmp">Menu</span> <span class="tag">/&gt;</span>
+  <span class="tag">&lt;</span><span class="cmp">Routes</span><span class="tag">&gt;</span> <span class="cm">/* ...as linhas do mapa... */</span> <span class="tag">&lt;/</span><span class="cmp">Routes</span><span class="tag">&gt;</span>
+<span class="tag">&lt;/div&gt;</span></pre>
+        </div>
+      </div>
+
+      <!-- 4. guided — detalhes com :id -->
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">👨‍🏫</span><div>
+          <div class="exercise-title">Passo 4 — cada produto com seu endereço (com o prof) ⭐</div>
+          <div class="exercise-sub">Rota /produtos/:id + useParams + axios: Cap 7 e Cap 8 de mãos dadas</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>1) Crie <code>src/pages/Detalhes.jsx</code> — copie da seção 🎯 (useParams + useState(null) + useEffect com <code>axios.get("http://localhost:3000/produtos/" + id)</code> e QUANDO <code>[id]</code> + porteiro do ⏳ + Link de voltar). 2) No App, a linha nova do mapa: <code>path="/produtos/:id"</code>. 3) No <span class="cmp">CartaoProduto</span>, passe o <code>id</code> como prop (lá do .map da Home: <code>id={p.id}</code>) e envolva o nome num <span class="cmp">Link</span> com <code>to={"/produtos/" + id}</code>. 4) Teste o passeio completo: loja → clica no Monitor → detalhes do Monitor → voltar. Depois teste pela barra: <code>/produtos/1</code>, <code>/produtos/3</code>…</p></div>
+        <div class="mini-browser" data-url="localhost:5173/produtos/2" data-h="210">
+<script type="text/html" data-mp="html">
+  <div style="font-family:sans-serif">
+    <nav style="display:flex;gap:12px;border-bottom:2px solid #e2e8f0;padding-bottom:6px;font-size:13px">
+      <a style="color:#0ea5e9;font-weight:800;text-decoration:none;cursor:pointer">🛒 Loja</a>
+      <a style="color:#64748b;font-weight:700;text-decoration:none;cursor:pointer">👋 Sobre</a>
+    </nav>
+    <p style="margin:10px 0 4px;font-size:12px"><a style="color:#0ea5e9;cursor:pointer">← voltar pra loja</a></p>
+    <div style="text-align:center">
+      <div style="font-size:34px">🖥️</div>
+      <h3 style="margin:4px 0">Monitor 27 pol</h3>
+      <p style="margin:0;color:#16a34a;font-weight:800">R$ 1450</p>
+      <p style="margin:6px 0 0;color:#64748b;font-size:12px">✅ em estoque</p>
+    </div>
+  </div>
+</script>
+        </div>
+      </div>
+
+      <!-- 5. solo — 404 -->
+      <div class="exercise solo">
+        <div class="exercise-header"><span class="exercise-icon">🧑‍💻</span><div>
+          <div class="exercise-title">Passo 5 — a página 404 amigável (sozinho/a)</div>
+          <div class="exercise-sub">A rota curinga que salva o usuário perdido</div></div>
+        </div>
+        <div class="drill-tags"><span class="drill-level lv2"><span class="stars">★★</span> médio</span><span class="drill-tag">rota *</span><span class="drill-tag">Link</span></div>
+        <div class="concept"><div class="concept-title">💡 Dica</div><p>1) Crie <code>src/pages/NaoEncontrada.jsx</code>: um título simpático ("🕳️ Opa! Essa página não existe…"), e um <span class="cmp">Link</span> de volta pra loja. 2) No App, a última linha do mapa: <code>path="*"</code>. 3) Teste com um endereço maluco: <code>localhost:5173/batata</code>. Tela branca nunca mais!</p></div>
+        <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Tenta antes!</strong> É uma página nova + uma linha no mapa. Você já fez os dois hoje.</div></div>
+        <div class="toggler">
+          <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — Ver solução</span><span class="toggler-arrow">▼</span></div>
+          <div class="toggler-body"><div class="code-block">
+            <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/pages/NaoEncontrada.jsx + a linha no App.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="cm">// src/pages/NaoEncontrada.jsx</span>
+<span class="kw">import</span> <span class="punc">{</span> <span class="var">Link</span> <span class="punc">}</span> <span class="kw">from</span> <span class="st">"react-router-dom"</span>
+
+<span class="kw">const</span> <span class="fn">NaoEncontrada</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span>
+      <span class="tag">&lt;h2&gt;</span>🕳️ Opa! Essa página não existe…<span class="tag">&lt;/h2&gt;</span>
+      <span class="tag">&lt;p&gt;</span>Mas a loja está logo ali:<span class="tag">&lt;/p&gt;</span>
+      <span class="tag">&lt;</span><span class="cmp">Link</span> <span class="atr">to</span><span class="op">=</span><span class="st">"/"</span><span class="tag">&gt;</span>← voltar pra loja<span class="tag">&lt;/</span><span class="cmp">Link</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">NaoEncontrada</span>
+
+<span class="cm">// src/App.jsx — a última linha do mapa:</span>
+<span class="tag">&lt;</span><span class="cmp">Route</span> <span class="atr">path</span><span class="op">=</span><span class="st">"*"</span> <span class="atr">element</span><span class="op">=</span>{<span class="tag">&lt;</span><span class="cmp">NaoEncontrada</span> <span class="tag">/&gt;</span>} <span class="tag">/&gt;</span></pre>
+          </div>
+          <div class="mini-browser" data-url="localhost:5173/batata">
+<script type="text/html" data-mp="html">
+  <div style="font-family:sans-serif;text-align:center;padding:14px">
+    <h3 style="margin:0 0 6px">🕳️ Opa! Essa página não existe…</h3>
+    <p style="margin:0 0 8px;color:#64748b;font-size:13px">Mas a loja está logo ali:</p>
+    <a style="color:#0ea5e9;font-weight:800;cursor:pointer">← voltar pra loja</a>
+  </div>
+</script>
+          </div></div>
+        </div>
+      </div>
+
+      <!-- 6. solo chefão -->
+      <div class="exercise solo">
+        <div class="exercise-header"><span class="exercise-icon">🏆</span><div>
+          <div class="exercise-title">Passo 6 — CHEFÃO: o tour de inauguração (sozinho/a)</div>
+          <div class="exercise-sub">Detalhes caprichada + o passeio completo sem UM F5</div></div>
+        </div>
+        <div class="drill-tags"><span class="drill-level lv3"><span class="stars">★★★</span> desafio</span><span class="drill-tag">integração</span><span class="drill-tag">Caps 5+6+7+8</span></div>
+        <div class="concept"><div class="concept-title">💡 Missão</div><p>1) Capriche a <span class="cmp">Detalhes</span>: mostre TODOS os campos do produto — imagem/emoji, nome, preço e o selo de estoque usando os porteiros do Cap 5 (<code>emEstoque ? "✅ em estoque" : "😢 esgotado"</code>). 2) Blindagem: o que aparece em <code>/produtos/999</code> (produto que não existe)? Se ficou no ⏳ eterno, pendure um <code>.catch</code> que manda um aviso na tela (estado <code>erro</code>, Cap 7!). 3) O tour final, SEM apertar F5 nenhuma vez: loja → busca um produto → abre os detalhes → volta → Sobre → endereço maluco → 404 → link de volta pra loja. Se o tour passou liso, sua SPA está oficialmente inaugurada. 🎉</p></div>
+        <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Tenta antes!</strong> Tudo que a missão pede você já escreveu em algum capítulo. A arte é juntar.</div></div>
+        <div class="toggler">
+          <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — Ver solução</span><span class="toggler-arrow">▼</span></div>
+          <div class="toggler-body">
+            <div class="code-block">
+              <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/pages/Detalhes.jsx — a versão de gala</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">import</span> <span class="punc">{</span> <span class="var">useState</span>, <span class="var">useEffect</span> <span class="punc">}</span> <span class="kw">from</span> <span class="st">"react"</span>
+<span class="kw">import</span> <span class="punc">{</span> <span class="var">useParams</span>, <span class="var">Link</span> <span class="punc">}</span> <span class="kw">from</span> <span class="st">"react-router-dom"</span>
+<span class="kw">import</span> <span class="var">axios</span> <span class="kw">from</span> <span class="st">"axios"</span>
+
+<span class="kw">const</span> <span class="fn">Detalhes</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">const</span> <span class="punc">{</span> <span class="var">id</span> <span class="punc">}</span> <span class="op">=</span> <span class="fn">useParams</span>()
+  <span class="kw">const</span> [<span class="var">produto</span>, <span class="var">setProduto</span>] <span class="op">=</span> <span class="fn">useState</span>(<span class="kw">null</span>)
+  <span class="kw">const</span> [<span class="var">erro</span>, <span class="var">setErro</span>] <span class="op">=</span> <span class="fn">useState</span>(<span class="kw">false</span>)
+
+  <span class="fn">useEffect</span>(() <span class="op">=&gt;</span> <span class="punc">{</span>
+    <span class="var">axios</span>.<span class="fn">get</span>(<span class="st">"http://localhost:3000/produtos/"</span> <span class="op">+</span> <span class="var">id</span>)
+      .<span class="fn">then</span>((<span class="var">res</span>) <span class="op">=&gt;</span> <span class="fn">setProduto</span>(<span class="var">res</span>.<span class="var">data</span>))
+      .<span class="fn">catch</span>(() <span class="op">=&gt;</span> <span class="fn">setErro</span>(<span class="kw">true</span>))
+  <span class="punc">}</span>, [<span class="var">id</span>])
+
+  <span class="kw">if</span> (<span class="var">erro</span>) <span class="punc">{</span>
+    <span class="kw">return</span> (
+      <span class="tag">&lt;div&gt;</span>
+        <span class="tag">&lt;p&gt;</span>😵 Não achei esse produto…<span class="tag">&lt;/p&gt;</span>
+        <span class="tag">&lt;</span><span class="cmp">Link</span> <span class="atr">to</span><span class="op">=</span><span class="st">"/"</span><span class="tag">&gt;</span>← voltar pra loja<span class="tag">&lt;/</span><span class="cmp">Link</span><span class="tag">&gt;</span>
+      <span class="tag">&lt;/div&gt;</span>
+    )
+  <span class="punc">}</span>
+
+  <span class="kw">if</span> (<span class="op">!</span><span class="var">produto</span>) <span class="punc">{</span>
+    <span class="kw">return</span> <span class="tag">&lt;p&gt;</span>⏳ Carregando...<span class="tag">&lt;/p&gt;</span>
+  <span class="punc">}</span>
+
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span>
+      <span class="tag">&lt;</span><span class="cmp">Link</span> <span class="atr">to</span><span class="op">=</span><span class="st">"/"</span><span class="tag">&gt;</span>← voltar pra loja<span class="tag">&lt;/</span><span class="cmp">Link</span><span class="tag">&gt;</span>
+      <span class="tag">&lt;h2&gt;</span>{<span class="var">produto</span>.<span class="var">nome</span>}<span class="tag">&lt;/h2&gt;</span>
+      <span class="tag">&lt;p&gt;</span>R$ {<span class="var">produto</span>.<span class="var">preco</span>}<span class="tag">&lt;/p&gt;</span>
+      <span class="tag">&lt;p&gt;</span>{<span class="var">produto</span>.<span class="var">emEstoque</span> <span class="op">?</span> <span class="st">"✅ em estoque"</span> <span class="op">:</span> <span class="st">"😢 esgotado"</span>}<span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">Detalhes</span></pre>
+            </div>
+            <div class="tip" style="margin-top:10px"><span class="tip-icon">🧠</span><div class="tip-content">Repara na ordem dos porteiros: primeiro o <code>erro</code>, depois o <code>!produto</code> (⏳), e só então a festa. O json-server responde "não achei" (status 404 — olha ele aí de novo!) pra id inexistente, e o axios manda direto pro <code>.catch</code>.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- desafio para casa -->
+      <div class="exercise home" style="margin-top:18px">
+        <div class="exercise-header"><span class="exercise-icon">🏠</span><div>
+          <div class="exercise-title">Desafio para Casa — a loja de portas abertas</div>
+          <div class="exercise-sub">Uma página nova + um toque de Cap 7 na Detalhes</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">💡 Missão</div><p>1) Crie a página <code>/contato</code>: um formulário simples com os inputs controlados do Cap 6 (nome + mensagem + um botão que dá <code>alert("Obrigado, " + nome + "!")</code>) — e o link "📬 Contato" no Menu. 2) Bônus ★★★: na <span class="cmp">Detalhes</span>, faça a <strong>aba do navegador</strong> mostrar o nome do produto: um useEffect com <code>document.title = produto.nome</code>… mas produto começa <code>null</code> — qual o QUANDO certo pra esse efeito? (Pista: modo 3, e o porteiro dentro do efeito: <code>if (produto) { ... }</code>.) Traga no próximo sábado! 🚀</p></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ RESUMO ═══════════════ -->
+  <section class="step-section" id="resumo">
+    <div class="step-header">
+      <div class="step-number sn-mint">🎒</div>
+      <div>
+        <div class="step-title">O que você leva deste capítulo</div>
+        <div class="step-sub">Sua SPA agora tem endereços — e continua sendo UMA página</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <ul class="about-bullets">
+        <li><div><strong>React Router:</strong> <code>npm install react-router-dom</code> + o abraço do <span class="cmp">&lt;BrowserRouter&gt;</span> no <code>main.jsx</code> — o vigia da barra de endereço.</div></li>
+        <li><div><strong>O mapa:</strong> <span class="cmp">&lt;Routes&gt;</span> com linhas <span class="cmp">&lt;Route&gt;</span> — <code>path</code> = QUANDO (o endereço), <code>element</code> = O QUE (o componente). Páginas são componentes comuns, morando em <code>src/pages/</code>.</div></li>
+        <li><div><strong>Navegar é com <span class="cmp">&lt;Link to="..."&gt;</span></strong> — troca só o miolo, instantâneo. <code>&lt;a href&gt;</code> dentro da SPA = reload + estados zerados.</div></li>
+        <li><div><strong>Rota dinâmica:</strong> <code>path="/produtos/:id"</code> — uma rota, infinitos produtos. A página lê a plaquinha com <code>const { id } = useParams()</code> (vem como TEXTO!).</div></li>
+        <li><div><strong>Detalhes = Cap 7 + Cap 8:</strong> useParams pega o id → axios busca <code>/produtos/ + id</code> → useState guarda → porteiros seguram o null. Tudo velho conhecido, só combinado.</div></li>
+        <li><div><strong>Rota curinga <code>*</code>:</strong> a página 404 amigável que pega qualquer endereço perdido — com Link de volta.</div></li>
+      </ul>
+
+      <div class="quiz" style="margin-top:16px">
+        <div class="quiz-q"><span class="q-emoji">🎫</span> Quiz de saída: o menu tem <code>&lt;Link to="/sobre"&gt;</code>, mas ao clicar aparece a página 404. O mapa tem <code>&lt;Route path="/Sobre" element={&lt;Sobre /&gt;} /&gt;</code>. Qual é o bug?</div>
+        <div class="quiz-options">
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">Faltou instalar o react-router-dom</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">O element deveria ser element={Sobre}, sem os &lt; /&gt;</button>
+          <button class="quiz-opt" data-correct="true" onclick="checkQuiz(this,true)">O path está com S maiúsculo ("/Sobre") e o Link vai pra "/sobre" — não batem letra por letra</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">Links só funcionam pra rota "/"</button>
+        </div>
+        <div class="quiz-feedback" data-correct="Olho de águia! 🦅 Endereço é letra por letra." data-wrong="Compara os dois endereços com lupa… 🔍" data-explain="É o Bug 3 do BugZilla: '/Sobre' e '/sobre' são endereços DIFERENTES. O Link levou pra /sobre, nenhuma rota bateu (a que existe é /Sobre), e o curinga * pegou — por isso o 404. Conserto: padronize tudo em minúsculo."></div>
+      </div>
+
+      <div class="tip" style="margin-top:16px">
+        <span class="tip-icon">➡️</span>
+        <div class="tip-content">
+          <strong>No próximo capítulo (Cap 9):</strong> o gran finale — trocar o json-server pela
+          <strong>API de verdade</strong>, com <strong>login</strong> e tudo que um sistema
+          profissional tem. A loja vira sistema. 🔌
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:22px;display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+        <a href="../../index.html" style="display:inline-block;padding:14px 28px;background:var(--surface2);color:var(--text);font-weight:800;border-radius:50px;font-size:1rem;text-decoration:none;border:1px solid rgba(255,255,255,0.12)">
+          ← voltar ao hub
+        </a>
+        <span style="display:inline-block;padding:14px 32px;background:var(--surface2);color:var(--text-dim);font-weight:900;border-radius:50px;font-size:1rem;border:1px dashed rgba(255,255,255,0.2);cursor:default">
+          Próximo: Cap 09 — Integração real 🔒 em breve
+        </span>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="footer">
+  Feito com <span class="heart">♥</span> pela <strong style="color:var(--text)">programa AI</strong> ·
+  <a href="../../index.html">Hub do curso</a> · Cap 08 — Navegação: React Router
+</footer>
+
+<script src="../../shared/scripts.js" defer></script>
+<script type="module" src="../../shared/motion-fx.js"></script>
+<script type="module">
+  // ── Motor das máquinas didáticas do Cap 08 ──
+  // Motion (CDN) dá o tempero quando carrega; se a internet da sala falhar,
+  // TUDO continua funcionando (transições CSS + Web Animations nativas).
+  let animate=null;
+  try{ ({animate}=await import('https://cdn.jsdelivr.net/npm/motion@11/+esm')); }catch(e){}
+  const onView=(el,fn)=>{ if(!el) return;
+    const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){fn();io.disconnect();}})},{threshold:.3});
+    io.observe(el); };
+
+  /* ════ 🗺️ GPS das Rotas (fábrica: usada 2x) ════ */
+  const PAGES={
+    home:'<h4 style="margin:0 0 6px">Mini-loja 🛒</h4><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><span style="font-size:26px">⌨️</span><span style="font-size:26px">🖥️</span><span style="font-size:26px">🪑</span><span style="font-size:26px">🖱️</span></div><p style="margin:6px 0 0;color:#64748b;font-size:0.75rem">a vitrine com os produtos da API</p>',
+    sobre:'<h4 style="margin:0 0 6px">Sobre a Mini-loja 👋</h4><p style="margin:0;color:#64748b;font-size:0.8rem">Feita em React, com dados de uma API de verdade.</p>',
+    det:'<p style="margin:0 0 4px;font-size:0.72rem;text-align:left"><span style="color:#0ea5e9">← voltar pra loja</span></p><div style="font-size:30px">🖥️</div><h4 style="margin:2px 0">Monitor 27 pol</h4><p style="margin:0;color:#16a34a;font-weight:800;font-size:0.8rem">R$ 1450</p>',
+    branco:'<p style="color:#94a3b8;margin:34px 0;font-size:0.85rem">😱 tela branca — nenhuma rota bateu!</p>',
+    nf:'<h4 style="margin:0 0 6px">🕳️ Opa! Essa página não existe…</h4><p style="margin:0 0 6px;color:#64748b;font-size:0.78rem">Mas a loja está logo ali:</p><span style="color:#0ea5e9;font-weight:800;font-size:0.8rem">← voltar pra loja</span>'
+  };
+  const makeGps=(rootId,routes,answers,defUrl)=>{
+    const root=document.getElementById(rootId); if(!root) return;
+    const chips=[...root.querySelectorAll('.gp-chip')];
+    const urlEl=root.querySelector('.gp-url b');
+    const routesEl=root.querySelector('.gp-routes');
+    const screen=root.querySelector('.gp-screen');
+    const note=root.querySelector('.gp-note');
+    routesEl.innerHTML=routes.map((r)=>
+      '<div class="gp-route"><span>&lt;Route path=</span><span class="r-path">"'+r.path+'"</span><span> element={</span><span class="r-el">&lt;'+r.el+' /&gt;</span><span>} /&gt;</span></div>'
+    ).join('');
+    const rows=[...routesEl.querySelectorAll('.gp-route')];
+    const set=(u)=>{
+      chips.forEach(c=>c.classList.toggle('active',c.dataset.u===u));
+      urlEl.textContent=u;
+      const a=answers[u];
+      rows.forEach((row,i)=>{
+        row.classList.toggle('hit',i===a.hit);
+        row.classList.toggle('miss',a.hit!==-1 && i!==a.hit);
+        if(a.hit===-1) row.classList.remove('miss');
+      });
+      if(a.hit===-1) rows.forEach(r=>r.classList.add('miss'));
+      screen.innerHTML=PAGES[a.page];
+      note.innerHTML=a.note;
+      if(animate) animate(screen,{opacity:[0.4,1]},{duration:.3});
+    };
+    chips.forEach(c=>c.addEventListener('click',()=>set(c.dataset.u)));
+    onView(root,()=>set(defUrl));
+  };
+
+  makeGps('gps1',
+    [{path:'/',el:'Home'},{path:'/sobre',el:'Sobre'}],
+    {
+      '/':{hit:0,page:'home',note:'a URL <b>/</b> bateu com o path <b>"/"</b> → o element &lt;Home /&gt; entra em cena.'},
+      '/sobre':{hit:1,page:'sobre',note:'a URL <b>/sobre</b> bateu com o path <b>"/sobre"</b> → &lt;Sobre /&gt; em cena. Repara: NADA recarregou.'},
+      '/qualquer-coisa':{hit:-1,page:'branco',note:'nenhum path bateu → o Routes não renderiza NADA. Feio, né? Guarda essa dor: a rota curinga (mais pra frente) resolve.'}
+    },'/');
+
+  makeGps('gps2',
+    [{path:'/',el:'Home'},{path:'/sobre',el:'Sobre'},{path:'/produtos/:id',el:'Detalhes'},{path:'*',el:'NaoEncontrada'}],
+    {
+      '/':{hit:0,page:'home',note:'bateu no "/" — e repara que o curinga * ficou quieto: ele é sempre a ÚLTIMA opção.'},
+      '/sobre':{hit:1,page:'sobre',note:'bateu no "/sobre". O * nem foi consultado.'},
+      '/produtos/2':{hit:2,page:'det',note:'bateu no "/produtos/:id" — o :id é a plaquinha, e aqui vale "2". É a próxima seção… ou você já sabe? 😏'},
+      '/produtoss':{hit:3,page:'nf',note:'um "s" a mais e NENHUM endereço bateu… mas agora o curinga * pega e mostra a 404 amigável. Tela branca nunca mais!'}
+    },'/');
+
+  /* ════ ⚓×🔗 Duelo de Navegação ════ */
+  (()=>{
+    const root=document.getElementById('navm'); if(!root) return;
+    const urlEl=root.querySelector('#nv-url');
+    const title=root.querySelector('#nv-title');
+    const content=root.querySelector('#nv-content');
+    const cartEl=root.querySelector('#nv-cart');
+    const flash=root.querySelector('#nv-flash');
+    const flashTxt=root.querySelector('#nv-flash-txt');
+    const consoleEl=root.querySelector('#nv-console');
+    const note=root.querySelector('#nv-note');
+    let cart=0, page='home', busy=false;
+    const VIEWS={
+      home:{url:'/',title:'Mini-loja 🛒',html:'⌨️ 🖥️ 🪑 🖱️ — a vitrine de sempre'},
+      sobre:{url:'/sobre',title:'Sobre 👋',html:'Feita em React, com dados de uma API de verdade.'}
+    };
+    const log=(txt)=>{
+      if(consoleEl.textContent.startsWith('//')) consoleEl.textContent='';
+      consoleEl.textContent+=txt+'\n';
+      const lines=consoleEl.textContent.split('\n');
+      if(lines.length>6) consoleEl.textContent=lines.slice(-6).join('\n');
+      consoleEl.scrollTop=consoleEl.scrollHeight;
+    };
+    const draw=()=>{
+      const v=VIEWS[page];
+      urlEl.textContent=v.url; title.textContent=v.title; content.innerHTML=v.html;
+      cartEl.textContent=String(cart);
+    };
+    root.querySelector('#nv-add').addEventListener('click',()=>{
+      if(busy) return;
+      cart++; cartEl.textContent=String(cart);
+      log('🛒 setCarrinho('+cart+')');
+      note.textContent='carrinho com '+cart+' — esse número mora num estado. Agora navegue dos dois jeitos…';
+    });
+    root.querySelector('#nv-link').addEventListener('click',()=>{
+      if(busy) return;
+      page=page==='home'?'sobre':'home';
+      draw();
+      log('🔗 <Link> → troquei SÓ o componente ⚡ (carrinho intacto: '+cart+')');
+      note.textContent='instantâneo — o app continua vivo, o estado continua lá. Isso é navegar em SPA.';
+      if(animate) animate(content,{opacity:[0,1],y:[8,0]},{duration:.25});
+    });
+    root.querySelector('#nv-anchor').addEventListener('click',()=>{
+      if(busy) return; busy=true;
+      const destino=page==='home'?'sobre':'home';
+      log('⚓ <a href> → navegação REAL: jogando o app fora…');
+      flashTxt.textContent='baixando tudo de novo: index.html, main.jsx, App.jsx…';
+      flash.classList.add('on');
+      setTimeout(()=>{
+        page=destino; cart=0; draw();
+        flash.classList.remove('on'); busy=false;
+        log('📄 app recarregado do zero → todos os estados voltaram ao inicial');
+        note.textContent='sentiu a demora e o pisca? E o pior: o carrinho ZEROU — o reload descarta todos os estados. Por isso, Link.';
+      },1400);
+    });
+    onView(root,draw);
+  })();
+
+  /* ════ 🎯 Leitor de Placas (useParams) ════ */
+  (()=>{
+    const root=document.getElementById('prm'); if(!root) return;
+    const chips=[...root.querySelectorAll('.gp-chip')];
+    const out=root.querySelector('#pm-out');
+    const screen=root.querySelector('#pm-screen');
+    const note=root.querySelector('#pm-note');
+    const PRODS=[
+      {id:'1',e:'⌨️',n:'Teclado Mecânico',p:'320'},
+      {id:'2',e:'🖥️',n:'Monitor 27 pol',p:'1450'},
+      {id:'3',e:'🪑',n:'Cadeira Gamer',p:'980'}
+    ];
+    const set=(i)=>{
+      const p=PRODS[i];
+      chips.forEach((c,ci)=>c.classList.toggle('active',ci===i));
+      out.innerHTML='useParams() → { id: <span class="p-str">"'+p.id+'"</span> }';
+      screen.innerHTML='<p style="margin:0 0 4px;font-size:0.72rem;text-align:left"><span style="color:#0ea5e9">← voltar pra loja</span></p>'+
+        '<div style="font-size:30px">'+p.e+'</div><h4 style="margin:2px 0">'+p.n+'</h4>'+
+        '<p style="margin:0;color:#16a34a;font-weight:800;font-size:0.8rem">R$ '+p.p+'</p>';
+      note.innerHTML='a MESMA página &lt;Detalhes /&gt;, três conteúdos — porque o axios buscou <b>/produtos/'+p.id+'</b>. E repara: id é <b>"'+p.id+'"</b> com aspas (texto!).';
+      if(animate) animate(screen,{opacity:[0.4,1]},{duration:.3});
+    };
+    chips.forEach((c)=>c.addEventListener('click',()=>set(Number(c.dataset.i))));
+    onView(root,()=>set(0));
+  })();
+</script>
+</body>
+</html>

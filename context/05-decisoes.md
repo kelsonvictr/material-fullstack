@@ -319,6 +319,39 @@ Sessão planejou (spec em `08-plano-caps-06-07.md`) e entregou os dois capítulo
    05b agora aponta "Próximo: Cap 06". Memes dos caps ainda **pendentes de aprovação**
    (Pikachu setContador / Anakin-Padmé fetch no useEffect).
 
+## 2026-08-01 — Reforma do Cap 7 (teoria de API + axios) e Cap 8 (React Router) entregue
+
+Pedido do professor: a turma **ainda não viu HTTP/REST/API** (o fetch do Cap 3 não aconteceu
+na prática pra essa turma), então o Cap 7 não podia abrir já fazendo requisição.
+
+1. **Cap 7 reordenado e reteorizado**: saiu o "Aquecimento" (quiz de abertura); o cap agora abre
+   com **🌍 teoria de API do zero** (cliente/servidor/API-garçom/requisição/resposta + HTTP/GET +
+   anatomia do endpoint + JSON + box REST), reusando os vídeos Remotion `o-que-e-api` e
+   `anatomia-json` do Cap 3. Ordem nova: teoria → **json-server** (antes de qualquer React;
+   "digitar endereço no navegador É um GET") → **axios** → "pra que serve o useEffect" (loop) →
+   anatomia → 3 modos → apague o const → loading/erro. Box explícito: back-end verá HTTP/REST
+   **em detalhes** na 2ª metade do curso.
+2. **DECISÃO REVOGADA — axios antecipado do Cap 9 pro Cap 7** (revoga a decisão 4 de
+   `07-sequencia-http-fetch-axios.md`): o professor preferiu **não ensinar fetch** ("mais fácil"
+   pro iniciante: sem `res.json()`, um `.then` só, `res.data`). fetch virou apenas um box
+   "você vai esbarrar por aí". Vídeo `vida-do-componente` re-renderizado (rótulo "fetch ⇄ JSON"
+   → "axios ⇄ JSON"). No Cap 9 sobram JWT/interceptors/async-await sobre o axios já conhecido.
+3. **Treino do Cap 7 mais guiado** (pedido: prof faz junto, poucos solo): 5 guiados
+   (API no ar → 1º useEffect → npm i axios + pedido no console → apague o const → carregando) +
+   2 solo com olhinho (erro `.catch`, chefão integração). Saiu o solo do `document.title`
+   (o modo `[busca]` continua nas máquinas/lab; virou bônus de casa no Cap 8).
+4. **Cap 8 — Navegação (React Router) criado** no mesmo padrão: dor (uma página só) →
+   `npm i react-router-dom` + abraço do BrowserRouter → Routes/Route (anatomia "path=QUANDO,
+   element=O QUE", ecoando o mnemônico do useEffect) → Link vs `<a>` → `/produtos/:id` +
+   useParams + axios por id (`[id]` = modo 3 aplicado) → rota curinga 404. **3 máquinas novas**:
+   🗺️ GPS das Rotas (2 instâncias, sem e com curinga), ⚓×🔗 Duelo de Navegação (carrinho zera
+   no reload), 🎯 Leitor de Placas (useParams devolve TEXTO). Treino: 4 guiados + 2 solo
+   (404, chefão tour sem F5) + casa (/contato + document.title na Detalhes). Novidade honesta
+   e assumida: porteiro `if (!produto) return ...` (early return, apresentado como if+return
+   do Cap 2). Sem vídeos novos (só máquinas).
+5. Hub: card 07 atualizado (pills API & HTTP/useEffect/axios), card 08 destravado
+   (pills Routes/Link/useParams). Botão final do Cap 7 agora aponta pro Cap 8.
+
 ## Pendências reconhecidas
 - Planejar em detalhe os **Caps 6–9** (React: state → efeitos/dados → router → integração).
   Caps 4 e 5 já fixaram o tom, o setup Vite base e a Mini-loja como artefato contínuo do arco React.

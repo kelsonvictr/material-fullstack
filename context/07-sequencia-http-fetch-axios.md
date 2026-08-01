@@ -1,5 +1,12 @@
 # 07 — Sequência de HTTP / fetch / axios no arco do curso
 
+> ⚠️ **ATUALIZAÇÃO 2026-08-01 — decisão 4 REVOGADA.** O professor decidiu **não ensinar fetch**
+> e trazer o **axios direto no Cap 7** (mais simples pro iniciante: sem `res.json()`, um `.then`
+> só, `res.data`). O Cap 7 também ganhou **teoria de API/HTTP/JSON/REST do zero** no início
+> (a turma não tinha visto isso na prática) e o json-server ANTES do useEffect. fetch é citado
+> apenas num box "existe, você vai esbarrar por aí". Detalhes na decisão **2026-08-01** do
+> `05-decisoes.md`. O Cap 9 segue com JWT/interceptors/async-await sobre o axios já conhecido.
+
 > ⚠️ **ATUALIZAÇÃO 2026-06-20 — premissa quebrada para a turma nova.** Toda a análise abaixo
 > assumia que **"o aluno chega no front tendo construído uma API Spring"** (ver "Racional"). A
 > **turma atual é nova e NÃO viu backend ainda.** Por isso o Cap 3 foi reescrito para **explicar

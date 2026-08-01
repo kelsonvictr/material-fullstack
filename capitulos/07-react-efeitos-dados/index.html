@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cap 07 — Dados de verdade: useEffect &amp; fetch | Curso Fullstack</title>
+<title>Cap 07 — Dados de verdade: API, useEffect &amp; axios | Curso Fullstack</title>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=JetBrains+Mono:wght@400;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../../shared/styles.css">
 <link rel="stylesheet" href="../../shared/components.css">
@@ -212,11 +212,12 @@
   </div>
   <div class="sidebar-group">
     <div class="sidebar-group-title">Neste capítulo</div>
-    <a class="sidebar-link" onclick="goTo('aquecimento')"><span class="dot" style="background:var(--accent5)"></span> Aquecimento</a>
-    <a class="sidebar-link" onclick="goTo('loop')"><span class="dot" style="background:var(--bug)"></span> 🌀 O loop infinito</a>
+    <a class="sidebar-link" onclick="goTo('teoria')"><span class="dot" style="background:var(--accent5)"></span> 🌍 O que é uma API?</a>
+    <a class="sidebar-link" onclick="goTo('jsonserver')"><span class="dot" style="background:var(--json)"></span> 📦 json-server</a>
+    <a class="sidebar-link" onclick="goTo('axios')"><span class="dot" style="background:var(--accent6)"></span> 🚚 axios: o pedido em JS</a>
+    <a class="sidebar-link" onclick="goTo('paraque')"><span class="dot" style="background:var(--bug)"></span> 🌀 Pra que serve o useEffect?</a>
     <a class="sidebar-link" onclick="goTo('anatomia')"><span class="dot" style="background:var(--accent6)"></span> 🧬 Anatomia do useEffect</a>
     <a class="sidebar-link" onclick="goTo('modos')"><span class="dot" style="background:var(--accent5)"></span> ⏰ Os 3 modos do QUANDO</a>
-    <a class="sidebar-link" onclick="goTo('jsonserver')"><span class="dot" style="background:var(--json)"></span> 📦 json-server</a>
     <a class="sidebar-link" onclick="goTo('magia')"><span class="dot" style="background:var(--react)"></span> 🚀 Apague o const!</a>
     <a class="sidebar-link" onclick="goTo('estados')"><span class="dot" style="background:var(--accent7)"></span> ⏳ Carregando &amp; erro</a>
     <a class="sidebar-link" onclick="goTo('bugzilla')"><span class="dot" style="background:var(--bug)"></span> BugZilla 🐛</a>
@@ -229,70 +230,340 @@
 <section class="hero">
   <div class="hero-icons" data-motion="float"><img src="../../assets/svg/react.svg" alt="React" width="46" height="46" style="vertical-align:middle"> 🚀 📦</div>
   <span class="hero-badge react">Capítulo 07 · Curso Fullstack</span>
-  <h1>Dados de <span style="color:var(--react)">verdade</span>: useEffect &amp; fetch</h1>
+  <h1>Dados de <span style="color:var(--react)">verdade</span>: API, useEffect &amp; axios</h1>
   <p class="subtitle">
     Desde o Cap 4 seus produtos moram num <code>const</code> dentro do código. Hoje é o dia da
-    promessa: você vai <strong style="color:var(--accent2)">apagar esse array</strong> e buscar tudo de
-    uma <strong style="color:var(--accent5)">API rodando na sua máquina</strong> — com o
-    <code>fetch</code> do Cap 3 morando no lugar certo: o <strong style="color:var(--react)">useEffect</strong>.
+    promessa: você vai entender o que é uma <strong style="color:var(--accent5)">API</strong>, subir uma
+    <strong style="color:var(--accent5)">na sua máquina</strong>, fazer seu primeiro pedido com o
+    <strong style="color:var(--accent6)">axios</strong> — e
+    <strong style="color:var(--accent2)">apagar aquele array</strong> com o
+    <strong style="color:var(--react)">useEffect</strong> no comando.
   </p>
   <div class="hero-stack">
-    <span class="stack-chip react">🌀 useEffect</span>
-    <span class="stack-chip js">⏰ [dependências]</span>
+    <span class="stack-chip js">🌍 API &amp; HTTP</span>
     <span class="stack-chip node">📦 json-server</span>
-    <span class="stack-chip react">🚀 fetch</span>
+    <span class="stack-chip react">🚚 axios</span>
+    <span class="stack-chip react">🌀 useEffect</span>
     <span class="stack-chip js">⏳ loading &amp; erro</span>
   </div>
 </section>
 
 <div class="container">
 
-  <!-- ═══════════════ AQUECIMENTO ═══════════════ -->
-  <section class="step-section" id="aquecimento">
+  <!-- ═══════════════ TEORIA: O QUE É UMA API ═══════════════ -->
+  <section class="step-section" id="teoria">
     <div class="step-header">
-      <div class="step-number sn-yellow">🤔</div>
+      <div class="step-number sn-yellow">🌍</div>
       <div>
-        <div class="step-title">Aquecimento</div>
-        <div class="step-sub">A pergunta que o capítulo inteiro responde</div>
+        <div class="step-title">Antes do código: o que é uma API?</div>
+        <div class="step-sub">Cliente, servidor, requisição, resposta — o vocabulário do resto do curso</div>
       </div>
     </div>
-    <div class="quiz">
-      <div class="quiz-q"><span class="q-emoji">1️⃣</span> Você quer que a loja busque os produtos da API <strong>assim que a página abrir</strong>. Onde o <code>fetch</code> deve morar?</div>
-      <div class="quiz-options">
-        <button class="quiz-opt" onclick="checkQuiz(this,false)">Solto no corpo do componente — ele roda quando o componente roda, ué</button>
-        <button class="quiz-opt" onclick="checkQuiz(this,false)">Dentro de um onClick — o usuário clica em "carregar"</button>
-        <button class="quiz-opt" data-correct="true" onclick="checkQuiz(this,true)">Num lugar que rode na hora certa: quando o componente NASCER (e só aí)</button>
-        <button class="quiz-opt" onclick="checkQuiz(this,false)">No index.html, antes do React</button>
+
+    <div class="card">
+      <p>Até agora, os produtos da sua loja moram <strong>dentro do seu código</strong>, num
+      <code>const</code>. Mas pensa em qualquer site de verdade: a Amazon não guarda os produtos
+      dentro do site — eles moram em <strong>outro computador</strong>, e o site
+      <strong>pede</strong> os dados quando você abre a página. Hoje você aprende a fazer esse
+      pedido. Mas primeiro, o vocabulário — com calma, um nome por vez:</p>
+
+      <div class="analogy">
+        <div class="analogy-title">🍽️ O restaurante</div>
+        <p>Você senta na mesa de um restaurante. Você <strong>não entra na cozinha</strong> pegar a
+        comida — você chama o <strong>garçom</strong>, faz um <strong>pedido</strong>, ele leva o pedido
+        pra cozinha e <strong>volta com o prato</strong>. Pronto: você acabou de entender como a web
+        funciona por trás dos panos.</p>
       </div>
-      <div class="quiz-feedback" data-correct="Isso! E esse 'lugar que roda na hora certa' é o useEffect." data-wrong="Hmm… o corpo roda MUITO mais vezes do que você imagina (lembra das fotos 📸?)." data-explain="O corpo do componente roda a CADA renderização — fetch solto ali vira um desastre que você já vai ver. O onClick funcionaria, mas obrigar o usuário a clicar pra ver a loja é ruim. O React tem um lugar próprio pra 'faça isso quando o componente nascer': o useEffect."></div>
+
+      <ul class="about-bullets">
+        <li><div><strong>Cliente</strong> 🧑‍💻 — quem PEDE os dados. No nosso caso: o navegador, rodando o seu React. (Você, na mesa do restaurante.)</div></li>
+        <li><div><strong>Servidor</strong> 🗄️ — o computador que TEM os dados e fica ligado esperando pedidos. (A cozinha.)</div></li>
+        <li><div><strong>API</strong> 🤵 — o garçom: a porta de entrada do servidor. Você não mexe na cozinha; você fala com a API, e ela sabe receber pedidos e trazer respostas.</div></li>
+        <li><div><strong>Requisição</strong> 📤 — o pedido que o cliente faz ("me traga os produtos!").</div></li>
+        <li><div><strong>Resposta</strong> 📥 — o que volta do servidor (os dados… ou um "deu ruim 😵").</div></li>
+      </ul>
+
+      <figure class="clip" data-motion="rise">
+        <video controls autoplay loop muted playsinline poster="../../assets/video/o-que-e-api.png">
+          <source src="../../assets/video/o-que-e-api.mp4" type="video/mp4">
+          Seu navegador não reproduz o vídeo. <a href="../../assets/video/o-que-e-api.mp4">Baixe o clipe aqui.</a>
+        </video>
+        <figcaption>🤵 a API é o garçom: recebe a <strong>requisição</strong> do cliente, busca na cozinha (servidor) e volta com a <strong>resposta</strong></figcaption>
+      </figure>
+
+      <div class="concept">
+        <div class="concept-title">📮 HTTP — a língua do pedido</div>
+        <p>Pra cozinha entender qualquer garçom do mundo, o pedido segue um formato padrão. Na web
+        esse padrão chama-se <strong>HTTP</strong> (repara: é o começo de toda URL!). Todo pedido
+        HTTP tem um <strong>verbo</strong> que diz a intenção — e hoje só nos interessa um:
+        <strong style="color:var(--accent5)">GET</strong>, o verbo de <em>"me dá"</em>. Existem outros
+        (pra criar, alterar, apagar dados), mas eles vão brilhar quando você construir o back-end.</p>
+      </div>
+
+      <p>E pra onde vai o pedido? Todo dado servido por uma API tem um <strong>endereço</strong>,
+      chamado <strong>endpoint</strong>. Olha a anatomia de um (você vai usar ESTE hoje):</p>
+
+      <div class="anat" data-motion="rise">
+        <div class="anat-code"><span class="a-quando">http://localhost:3000</span><span class="a-oque">/produtos</span></div>
+        <div class="anat-legend">
+          <span class="anat-piece p-quando">o servidor — QUAL cozinha (localhost = a sua máquina!)</span>
+          <span class="anat-piece p-oque">o recurso — O QUE você quer dela</span>
+        </div>
+      </div>
+
+      <div class="concept">
+        <div class="concept-title">📦 JSON — o formato do prato</div>
+        <p>E a resposta, vem em que formato? Em <strong>JSON</strong> — texto organizado em chaves e
+        valores, <strong>igualzinho aos objetos que você escreveu no Cap 2</strong>, com uma frescura a
+        mais: as chaves vêm <strong>sempre entre aspas duplas</strong> (<code>"nome": "Teclado"</code>).
+        É o formato universal: qualquer linguagem entende, de JavaScript a Java.</p>
+      </div>
+
+      <figure class="clip" data-motion="rise">
+        <video controls autoplay loop muted playsinline poster="../../assets/video/anatomia-json.png">
+          <source src="../../assets/video/anatomia-json.mp4" type="video/mp4">
+          Seu navegador não reproduz o vídeo. <a href="../../assets/video/anatomia-json.mp4">Baixe o clipe aqui.</a>
+        </video>
+        <figcaption>📦 JSON por dentro: chaves entre aspas, valores, listas — o objeto do Cap 2 vestido de gala</figcaption>
+      </figure>
+
+      <div class="tip">
+        <span class="tip-icon">🗂️</span>
+        <div class="tip-content">
+          <strong>Bônus de vocabulário:</strong> quando uma API organiza os endereços desse jeito
+          (recursos como <code>/produtos</code> + verbos como GET), dizemos que ela segue o estilo
+          <strong>REST</strong>. Se aparecer "API REST" numa vaga de emprego, é isso: uma API
+          organizada do jeito que você acabou de aprender.
+        </div>
+      </div>
+
+      <div class="warning">
+        <span class="warning-icon">🔮</span>
+        <div class="warning-content">
+          <strong>E quem constrói o garçom?</strong> Criar a API — a cozinha, as regras, o banco de
+          dados — é o trabalho do <strong>back-end</strong>, que você vai construir (em Java) na
+          próxima metade do curso. Lá, HTTP, REST e os outros verbos voltam <strong>em detalhes</strong>.
+          Hoje ficamos do lado de cá do balcão: só <strong>pedindo</strong> dados.
+        </div>
+      </div>
+
+      <div class="quiz" style="margin-top:16px">
+        <div class="quiz-q"><span class="q-emoji">🤵</span> No endereço <code>http://localhost:3000/produtos</code>, o pedaço <code>/produtos</code> é…</div>
+        <div class="quiz-options">
+          <button class="quiz-opt" data-correct="true" onclick="checkQuiz(this,true)">O recurso: O QUE eu quero desse servidor</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">O verbo HTTP do pedido</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">O JSON da resposta</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">O nome do servidor</button>
+        </div>
+        <div class="quiz-feedback" data-correct="Isso! Endereço = servidor + recurso." data-wrong="Volta na anatomia do endereço ali em cima…" data-explain="http://localhost:3000 diz QUAL servidor (a sua máquina, porta 3000) e /produtos diz O QUE você quer dele — o recurso. O verbo (GET) vai junto do pedido, e o JSON é o formato da RESPOSTA que volta."></div>
+      </div>
     </div>
   </section>
 
   <div class="section-connector"><div class="line"></div></div>
 
-  <!-- ═══════════════ O LOOP INFINITO ═══════════════ -->
-  <section class="step-section" id="loop">
+  <!-- ═══════════════ JSON-SERVER ═══════════════ -->
+  <section class="step-section" id="jsonserver">
     <div class="step-header">
-      <div class="step-number sn-red">🌀</div>
+      <div class="step-number sn-js">📦</div>
       <div>
-        <div class="step-title">A dor: o loop infinito</div>
-        <div class="step-sub">Por que o fetch NÃO pode ficar solto no componente</div>
+        <div class="step-title">json-server — sua primeira API, na sua máquina</div>
+        <div class="step-sub">Teoria vista? Então ganhe uma cozinha de treino em casa</div>
       </div>
     </div>
 
     <div class="card">
-      <p>Só de olhar, essa tentativa parece certíssima — o fetch do Cap 3, o <code>set</code> do Cap 6,
-      tudo no lugar… <strong>né?</strong></p>
+      <div class="analogy">
+        <div class="analogy-title">🍽️ Uma cozinha de treino em casa</div>
+        <p>Teoria sem restaurante de verdade não enche barriga. Então antes de qualquer React, você
+        vai <strong>subir uma API de verdade na SUA máquina</strong> — cozinha, garçom e cardápio.
+        O truque é o <code>json-server</code>: uma ferramenta que pega um arquivo
+        <code>db.json</code> e o transforma numa <strong>API completa</strong>, respondendo requisições
+        no endereço que você viu na anatomia: <code>http://localhost:3000/produtos</code>.</p>
+      </div>
+
+      <p><strong>Passo 1:</strong> na pasta do projeto (fora do <code>src/</code>), crie o cardápio — um
+      arquivo <code>db.json</code>. Olha o formato: JSON como no vídeo (aspas duplas nas chaves!), com os
+      mesmos campos dos seus produtos de sempre:</p>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">db.json (na raiz do projeto, do lado do package.json)</span><span class="lang-badge js">JSON</span></div>
+<pre><span class="punc">{</span>
+  <span class="st">"produtos"</span><span class="punc">:</span> [
+    <span class="punc">{</span> <span class="st">"id"</span><span class="punc">:</span> <span class="num">1</span>, <span class="st">"nome"</span><span class="punc">:</span> <span class="st">"Teclado Mecânico"</span>, <span class="st">"preco"</span><span class="punc">:</span> <span class="num">320</span>, <span class="st">"imagem"</span><span class="punc">:</span> <span class="st">"/teclado.jpg"</span>, <span class="st">"emEstoque"</span><span class="punc">:</span> <span class="kw">true</span> <span class="punc">}</span>,
+    <span class="punc">{</span> <span class="st">"id"</span><span class="punc">:</span> <span class="num">2</span>, <span class="st">"nome"</span><span class="punc">:</span> <span class="st">"Monitor 27 pol"</span>, <span class="st">"preco"</span><span class="punc">:</span> <span class="num">1450</span>, <span class="st">"imagem"</span><span class="punc">:</span> <span class="st">"/monitor.jpg"</span>, <span class="st">"emEstoque"</span><span class="punc">:</span> <span class="kw">true</span> <span class="punc">}</span>,
+    <span class="punc">{</span> <span class="st">"id"</span><span class="punc">:</span> <span class="num">3</span>, <span class="st">"nome"</span><span class="punc">:</span> <span class="st">"Cadeira Gamer"</span>, <span class="st">"preco"</span><span class="punc">:</span> <span class="num">980</span>, <span class="st">"imagem"</span><span class="punc">:</span> <span class="st">"/cadeira.jpg"</span>, <span class="st">"emEstoque"</span><span class="punc">:</span> <span class="kw">false</span> <span class="punc">}</span>
+  ]
+<span class="punc">}</span></pre>
+      </div>
+
+      <p><strong>Passo 2:</strong> num terminal <strong>NOVO</strong> (deixe o <code>npm run dev</code>
+      rodando no outro!), suba o servidor:</p>
+
+      <div class="terminal" data-typewriter>
+        <div class="code-header" style="background:rgba(255,255,255,0.04);padding:8px 14px;border-radius:14px 14px 0 0">
+          <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+          <span class="filename">Terminal 2 do VSCode (o Terminal 1 segue com o npm run dev)</span>
+        </div>
+        <div class="terminal-body">
+          <span class="prompt">$</span> <span class="typed" data-text="npx json-server db.json"></span><span class="cursor"></span>
+          <br><span class="out">JSON Server started on PORT :3000</span>
+          <br><span class="out">Endpoints:</span>
+          <br><span class="out">http://localhost:3000/produtos</span>
+        </div>
+      </div>
+
+      <p style="margin-top:14px"><strong>Passo 3:</strong> visite <code>http://localhost:3000/produtos</code>
+      no navegador. Surpresa: <strong>digitar um endereço no navegador É fazer uma requisição GET</strong>.
+      O que aparece é a resposta da sua API — o JSON cru:</p>
+
+      <div class="mini-browser" data-url="localhost:3000/produtos">
+<script type="text/html" data-mp="html">
+  <pre style="margin:0;font-family:monospace;font-size:12px;color:#0b7261">[
+  { "id": 1, "nome": "Teclado Mecânico", "preco": 320, "imagem": "/teclado.jpg", "emEstoque": true },
+  { "id": 2, "nome": "Monitor 27 pol", "preco": 1450, "imagem": "/monitor.jpg", "emEstoque": true },
+  { "id": 3, "nome": "Cadeira Gamer", "preco": 980, "imagem": "/cadeira.jpg", "emEstoque": false }
+]</pre>
+</script>
+      </div>
+
+      <div class="concept">
+        <div class="concept-title">🔮 Cozinha de treino ≠ cozinha de verdade</div>
+        <p>O <code>json-server</code> é um servidor <strong>de mentirinha</strong>, perfeito pra treinar o
+        lado do front. A cozinha de verdade — com regras, banco e segurança — é o <strong>back-end</strong>
+        que você vai construir (em Java/Spring) na próxima metade do curso. E no <strong>Cap 9</strong>, este
+        mesmo endereço <code>localhost:3000</code> vira a URL da SUA API do ERP. O código do front quase
+        não muda — é essa a beleza.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ AXIOS ═══════════════ -->
+  <section class="step-section" id="axios">
+    <div class="step-header">
+      <div class="step-number sn-react" style="background:linear-gradient(135deg,var(--accent6),#8b91ff)">🚚</div>
+      <div>
+        <div class="step-title">axios — o pedido feito pelo seu código</div>
+        <div class="step-sub">O que o navegador fez no endereço, o JavaScript faz com 3 linhas</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p>Você acabou de fazer um GET <strong>digitando o endereço no navegador</strong>. Mas a loja não
+      pode depender de você digitar endereço — quem tem que fazer o pedido é <strong>o seu
+      código</strong>. Pra isso existe o <strong style="color:var(--accent6)">axios</strong>: o
+      entregador profissional do front. 🚚</p>
+
+      <p><strong>Primeiro, contrate o entregador.</strong> O axios não vem de fábrica — é uma peça
+      pronta que se baixa pra dentro do projeto, igual você fez com o React no Cap 4:</p>
+
+      <div class="terminal" data-typewriter>
+        <div class="code-header" style="background:rgba(255,255,255,0.04);padding:8px 14px;border-radius:14px 14px 0 0">
+          <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+          <span class="filename">Terminal do VSCode (na pasta do projeto)</span>
+        </div>
+        <div class="terminal-body">
+          <span class="prompt">$</span> <span class="typed" data-text="npm install axios"></span><span class="cursor"></span>
+          <br><span class="out">added 9 packages in 2s</span>
+        </div>
+      </div>
+
+      <div class="tip">
+        <span class="tip-icon">📦</span>
+        <div class="tip-content">
+          <strong>Déjà-vu do Cap 4:</strong> <code>npm install</code> baixa a peça pra dentro do
+          <code>node_modules/</code> e anota no <code>package.json</code>. Depois de instalar, é só
+          importar — repare: <strong>sem chaves</strong>, porque o axios vem inteiro, não em pedaços
+          (<code>import axios from "axios"</code>, e não <code>import { axios }</code>).
+        </div>
+      </div>
+
+      <p>Contratado. Agora olha o pedido — leia com os olhos da teoria, ainda não digite (daqui a
+      pouco ele entra na loja, no lugar certo):</p>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">um pedido GET com axios — as 3 linhas do capítulo</span><span class="lang-badge js">JS</span></div>
+<pre><span class="kw">import</span> <span class="var">axios</span> <span class="kw">from</span> <span class="st">"axios"</span>
+
+<span class="var">axios</span>.<span class="fn">get</span>(<span class="st">"http://localhost:3000/produtos"</span>)
+  .<span class="fn">then</span>((<span class="var">res</span>) <span class="op">=&gt;</span> <span class="var">console</span>.<span class="fn">log</span>(<span class="var">res</span>.<span class="var">data</span>))</pre>
+      </div>
+
+      <ul class="about-bullets">
+        <li><div><strong><code>axios.get(...)</code></strong> — o verbo GET da teoria, com o <strong>endpoint</strong> como alvo: "entregador, vá NESTE endereço e traga o que tiver lá".</div></li>
+        <li><div><strong><code>.then((res) =&gt; ...)</code></strong> — "<strong>quando</strong> a resposta chegar, faça isto". A viagem até o servidor demora (milissegundos… ou segundos, se a internet estiver ruim) — o <code>.then</code> é o recado que fica esperando a campainha tocar. 🛎️</div></li>
+        <li><div><strong><code>res</code></strong> — a <strong>resposta inteira</strong>, de envelope e tudo (status, cabeçalhos…).</div></li>
+        <li><div><strong><code>res.data</code></strong> — o que interessa: <strong>os dados</strong>. O axios já traduziu o JSON pra array/objetos JavaScript — pronto pra usar <code>.map()</code> em cima!</div></li>
+      </ul>
+
+      <div class="analogy">
+        <div class="analogy-title">🍕 Por que o .then? (a pizza explica)</div>
+        <p>Quando você pede pizza, você <strong>não fica parado na porta</strong> esperando — você segue
+        a vida, e <strong>quando a campainha toca</strong>, aí sim você atende. O JavaScript é igual:
+        ele dispara o pedido e <strong>continua executando o resto do código</strong>; o
+        <code>.then</code> guarda a instrução de "o que fazer quando a campainha tocar". Isso tem nome
+        (código <em>assíncrono</em>) — guarde a ideia, o nome fica pra depois.</p>
+      </div>
+
+      <div class="warning">
+        <span class="warning-icon">⌨️</span>
+        <div class="warning-content">
+          Olha a arrow <code>=&gt;</code> aí de novo, dentro do <code>.then</code>. Lembre: sua IDE pode
+          <strong>desenhar</strong> <code>⇒</code>, mas você digita <kbd>=</kbd> e depois <kbd>&gt;</kbd>.
+        </div>
+      </div>
+
+      <div class="tip">
+        <span class="tip-icon">🔎</span>
+        <div class="tip-content">
+          <strong>Você vai esbarrar por aí no <code>fetch</code>:</strong> um jeito nativo do navegador
+          de fazer o mesmo pedido, sem instalar nada. Funciona — mas dá mais trabalho (a tradução do
+          JSON, por exemplo, é na mão). No mercado, a maioria dos projetos React usa
+          <strong>axios</strong>; por isso vamos direto nele.
+        </div>
+      </div>
+
+      <div class="quiz" style="margin-top:16px">
+        <div class="quiz-q"><span class="q-emoji">🚚</span> No <code>.then((res) =&gt; ...)</code>, onde estão os produtos que a API mandou?</div>
+        <div class="quiz-options">
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">Em <code>res</code> — é só usar direto no .map()</button>
+          <button class="quiz-opt" data-correct="true" onclick="checkQuiz(this,true)">Em <code>res.data</code> — o res é o envelope, os dados vêm dentro</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">Em <code>axios.data</code></button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">No console — o axios já imprime sozinho</button>
+        </div>
+        <div class="quiz-feedback" data-correct="Isso! res = envelope; res.data = a encomenda." data-wrong="Abre o envelope… 📬" data-explain="O res é a resposta HTTP inteira (com status, cabeçalhos e mais). Os DADOS — o JSON já traduzido — vêm dentro dele, em res.data. Esquecer o .data é um dos bugs clássicos do capítulo (o BugZilla vai te mostrar)."></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ PRA QUE SERVE O USEEFFECT ═══════════════ -->
+  <section class="step-section" id="paraque">
+    <div class="step-header">
+      <div class="step-number sn-red">🌀</div>
+      <div>
+        <div class="step-title">Pra que serve o useEffect?</div>
+        <div class="step-sub">A resposta começa com uma pegadinha: ONDE o pedido mora?</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p>Recapitulando o plano da loja: ela abre → o axios busca os produtos → <code>setProdutos</code>
+      guarda no estado → o <code>.map()</code> desenha os cards. Só falta decidir <strong>uma
+      coisa</strong>: em que LUGAR do componente escrever o pedido? A primeira ideia de todo mundo é
+      "solto no corpo, ué — o corpo roda quando o componente roda"… <strong>né?</strong></p>
 
       <div class="code-block">
         <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx — tentativa ingênua 🙈 (NÃO faça!)</span><span class="lang-badge jsx">JSX</span></div>
 <pre><span class="kw">const</span> <span class="fn">App</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
   <span class="kw">const</span> [<span class="var">produtos</span>, <span class="var">setProdutos</span>] <span class="op">=</span> <span class="fn">useState</span>([])
 
-  <span class="cm">// 💣 fetch SOLTO no corpo do componente</span>
-  <span class="fn">fetch</span>(<span class="st">"http://localhost:3000/produtos"</span>)
-    .<span class="fn">then</span>((<span class="var">res</span>) <span class="op">=&gt;</span> <span class="var">res</span>.<span class="fn">json</span>())
-    .<span class="fn">then</span>((<span class="var">dados</span>) <span class="op">=&gt;</span> <span class="fn">setProdutos</span>(<span class="var">dados</span>))
+  <span class="cm">// 💣 pedido SOLTO no corpo do componente</span>
+  <span class="var">axios</span>.<span class="fn">get</span>(<span class="st">"http://localhost:3000/produtos"</span>)
+    .<span class="fn">then</span>((<span class="var">res</span>) <span class="op">=&gt;</span> <span class="fn">setProdutos</span>(<span class="var">res</span>.<span class="var">data</span>))
 
   <span class="kw">return</span> <span class="punc">(</span> <span class="cm">/* ...a vitrine... */</span> <span class="punc">)</span>
 <span class="punc">}</span></pre>
@@ -302,9 +573,9 @@
       Siga a bola de neve:</p>
 
       <ul class="about-bullets">
-        <li><div>o componente renderiza → o corpo roda → <strong>o fetch dispara</strong>;</div></li>
-        <li><div>a resposta chega → <code>setProdutos(dados)</code> → o React tira <strong>nova foto</strong>;</div></li>
-        <li><div>nova foto = o corpo roda DE NOVO → <strong>outro fetch</strong> → outro set → outra foto → … <strong>∞</strong> 🔥</div></li>
+        <li><div>o componente renderiza → o corpo roda → <strong>o axios dispara</strong>;</div></li>
+        <li><div>a resposta chega → <code>setProdutos(res.data)</code> → o React tira <strong>nova foto</strong>;</div></li>
+        <li><div>nova foto = o corpo roda DE NOVO → <strong>outro pedido</strong> → outro set → outra foto → … <strong>∞</strong> 🔥</div></li>
       </ul>
 
       <p style="color:var(--text-dim);margin:14px 0 4px">Aperte o botão vermelho e veja a bola de neve
@@ -314,8 +585,8 @@
         <div class="lp-grid">
           <div class="lp-cycle">
             <div class="lp-step" id="lp-s1"><span>📸</span> <span>renderiza (o corpo roda)</span></div>
-            <div class="lp-step" id="lp-s2"><span>📡</span> <span>fetch dispara</span></div>
-            <div class="lp-step" id="lp-s3"><span>📦</span> <span>resposta chega → setProdutos(dados)</span></div>
+            <div class="lp-step" id="lp-s2"><span>📡</span> <span>axios dispara</span></div>
+            <div class="lp-step" id="lp-s3"><span>📦</span> <span>resposta chega → setProdutos(res.data)</span></div>
             <div class="lp-step" id="lp-s4"><span>🔁</span> <span>set = NOVA foto… e tudo de novo</span></div>
           </div>
           <div class="lp-meter">
@@ -338,6 +609,16 @@
         coisas que saem do componente e mexem com o mundo lá fora. Efeito colateral <strong>não pode
         morar no corpo</strong> (que roda a cada foto). O React tem um quarto separado pra isso, com
         campainha própria: o <strong style="color:var(--react)">useEffect</strong>.</p>
+      </div>
+
+      <div class="tip">
+        <span class="tip-icon">🎯</span>
+        <div class="tip-content">
+          <strong>Então, PRA QUE serve o useEffect? Resumão pra colar no caderno:</strong> é o lugar
+          do componente pra código que <strong>fala com o mundo lá fora</strong> — e que por isso
+          precisa rodar <strong>na hora certa</strong> (ex.: "busque os produtos UMA vez, quando a
+          loja abrir"), e não a cada foto. Quem escolhe a hora certa é você — na próxima seção.
+        </div>
       </div>
     </div>
   </section>
@@ -484,7 +765,7 @@
       </div>
 
       <div class="code-block">
-        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">modo 2 — array VAZIO [] (o modo do fetch!)</span><span class="lang-badge jsx">JSX</span></div>
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">modo 2 — array VAZIO [] (o modo da busca inicial!)</span><span class="lang-badge jsx">JSX</span></div>
 <pre><span class="fn">useEffect</span>(() <span class="op">=&gt;</span> <span class="punc">{</span>
   <span class="var">console</span>.<span class="fn">log</span>(<span class="st">"rodei!"</span>)
 <span class="punc">}</span>, [])   <span class="cm">// [] → roda UMA vez, quando o componente NASCE</span></pre>
@@ -498,7 +779,7 @@
       </div>
 
       <ul class="about-bullets">
-        <li><div><strong>Sem array</strong> — "toque toda hora": roda em <em>toda</em> renderização. Quase nunca é o que você quer (e com fetch, é o loop 🌀).</div></li>
+        <li><div><strong>Sem array</strong> — "toque toda hora": roda em <em>toda</em> renderização. Quase nunca é o que você quer (e com a busca na API, é o loop 🌀).</div></li>
         <li><div><strong><code>[]</code> vazio</strong> — "toque uma vez, ao ligar": roda só quando o componente <strong>monta</strong>. É O modo pra buscar dados iniciais.</div></li>
         <li><div><strong><code>[busca]</code></strong> — "toque quando ISSO mudar": roda ao montar e a cada mudança das dependências listadas.</div></li>
       </ul>
@@ -536,7 +817,7 @@
           <button class="quiz-opt" onclick="checkQuiz(this,false)">[produtos] — afinal o efeito mexe em produtos</button>
           <button class="quiz-opt" onclick="checkQuiz(this,false)">Tanto faz, o React entende a intenção</button>
         </div>
-        <div class="quiz-feedback" data-correct="Modo do fetch inicial: []. Decorou, ganhou." data-wrong="Revê a tabela dos 3 modos…" data-explain="Sem array = roda toda renderização (com fetch+set, loop 🌀). [produtos] tem pegadinha: o efeito MUDA produtos → produtos mudou → efeito roda → … loop de novo! Pra 'uma vez ao nascer', o quando é o array vazio []."></div>
+        <div class="quiz-feedback" data-correct="Modo da busca inicial: []. Decorou, ganhou." data-wrong="Revê a tabela dos 3 modos…" data-explain="Sem array = roda toda renderização (com pedido+set, loop 🌀). [produtos] tem pegadinha: o efeito MUDA produtos → produtos mudou → efeito roda → … loop de novo! Pra 'uma vez ao nascer', o quando é o array vazio []."></div>
       </div>
 
       <p style="color:var(--text-dim);margin:16px 0 4px">🧪 <strong>Laboratório</strong> — o painel de
@@ -572,108 +853,30 @@
 
   <div class="section-connector"><div class="line"></div></div>
 
-  <!-- ═══════════════ JSON-SERVER ═══════════════ -->
-  <section class="step-section" id="jsonserver">
-    <div class="step-header">
-      <div class="step-number sn-js">📦</div>
-      <div>
-        <div class="step-title">json-server — sua primeira API local</div>
-        <div class="step-sub">Uma cozinha de treino rodando na SUA máquina</div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="analogy">
-        <div class="analogy-title">🍽️ Da cozinha dos outros pra sua cozinha de treino</div>
-        <p>No Cap 3 você comeu no restaurante dos outros: fez <code>fetch</code> na
-        <code>fakestoreapi.com</code>, uma <strong>API pública</strong> na internet. Relembrando em 3
-        linhas: <strong>API</strong> = o garçom que recebe pedidos num endereço (<strong>endpoint</strong>)
-        e devolve dados em <strong>JSON</strong>. Hoje você ganha uma <strong>cozinha de treino em
-        casa</strong>: o <code>json-server</code> transforma um arquivo <code>db.json</code> numa API
-        completa rodando no seu PC — com direito a endereço e tudo.</p>
-      </div>
-
-      <p><strong>Passo 1:</strong> na pasta do projeto (fora do <code>src/</code>), crie o cardápio — um
-      arquivo <code>db.json</code>. Olha o formato: os mesmos campos de sempre, porque esse é o shape
-      dos dados do <strong>ERP</strong> que vem aí:</p>
-
-      <div class="code-block">
-        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">db.json (na raiz do projeto, do lado do package.json)</span><span class="lang-badge js">JSON</span></div>
-<pre><span class="punc">{</span>
-  <span class="st">"produtos"</span><span class="punc">:</span> [
-    <span class="punc">{</span> <span class="st">"id"</span><span class="punc">:</span> <span class="num">1</span>, <span class="st">"nome"</span><span class="punc">:</span> <span class="st">"Teclado Mecânico"</span>, <span class="st">"preco"</span><span class="punc">:</span> <span class="num">320</span>, <span class="st">"imagem"</span><span class="punc">:</span> <span class="st">"/teclado.jpg"</span>, <span class="st">"emEstoque"</span><span class="punc">:</span> <span class="kw">true</span> <span class="punc">}</span>,
-    <span class="punc">{</span> <span class="st">"id"</span><span class="punc">:</span> <span class="num">2</span>, <span class="st">"nome"</span><span class="punc">:</span> <span class="st">"Monitor 27 pol"</span>, <span class="st">"preco"</span><span class="punc">:</span> <span class="num">1450</span>, <span class="st">"imagem"</span><span class="punc">:</span> <span class="st">"/monitor.jpg"</span>, <span class="st">"emEstoque"</span><span class="punc">:</span> <span class="kw">true</span> <span class="punc">}</span>,
-    <span class="punc">{</span> <span class="st">"id"</span><span class="punc">:</span> <span class="num">3</span>, <span class="st">"nome"</span><span class="punc">:</span> <span class="st">"Cadeira Gamer"</span>, <span class="st">"preco"</span><span class="punc">:</span> <span class="num">980</span>, <span class="st">"imagem"</span><span class="punc">:</span> <span class="st">"/cadeira.jpg"</span>, <span class="st">"emEstoque"</span><span class="punc">:</span> <span class="kw">false</span> <span class="punc">}</span>
-  ]
-<span class="punc">}</span></pre>
-      </div>
-
-      <p><strong>Passo 2:</strong> num terminal <strong>NOVO</strong> (deixe o <code>npm run dev</code>
-      rodando no outro!), suba o servidor:</p>
-
-      <div class="terminal" data-typewriter>
-        <div class="code-header" style="background:rgba(255,255,255,0.04);padding:8px 14px;border-radius:14px 14px 0 0">
-          <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
-          <span class="filename">Terminal 2 do VSCode (o Terminal 1 segue com o npm run dev)</span>
-        </div>
-        <div class="terminal-body">
-          <span class="prompt">$</span> <span class="typed" data-text="npx json-server db.json"></span><span class="cursor"></span>
-          <br><span class="out">JSON Server started on PORT :3000</span>
-          <br><span class="out">Endpoints:</span>
-          <br><span class="out">http://localhost:3000/produtos</span>
-        </div>
-      </div>
-
-      <p style="margin-top:14px"><strong>Passo 3:</strong> visite <code>http://localhost:3000/produtos</code>
-      no navegador. Isso que aparece é a sua API <strong>respondendo JSON cru</strong> — igualzinho a
-      fakestore do Cap 3, só que é SUA:</p>
-
-      <div class="mini-browser" data-url="localhost:3000/produtos">
-<script type="text/html" data-mp="html">
-  <pre style="margin:0;font-family:monospace;font-size:12px;color:#0b7261">[
-  { "id": 1, "nome": "Teclado Mecânico", "preco": 320, "imagem": "/teclado.jpg", "emEstoque": true },
-  { "id": 2, "nome": "Monitor 27 pol", "preco": 1450, "imagem": "/monitor.jpg", "emEstoque": true },
-  { "id": 3, "nome": "Cadeira Gamer", "preco": 980, "imagem": "/cadeira.jpg", "emEstoque": false }
-]</pre>
-</script>
-      </div>
-
-      <div class="concept">
-        <div class="concept-title">🔮 Cozinha de treino ≠ cozinha de verdade</div>
-        <p>O <code>json-server</code> é um servidor <strong>de mentirinha</strong>, perfeito pra treinar o
-        lado do front. A cozinha de verdade — com regras, banco e segurança — é o <strong>back-end</strong>
-        que você vai construir (em Java/Spring) na próxima metade do curso. E no <strong>Cap 9</strong>, este
-        mesmo endereço <code>localhost:3000</code> vira a URL da SUA API do ERP. O código do front quase
-        não muda — é essa a beleza.</p>
-      </div>
-    </div>
-  </section>
-
-  <div class="section-connector"><div class="line"></div></div>
-
   <!-- ═══════════════ APAGUE O CONST ═══════════════ -->
   <section class="step-section" id="magia">
     <div class="step-header">
       <div class="step-number sn-react">🚀</div>
       <div>
         <div class="step-title">O momento mágico: apague o const</div>
-        <div class="step-sub">useState vazio + useEffect com fetch + o .map() de sempre</div>
+        <div class="step-sub">useState vazio + useEffect com axios + o .map() de sempre</div>
       </div>
     </div>
 
     <div class="card">
-      <p>Chegou a hora. O padrão que conecta <strong>tudo</strong> que você aprendeu — Cap 3 (fetch),
-      Cap 5 (.map) e Cap 6 (estado) — em <strong>três passos</strong>:</p>
+      <p>Chegou a hora. O padrão que conecta <strong>tudo</strong> que você aprendeu — a API e o axios
+      de hoje, o <code>.map()</code> do Cap 5 e o estado do Cap 6 — em <strong>três passos</strong>:</p>
 
       <ul class="about-bullets">
         <li><div><strong>1. A vitrine nasce vazia:</strong> <code>useState([])</code> — sem dados ainda, mas o <code>.map()</code> de um array vazio só desenha… nada. Sem erro.</div></li>
-        <li><div><strong>2. O useEffect busca:</strong> modo <code>[]</code> (uma vez, ao nascer) + o fetch do Cap 3 + <code>setProdutos(dados)</code> no final.</div></li>
+        <li><div><strong>2. O useEffect busca:</strong> modo <code>[]</code> (uma vez, ao nascer) + o <code>axios.get</code> + <code>setProdutos(res.data)</code> quando a resposta chegar.</div></li>
         <li><div><strong>3. O .map() nem percebe:</strong> quando o set roda, vem a nova foto 📸 — e a MESMA vitrine desenha os dados que chegaram.</div></li>
       </ul>
 
       <div class="code-block">
         <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx — o padrão canônico ⭐ (decore este bloco!)</span><span class="lang-badge jsx">JSX</span></div>
 <pre><span class="kw">import</span> <span class="punc">{</span> <span class="var">useState</span>, <span class="var">useEffect</span> <span class="punc">}</span> <span class="kw">from</span> <span class="st">"react"</span>
+<span class="kw">import</span> <span class="var">axios</span> <span class="kw">from</span> <span class="st">"axios"</span>
 
 <span class="cm del">// const produtos = [ {...}, {...}, {...} ]   ⚰️ APAGUE!</span>
 <span class="cm">// (com carinho — ele te serviu bem desde o Cap 4)</span>
@@ -682,9 +885,8 @@
   <span class="kw">const</span> [<span class="var">produtos</span>, <span class="var">setProdutos</span>] <span class="op">=</span> <span class="fn">useState</span>([])      <span class="cm">// 1. nasce vazio</span>
 
   <span class="fn">useEffect</span>(() <span class="op">=&gt;</span> <span class="punc">{</span>                                   <span class="cm">// 2. busca ao nascer</span>
-    <span class="fn">fetch</span>(<span class="st">"http://localhost:3000/produtos"</span>)
-      .<span class="fn">then</span>((<span class="var">res</span>) <span class="op">=&gt;</span> <span class="var">res</span>.<span class="fn">json</span>())
-      .<span class="fn">then</span>((<span class="var">dados</span>) <span class="op">=&gt;</span> <span class="fn">setProdutos</span>(<span class="var">dados</span>))
+    <span class="var">axios</span>.<span class="fn">get</span>(<span class="st">"http://localhost:3000/produtos"</span>)
+      .<span class="fn">then</span>((<span class="var">res</span>) <span class="op">=&gt;</span> <span class="fn">setProdutos</span>(<span class="var">res</span>.<span class="var">data</span>))
   <span class="punc">}</span>, [])
 
   <span class="kw">return</span> (
@@ -711,7 +913,7 @@
           <source src="../../assets/video/vida-do-componente.mp4" type="video/mp4">
           Seu navegador não reproduz o vídeo. <a href="../../assets/video/vida-do-componente.mp4">Baixe o clipe aqui.</a>
         </video>
-        <figcaption>🎬 a vida do componente: monta → render vazio → useEffect acorda → fetch no json-server → setProdutos → nova foto com cards → o <code>[]</code> segura a porta</figcaption>
+        <figcaption>🎬 a vida do componente: monta → render vazio → useEffect acorda → axios no json-server → setProdutos → nova foto com cards → o <code>[]</code> segura a porta</figcaption>
       </figure>
 
       <p style="color:var(--text-dim);margin:14px 0 4px">Roda a cena você mesmo — e experimenta
@@ -735,7 +937,7 @@
         <div class="dv-steps">
           <span class="dv-step" id="dv-st1">1. monta (vazio)</span>
           <span class="dv-step" id="dv-st2">2. useEffect roda</span>
-          <span class="dv-step" id="dv-st3">3. fetch 🚚</span>
+          <span class="dv-step" id="dv-st3">3. axios 🚚</span>
           <span class="dv-step" id="dv-st4">4. JSON volta 📦</span>
           <span class="dv-step" id="dv-st5">5. setProdutos → 📸</span>
         </div>
@@ -772,10 +974,9 @@
 <span class="kw">const</span> [<span class="var">erro</span>, <span class="var">setErro</span>] <span class="op">=</span> <span class="fn">useState</span>(<span class="kw">false</span>)
 
 <span class="fn">useEffect</span>(() <span class="op">=&gt;</span> <span class="punc">{</span>
-  <span class="fn">fetch</span>(<span class="st">"http://localhost:3000/produtos"</span>)
-    .<span class="fn">then</span>((<span class="var">res</span>) <span class="op">=&gt;</span> <span class="var">res</span>.<span class="fn">json</span>())
-    .<span class="fn">then</span>((<span class="var">dados</span>) <span class="op">=&gt;</span> <span class="punc">{</span>
-      <span class="fn">setProdutos</span>(<span class="var">dados</span>)
+  <span class="var">axios</span>.<span class="fn">get</span>(<span class="st">"http://localhost:3000/produtos"</span>)
+    .<span class="fn">then</span>((<span class="var">res</span>) <span class="op">=&gt;</span> <span class="punc">{</span>
+      <span class="fn">setProdutos</span>(<span class="var">res</span>.<span class="var">data</span>)
       <span class="fn">setCarregando</span>(<span class="kw">false</span>)      <span class="cm">// chegou! apaga o ⏳</span>
     <span class="punc">}</span>)
     .<span class="fn">catch</span>(() <span class="op">=&gt;</span> <span class="punc">{</span>              <span class="cm">// a viagem falhou 😵</span>
@@ -826,8 +1027,8 @@
         <p><strong>1) A faxina:</strong> o useEffect aceita um <code>return () =&gt; {...}</code> — uma
         função de <strong>limpeza</strong> que roda quando o componente sai de cena (útil pra desligar
         timers, por exemplo). Guarde que existe; usaremos quando precisar. <strong>2) async/await:</strong>
-        outro jeito de escrever o fetch, sem <code>.then()</code>. Vamos adotá-lo no <strong>Cap 9</strong>,
-        junto com o axios e o login. Por enquanto, <code>.then()</code> firme e forte.</p>
+        outro jeito de escrever a busca, sem <code>.then()</code>. Vamos adotá-lo no <strong>Cap 9</strong>,
+        junto com o login. Por enquanto, <code>.then()</code> firme e forte.</p>
       </div>
     </div>
   </section>
@@ -840,15 +1041,15 @@
       <div class="step-number sn-red">🐛</div>
       <div>
         <div class="step-title">BugZilla ataca os efeitos!</div>
-        <div class="step-sub">Os 5 tropeços clássicos do useEffect + fetch</div>
+        <div class="step-sub">Os 6 tropeços clássicos do useEffect + axios</div>
       </div>
     </div>
 
     <div class="bug-box">
       <span class="bug-icon">🐛</span>
       <div class="bug-content">
-        <strong>Bug 1 — fetch solto no corpo:</strong> o loop infinito 🌀 (render → fetch → set →
-        render → …). A aba Network vira uma metralhadora. <strong>Conserto:</strong> fetch SEMPRE dentro
+        <strong>Bug 1 — pedido solto no corpo:</strong> o loop infinito 🌀 (render → pedido → set →
+        render → …). A aba Network vira uma metralhadora. <strong>Conserto:</strong> axios SEMPRE dentro
         do <code>useEffect(() =&gt; {...}, [])</code>.
       </div>
     </div>
@@ -866,29 +1067,41 @@
     <div class="bug-box" style="margin-top:14px">
       <span class="bug-icon">🐛</span>
       <div class="bug-content">
-        <strong>Bug 3 — esqueceu o import:</strong> "useEffect is not defined". <strong>Conserto:</strong>
-        os dois juntos na mesma linha: <code>import { useState, useEffect } from "react"</code>.
+        <strong>Bug 3 — esqueceu um import:</strong> "useEffect is not defined" (ou "axios is not
+        defined"). <strong>Conserto:</strong> duas linhas no topo — <code>import { useState, useEffect }
+        from "react"</code> (com chaves) e <code>import axios from "axios"</code> (sem chaves).
       </div>
     </div>
 
     <div class="bug-box" style="margin-top:14px">
       <span class="bug-icon">🐛</span>
       <div class="bug-content">
-        <strong>Bug 4 — esqueceu o <code>res.json()</code>:</strong> "meus produtos são uma
-        <em>Response</em>?!" — o <code>.map()</code> quebra na hora ("produtos.map is not a function").
-        <strong>Conserto:</strong> o primeiro <code>.then((res) =&gt; res.json())</code>
-        <strong>traduz</strong> a resposta pra JSON; só o segundo <code>.then</code> recebe os dados.
-        (Igualzinho no Cap 3!)
+        <strong>Bug 4 — esqueceu o <code>.data</code>:</strong> <code>setProdutos(res)</code> guarda o
+        <strong>envelope inteiro</strong> no estado — e o <code>.map()</code> quebra na hora
+        ("produtos.map is not a function"). <strong>Conserto:</strong> os dados moram DENTRO da
+        resposta: <code>setProdutos(res.data)</code>. Na dúvida, <code>console.log(res.data)</code>
+        antes de guardar.
       </div>
     </div>
 
     <div class="bug-box" style="margin-top:14px">
       <span class="bug-icon">🐛</span>
       <div class="bug-content">
-        <strong>Bug 5 — "Failed to fetch":</strong> o erro nº 1 da aula ao vivo. Quase sempre significa:
+        <strong>Bug 5 — "Network Error":</strong> o erro nº 1 da aula ao vivo. Quase sempre significa:
         <strong>o json-server não está rodando</strong> (ou parou quando você fechou o terminal).
         <strong>Conserto:</strong> olhe o Terminal 2 — tem que estar vivo, mostrando a porta :3000. Teste
         o endereço direto no navegador antes de culpar o React.
+      </div>
+    </div>
+
+    <div class="bug-box" style="margin-top:14px">
+      <span class="bug-icon">🐛</span>
+      <div class="bug-content">
+        <strong>Bug 6 — esqueceu o <code>npm install axios</code>:</strong> o Vite grita
+        "Failed to resolve import &quot;axios&quot;" e a tela fica branca. <strong>Conserto:</strong>
+        rode <code>npm install axios</code> na pasta do projeto (e, se o erro insistir, pare e suba o
+        <code>npm run dev</code> de novo). Importar sem instalar é pedir entrega sem contratar o
+        entregador. 🚚
       </div>
     </div>
 
@@ -901,9 +1114,9 @@
           <span class="tip-icon">🔦</span>
           <div class="tip-content">
             Vitrine vazia? Investigue <strong>na ordem da viagem</strong>: 1) o json-server está de pé?
-            (abra <code>localhost:3000/produtos</code> no navegador) · 2) o fetch está DENTRO do
-            useEffect com <code>[]</code>? · 3) tem o <code>res.json()</code>? · 4) o
-            <code>console.log(dados)</code> dentro do último <code>.then</code> mostra o array? Se os 4
+            (abra <code>localhost:3000/produtos</code> no navegador) · 2) o axios está DENTRO do
+            useEffect com <code>[]</code>? · 3) é <code>res.data</code> (não <code>res</code>)? · 4) o
+            <code>console.log(res.data)</code> dentro do <code>.then</code> mostra o array? Se os 4
             passarem, o problema está na vitrine (Cap 5), não nos dados.
           </div>
         </div>
@@ -978,7 +1191,7 @@
   ]
 <span class="punc">}</span></pre>
         </div>
-        <div class="tip"><span class="tip-icon">📛</span><div class="tip-content">Erro "EADDRINUSE :3000"? Já tem OUTRO json-server vivo (algum terminal esquecido). Feche-o, ou suba na porta 3001: <code>npx json-server db.json --port 3001</code> (aí o fetch usa :3001 também).</div></div>
+        <div class="tip"><span class="tip-icon">📛</span><div class="tip-content">Erro "EADDRINUSE :3000"? Já tem OUTRO json-server vivo (algum terminal esquecido). Feche-o, ou suba na porta 3001: <code>npx json-server db.json --port 3001</code> (aí o axios usa :3001 também).</div></div>
       </div>
 
       <!-- 2. guided — primeiro useEffect -->
@@ -1009,26 +1222,34 @@ a loja montou! 🎉
         </div>
       </div>
 
-      <!-- 3. solo — document.title com [busca] -->
-      <div class="exercise solo">
-        <div class="exercise-header"><span class="exercise-icon">🧑‍💻</span><div>
-          <div class="exercise-title">Passo 3 — a aba que reage à busca (sozinho/a)</div>
-          <div class="exercise-sub">O modo [busca] com resultado visível na aba do navegador</div></div>
+      <!-- 3. guided — contratar o axios + primeiro pedido no console -->
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">👨‍🏫</span><div>
+          <div class="exercise-title">Passo 3 — contrate o axios e faça o 1º pedido (com o prof)</div>
+          <div class="exercise-sub">npm install + axios.get + os produtos aparecendo no console</div></div>
         </div>
-        <div class="drill-tags"><span class="drill-level lv2"><span class="stars">★★</span> médio</span><span class="drill-tag">useEffect</span><span class="drill-tag">[dependência]</span><span class="drill-tag">DOM do Cap 3</span></div>
-        <div class="concept"><div class="concept-title">💡 Dica</div><p>Crie um <strong>segundo</strong> useEffect (pode! cada um com seu QUANDO) que muda o título da aba: <code>document.title = ...</code> (o velho DOM do Cap 3!). Quando a busca estiver vazia, o título é <code>"Mini-loja 🛒"</code>; senão, <code>"Buscando: " + busca</code> (capriche: template string ou ternário). O QUANDO certo é o que faz o efeito rodar <strong>a cada mudança da busca</strong>… qual é?</p></div>
-        <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Tenta antes!</strong> Digite na busca olhando pra ABA do navegador. Quando ela obedecer, você dominou o modo 3.</div></div>
-        <div class="toggler">
-          <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — Ver solução</span><span class="toggler-arrow">▼</span></div>
-          <div class="toggler-body"><div class="code-block">
-            <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx (o segundo efeito)</span><span class="lang-badge jsx">JSX</span></div>
-<pre><span class="fn">useEffect</span>(() <span class="op">=&gt;</span> <span class="punc">{</span>
-  <span class="var">document</span>.<span class="var">title</span> <span class="op">=</span> <span class="var">busca</span> <span class="op">?</span> <span class="st">"Buscando: "</span> <span class="op">+</span> <span class="var">busca</span> <span class="op">:</span> <span class="st">"Mini-loja 🛒"</span>
-<span class="punc">}</span>, [<span class="var">busca</span>])</pre>
-          </div>
-          <div class="tip" style="margin-top:10px"><span class="tip-icon">🧠</span><div class="tip-content">Mexer no <code>document.title</code> é um efeito colateral clássico (sai do componente e mexe no navegador) — por isso mora no useEffect, com <code>[busca]</code> no QUANDO: roda ao nascer e a cada mudança dela.</div></div>
-          </div>
+        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>1) No terminal (na pasta do projeto): <code>npm install axios</code>. 2) No topo do <code>App.jsx</code>, o import <strong>sem chaves</strong>: <code>import axios from "axios"</code>. 3) <strong>Dentro do useEffect do Passo 2</strong>, troque o console.log pelo pedido: <code>axios.get("http://localhost:3000/produtos").then((res) =&gt; console.log(res.data))</code>. 4) Salve e abra o console (F12): o array de produtos chegou <strong>da API</strong>! Ainda não mexemos na tela — primeiro a gente VÊ o dado chegar.</p></div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">import</span> <span class="punc">{</span> <span class="var">useState</span>, <span class="var">useEffect</span> <span class="punc">}</span> <span class="kw">from</span> <span class="st">"react"</span>
+<span class="kw">import</span> <span class="var">axios</span> <span class="kw">from</span> <span class="st">"axios"</span>
+
+<span class="cm">// dentro do App:</span>
+<span class="fn">useEffect</span>(() <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="var">axios</span>.<span class="fn">get</span>(<span class="st">"http://localhost:3000/produtos"</span>)
+    .<span class="fn">then</span>((<span class="var">res</span>) <span class="op">=&gt;</span> <span class="var">console</span>.<span class="fn">log</span>(<span class="var">res</span>.<span class="var">data</span>))
+<span class="punc">}</span>, [])</pre>
         </div>
+        <p class="text-dim" style="font-size:0.82rem;margin:10px 0 4px">No console do navegador 👇</p>
+        <div class="mini-browser console" data-url="Console">
+<script type="text/plain" data-mp="out">▼ (4) [{…}, {…}, {…}, {…}]
+    0: {id: 1, nome: 'Teclado Mecânico', preco: 320, emEstoque: true}
+    1: {id: 2, nome: 'Monitor 27 pol', preco: 1450, emEstoque: true}
+    2: {id: 3, nome: 'Cadeira Gamer', preco: 980, emEstoque: false}
+    3: {id: 4, nome: 'Mouse Gamer', preco: 180, emEstoque: true}
+> (esses dados vieram da SUA API! 🎉)</script>
+        </div>
+        <div class="tip"><span class="tip-icon">🧪</span><div class="tip-content">Troque de propósito <code>res.data</code> por <code>res</code> e olhe o console: aparece o <strong>envelope</strong> inteiro (status, headers, data…). É assim que você nunca mais esquece o <code>.data</code>. Desfaça antes de seguir!</div></div>
       </div>
 
       <!-- 4. guided — apagar o const -->
@@ -1037,15 +1258,14 @@ a loja montou! 🎉
           <div class="exercise-title">Passo 4 — a cerimônia: apague o const (com o prof) ⚰️🚀</div>
           <div class="exercise-sub">O momento prometido desde o Cap 4</div></div>
         </div>
-        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>Com o json-server de pé: 1) <code>const [produtos, setProdutos] = useState([])</code>; 2) o useEffect com o fetch (padrão canônico, QUANDO = <code>[]</code>); 3) <strong>apague o array <code>const produtos = [...]</code></strong> — adeus, velho amigo. Salve e assista: a vitrine pisca vazia e… os cards chegam <strong>da API</strong>. 🎉 (A busca do Cap 6 segue funcionando — o <code>filter</code> roda sobre o estado!)</p></div>
+        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>Com o json-server de pé e o pedido do Passo 3 funcionando: 1) <code>const [produtos, setProdutos] = useState([])</code>; 2) no <code>.then</code>, troque o <code>console.log(res.data)</code> por <code>setProdutos(res.data)</code>; 3) <strong>apague o array <code>const produtos = [...]</code></strong> — adeus, velho amigo. Salve e assista: a vitrine pisca vazia e… os cards chegam <strong>da API</strong>. 🎉 (A busca do Cap 6 segue funcionando — o <code>filter</code> roda sobre o estado!)</p></div>
         <div class="code-block">
           <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx</span><span class="lang-badge jsx">JSX</span></div>
 <pre><span class="kw">const</span> [<span class="var">produtos</span>, <span class="var">setProdutos</span>] <span class="op">=</span> <span class="fn">useState</span>([])
 
 <span class="fn">useEffect</span>(() <span class="op">=&gt;</span> <span class="punc">{</span>
-  <span class="fn">fetch</span>(<span class="st">"http://localhost:3000/produtos"</span>)
-    .<span class="fn">then</span>((<span class="var">res</span>) <span class="op">=&gt;</span> <span class="var">res</span>.<span class="fn">json</span>())
-    .<span class="fn">then</span>((<span class="var">dados</span>) <span class="op">=&gt;</span> <span class="fn">setProdutos</span>(<span class="var">dados</span>))
+  <span class="var">axios</span>.<span class="fn">get</span>(<span class="st">"http://localhost:3000/produtos"</span>)
+    .<span class="fn">then</span>((<span class="var">res</span>) <span class="op">=&gt;</span> <span class="fn">setProdutos</span>(<span class="var">res</span>.<span class="var">data</span>))
 <span class="punc">}</span>, [])</pre>
         </div>
         <p class="text-dim" style="font-size:0.82rem;margin:10px 0 4px">No navegador (aperte ⟳ pra reviver a chegada 🖱️) 👇</p>
@@ -1081,34 +1301,29 @@ a loja montou! 🎉
         </div>
       </div>
 
-      <!-- 5. solo — carregando -->
-      <div class="exercise solo">
-        <div class="exercise-header"><span class="exercise-icon">🧑‍💻</span><div>
-          <div class="exercise-title">Passo 5 — o ⏳ enquanto a API responde (sozinho/a)</div>
-          <div class="exercise-sub">Estado carregando + porteiro</div></div>
+      <!-- 5. guided — carregando -->
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">👨‍🏫</span><div>
+          <div class="exercise-title">Passo 5 — o ⏳ enquanto a API responde (com o prof)</div>
+          <div class="exercise-sub">Estado carregando + porteiro do Cap 5</div></div>
         </div>
-        <div class="drill-tags"><span class="drill-level lv2"><span class="stars">★★</span> médio</span><span class="drill-tag">useState(true)</span><span class="drill-tag">porteiro &amp;&amp;</span></div>
-        <div class="concept"><div class="concept-title">💡 Dica</div><p>1) Estado <code>carregando</code> nascendo <code>true</code>. 2) No <strong>último</strong> <code>.then</code>, depois do <code>setProdutos</code>: <code>setCarregando(false)</code>. 3) No return, o porteiro: <code>{carregando &amp;&amp; &lt;p&gt;⏳ Carregando produtos...&lt;/p&gt;}</code>. 4) Pra VER funcionando: derrube o json-server e suba com <code>--delay 800</code>.</p></div>
-        <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Tenta antes!</strong> São 3 linhas — uma de estado, uma no .then, uma de porteiro.</div></div>
-        <div class="toggler">
-          <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — Ver solução</span><span class="toggler-arrow">▼</span></div>
-          <div class="toggler-body"><div class="code-block">
-            <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx</span><span class="lang-badge jsx">JSX</span></div>
+        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>São 3 linhas: 1) estado <code>carregando</code> nascendo <code>true</code>; 2) no <code>.then</code>, depois do <code>setProdutos</code>: <code>setCarregando(false)</code> (chegou, apaga o ⏳); 3) no return, o porteiro: <code>{carregando &amp;&amp; &lt;p&gt;⏳ Carregando produtos...&lt;/p&gt;}</code>. Pra VER o ⏳ (no localhost é rápido demais): derrube o json-server e suba com atraso proposital — <code>npx json-server db.json --delay 800</code>.</p></div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx</span><span class="lang-badge jsx">JSX</span></div>
 <pre><span class="kw">const</span> [<span class="var">carregando</span>, <span class="var">setCarregando</span>] <span class="op">=</span> <span class="fn">useState</span>(<span class="kw">true</span>)
 
 <span class="fn">useEffect</span>(() <span class="op">=&gt;</span> <span class="punc">{</span>
-  <span class="fn">fetch</span>(<span class="st">"http://localhost:3000/produtos"</span>)
-    .<span class="fn">then</span>((<span class="var">res</span>) <span class="op">=&gt;</span> <span class="var">res</span>.<span class="fn">json</span>())
-    .<span class="fn">then</span>((<span class="var">dados</span>) <span class="op">=&gt;</span> <span class="punc">{</span>
-      <span class="fn">setProdutos</span>(<span class="var">dados</span>)
+  <span class="var">axios</span>.<span class="fn">get</span>(<span class="st">"http://localhost:3000/produtos"</span>)
+    .<span class="fn">then</span>((<span class="var">res</span>) <span class="op">=&gt;</span> <span class="punc">{</span>
+      <span class="fn">setProdutos</span>(<span class="var">res</span>.<span class="var">data</span>)
       <span class="fn">setCarregando</span>(<span class="kw">false</span>)
     <span class="punc">}</span>)
 <span class="punc">}</span>, [])
 
 <span class="cm">// no return, antes da vitrine:</span>
 {<span class="var">carregando</span> <span class="op">&amp;&amp;</span> <span class="tag">&lt;p&gt;</span>⏳ Carregando produtos...<span class="tag">&lt;/p&gt;</span>}</pre>
-          </div></div>
         </div>
+        <div class="tip"><span class="tip-icon">🧠</span><div class="tip-content">Repara no detalhe: quando o <code>.then</code> faz DUAS coisas (guardar produtos E apagar o ⏳), a arrow ganha <strong>chaves</strong> — <code>(res) =&gt; { ... }</code> — como no Cap 2.</div></div>
       </div>
 
       <!-- 6. solo — erro -->
@@ -1118,7 +1333,7 @@ a loja montou! 🎉
           <div class="exercise-sub">.catch + tela de erro amigável + teste de verdade</div></div>
         </div>
         <div class="drill-tags"><span class="drill-level lv3"><span class="stars">★★★</span> desafio</span><span class="drill-tag">.catch</span><span class="drill-tag">estado erro</span></div>
-        <div class="concept"><div class="concept-title">💡 Dica</div><p>1) Estado <code>erro</code> nascendo <code>false</code>. 2) Pendure um <code>.catch(() =&gt; {...})</code> no fim da corrente do fetch: dentro, <code>setErro(true)</code> e <code>setCarregando(false)</code>. 3) Porteiro no return com uma mensagem que AJUDE ("o json-server está rodando?"). 4) O teste de fogo: <strong>mate o json-server</strong> (Ctrl+C no Terminal 2), dê F5 na loja e veja sua tela de erro. Suba o servidor de novo, F5 — voltou. 🔥</p></div>
+        <div class="concept"><div class="concept-title">💡 Dica</div><p>1) Estado <code>erro</code> nascendo <code>false</code>. 2) Pendure um <code>.catch(() =&gt; {...})</code> no fim da corrente do axios: dentro, <code>setErro(true)</code> e <code>setCarregando(false)</code>. 3) Porteiro no return com uma mensagem que AJUDE ("o json-server está rodando?"). 4) O teste de fogo: <strong>mate o json-server</strong> (Ctrl+C no Terminal 2), dê F5 na loja e veja sua tela de erro. Suba o servidor de novo, F5 — voltou. 🔥</p></div>
         <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Tenta antes!</strong> Derrubar o próprio servidor de propósito é o teste mais divertido do capítulo.</div></div>
         <div class="toggler">
           <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — Ver solução</span><span class="toggler-arrow">▼</span></div>
@@ -1127,10 +1342,9 @@ a loja montou! 🎉
 <pre><span class="kw">const</span> [<span class="var">erro</span>, <span class="var">setErro</span>] <span class="op">=</span> <span class="fn">useState</span>(<span class="kw">false</span>)
 
 <span class="fn">useEffect</span>(() <span class="op">=&gt;</span> <span class="punc">{</span>
-  <span class="fn">fetch</span>(<span class="st">"http://localhost:3000/produtos"</span>)
-    .<span class="fn">then</span>((<span class="var">res</span>) <span class="op">=&gt;</span> <span class="var">res</span>.<span class="fn">json</span>())
-    .<span class="fn">then</span>((<span class="var">dados</span>) <span class="op">=&gt;</span> <span class="punc">{</span>
-      <span class="fn">setProdutos</span>(<span class="var">dados</span>)
+  <span class="var">axios</span>.<span class="fn">get</span>(<span class="st">"http://localhost:3000/produtos"</span>)
+    .<span class="fn">then</span>((<span class="var">res</span>) <span class="op">=&gt;</span> <span class="punc">{</span>
+      <span class="fn">setProdutos</span>(<span class="var">res</span>.<span class="var">data</span>)
       <span class="fn">setCarregando</span>(<span class="kw">false</span>)
     <span class="punc">}</span>)
     .<span class="fn">catch</span>(() <span class="op">=&gt;</span> <span class="punc">{</span>
@@ -1236,7 +1450,7 @@ a loja montou! 🎉
           <div class="exercise-title">Desafio para Casa — o dado que atravessa a stack</div>
           <div class="exercise-sub">Do db.json até o porteiro do card</div></div>
         </div>
-        <div class="concept"><div class="concept-title">💡 Missão</div><p>1) Adicione um produto novo no <code>db.json</code> com <code>"emEstoque": false</code>, dê F5 na loja e observe: o dado atravessou <strong>API → fetch → estado → .map() → porteiro</strong> e o card já nasceu esgotado (cinza, sem botão) — sem você tocar no React. Sinta o poder. 2) Bônus ★★★: um botão <code>🔄 Recarregar</code> no App — extraia o fetch pra uma função <code>carregarProdutos</code>, chame ela no useEffect E no onClick do botão (mostrando o ⏳ de novo a cada clique). Traga no próximo sábado! 🚀</p></div>
+        <div class="concept"><div class="concept-title">💡 Missão</div><p>1) Adicione um produto novo no <code>db.json</code> com <code>"emEstoque": false</code>, dê F5 na loja e observe: o dado atravessou <strong>API → axios → estado → .map() → porteiro</strong> e o card já nasceu esgotado (cinza, sem botão) — sem você tocar no React. Sinta o poder. 2) Bônus ★★★: um botão <code>🔄 Recarregar</code> no App — extraia a busca pra uma função <code>carregarProdutos</code>, chame ela no useEffect E no onClick do botão (mostrando o ⏳ de novo a cada clique). Traga no próximo sábado! 🚀</p></div>
       </div>
     </div>
   </section>
@@ -1255,23 +1469,25 @@ a loja montou! 🎉
 
     <div class="card">
       <ul class="about-bullets">
-        <li><div><strong>Efeito colateral</strong> (buscar dado, mexer no title, timers) não mora no corpo do componente — o corpo roda a cada foto 📸 (fetch solto = loop 🌀).</div></li>
-        <li><div><strong>useEffect(O QUE, QUANDO):</strong> a função e o array, sempre nessa ordem — e sempre digitados pela <strong>receita da moldura</strong> (1 moldura → 2 função → 3 vírgula+array → 4 corpo).</div></li>
-        <li><div><strong>Os 3 modos do QUANDO:</strong> sem array = toda renderização (quase sempre bug) · <code>[]</code> = uma vez ao nascer (o modo do fetch) · <code>[busca]</code> = quando a dependência mudar.</div></li>
-        <li><div><strong>O padrão canônico:</strong> <code>useState([])</code> + fetch no <code>useEffect(..., [])</code> + o <code>.map()</code> de sempre. Três linhas trocadas, loja viva.</div></li>
+        <li><div><strong>O vocabulário da web:</strong> cliente pede → <strong>API</strong> (o garçom) recebe a <strong>requisição</strong> num <strong>endpoint</strong> → o <strong>servidor</strong> responde <strong>JSON</strong>. A língua é o <strong>HTTP</strong>, e o verbo de "me dá" é o <strong>GET</strong>. (O resto vem com o back-end!)</div></li>
         <li><div><strong>json-server:</strong> <code>npx json-server db.json</code> — sua API de treino em <code>localhost:3000</code>, no shape do ERP que vem aí.</div></li>
+        <li><div><strong>axios:</strong> <code>npm install axios</code> + <code>import axios from "axios"</code> + <code>axios.get(url).then((res) =&gt; ...)</code> — e os dados vêm em <code>res.data</code>.</div></li>
+        <li><div><strong>Efeito colateral</strong> (buscar dado, mexer no title, timers) não mora no corpo do componente — o corpo roda a cada foto 📸 (pedido solto = loop 🌀). O quarto certo é o <strong>useEffect</strong>.</div></li>
+        <li><div><strong>useEffect(O QUE, QUANDO):</strong> a função e o array, sempre nessa ordem — e sempre digitados pela <strong>receita da moldura</strong> (1 moldura → 2 função → 3 vírgula+array → 4 corpo).</div></li>
+        <li><div><strong>Os 3 modos do QUANDO:</strong> sem array = toda renderização (quase sempre bug) · <code>[]</code> = uma vez ao nascer (o modo da busca inicial) · <code>[busca]</code> = quando a dependência mudar.</div></li>
+        <li><div><strong>O padrão canônico:</strong> <code>useState([])</code> + axios no <code>useEffect(..., [])</code> + o <code>.map()</code> de sempre. Três linhas trocadas, loja viva.</div></li>
         <li><div><strong>Loading &amp; erro:</strong> estados <code>carregando</code>/<code>erro</code> + porteiros = a diferença entre site amador e profissional.</div></li>
       </ul>
 
       <div class="quiz" style="margin-top:16px">
-        <div class="quiz-q"><span class="q-emoji">🎫</span> Quiz de saída: este useEffect tem UM bug. Qual?<br><code style="font-size:0.82em">useEffect(() =&gt; { fetch(url).then((res) =&gt; res.json()).then((d) =&gt; setProdutos(d)) })</code></div>
+        <div class="quiz-q"><span class="q-emoji">🎫</span> Quiz de saída: este useEffect tem UM bug. Qual?<br><code style="font-size:0.82em">useEffect(() =&gt; { axios.get(url).then((res) =&gt; setProdutos(res.data)) })</code></div>
         <div class="quiz-options">
-          <button class="quiz-opt" onclick="checkQuiz(this,false)">Faltou o async/await — .then não funciona em useEffect</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">Faltou traduzir o JSON — o axios não entende a resposta sozinho</button>
           <button class="quiz-opt" data-correct="true" onclick="checkQuiz(this,true)">Faltou o QUANDO: sem a vírgula + [], o efeito roda a cada renderização</button>
-          <button class="quiz-opt" onclick="checkQuiz(this,false)">O fetch não pode ficar dentro do useEffect</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">O axios não pode ficar dentro do useEffect</button>
           <button class="quiz-opt" onclick="checkQuiz(this,false)">Não tem bug — está perfeito</button>
         </div>
-        <div class="quiz-feedback" data-correct="Olho de águia! 🦅 Sem o [] é quase-loop." data-wrong="Passa o olho na moldura de novo (o passo 3 da receita)…" data-explain="A função O QUE está certa (.then funciona sim). O que falta é o 2º argumento: a vírgula + []. Sem ele, o efeito roda a CADA renderização — cada set, cada tecla = novo fetch. Com [], roda uma vez ao nascer."></div>
+        <div class="quiz-feedback" data-correct="Olho de águia! 🦅 Sem o [] é quase-loop." data-wrong="Passa o olho na moldura de novo (o passo 3 da receita)…" data-explain="A função O QUE está certa (o axios traduz o JSON sozinho, e res.data está lá). O que falta é o 2º argumento: a vírgula + []. Sem ele, o efeito roda a CADA renderização — cada set, cada tecla = novo pedido. Com [], roda uma vez ao nascer."></div>
       </div>
 
       <div class="tip" style="margin-top:16px">
@@ -1288,9 +1504,9 @@ a loja montou! 🎉
         <a href="../../index.html" style="display:inline-block;padding:14px 28px;background:var(--surface2);color:var(--text);font-weight:800;border-radius:50px;font-size:1rem;text-decoration:none;border:1px solid rgba(255,255,255,0.12)">
           ← voltar ao hub
         </a>
-        <span style="display:inline-block;padding:14px 32px;background:var(--surface2);color:var(--text-dim);font-weight:900;border-radius:50px;font-size:1rem;border:1px dashed rgba(255,255,255,0.2);cursor:default">
-          Próximo: Cap 08 — Navegação 🔒 em breve
-        </span>
+        <a href="../08-react-router/" style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg,var(--react),#4aa8c9);color:#0a2530;font-weight:900;border-radius:50px;font-size:1rem;text-decoration:none;box-shadow:0 8px 30px rgba(97,218,251,0.3)">
+          Próximo: Cap 08 — Navegação (React Router) 🧭
+        </a>
       </div>
     </div>
   </section>
@@ -1299,7 +1515,7 @@ a loja montou! 🎉
 
 <footer class="footer">
   Feito com <span class="heart">♥</span> pela <strong style="color:var(--text)">programa AI</strong> ·
-  <a href="../../index.html">Hub do curso</a> · Cap 07 — Dados de verdade: useEffect &amp; fetch
+  <a href="../../index.html">Hub do curso</a> · Cap 07 — Dados de verdade: API, useEffect &amp; axios
 </footer>
 
 <script src="../../shared/scripts.js" defer></script>
@@ -1344,10 +1560,10 @@ a loja montou! 🎉
       clearLit();
       steps[i%4].classList.add('lit');
       if(i%4===0){ n++; countEl.textContent=String(n);
-        if(n===3) log('📡 fetch #'+n+' … de novo?');
-        else if(n===6){ log('🔥 fetch #'+n+' — a aba Network chora'); fan.classList.remove('spin'); fan.classList.add('spin-fast'); }
-        else if(n>6 && n%4===0) log('🔥 fetch #'+n+' …');
-        else if(n<3) log('📡 fetch #'+n);
+        if(n===3) log('📡 pedido #'+n+' … de novo?');
+        else if(n===6){ log('🔥 pedido #'+n+' — a aba Network chora'); fan.classList.remove('spin'); fan.classList.add('spin-fast'); }
+        else if(n>6 && n%4===0) log('🔥 pedido #'+n+' …');
+        else if(n<3) log('📡 pedido #'+n);
         note.textContent=n>5?'isso NUNCA para sozinho — só fechando a aba (ou consertando o código)':'';
       }
       speed=Math.max(70,speed*0.9);
@@ -1364,7 +1580,7 @@ a loja montou! 🎉
       steps[0].classList.add('ok-lit');
       const total=n+1;
       countEl.textContent=String(Math.max(total,2)); countEl.classList.add('ok');
-      log('🧯 fetch movido pro useEffect(() => {...}, [])');
+      log('🧯 pedido movido pro useEffect(() => {...}, [])');
       log('✅ montou → buscou 1x → set → render final. FIM.');
       note.textContent='com o useEffect e o [], o efeito rodou UMA vez. O contador parou. Respira. 😮‍💨';
     });
@@ -1502,12 +1718,12 @@ a loja montou! 🎉
       steps[0].classList.add('lit');
       note.textContent='montou: a vitrine nasce vazia (useState([]))…';
       setTimeout(()=>{ steps[1].classList.add('lit'); note.textContent='useEffect acordou (o [] diz: só nesta primeira vez)…'; },700);
-      setTimeout(()=>{ steps[2].classList.add('lit'); truck.style.left='calc(100% - 26px)'; note.textContent='fetch a caminho do json-server…'; },1400);
+      setTimeout(()=>{ steps[2].classList.add('lit'); truck.style.left='calc(100% - 26px)'; note.textContent='axios a caminho do json-server…'; },1400);
       setTimeout(()=>{
         if(!ligado){
           steps[2].classList.remove('lit'); steps[2].classList.add('err-lit');
-          cards.innerHTML='<div class="dv-err">😵 Failed to fetch<br><small style="font-weight:600">o json-server está rodando?</small></div>';
-          note.textContent='ninguém atendeu na :3000 → o fetch rejeita → é o .catch que salva a tela (próxima seção!)';
+          cards.innerHTML='<div class="dv-err">😵 Network Error<br><small style="font-weight:600">o json-server está rodando?</small></div>';
+          note.textContent='ninguém atendeu na :3000 → o pedido falha → é o .catch que salva a tela (próxima seção!)';
           rodando=false; return;
         }
         steps[3].classList.add('lit');
