@@ -178,7 +178,7 @@
     <a class="sidebar-link" onclick="goTo('prompt')"><span class="dot" style="background:var(--accent7)"></span> ✍️ Prompt = mini-spec</a>
     <a class="sidebar-link" onclick="goTo('revisao')"><span class="dot" style="background:var(--accent2)"></span> 👀 Revisão: a regra de ouro</a>
     <a class="sidebar-link" onclick="goTo('bugzilla')"><span class="dot" style="background:var(--bug)"></span> BugZilla 🐛</a>
-    <a class="sidebar-link" onclick="goTo('treino')"><span class="dot" style="background:var(--react)"></span> ⌨️ Treino: domando o estagiário</a>
+    <a class="sidebar-link" onclick="goTo('treino')"><span class="dot" style="background:var(--react)"></span> ⌨️ Treino: Operação UAU</a>
     <a class="sidebar-link" onclick="goTo('resumo')"><span class="dot" style="background:var(--accent7)"></span> Resumo</a>
   </div>
 </nav>
@@ -878,8 +878,8 @@ agy</div>
     <div class="step-header">
       <div class="step-number sn-react">⌨️</div>
       <div>
-        <div class="step-title">Treino — domando o estagiário</div>
-        <div class="step-sub">Primeiro papo, primeira edição, primeiro estrago (de propósito)</div>
+        <div class="step-title">Treino — Operação UAU: do zero à SUA loja</div>
+        <div class="step-sub">10 passos: a cobaia nasce, ganha estilo, dados de API, busca, carrinho, modo escuro… e a sua cara</div>
       </div>
     </div>
     <div class="card">
@@ -896,12 +896,28 @@ agy</div>
         </div>
       </div>
 
+      <div class="tip">
+        <span class="tip-icon">🎯</span>
+        <div class="tip-content">
+          <strong>A meta de hoje (olha a ambição):</strong> sair da aula com uma loja com visual
+          profissional, produtos vindos de uma API, busca ao vivo, carrinho, modo escuro e —
+          o gran finale — <strong>o TEMA que você escolher</strong>. Tudo construído em dupla com
+          o agente, com VOCÊ revisando cada diff. O treino é grande de propósito: os passos solo
+          que não couberem na aula viram casa — mas a ordem importa, cada passo usa o anterior.
+        </div>
+      </div>
+
       <!-- trilha de progresso -->
       <div class="arena-track">
         <span class="at-dot lv1">1</span><span class="at-arrow">→</span>
         <span class="at-dot lv1">2</span><span class="at-arrow">→</span>
         <span class="at-dot lv2">3</span><span class="at-arrow">→</span>
         <span class="at-dot lv2">4</span><span class="at-arrow">→</span>
+        <span class="at-dot lv2">5</span><span class="at-arrow">→</span>
+        <span class="at-dot lv3">6</span><span class="at-arrow">→</span>
+        <span class="at-dot lv2">7</span><span class="at-arrow">→</span>
+        <span class="at-dot lv3">8</span><span class="at-arrow">→</span>
+        <span class="at-dot lv2">9</span><span class="at-arrow">→</span>
         <span class="at-dot lv3">🏆</span>
       </div>
 
@@ -1023,10 +1039,67 @@ sem nenhum erro no terminal do Vite.</pre>
         <code>package.json</code> ficou <strong>intocado</strong>?</div></div>
       </div>
 
-      <!-- 4. solo — A/B -->
+      <!-- 4. guiado — glow-up visual -->
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">✨</span><div>
+          <div class="exercise-title">Passo 4 — o GLOW-UP: a loja fica linda num prompt (com o prof) ⭐</div>
+          <div class="exercise-sub">Direção de arte também é spec — e o ANTES × DEPOIS é o primeiro UAU</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>Sua vitrine funciona,
+        mas está com cara de exercício. Agora o agente vira seu designer — <strong>com você
+        dando a direção de arte</strong>. 1) Mande o prompt abaixo. 2) Assista ao loop criando
+        os CSS Modules. 3) Ritual no telão antes de aceitar. 4) Abra o ANTES e o DEPOIS lado a
+        lado e aproveite o queixo caído da sala. 😄</p></div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">prompt de direção de arte</span><span class="lang-badge prompt">PROMPT</span></div>
+<pre>Leia o projeto antes de mexer. Deixe a vitrine com visual
+profissional, mexendo APENAS em CSS Modules e classNames:
+
+- crie App.module.css e CartaoProduto.module.css
+- fundo da página cinza-claro, título centralizado e caprichado
+- cards brancos em GRID responsivo (3 colunas no computador),
+  cantos arredondados, sombra suave e efeito de "levantar" no
+  hover (com transition)
+- emoji do produto grande, preço em destaque verde
+- mantenha o Rodape como está
+
+NÃO mude nenhuma lógica (array, map, props). NÃO instale nada.
+NÃO use CSS global.
+
+Pronto quando: a vitrine estiver em grid com cards de sombra e
+hover, sem erros no terminal.</pre>
+        </div>
+        <div class="mini-browser" data-url="localhost:5173/ — DEPOIS do glow-up" data-h="230">
+<script type="text/html" data-mp="html">
+  <div style="font-family:sans-serif;background:#f1f5f9;padding:12px;border-radius:8px">
+    <h3 style="text-align:center;margin:0 0 10px;font-size:15px">🛒 Loja-cobaia</h3>
+    <div style="display:flex;gap:8px">
+      <div style="flex:1;background:#fff;border-radius:10px;padding:10px;text-align:center;box-shadow:0 4px 10px rgba(0,0,0,0.08)">
+        <div style="font-size:26px">⌨️</div><b style="font-size:11px">Teclado Mecânico</b><div style="color:#16a34a;font-weight:800;font-size:12px">R$ 320</div>
+      </div>
+      <div style="flex:1;background:#fff;border-radius:10px;padding:10px;text-align:center;box-shadow:0 4px 10px rgba(0,0,0,0.08)">
+        <div style="font-size:26px">🖥️</div><b style="font-size:11px">Monitor 27 pol</b><div style="color:#16a34a;font-weight:800;font-size:12px">R$ 1450</div>
+      </div>
+      <div style="flex:1;background:#fff;border-radius:10px;padding:10px;text-align:center;box-shadow:0 4px 10px rgba(0,0,0,0.08)">
+        <div style="font-size:26px">🖱️</div><b style="font-size:11px">Mouse Gamer</b><div style="color:#16a34a;font-weight:800;font-size:12px">R$ 89</div>
+      </div>
+    </div>
+    <div style="background:#1e293b;color:#e2e8f0;text-align:center;padding:6px;border-radius:8px;font-size:11px;margin-top:8px">Loja-cobaia — feita no curso Fullstack 💜</div>
+  </div>
+</script>
+        </div>
+        <div class="tip"><span class="tip-icon">🔍</span><div class="tip-content"><strong>Revisão
+        deste diff (③ e ④):</strong> só apareceram <code>.module.css</code> novos e
+        <code>className</code>s? O array, o <code>.map()</code> e as props estão INTOCADOS? Dica
+        de veterano: estilizar é um dos melhores usos de agente pra quem está começando — ele é
+        MUITO bom de CSS, o diff é fácil de ler, e CSS errado não corrompe lógica nem dado.
+        Design entra, volante fica com você.</div></div>
+      </div>
+
+      <!-- 5. solo — A/B -->
       <div class="exercise solo">
         <div class="exercise-header"><span class="exercise-icon">🧑‍💻</span><div>
-          <div class="exercise-title">Passo 4 — o experimento A/B (sozinho/a)</div>
+          <div class="exercise-title">Passo 5 — o experimento A/B (sozinho/a)</div>
           <div class="exercise-sub">A MESMA feature pedida dos dois jeitos — sinta a diferença</div></div>
         </div>
         <div class="drill-tags"><span class="drill-level lv2"><span class="stars">★★</span> médio</span><span class="drill-tag">prompt vago × spec</span><span class="drill-tag">desfazer</span></div>
@@ -1061,59 +1134,201 @@ o Monitor (R$ 1450) NÃO mostrar.</pre>
         </div>
       </div>
 
-      <!-- 5. solo chefão — sabotagem -->
+      <!-- 6. guiado — dados de verdade -->
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">🔌</span><div>
+          <div class="exercise-title">Passo 6 — a loja liga na tomada: API de verdade (com o prof) ⭐</div>
+          <div class="exercise-sub">json-server + axios + useEffect — e a revisão do diff é uma re-aula do Cap 7</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>Chega de array fixo:
+        agora os produtos vêm de uma API, como você aprendeu no Cap 7 — só que quem digita é o
+        agente, e quem confere se ele fez <em>do jeito que estudamos</em> é você. 1) Mande o
+        prompt. 2) Ritual no telão — este diff é ESPECIAL: leia procurando o Cap 7 inteiro
+        dentro dele (useState([]) → useEffect com QUANDO [] → axios → porteiros). 3) Dois
+        terminais e teste — inclusive o teste do 😵: derrube o json-server e veja o erro
+        amigável.</p></div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">prompt — repare na exceção EXPLÍCITA pra instalar o axios</span><span class="lang-badge prompt">PROMPT</span></div>
+<pre>Vamos trocar o array fixo por uma API local, do jeito que
+estudei no curso:
+
+1. Crie um db.json na raiz com a coleção "produtos" contendo
+   os 3 produtos atuais + 3 novos que combinem com a loja
+   (mesmo formato: id, nome, preco, emoji).
+2. No App.jsx: troque o array fixo por useState([]) +
+   useEffect (com array de dependências []) buscando de
+   http://localhost:3000/produtos com axios, usando
+   .then/.catch (NÃO use async/await).
+3. Adicione os estados de carregando ("⏳ Carregando...") e
+   de erro ("😵 O servidor está de pé?").
+
+Pode instalar o axios — SOMENTE ele. Não mexa no
+CartaoProduto nem nos arquivos CSS.
+
+Pronto quando: com "npx json-server db.json" rodando em outro
+terminal, a vitrine mostrar os 6 produtos vindos da API — e
+mostrar a mensagem de erro se eu derrubar o servidor.</pre>
+        </div>
+        <div class="tip"><span class="tip-icon">🔍</span><div class="tip-content"><strong>Revisão
+        deste diff:</strong> o <code>package.json</code> ganhou SÓ o axios? O useEffect está com
+        o QUANDO <code>[]</code> (e não sem array — o bug silencioso do Cap 7)? Os porteiros de
+        carregando/erro vieram? E repara na técnica de prompt: a regra geral é "não instale
+        nada", mas aqui VOCÊ abriu uma exceção explícita — exceção dita é controle, exceção
+        adivinhada é surpresa.</div></div>
+      </div>
+
+      <!-- 7. solo — busca ao vivo -->
+      <div class="exercise solo">
+        <div class="exercise-header"><span class="exercise-icon">🔎</span><div>
+          <div class="exercise-title">Passo 7 — busca ao vivo (sozinho/a)</div>
+          <div class="exercise-sub">O pedido é seu: input controlado + filter — Cap 6 puro</div></div>
+        </div>
+        <div class="drill-tags"><span class="drill-level lv2"><span class="stars">★★</span> médio</span><span class="drill-tag">seu prompt</span><span class="drill-tag">useState + filter</span></div>
+        <div class="concept"><div class="concept-title">🗣️ O que a loja precisa</div><p>Um campo
+        de busca no topo que filtra a vitrine <strong>a cada tecla</strong>, ignorando
+        maiúsculas/minúsculas. Escreva o prompt com os 4 ingredientes — e nas RESTRIÇÕES, diga
+        COM QUAIS ferramentas: estado controlado + <code>.filter()</code> com
+        <code>.includes()</code> e <code>.toLowerCase()</code> (o combo do Cap 6).</p></div>
+        <div class="concept"><div class="concept-title">✅ Aceite</div><p>Digitar "mo" mostra
+        Monitor e Mouse; apagar tudo volta a vitrine inteira; nada de biblioteca nova.</p></div>
+        <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Escreva seu prompt antes de abrir o olhinho!</strong> E revise o diff perguntando: o input é controlado (value + onChange)? O filter alimenta o .map() sem destruir o array original?</div></div>
+        <div class="toggler">
+          <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — prompt de referência</span><span class="toggler-arrow">▼</span></div>
+          <div class="toggler-body"><div class="code-block">
+            <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">um prompt possível</span><span class="lang-badge prompt">PROMPT</span></div>
+<pre>No App.jsx da loja, adicione uma busca ao vivo acima da
+vitrine: um input controlado (useState + value + onChange)
+com placeholder "🔎 Buscar produto...". A vitrine deve
+mostrar só os produtos cujo nome inclui o texto digitado,
+usando .filter() com .includes() e .toLowerCase() antes do
+.map() — sem apagar o estado original de produtos.
+
+Estilize o input no App.module.css. Não instale nada, não
+mexa no CartaoProduto.
+
+Pronto quando: digitar "mo" mostrar Monitor e Mouse, e o
+campo vazio mostrar todos.</pre>
+          </div></div>
+        </div>
+      </div>
+
+      <!-- 8. solo — carrinho -->
+      <div class="exercise solo">
+        <div class="exercise-header"><span class="exercise-icon">🛒</span><div>
+          <div class="exercise-title">Passo 8 — o carrinho (sozinho/a)</div>
+          <div class="exercise-sub">"O estado mora no pai" — agora é você quem exige isso no prompt</div></div>
+        </div>
+        <div class="drill-tags"><span class="drill-level lv3"><span class="stars">★★★</span> desafio</span><span class="drill-tag">seu prompt</span><span class="drill-tag">estado no pai</span></div>
+        <div class="concept"><div class="concept-title">🗣️ O que a loja precisa</div><p>Botão
+        "🛒 Adicionar" em cada card e um contador "🛒 X" no topo da página que soma a cada
+        clique. Você lembra ONDE esse estado mora (Cap 6: a máquina 👯 provou que cada card tem
+        memória própria) — então <strong>exija no prompt</strong>: estado no App, função descendo
+        por prop.</p></div>
+        <div class="concept"><div class="concept-title">✅ Aceite</div><p>3 cliques em cards
+        diferentes → "🛒 3" no topo. O estado do carrinho declarado no App (confira no diff!),
+        nunca dentro do CartaoProduto.</p></div>
+        <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Ponto de revisão que separa júnior de estagiário:</strong> se o agente puser o useState do carrinho DENTRO do card, cada card conta sozinho e o topo não soma. Você saberia explicar por quê — e é isso que o prompt bem escrito evita.</div></div>
+        <div class="toggler">
+          <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — prompt de referência</span><span class="toggler-arrow">▼</span></div>
+          <div class="toggler-body"><div class="code-block">
+            <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">um prompt possível</span><span class="lang-badge prompt">PROMPT</span></div>
+<pre>Adicione um carrinho simples à loja:
+
+- o estado carrinho (número, começa em 0) mora no App.jsx —
+  NÃO dentro do CartaoProduto
+- o App passa uma função aoComprar por prop para o
+  CartaoProduto, que ganha um botão "🛒 Adicionar"
+- no topo da página, mostre "🛒 {carrinho}" ao lado do título
+
+Estilos nos CSS Modules existentes. Não instale nada.
+
+Pronto quando: clicar em 3 cards diferentes mostrar 🛒 3
+no topo.</pre>
+          </div></div>
+        </div>
+      </div>
+
+      <!-- 9. solo — modo escuro -->
+      <div class="exercise solo">
+        <div class="exercise-header"><span class="exercise-icon">🌙</span><div>
+          <div class="exercise-title">Passo 9 — modo escuro (sozinho/a)</div>
+          <div class="exercise-sub">Boolean + classe condicional — o UAU que todo mundo quer mostrar</div></div>
+        </div>
+        <div class="drill-tags"><span class="drill-level lv2"><span class="stars">★★</span> médio</span><span class="drill-tag">seu prompt</span><span class="drill-tag">classe condicional</span></div>
+        <div class="concept"><div class="concept-title">🗣️ O que a loja precisa</div><p>Um botão
+        🌙/☀️ no topo que alterna o tema da loja inteira: fundo escuro, cards escuros, textos
+        claros. A receita você conhece do Cap 6: um boolean no App + classe condicional
+        (<code>className={escuro ? styles.temaEscuro : styles.temaClaro}</code>) no container —
+        e o CSS Module faz a mágica em cascata.</p></div>
+        <div class="concept"><div class="concept-title">✅ Aceite</div><p>Um clique escurece TUDO
+        (inclusive os cards), outro clique volta; o emoji do botão acompanha (ternário!). Sem
+        biblioteca de tema, sem mexer na lógica dos produtos.</p></div>
+        <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Seu prompt, seu ritual.</strong> Neste passo, sem olhinho de prompt: você já escreveu três specs hoje. Confie no processo — 4 ingredientes e revisão ①–⑤.</div></div>
+      </div>
+
+      <!-- 10. chefão — a loja é sua -->
       <div class="exercise solo">
         <div class="exercise-header"><span class="exercise-icon">🏆</span><div>
-          <div class="exercise-title">Passo 5 — CHEFÃO: a sabotagem (sozinho/a)</div>
-          <div class="exercise-sub">O agente detetive investiga — mas quem assina o conserto é você</div></div>
+          <div class="exercise-title">Passo 10 — CHEFÃO: a loja é SUA (sozinho/a)</div>
+          <div class="exercise-sub">Tema próprio + uma feature de assinatura + o tour de 1 minuto</div></div>
         </div>
-        <div class="drill-tags"><span class="drill-level lv3"><span class="stars">★★★</span> desafio</span><span class="drill-tag">diagnóstico</span><span class="drill-tag">Caps 4+5 na veia</span></div>
-        <div class="concept"><div class="concept-title">💡 Missão</div><p>1) Sabote a cobaia com
-        DOIS crimes, você mesmo, no VSCode: <strong>apague a prop <code>key</code></strong> do
-        <code>.map()</code> no App, e <strong>apague a linha <code>export default
-        CartaoProduto</code></strong> no fim do CartaoProduto.jsx. Salve e olhe o estrago no
-        navegador e no console (F12). 2) Agora o pedido — investigação SEM conserto:</p></div>
-        <div class="code-block">
-          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">prompt do detetive</span><span class="lang-badge prompt">PROMPT</span></div>
-<pre>Este projeto está com defeitos. Investigue e me EXPLIQUE o que
-está errado, onde, e por que isso quebra — mas NÃO corrija
-nada. Quero consertar eu mesmo/a.</pre>
+        <div class="drill-tags"><span class="drill-level lv3"><span class="stars">★★★</span> chefão</span><span class="drill-tag">identidade</span><span class="drill-tag">feature livre</span><span class="drill-tag">demo</span></div>
+        <div class="concept"><div class="concept-title">💡 Missão em 3 atos</div><p>
+        <strong>① O rebatismo:</strong> escolha o SEU tema — 🍔 hamburgueria, 🎮 loja de games,
+        👟 sneakers, 📚 sebo, 🎸 instrumentos, 🍰 doceria… — e mande o agente trocar os produtos
+        do db.json pro seu tema (6+ itens), renomear a loja e ajustar a paleta de cores pra
+        identidade escolhida (só CSS Modules!).
+        <strong>② A feature de assinatura:</strong> UMA melhoria escolhida e especificada 100%
+        por você. Ideias no cardápio: ordenar por preço, selo "✨ novo" nos 2 primeiros, banner
+        "frete grátis acima de R$ X" (porteiro!), contador "N produtos encontrados" na busca,
+        seção de destaque com o mais caro… — tudo dá com o que você já estudou.
+        <strong>③ O tour:</strong> 1 minuto pro colega do lado: mostre a loja funcionando E
+        abra UM trecho de diff que você revisou hoje, explicando em voz alta o que o agente fez
+        e por que você aceitou. <em>Mostrar a loja prova que o agente é rápido; explicar o diff
+        prova que o engenheiro é você.</em></p></div>
+        <div class="mini-browser" data-url="localhost:5173/ — exemplo: a loja de um colega 👟" data-h="230">
+<script type="text/html" data-mp="html">
+  <div style="font-family:sans-serif;background:#0f172a;padding:12px;border-radius:8px;color:#e2e8f0">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <b style="font-size:14px">👟 SneakerLab</b>
+      <span style="font-size:11px">🛒 2 &nbsp; ☀️</span>
+    </div>
+    <div style="background:#fbbf24;color:#0f172a;text-align:center;border-radius:6px;padding:4px;font-size:10px;font-weight:800;margin-bottom:8px">🚚 frete grátis acima de R$ 400</div>
+    <div style="display:flex;gap:8px">
+      <div style="flex:1;background:#1e293b;border-radius:10px;padding:10px;text-align:center"><div style="font-size:24px">👟</div><b style="font-size:10px">Runner Preto</b><div style="color:#4ade80;font-weight:800;font-size:11px">R$ 499</div></div>
+      <div style="flex:1;background:#1e293b;border-radius:10px;padding:10px;text-align:center"><div style="font-size:24px">🥾</div><b style="font-size:10px">Bota Trilha</b><div style="color:#4ade80;font-weight:800;font-size:11px">R$ 389</div></div>
+      <div style="flex:1;background:#1e293b;border-radius:10px;padding:10px;text-align:center"><div style="font-size:24px">🩴</div><b style="font-size:10px">Slide Conforto</b><div style="color:#4ade80;font-weight:800;font-size:11px">R$ 99</div></div>
+    </div>
+  </div>
+</script>
         </div>
-        <div class="concept"><div class="concept-title">🎯 Fechamento</div><p>3) Leia o relatório
-        dele: achou os dois? Explicou como você explicaria? 4) <strong>Conserte na mão</strong>
-        (você sabe: Cap 4 e Cap 5) e confira tudo verde. Esse fluxo — <em>agente investiga, humano
-        decide e conserta</em> — é exatamente como dev sênior usa IA pra caçar bug em sistema
-        grande.</p></div>
-        <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Tenta antes!</strong> Antes de mandar o prompt, escreva num papel o que VOCÊ acha que cada crime causa. Depois compare com o relatório do agente.</div></div>
-        <div class="toggler">
-          <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — O que o relatório deve conter</span><span class="toggler-arrow">▼</span></div>
-          <div class="toggler-body">
-            <div class="tip" style="margin:0"><span class="tip-icon">🕵️</span><div class="tip-content">
-              <strong>Crime 1 (key):</strong> warning no console — "Each child in a list should
-              have a unique key prop" — e risco de itens "trocarem de identidade" ao mudar a lista
-              (a máquina 🔑 do Cap 5!). Conserto: <code>key={p.id}</code> no elemento do
-              <code>.map()</code>. <strong>Crime 2 (export default):</strong> a tela quebra e o
-              erro aponta o import do App — o arquivo existe, mas não "entrega" o componente
-              (Cap 4: sem <code>export default</code>, o import não recebe nada). Conserto:
-              devolver o <code>export default CartaoProduto</code> no fim do arquivo. Se o agente
-              achou os dois E você consertou sem olhar aqui: chefão derrotado. 🏆
-            </div></div>
-          </div>
-        </div>
+        <div class="tip"><span class="tip-icon">📸</span><div class="tip-content">Print da sua
+        loja (modo claro E escuro) direto pro portfólio — e olha que dia: você começou com uma
+        pasta vazia e terminou com uma loja com API, busca, carrinho, tema e identidade própria,
+        <strong>revisando cada linha que entrou</strong>. É EXATAMENTE assim que você vai
+        construir o projeto final no Cap 10.</div></div>
       </div>
 
       <!-- desafio para casa -->
       <div class="exercise home" style="margin-top:18px">
         <div class="exercise-header"><span class="exercise-icon">🏠</span><div>
-          <div class="exercise-title">Desafio para Casa — tutor particular &amp; test-drive</div>
-          <div class="exercise-sub">Dois usos que valem pra vida (e pra prova 😄)</div></div>
+          <div class="exercise-title">Desafio para Casa — sabotagem, sabatina &amp; test-drive</div>
+          <div class="exercise-sub">Três usos que valem pra vida (e pra prova 😄)</div></div>
         </div>
-        <div class="concept"><div class="concept-title">💡 Missão</div><p>1) <strong>Sabatina:</strong>
-        peça ao agente: <em>"Me faça 5 perguntas sobre useState e useEffect, uma de cada vez.
-        Espere minha resposta e corrija explicando."</em> — e encare. 2) <strong>Test-drive:</strong>
-        instale uma SEGUNDA ferramenta do panorama e repita o Passo 1 nela. Compare: qual explicou
-        melhor? Qual pediu permissão mais claramente? Traga sua opinião de "review de ferramenta"
-        no próximo sábado — vamos usar MUITO o agente no projeto do Cap 10. 🚀</p></div>
+        <div class="concept"><div class="concept-title">💡 Missão</div><p>1)
+        <strong>🕵️ A sabotagem (o detetive):</strong> quebre a SUA loja de propósito, no VSCode:
+        apague a prop <code>key</code> do <code>.map()</code> e apague o <code>export default
+        CartaoProduto</code>. Olhe o estrago (navegador + console F12) e mande:
+        <em>"Este projeto está com defeitos. Investigue e me EXPLIQUE o que está errado, onde e
+        por quê — mas NÃO corrija nada. Quero consertar eu mesmo/a."</em> Compare o relatório com
+        o que VOCÊ esperava (Cap 5: máquina 🔑; Cap 4: sem export o import não recebe nada) e
+        <strong>conserte na mão</strong>. Agente investiga, engenheiro assina o conserto.
+        2) <strong>🎓 Sabatina:</strong> <em>"Me faça 5 perguntas sobre useState e useEffect, uma
+        de cada vez. Espere minha resposta e corrija explicando."</em> — e encare.
+        3) <strong>🚗 Test-drive:</strong> instale uma SEGUNDA ferramenta do panorama e repita o
+        Passo 2 nela. Qual explicou melhor? Qual pediu permissão mais claramente? Traga sua loja
+        pronta E sua opinião de "review de ferramenta" no próximo sábado — o Cap 10 vai usar TUDO
+        isso no projeto final. 🚀</p></div>
       </div>
     </div>
   </section>

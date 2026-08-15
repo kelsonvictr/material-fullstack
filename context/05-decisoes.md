@@ -511,6 +511,32 @@ agente num projeto que conhece por dentro":
    strings das máquinas ⚖️/🕵️ ("Minha loja"). Cap 10 não referencia a Mini-loja em exercícios
    (só num recap narrativo — mantido). Verificado no Chrome via DOM (7 checks).
 
+## 2026-08-15 (continuação) — Treino do Cap 9 EXPANDIDO: "Operação UAU" (10 passos)
+
+Pedido do prof: treino "bem mais completo, para construir algo bem UAU". A loja-cobaia agora
+evolui até virar **a loja do aluno**, com um wow por degrau — sem canibalizar o Cap 10 (loja
+vitrine × sistema de gestão). Trilha nova (guiado ★ → solo com prompt próprio):
+
+1. 🧱 nasce a cobaia (na mão) · 2. 🗣️ primeiro papo (leitura) · 3. 👣 rodapé com prompt-spec
+   dado + ritual · **4. ✨ GLOW-UP (novo, guiado)**: prompt de DIREÇÃO DE ARTE (grid, sombras,
+   hover, só CSS Modules/classNames) — o antes×depois é o 1º UAU; lição "estilizar é o melhor
+   uso de agente pra iniciante: diff legível, lógica intocada" · 5. ⚖️ A/B vago×spec (selo 🔥)
+   · **6. 🔌 API de verdade (novo, guiado)**: agente cria db.json + converte pra
+   useState/useEffect/axios/porteiros — a revisão do diff é re-aula do Cap 7; técnica nova de
+   prompt: EXCEÇÃO explícita ("pode instalar o axios — somente ele") · **7. 🔎 busca ao vivo**
+   (solo, prompt próprio; olhinho=prompt ref) · **8. 🛒 carrinho** (solo; exigir "estado mora
+   no App" no prompt — payoff da máquina 👯) · **9. 🌙 modo escuro** (solo, SEM olhinho — 3ª
+   spec do dia, confia no processo) · **10. 🏆 A LOJA É SUA** (chefão): rebatismo com tema
+   próprio (🍔🎮👟📚…) via db.json+paleta, UMA feature de assinatura 100% especificada pelo
+   aluno (cardápio de ideias, tudo na stack), e o TOUR de 1 min pro colega — mostrar a loja +
+   explicar um diff revisado ("mostrar prova que o agente é rápido; explicar prova que o
+   engenheiro é você"). Mini-browsers novos: DEPOIS do glow-up e exemplo SneakerLab temático.
+2. **Sabotagem virou item 1 da casa** (quebra key + export default → detetive → conserto na
+   mão), junto da sabatina e do test-drive de 2ª ferramenta. Box novo "🎯 A meta de hoje"
+   avisa: treino grande DE PROPÓSITO, solos que não couberem viram casa (ordem importa).
+3. Trilha `.arena-track` com 10 pontos; título "Treino — Operação UAU: do zero à SUA loja".
+   Verificado no Chrome (10 dots, 10 passos + casa, glow-up e SneakerLab renderizando).
+
 ## Pendências reconhecidas
 - Planejar em detalhe os **Caps 6–9** (React: state → efeitos/dados → router → integração).
   Caps 4 e 5 já fixaram o tom, o setup Vite base e a Mini-loja como artefato contínuo do arco React.
