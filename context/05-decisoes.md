@@ -352,6 +352,142 @@ na prática pra essa turma), então o Cap 7 não podia abrir já fazendo requisi
 5. Hub: card 07 atualizado (pills API & HTTP/useEffect/axios), card 08 destravado
    (pills Routes/Link/useParams). Botão final do Cap 7 agora aponta pro Cap 8.
 
+## 2026-08-14 — Planejamento dos Caps 9 (IA & Agentes) e 10 (Projeto GestorPRO)
+
+Sessão de planejamento com o professor. A partir do Cap 9 o curso introduz **agentes de
+codificação** — como formação de engenheiro (especificar + revisar), não "vibe coding".
+Spec completa em `09-plano-caps-09-10.md`. Decisões travadas:
+
+1. **Dois capítulos**: Cap 09 (`09-ia-agentes/`) = super aula de IA/agentes (LLM = próxima
+   palavra, contexto/alucinação, loop do agente, panorama de mercado, prompt = mini-spec,
+   ritual de revisão) · Cap 10 (`10-projeto-gestor/`) = projeto que **fecha o front**:
+   sistema de clientes/fornecedores/produtos (nome proposto: GestorPRO, a confirmar).
+2. **Ferramenta livre, Claude Code recomendado** — teoria agnóstica; setup de 2–3
+   ferramentas lado a lado (Claude Code / Codex / Antigravity); o fluxo ensinado
+   (prompt → diff → revisão) vale para todas.
+3. **O antigo "Cap 9 — Integração real" (JWT/Spring/deploy) saiu do mapa do frontend**
+   e migra para a metade backend. Mapa do `04-conteudo-curso.md` atualizado.
+4. **Escada didática do projeto**: módulo Clientes NA MÃO (gabarito mental) → Fornecedores
+   JUNTO com o agente (prompts-spec + ritual de revisão; a revisão guiada do PUT é a aula
+   de PUT) → Produtos VOCÊ COMANDA (aluno escreve os prompts; olhinho = prompt de
+   referência) → chefão Dashboard. Alunos escrevem o **AGENTS.md do projeto** com o prof
+   ("só o que estudamos" vira engenharia de contexto, não torcida).
+5. **Novidades técnicas permitidas** (honestas e assumidas): axios.post/put/delete (CRUD),
+   useNavigate, pasta `src/pages/`, `window.confirm`, tabelas nas listas. Continua fora:
+   fetch, async/await, JWT, libs extras, git (turma sem git — cópias de pasta com box
+   "no mercado é git, vem na metade backend").
+6. **Regra de ouro do arco**: nunca aceitar diff que não consegue explicar em voz alta.
+   "Forçar o VSCode" evolui: o aluno digita a Fase 1 inteira, os prompts e as correções.
+7. Vídeos candidatos (pipeline HyperFrames/Remotion): `loop-do-agente` (flagship),
+   `proxima-palavra` (Cap 9), `quatro-verbos` (Cap 10). Memes listados aguardam aprovação.
+
+## 2026-08-14 (continuação) — Cap 9 (IA & Agentes) ENTREGUE
+
+Produzido na mesma sessão do planejamento, seguindo a spec `09-plano-caps-09-10.md`.
+Ajuste pragmático (precedente dos Caps 4/5/8): **entregue sem os vídeos** — as máquinas
+cobrem o conteúdo; `loop-do-agente.mp4` e `proxima-palavra.mp4` ficam para sessão de render.
+
+1. `capitulos/09-ia-agentes/index.html` (~1180 linhas): aquecimento (por que aprender na mão)
+   → 🔮 LLM (próxima palavra, tokens) → 📦🤯 mesa de contexto & alucinação → 🦾 loop do agente
+   + analogia-mor do estagiário genial → 🗺️ panorama (Claude Code ⭐ recomendado, Codex,
+   Antigravity/Gemini CLI, Copilot, Cursor) → 🛠️ setup por ferramenta (togglers; aviso de que
+   comandos/planos mudam) → ✍️ prompt = mini-spec (4 ingredientes: CONTEXTO/TAREFA/RESTRIÇÕES/
+   ACEITE) → 👀 ritual de revisão ①–⑤ → BugZilla da era dos agentes → treino → resumo.
+2. **5 máquinas novas:** 🔮 Próxima Palavra (3 corridas; a 3ª quase-alucina o `useFetch`) ·
+   📦 Mesa de Contexto (a regra "use CSS Modules" cai da mesa) · 🔁 Loop do Agente
+   (máquina-mor; pedido claro com erro autocorrigido × pedido vago que "termina feliz"
+   reescrevendo 14 arquivos) · ⚖️ Prompt Vago × Spec · 🕵️ Caça ao Intruso (diff com 3
+   violações clicáveis). Todas offline-first, ligatures OFF nos textos mono locais.
+3. **Treino (5 passos + casa)** sobre CÓPIA da Mini-loja (`mini-loja-com-agente`; box "sem
+   git — cópia de pasta"): P1 explicar o projeto · P2 tutor do useEffect · P3 primeira edição
+   com prompt-spec (Rodape) + ritual no telão · P4 solo A/B vago×spec (selo 🔥 Promoção,
+   `&&` do Cap 5) · P5 chefão sabotagem (key + import axios; agente só diagnostica, aluno
+   conserta). Casa: sabatina com o agente + test-drive de 2ª ferramenta. Novo padrão de
+   code-block: badge **PROMPT** (`.lang-badge.prompt`) para prompts.
+4. Hub: card 09 destravado (pills LLM/agentes/prompt & revisão), **card 10 GestorPRO
+   "em breve"** criado (`capitulos/10-projeto-gestor/`); card antigo "09 integração" removido.
+   Cap 8: gancho do resumo reescrito (era "integração real") e botão "Próximo: Cap 09 — IA &
+   Agentes" ativo. Limpo o `</content>` solto do hub (pendência antiga).
+5. **Testado no Chrome** (servidor estático local): 5 máquinas exercitadas de ponta a ponta,
+   quizzes, console sem erros. Fix durante o teste: chips do loop acendem só os passos
+   VISITADOS (o ❌ erro não acende no cenário vago).
+6. Memes do cap: ainda pendentes de aprovação (ideias na spec). Vídeos: pendentes de render.
+7. **Comandos de instalação verificados na internet (2026-08-14, pedido do prof) +
+   DECISÃO: npm-first onde existir** (alunos já dominam npm/Node desde o Cap 4):
+   · **Claude Code**: material ensina `npm install -g @anthropic-ai/claude-code` (pacote npm
+     segue oficial/suportado; Node 22+; NÃO auto-atualiza → nota do `@latest`). O caminho
+     "recomendado" da Anthropic desde jan/2026 é o instalador nativo via curl (auto-atualiza) —
+     citado como alternativa no material. Exige plano pago (Pro+) ou API key — free do
+     claude.ai NÃO inclui (fonte: code.claude.com/docs/en/setup).
+   · **Codex**: `npm install -g @openai/codex` (Node 22+; alerta no material: `codex` sem
+     escopo é pacote de 2012 sem relação com a OpenAI).
+   · **Antigravity**: o Gemini CLI foi SUBSTITUÍDO pelo **Antigravity CLI** (comando `agy`)
+     em jun/2026, e ele **NÃO existe no npm** (binário compilado) —
+     `curl -fsSL https://antigravity.google/cli/install.sh | bash` /
+     `irm https://antigravity.google/cli/install.ps1 | iex`; editor em antigravity.google.
+     Material explica o porquê ("não mora no npm") + nota anti-tutorial-velho do gemini-cli.
+   · Box novo na seção 🛠️: conferir `node -v` (precisa 22+) antes dos installs via npm.
+   ⚠️ Re-conferir tudo na SEMANA da aula — esse mercado muda de mês em mês.
+
+## 2026-08-14 (continuação 2) — Cap 10 (Projeto GestorPRO) ENTREGUE
+
+Produzido conforme `09-plano-caps-09-10.md`, com pedido reforçado do prof: **cuidado extremo
+de escopo** ("somente com o que estudamos; novidade só com teoria de qualidade").
+
+1. `capitulos/10-projeto-gestor/index.html` (~1750 linhas), estruturado em **2 encontros**
+   com divisores visuais: **A (na mão)** = visão do sistema → arquitetura (rotas/pastas/
+   db.json 3 coleções) → fundação (Vite+Router+Navbar+404, revisão dos Caps 4–8) → teoria
+   dos **4 verbos HTTP + CRUD** → módulo Clientes completo (listar em TABELA, cadastrar,
+   excluir, editar) · **B (com agente)** = AGENTS.md escrito junto → Fornecedores via 4
+   prompts prontos + ritual (revisão do PUT em voz alta no telão = a aula) → Produtos com
+   "pedidos do cliente" (aluno escreve os prompts; olhinho = prompt de referência + pontos
+   de revisão; passo final SEM olhinho) → chefão Dashboard → BugZilla → formatura do front.
+2. **Disciplina de escopo aplicada**: objeto sem shorthand (`nome: nome`), concatenação com
+   `+` (sem template string), sem preventDefault (salvar = botão onClick), sem async/await,
+   fetch nunca, `Number()` para inputs numéricos (Cap 2), `.filter()` no excluir com nota
+   do `!==`. **Novidades honestas com teoria dedicada**: 4 verbos (analogia do cartório +
+   máquina), CRUD (o termo, com lastro), useNavigate ("Link via código"), window.confirm
+   ("primo do alert que devolve boolean"). Conceito-mor: "servidor e tela são dois mundos".
+3. **3 máquinas** (cap de projeto, mais leve como o 05b): 🗺️ GPS do GestorPRO (5 URLs,
+   inclui nota da ordem novo × :id/editar) · 📮 **Balcão do CRUD** (máquina-mor: envelope
+   viaja, db.json reage — POST carimba id 4, PUT troca ficha, DELETE some, e o caso de erro
+   💥 PUT sem id → 404; estados idempotentes com re-clique → 404 explicado) · 🕵️ Revisor
+   de Plantão (diff de Fornecedores com 3 violações do AGENTS.md: CSS global, function
+   declarada, fetch). **4 quizzes** (fase 1 na mão, verbo certo, onde mora a regra, saída
+   PUT no demo day). Sem vídeos (candidato `quatro-verbos` pendente de render).
+4. AGENTS.md didático no material (stack travada, hooks permitidos, rafce, CSS Modules,
+   axios-nunca-fetch, .then/.catch, módulo Clientes = padrão da casa) + teste de fogo
+   (pedir gráficos → agente recusa citando a regra). Casa A: select controlado + popular
+   sistema. Casa B: busca ao vivo (mão) + plural e destaque (prompt+ritual) + **demo day**.
+5. Hub: card 10 destravado; Cap 9 → botão "Próximo: Cap 10" ativo.
+6. **Testado no Chrome**: hero, árvore/db.json, GPS, Balcão (POST 201 + destaque verde;
+   PUT sem id → 404 vermelho), Revisor 3/3 via DOM, código com ligatures OFF (`=>` ok),
+   console limpo. Confirmação do prof em sessão: a escada na-mão→junto→comanda mantida
+   (Clientes manual como gabarito; Fornecedores E Produtos com agente).
+
+## 2026-08-14 (continuação 3) — Projeto de referência do GestorPRO construído e TESTADO
+
+Pedido do prof: "teste bem tudo". Criado `tooling/gestorpro-referencia/` (Vite React,
+node_modules gitignorado, README com instruções) com o código EXATO do Cap 10 + os módulos
+Fornecedores/Produtos como o agente os produziria seguindo o AGENTS.md (que também está lá).
+
+1. **Todos os fluxos passaram no Chrome** (servers via `.claude/launch.json` da raiz:
+   `gestorpro-api` json-server:3000 + `gestorpro` vite:5173): fundação/rotas/Navbar sem
+   reload · Clientes listar (tabela igual ao mini-browser do cap) · cadastrar (POST →
+   volta pra lista → persistiu) · editar (GET pré-enche → PUT → "Sousa" na tela e no db) ·
+   excluir (confirm + DELETE + filter, some sem F5) · Produtos com selo ⚠️ exatamente nos
+   estoques &lt; 5 · cadastro com `Number()` (tipos numéricos confirmados no db.json) ·
+   Fornecedores ok · 404 ok · Dashboard reagindo a tudo (3/2/5 + alerta subiu pra 3).
+   Console zero erros em todas as páginas. `db.seed.json` = reset pra aula.
+2. **ACHADO do teste real — json-server v1 (npx atual):** ids novos vêm como CÓDIGO
+   aleatório (`"XKp8zRmXRGw"`), não número sequencial; ids do seed viram string na 1ª
+   escrita; e ele acrescenta `$schema` no db.json. **Cap 10 ajustado em 2 pontos** (nota da
+   máquina 📮 no POST + box do Passo 4) para o aluno não estranhar o carimbo. O resto do
+   material já era compatível (ids sempre usados via URL/texto).
+3. Nota de ambiente: com index.css vazio (faxina), navegador em dark mode forçado deixa o
+   texto escuro dos cards pouco legível — em sala (tema claro padrão) fica perfeito; não é
+   bug do material, mas se algum aluno usar extensão de dark mode, é a explicação.
+
 ## Pendências reconhecidas
 - Planejar em detalhe os **Caps 6–9** (React: state → efeitos/dados → router → integração).
   Caps 4 e 5 já fixaram o tom, o setup Vite base e a Mini-loja como artefato contínuo do arco React.

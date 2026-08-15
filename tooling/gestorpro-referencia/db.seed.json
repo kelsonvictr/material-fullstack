@@ -1,0 +1,17 @@
+{
+  "clientes": [
+    { "id": 1, "nome": "Ana Souza", "email": "ana@gmail.com", "telefone": "(83) 99999-1111", "cidade": "João Pessoa" },
+    { "id": 2, "nome": "Bruno Lima", "email": "bruno@gmail.com", "telefone": "(83) 98888-2222", "cidade": "Campina Grande" },
+    { "id": 3, "nome": "Carla Dias", "email": "carla@gmail.com", "telefone": "(83) 97777-3333", "cidade": "Recife" }
+  ],
+  "fornecedores": [
+    { "id": 1, "nome": "TechDistrib", "cnpj": "12.345.678/0001-90", "categoria": "Eletrônicos", "telefone": "(11) 4002-8922" },
+    { "id": 2, "nome": "Móveis Nordeste", "cnpj": "98.765.432/0001-10", "categoria": "Móveis", "telefone": "(81) 3333-4444" }
+  ],
+  "produtos": [
+    { "id": 1, "nome": "Teclado Mecânico", "preco": 320, "estoque": 12, "categoria": "Periféricos" },
+    { "id": 2, "nome": "Monitor 27 pol", "preco": 1450, "estoque": 4, "categoria": "Monitores" },
+    { "id": 3, "nome": "Cadeira Gamer", "preco": 980, "estoque": 7, "categoria": "Móveis" },
+    { "id": 4, "nome": "Mouse Gamer", "preco": 89, "estoque": 2, "categoria": "Periféricos" }
+  ]
+}

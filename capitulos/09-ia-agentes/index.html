@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cap 09 — IA &amp; Agentes: seu novo par de programação | Curso Fullstack</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=JetBrains+Mono:wght@400;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../shared/styles.css">
+<link rel="stylesheet" href="../../shared/components.css">
+<link rel="stylesheet" href="../../shared/animations.css">
+<style>
+  /* ── mono didático: SEMPRE sem ligaduras (=> não vira ⇒, -> não vira →) ── */
+  .mono,.pw-sent,.pw-cand,.mc-block,.lp-console,.lp-step,.ps-code,.ci-line,.tool-cmd{
+    font-family:'JetBrains Mono',monospace;
+    font-variant-ligatures:none;font-feature-settings:"liga" 0,"clig" 0,"calt" 0}
+
+  .cmp{color:var(--react);font-weight:600}
+  .lang-badge.prompt{background:linear-gradient(135deg,var(--accent6),#8b91ff);color:#0a0a12}
+  .ia{color:var(--accent6)}
+
+  /* ═══ 🔮 Máquina da Próxima Palavra ═══ */
+  .pwm{background:linear-gradient(180deg,#0b1020,#0d0d1a);border:1px solid rgba(167,139,250,0.35);
+    border-radius:16px;padding:18px;margin:14px 0}
+  .pw-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+  .pw-lab{font-size:0.74rem;color:var(--text-dim);font-weight:700}
+  .pw-chip{border:1px solid rgba(167,139,250,0.45);background:var(--surface2);color:#c9b8ff;
+    font-weight:700;font-size:0.76rem;padding:8px 12px;border-radius:10px;cursor:pointer;
+    transition:all .2s;font-family:'Nunito',sans-serif}
+  .pw-chip:hover{transform:translateY(-2px)}
+  .pw-chip.active{border-color:#fff;color:#fff;background:rgba(255,255,255,0.08)}
+  .pw-stage{background:#06060c;border:1px solid rgba(255,255,255,0.12);border-radius:12px;
+    padding:16px;min-height:64px}
+  .pw-sent{font-size:0.95rem;color:#cdd6f4;line-height:1.7;word-break:break-word}
+  .pw-sent .pw-new{color:#a78bfa;font-weight:700}
+  .pw-cands{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;min-height:44px}
+  .pw-cand{border:1px solid rgba(255,255,255,0.14);background:#0b0b14;border-radius:10px;
+    padding:7px 10px;font-size:0.72rem;color:#cdd6f4;position:relative;overflow:hidden;
+    display:flex;align-items:center;gap:8px;transition:all .25s}
+  .pw-cand .bar{position:absolute;left:0;top:0;bottom:0;background:rgba(167,139,250,0.16);width:0;transition:width .5s}
+  .pw-cand b{position:relative;font-weight:700}
+  .pw-cand small{position:relative;color:var(--text-dim)}
+  .pw-cand.win{border-color:rgba(70,211,154,0.7);box-shadow:0 0 12px rgba(70,211,154,0.2)}
+  .pw-cand.win small{color:#46d39a}
+  .pw-note{margin-top:12px;background:#0b0b14;border:1px solid rgba(255,255,255,0.1);border-radius:10px;
+    padding:10px 12px;font-size:0.82rem;color:#cdd6f4;text-align:center;min-height:40px}
+
+  /* ═══ 📦 Mesa de Contexto ═══ */
+  .mcm{background:linear-gradient(180deg,#0b1020,#0d0d1a);border:1px solid rgba(247,183,49,0.3);
+    border-radius:16px;padding:18px;margin:14px 0}
+  .mc-meter{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+  .mc-meter .lab{font-size:0.74rem;color:var(--text-dim);font-weight:700;white-space:nowrap}
+  .mc-track{flex:1;height:12px;background:#06060c;border:1px solid rgba(255,255,255,0.12);border-radius:999px;overflow:hidden}
+  .mc-fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent7),var(--accent5));transition:width .4s}
+  .mc-fill.full{background:linear-gradient(90deg,var(--accent5),var(--bug))}
+  .mc-table{background:#06060c;border:1px solid rgba(255,255,255,0.12);border-radius:12px;
+    padding:12px;min-height:96px;display:flex;gap:8px;flex-wrap:wrap;align-content:flex-start}
+  .mc-block{border:1px solid rgba(255,255,255,0.16);background:#0b0b14;border-radius:10px;
+    padding:7px 10px;font-size:0.7rem;color:#cdd6f4;transition:all .35s}
+  .mc-block.rule{border-color:rgba(167,139,250,0.6);color:#c9b8ff;font-weight:700}
+  .mc-block.big{border-color:rgba(247,183,49,0.5);color:var(--accent5)}
+  .mc-block.drop{opacity:0;transform:translateY(14px) rotate(6deg)}
+  .mc-lost{margin-top:10px;font-size:0.72rem;color:var(--text-dim);min-height:20px}
+  .mc-lost .gone{color:#ff8b8b;text-decoration:line-through;margin-right:8px}
+  .mc-controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .mc-controls button{border:1px solid rgba(247,183,49,0.45);background:var(--surface2);color:var(--accent5);
+    font-weight:700;font-size:0.76rem;padding:8px 14px;border-radius:10px;cursor:pointer;transition:all .2s;font-family:'Nunito',sans-serif}
+  .mc-controls button:hover{transform:translateY(-2px)}
+  .mc-note{margin-top:10px;background:#0b0b14;border:1px solid rgba(255,255,255,0.1);border-radius:10px;
+    padding:10px 12px;font-size:0.82rem;color:#cdd6f4;text-align:center;min-height:40px}
+
+  /* ═══ 🔁 Loop do Agente ═══ */
+  .lpm{background:linear-gradient(180deg,#0b1020,#0d0d1a);border:1px solid rgba(167,139,250,0.4);
+    border-radius:16px;padding:18px;margin:14px 0}
+  .lp-steps{display:flex;gap:6px;flex-wrap:wrap;align-items:center;justify-content:center;margin:12px 0}
+  .lp-step{border:1px solid rgba(255,255,255,0.14);background:#0b0b14;border-radius:10px;
+    padding:8px 11px;font-size:0.7rem;color:var(--text-dim);transition:all .25s;white-space:nowrap}
+  .lp-step.on{border-color:rgba(167,139,250,0.8);color:#fff;background:rgba(167,139,250,0.12);
+    box-shadow:0 0 12px rgba(167,139,250,0.25)}
+  .lp-step.err.on{border-color:rgba(255,71,87,0.8);background:rgba(255,71,87,0.12);box-shadow:0 0 12px rgba(255,71,87,0.25)}
+  .lp-step.ok.on{border-color:rgba(70,211,154,0.8);background:rgba(70,211,154,0.12);box-shadow:0 0 12px rgba(70,211,154,0.25)}
+  .lp-arrow{color:var(--text-dim);font-size:0.7rem}
+  .lp-console{background:#06060c;border:1px solid rgba(255,255,255,0.1);border-radius:10px;
+    padding:10px 12px;font-size:0.68rem;color:#7ef0c4;min-height:110px;max-height:150px;overflow:auto;white-space:pre-wrap}
+  .lp-console .t{color:#c9b8ff}
+  .lp-result{margin-top:10px;background:#0b0b14;border:1px solid rgba(255,255,255,0.12);border-radius:10px;
+    padding:10px 12px;font-size:0.8rem;color:#cdd6f4;min-height:44px}
+  .lp-controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center}
+  .lp-controls button{border:1px solid rgba(167,139,250,0.5);background:var(--surface2);color:#c9b8ff;
+    font-weight:700;font-size:0.76rem;padding:8px 14px;border-radius:10px;cursor:pointer;transition:all .2s;font-family:'Nunito',sans-serif}
+  .lp-controls button:hover{transform:translateY(-2px)}
+  .lp-controls button.vago{border-color:rgba(255,71,87,0.5);color:#ff8b8b}
+  .lp-note{margin-top:10px;background:#0b0b14;border:1px solid rgba(255,255,255,0.1);border-radius:10px;
+    padding:10px 12px;font-size:0.82rem;color:#cdd6f4;text-align:center;min-height:40px}
+
+  /* ═══ 🗺️ cards do mercado ═══ */
+  .agents-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin:14px 0}
+  .agent-card{background:#0b0b14;border:1px solid rgba(255,255,255,0.12);border-radius:14px;padding:16px;transition:all .2s}
+  .agent-card:hover{transform:translateY(-3px);border-color:rgba(167,139,250,0.5)}
+  .agent-card.star{border-color:rgba(167,139,250,0.55);background:linear-gradient(180deg,rgba(167,139,250,0.08),#0b0b14)}
+  .agent-card h4{margin:0 0 4px;font-size:1rem}
+  .agent-card .who{font-size:0.7rem;color:var(--text-dim);font-weight:700;text-transform:uppercase;letter-spacing:.4px}
+  .agent-card p{margin:8px 0 0;font-size:0.8rem;color:var(--text-dim);line-height:1.55}
+  .agent-card .badge-prof{display:inline-block;margin-top:8px;font-size:0.66rem;font-weight:800;
+    background:linear-gradient(135deg,var(--accent6),#8b91ff);color:#0a0a12;border-radius:999px;padding:3px 10px}
+
+  /* ═══ ⚖️ Prompt Vago × Spec ═══ */
+  .psm{background:linear-gradient(180deg,#0b1020,#0d0d1a);border:1px solid rgba(97,218,251,0.3);
+    border-radius:16px;padding:18px;margin:14px 0}
+  .ps-toggle{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+  .ps-toggle button{border:1px solid rgba(255,255,255,0.16);background:var(--surface2);color:var(--text-dim);
+    font-weight:700;font-size:0.76rem;padding:8px 14px;border-radius:10px;cursor:pointer;transition:all .2s;font-family:'Nunito',sans-serif}
+  .ps-toggle button.active.vago{border-color:rgba(255,71,87,0.6);color:#ff8b8b;background:rgba(255,71,87,0.08)}
+  .ps-toggle button.active.spec{border-color:rgba(70,211,154,0.6);color:#46d39a;background:rgba(70,211,154,0.08)}
+  .ps-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start}
+  @media (max-width:680px){.ps-grid{grid-template-columns:1fr}}
+  .ps-code{background:#06060c;border:1px solid rgba(255,255,255,0.12);border-radius:10px;
+    padding:12px;font-size:0.7rem;color:#cdd6f4;white-space:pre-wrap;line-height:1.7;min-height:150px}
+  .ps-out{background:#0b0b14;border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:12px;min-height:150px}
+  .ps-out ul{margin:6px 0 0;padding-left:18px}
+  .ps-out li{font-size:0.78rem;color:var(--text-dim);margin-bottom:6px;line-height:1.5}
+  .ps-out li b{color:var(--text)}
+  .ps-out .tag-ok{color:#46d39a;font-weight:800}
+  .ps-out .tag-bad{color:#ff8b8b;font-weight:800}
+  .ps-note{margin-top:10px;background:#0b0b14;border:1px solid rgba(255,255,255,0.1);border-radius:10px;
+    padding:10px 12px;font-size:0.82rem;color:#cdd6f4;text-align:center;min-height:40px}
+
+  /* ═══ 🕵️ Caça ao Intruso ═══ */
+  .cim{background:linear-gradient(180deg,#0b1020,#0d0d1a);border:1px solid rgba(255,71,87,0.3);
+    border-radius:16px;padding:18px;margin:14px 0}
+  .ci-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+  .ci-score{font-size:0.78rem;color:var(--text-dim);font-weight:700}
+  .ci-score b{color:#46d39a}
+  .ci-diff{background:#06060c;border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:8px 0;overflow-x:auto}
+  .ci-line{display:block;width:100%;text-align:left;border:0;background:transparent;color:#8b93b0;
+    font-size:0.68rem;padding:3px 14px;cursor:pointer;white-space:pre;transition:background .15s;line-height:1.65}
+  .ci-line:hover{background:rgba(255,255,255,0.05)}
+  .ci-line.add{color:#7ef0c4}
+  .ci-line.del{color:#ff8b8b}
+  .ci-line.file{color:#c9b8ff;font-weight:700;cursor:default}
+  .ci-line.found{background:rgba(255,71,87,0.14);color:#ff8b8b;font-weight:700}
+  .ci-line.shake{animation:cishake .3s}
+  @keyframes cishake{25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+  .ci-note{margin-top:10px;background:#0b0b14;border:1px solid rgba(255,255,255,0.1);border-radius:10px;
+    padding:10px 12px;font-size:0.82rem;color:#cdd6f4;text-align:center;min-height:40px}
+
+  /* setup das ferramentas */
+  .tool-cmd{background:#06060c;border:1px solid rgba(255,255,255,0.12);border-radius:10px;
+    padding:10px 14px;font-size:0.74rem;color:#7ef0c4;margin:8px 0;overflow-x:auto;white-space:pre}
+  .tool-cmd .c{color:#6b7394}
+
+  @media (prefers-reduced-motion: reduce){
+    .pw-chip,.pw-cand,.mc-block,.lp-step,.agent-card,.ps-toggle button,.ci-line{transition:none;animation:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-orbs"><div class="orb"></div><div class="orb"></div><div class="orb"></div></div>
+<div class="progress-track"><div class="progress-bar"></div></div>
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<button class="menu-toggle" onclick="openSidebar()" aria-label="Abrir menu">☰</button>
+<div class="sidebar-overlay"></div>
+<nav class="sidebar-nav">
+  <button class="sidebar-close" onclick="closeSidebar()" aria-label="Fechar">✕</button>
+  <div class="sidebar-header">
+    <h3>🤖 Cap 09 · IA &amp; Agentes</h3>
+    <a class="sidebar-back" href="../../index.html">← Voltar ao hub</a>
+  </div>
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Neste capítulo</div>
+    <a class="sidebar-link" onclick="goTo('llm')"><span class="dot" style="background:var(--accent6)"></span> 🔮 O que é um LLM</a>
+    <a class="sidebar-link" onclick="goTo('contexto')"><span class="dot" style="background:var(--accent5)"></span> 📦 Contexto &amp; alucinação</a>
+    <a class="sidebar-link" onclick="goTo('agente')"><span class="dot" style="background:var(--accent6)"></span> 🦾 Do chat ao agente</a>
+    <a class="sidebar-link" onclick="goTo('mercado')"><span class="dot" style="background:var(--react)"></span> 🗺️ O mercado de agentes</a>
+    <a class="sidebar-link" onclick="goTo('instalar')"><span class="dot" style="background:var(--json)"></span> 🛠️ Bora instalar</a>
+    <a class="sidebar-link" onclick="goTo('prompt')"><span class="dot" style="background:var(--accent7)"></span> ✍️ Prompt = mini-spec</a>
+    <a class="sidebar-link" onclick="goTo('revisao')"><span class="dot" style="background:var(--accent2)"></span> 👀 Revisão: a regra de ouro</a>
+    <a class="sidebar-link" onclick="goTo('bugzilla')"><span class="dot" style="background:var(--bug)"></span> BugZilla 🐛</a>
+    <a class="sidebar-link" onclick="goTo('treino')"><span class="dot" style="background:var(--react)"></span> ⌨️ Treino: domando o estagiário</a>
+    <a class="sidebar-link" onclick="goTo('resumo')"><span class="dot" style="background:var(--accent7)"></span> Resumo</a>
+  </div>
+</nav>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section class="hero">
+  <div class="hero-icons" data-motion="float">🤖 🧠 ⌨️</div>
+  <span class="hero-badge" style="background:linear-gradient(135deg,var(--accent6),#8b91ff);color:#0a0a12">Capítulo 09 · Curso Fullstack</span>
+  <h1><span class="ia">IA &amp; Agentes</span>: seu novo par de programação</h1>
+  <p class="subtitle">
+    Você passou 8 capítulos digitando tudo na mão. Hoje você ganha um
+    <strong class="ia">estagiário genial</strong> que leu a internet inteira e digita a mil por
+    hora — e descobre por que só quem fez o caminho na mão consegue ser o
+    <strong style="color:var(--accent5)">CHEFE</strong> dele. Como um LLM funciona, o que é um
+    agente, e as duas habilidades que o mercado paga:
+    <strong style="color:var(--accent7)">especificar</strong> e
+    <strong style="color:var(--accent2)">revisar</strong>.
+  </p>
+  <div class="hero-stack">
+    <span class="stack-chip" style="border-color:rgba(167,139,250,0.5);color:#c9b8ff">🧠 LLM</span>
+    <span class="stack-chip" style="border-color:rgba(167,139,250,0.5);color:#c9b8ff">🔁 loop do agente</span>
+    <span class="stack-chip js">✍️ prompt = spec</span>
+    <span class="stack-chip react">👀 revisão de código</span>
+    <span class="stack-chip node">🛠️ Claude Code &amp; cia</span>
+  </div>
+</section>
+
+<div class="container">
+
+  <!-- ═══════════════ AQUECIMENTO ═══════════════ -->
+  <section class="step-section">
+    <div class="card">
+      <div class="quiz">
+        <div class="quiz-q"><span class="q-emoji">🔥</span> Aquecimento: se existe IA que escreve código sozinha… por que você passou 8 capítulos digitando React na mão?</div>
+        <div class="quiz-options">
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">Porque o professor gosta de ver aluno sofrer</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">Porque a IA erra sempre e não serve pra nada</button>
+          <button class="quiz-opt" data-correct="true" onclick="checkQuiz(this,true)">Porque só quem sabe LER e REVISAR código consegue comandar a IA — em vez de ser refém dela</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">Não precisava — foi tempo perdido</button>
+        </div>
+        <div class="quiz-feedback" data-correct="Exatamente. E hoje você vira o chefe." data-wrong="Pensa: quem confere se o código da IA está certo?" data-explain="A IA escreve código MUITO bem — e erra com a maior confiança do mundo. O mercado não paga mais quem digita mais rápido: paga quem sabe ESPECIFICAR o que quer e REVISAR o que recebeu. As duas coisas exigem exatamente o que você construiu nos Caps 1–8: saber ler código. Sem isso, você não comanda a IA — obedece a ela."></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ LLM ═══════════════ -->
+  <section class="step-section" id="llm">
+    <div class="step-header">
+      <div class="step-number" style="background:linear-gradient(135deg,var(--accent6),#8b91ff)">🔮</div>
+      <div>
+        <div class="step-title">O que é um LLM (o motor da coisa toda)</div>
+        <div class="step-sub">Um completador de frases que leu a internet inteira</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p>Antes de usar a ferramenta, vamos abrir o capô. ChatGPT, Claude, Gemini… todos têm o mesmo
+      motor: um <strong>LLM</strong> (<em>Large Language Model</em> — modelo grande de linguagem).
+      E o que esse motor faz é uma coisa só, repetida milhões de vezes:</p>
+
+      <div class="analogy">
+        <div class="analogy-title">📱 O autocompletar do teclado — turbinado</div>
+        <p>Sabe quando você digita "bom" no WhatsApp e o teclado sugere "dia"? O LLM é ISSO, levado
+        ao extremo: ele leu <strong>um pedaço gigante da internet</strong> (sites, livros, e
+        montanhas de código!) e aprendeu a responder uma única pergunta: "<em>dado tudo que veio
+        até aqui, qual é a <strong>próxima palavra</strong> mais provável?</em>". Ele prevê uma,
+        cola no texto, e pergunta de novo. E de novo. Uma resposta inteira é isso: previsão
+        atrás de previsão.</p>
+      </div>
+
+      <p style="color:var(--text-dim);margin:14px 0 4px">Veja a máquina prevendo — escolha um
+      começo de frase 👇</p>
+
+      <div class="pwm" id="pwm">
+        <div class="pw-chips">
+          <span class="pw-lab">Começo:</span>
+          <button class="pw-chip active" data-i="0">O gato subiu no…</button>
+          <button class="pw-chip" data-i="1">código React</button>
+          <button class="pw-chip" data-i="2">a pegadinha 😏</button>
+        </div>
+        <div class="pw-stage"><div class="pw-sent" id="pw-sent"></div></div>
+        <div class="pw-cands" id="pw-cands"></div>
+        <div class="pw-note" id="pw-note">…</div>
+      </div>
+
+      <div class="concept">
+        <div class="concept-title">🧩 "Mas ele PENSA?"</div>
+        <p>Ele <strong>prevê</strong>. Não tem uma listinha de fatos nem "sabe" o que é verdade —
+        tem bilhões de padrões estatísticos aprendidos na leitura. A parte surpreendente: prever
+        MUITO bem exige capturar padrões profundos (gramática, lógica, estilo…), então o resultado
+        muitas vezes <em>parece</em> — e funciona como — raciocínio. Pro nosso uso, o que importa
+        é o efeito prático: ele produz texto <strong>plausível</strong>. Quase sempre plausível e
+        correto. Às vezes, só plausível. 😬</p>
+      </div>
+
+      <div class="tip">
+        <span class="tip-icon">⚛️</span>
+        <div class="tip-content">
+          <strong>Por que ele é TÃO bom em código?</strong> Porque código é o texto mais previsível
+          que existe! Você mesmo já sente isso: todo componente rafce tem a mesma cara, todo
+          useEffect segue a receita da moldura, todo <code>.map()</code> na vitrine é igualzinho.
+          Padrão forte = previsão fácil. Por isso a IA brilha em programação — e por isso ela
+          escreve React "do jeito que todo mundo escreve"… que nem sempre é o jeito que
+          <strong>nós</strong> combinamos. Guarda essa.
+        </div>
+      </div>
+
+      <div class="concept">
+        <div class="concept-title">🔤 Bônus de vocabulário: tokens</div>
+        <p>O modelo não lê letra por letra nem palavra por palavra — ele pica o texto em
+        <strong>tokens</strong> (pedaços: "programação" pode virar <code>program</code> +
+        <code>ação</code>). É só o "centímetro" com que a IA mede texto. Quando alguém falar
+        "esse modelo aceita 200 mil tokens", está falando do tamanho da <strong>mesa de
+        trabalho</strong> dele — assunto da próxima seção.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ CONTEXTO & ALUCINAÇÃO ═══════════════ -->
+  <section class="step-section" id="contexto">
+    <div class="step-header">
+      <div class="step-number sn-yellow">📦</div>
+      <div>
+        <div class="step-title">Os dois limites: a mesa e a invenção</div>
+        <div class="step-sub">Janela de contexto &amp; alucinação — o que todo usuário de IA precisa saber</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p><strong>Limite 1: a mesa de trabalho.</strong> Tudo que o modelo "enxerga" na hora de
+      prever — sua pergunta, a conversa até aqui, os arquivos que ele leu — precisa caber num
+      espaço chamado <strong>janela de contexto</strong>. É grande (dá pra colocar livros
+      inteiros!), mas é <strong>finita</strong>. E o que não está na mesa, não existe pra ele:</p>
+
+      <div class="analogy">
+        <div class="analogy-title">🪵 A mesa de trabalho</div>
+        <p>Imagina o estagiário numa mesa: cabe muita coisa — o seu pedido, uns arquivos abertos,
+        as anotações da conversa. Mas quando a mesa enche, <strong>alguma coisa cai da borda</strong>
+        pra abrir espaço… e geralmente é o papel mais antigo. Se o que caiu era aquela regra
+        importante que você falou lá no começo? Ele segue trabalhando, feliz, <strong>sem ela</strong>.</p>
+      </div>
+
+      <p style="color:var(--text-dim);margin:14px 0 4px">Encha a mesa e veja o que acontece com a
+      regra combinada no começo da conversa 👇</p>
+
+      <div class="mcm" id="mcm">
+        <div class="mc-meter">
+          <span class="lab">📦 mesa (contexto):</span>
+          <div class="mc-track"><div class="mc-fill" id="mc-fill"></div></div>
+          <span class="lab" id="mc-pct">0%</span>
+        </div>
+        <div class="mc-table" id="mc-table"></div>
+        <div class="mc-lost" id="mc-lost"></div>
+        <div class="mc-controls">
+          <button id="mc-add-talk">💬 + mais conversa</button>
+          <button id="mc-add-file">📄 + um arquivo</button>
+          <button id="mc-add-big">🐘 + arquivo GIGANTE</button>
+          <button id="mc-reset">↺ recomeçar</button>
+        </div>
+        <div class="mc-note" id="mc-note">…</div>
+      </div>
+
+      <div class="tip">
+        <span class="tip-icon">📜</span>
+        <div class="tip-content">
+          <strong>Spoiler de profissional:</strong> por causa da mesa, regra importante de projeto
+          não se fala na conversa — se <strong>escreve num arquivo</strong> que o agente relê
+          sempre. Esse arquivo tem até nome de mercado (<code>AGENTS.md</code> /
+          <code>CLAUDE.md</code>) e vai ser a estrela do Cap 10.
+        </div>
+      </div>
+
+      <p style="margin-top:18px"><strong>Limite 2: a invenção com confiança.</strong> Lembra que o
+      modelo só prevê o texto mais <em>plausível</em>? Quando ele não tem o padrão certo, ele
+      <strong>não fala "não sei"</strong> — ele completa com o que mais parece verdade. Isso tem
+      nome: <strong style="color:var(--accent2)">alucinação</strong>. Em código, ela aparece
+      assim: uma biblioteca que não existe, um método com nome convincente que nunca existiu, um
+      hook <code>useFetch</code> que ele jura que vem do React (você viu na máquina 🔮!).</p>
+
+      <div class="quiz" style="margin-top:16px">
+        <div class="quiz-q"><span class="q-emoji">🤯</span> Verdade ou invenção? A IA respondeu: "Para buscar dados no React, use o hook <code>useFetch</code>, que já vem instalado". O que você faz?</div>
+        <div class="quiz-options">
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">Uso — se a IA falou com essa confiança toda, deve existir</button>
+          <button class="quiz-opt" data-correct="true" onclick="checkQuiz(this,true)">Desconfio: eu SEI (Cap 7!) que buscar dados é useEffect + axios — useFetch não existe no React</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">Pergunto pra outra IA, e a que responder mais bonito ganha</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">Desisto do React</button>
+        </div>
+        <div class="quiz-feedback" data-correct="É o Cap 7 te salvando da alucinação. 🥋" data-wrong="Confiança não é prova — a IA inventa COM confiança." data-explain="useFetch é uma alucinação clássica: o nome é TÃO plausível (parece irmão do useState e do useEffect) que o modelo prevê ele com convicção. Quem nunca estudou React engole. Você não: rodou os Caps 6–7 na mão e sabe o que existe. Regra de ouro com IA: confiar, mas CONFERIR — rodando o código e usando o que você sabe."></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ DO CHAT AO AGENTE ═══════════════ -->
+  <section class="step-section" id="agente">
+    <div class="step-header">
+      <div class="step-number" style="background:linear-gradient(135deg,var(--accent6),#8b91ff)">🦾</div>
+      <div>
+        <div class="step-title">Do chat ao agente: a IA ganha mãos</div>
+        <div class="step-sub">Ferramentas + um loop de tentativa até dar certo</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p>O ChatGPT no navegador é um <strong>chat</strong>: você pergunta, ele responde texto, e
+      quem copia, cola, salva e roda… é você. Um <strong>agente de codificação</strong> é o mesmo
+      motor LLM com uma diferença que muda tudo: ele tem <strong class="ia">mãos</strong> —
+      chamadas de <strong>ferramentas</strong>:</p>
+
+      <ul class="about-bullets">
+        <li><div>📖 <strong>ler arquivos</strong> do seu projeto (ele abre seu App.jsx sozinho);</div></li>
+        <li><div>✏️ <strong>criar e editar arquivos</strong> (ele escreve o código no lugar certo);</div></li>
+        <li><div>🖥️ <strong>rodar comandos no terminal</strong> (npm install, npm run dev…);</div></li>
+        <li><div>👁️ <strong>ler o resultado</strong> — inclusive as mensagens de erro.</div></li>
+      </ul>
+
+      <p>E com mãos, nasce o comportamento que dá nome à coisa — o
+      <strong class="ia">loop do agente</strong>: ele entende o pedido, faz um plano, age,
+      <strong>olha o que aconteceu</strong>… e repete até considerar o trabalho pronto. Se der
+      erro no meio, ele lê o erro e tenta corrigir — sozinho.</p>
+
+      <p style="color:var(--text-dim);margin:14px 0 4px">Veja o loop rodando — primeiro com um
+      pedido claro, depois com um vago 👇</p>
+
+      <div class="lpm" id="lpm">
+        <div class="lp-result" id="lp-pedido" style="margin-top:0">📨 …</div>
+        <div class="lp-steps" id="lp-steps">
+          <span class="lp-step" data-s="0">🧠 planejar</span><span class="lp-arrow">→</span>
+          <span class="lp-step" data-s="1">📖 ler</span><span class="lp-arrow">→</span>
+          <span class="lp-step" data-s="2">✏️ editar</span><span class="lp-arrow">→</span>
+          <span class="lp-step" data-s="3">🖥️ rodar</span><span class="lp-arrow">→</span>
+          <span class="lp-step err" data-s="4">❌ erro</span><span class="lp-arrow">→</span>
+          <span class="lp-step" data-s="5">🔁 corrigir</span><span class="lp-arrow">→</span>
+          <span class="lp-step ok" data-s="6">✅ pronto</span>
+        </div>
+        <div class="lp-console" id="lp-console">// escolha um pedido pra ver o agente trabalhar 👇</div>
+        <div class="lp-result" id="lp-result">…</div>
+        <div class="lp-controls">
+          <button id="lp-claro">✅ pedido claro: "botão de curtir no CartaoProduto"</button>
+          <button class="vago" id="lp-vago">🌀 pedido vago: "melhora o site aí"</button>
+        </div>
+        <div class="lp-note" id="lp-note">…</div>
+      </div>
+
+      <div class="analogy">
+        <div class="analogy-title">🧑‍💼 A analogia que vale o capítulo: o estagiário genial</div>
+        <p>Pensa num estagiário que <strong>leu a internet inteira</strong>, digita a mil por hora,
+        nunca cansa e topa qualquer tarefa. Incrível, né? Agora os poréns: ele <strong>não conhece
+        o SEU projeto</strong> (a não ser que leia), <strong>não adivinha</strong> o que você quer
+        (a não ser que você diga), completa com confiança mesmo quando não sabe, e — o mais
+        importante — <strong>não é o responsável</strong> pelo que entrega. Quem assina o código é
+        o engenheiro. Todo estagiário genial precisa de um <strong>tech lead</strong>… e neste
+        curso, o tech lead é <strong>VOCÊ</strong>.</p>
+      </div>
+
+      <div class="quiz" style="margin-top:16px">
+        <div class="quiz-q"><span class="q-emoji">🦾</span> Qual é A diferença entre um chat de IA e um agente de codificação?</div>
+        <div class="quiz-options">
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">O agente usa um modelo mais inteligente</button>
+          <button class="quiz-opt" data-correct="true" onclick="checkQuiz(this,true)">O agente tem FERRAMENTAS (ler, editar, rodar) e repete o loop até terminar — o chat só devolve texto</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">O agente não alucina</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">O chat é grátis e o agente é pago</button>
+        </div>
+        <div class="quiz-feedback" data-correct="Isso: mesmas 'cabeças', mas o agente tem mãos." data-wrong="Olha a máquina do loop de novo: o que o agente fez que um chat não faz?" data-explain="O motor LLM pode até ser o mesmo. A diferença é o loop com ferramentas: o agente lê SEUS arquivos, edita, roda, vê o erro e tenta de novo. Por isso ele acerta mais que um chat (ele testa o que faz!) — e por isso também ele pode fazer estrago mais rápido: as mãos dele mexem no SEU projeto. Alucinar, ele continua podendo. Pago ou grátis depende da ferramenta."></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ MERCADO ═══════════════ -->
+  <section class="step-section" id="mercado">
+    <div class="step-header">
+      <div class="step-number sn-react">🗺️</div>
+      <div>
+        <div class="step-title">O mercado de agentes (quem é quem)</div>
+        <div class="step-sub">Nomes diferentes, MESMO loop — aprenda o fluxo e você domina todas</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p>Essa é a área mais quente da tecnologia agora, e cada gigante tem o seu agente. Os que
+      você mais vai ouvir no mercado:</p>
+
+      <div class="agents-grid">
+        <div class="agent-card star">
+          <span class="who">Anthropic</span>
+          <h4>Claude Code</h4>
+          <p>Agente que roda no terminal (e no VSCode). Forte em seguir regras de projeto — o
+          arquivo dele é o <code>CLAUDE.md</code>.</p>
+          <span class="badge-prof">⭐ o que o prof usa e recomenda</span>
+        </div>
+        <div class="agent-card">
+          <span class="who">OpenAI</span>
+          <h4>Codex</h4>
+          <p>O agente da casa do ChatGPT: CLI no terminal + integração com o site. Lê o
+          <code>AGENTS.md</code>.</p>
+        </div>
+        <div class="agent-card">
+          <span class="who">Google</span>
+          <h4>Antigravity</h4>
+          <p>O do Google, em duas formas: um editor com agente dentro e o <strong>Antigravity
+          CLI</strong> (comando <code>agy</code>) no terminal. Conta Google, camada gratuita
+          generosa.</p>
+        </div>
+        <div class="agent-card">
+          <span class="who">GitHub / Microsoft</span>
+          <h4>Copilot</h4>
+          <p>Mora dentro do VSCode: do autocompletar turbinado ao modo agente. Muito comum em
+          empresa.</p>
+        </div>
+        <div class="agent-card">
+          <span class="who">Anysphere</span>
+          <h4>Cursor</h4>
+          <p>Um editor inteiro (primo do VSCode) construído em volta do agente. Queridinho de
+          muita startup.</p>
+        </div>
+      </div>
+
+      <div class="concept">
+        <div class="concept-title">🎓 A boa notícia: você não precisa "aprender 5 ferramentas"</div>
+        <p>Todas rodam o <strong>mesmo loop</strong> que você acabou de ver, e o trabalho do
+        engenheiro é o mesmo em todas: <strong>escrever um bom pedido → deixar o agente rodar o
+        loop → revisar o resultado</strong>. Muda o comando de instalar e o nome do arquivo de
+        regras. Aprendeu o fluxo numa, sabe em todas — igual aprender a dirigir: o carro muda, a
+        direção não.</p>
+      </div>
+
+      <div class="warning">
+        <span class="warning-icon">💸</span>
+        <div class="warning-content">
+          <strong>Sobre preços e contas:</strong> cada ferramenta tem seu modelo — algumas têm
+          camada gratuita (com limite de uso), outras pedem assinatura. Isso muda
+          <strong>rápido</strong>, então na aula o prof mostra o cenário do dia. Pro curso:
+          <strong>use a que você conseguir ativar</strong> — o material serve pra todas. Se travar
+          em todas, faça dupla com um colega: revisar em dupla é ainda mais profissional. 😉
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ INSTALAR ═══════════════ -->
+  <section class="step-section" id="instalar">
+    <div class="step-header">
+      <div class="step-number sn-js">🛠️</div>
+      <div>
+        <div class="step-title">Bora instalar o seu</div>
+        <div class="step-sub">Escolha UMA ferramenta e ative — o ritual é parecido em todas</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p>O ritual é o mesmo em todas: <strong>instalar → entrar na conta → abrir na pasta do
+      projeto</strong> (igual você faz com o <code>code .</code>). E a boa notícia: você já tem o
+      Node desde o Cap 4, então dá pra instalar quase tudo com o velho conhecido
+      <code>npm install -g</code>. Escolha a sua (👀 abre o passo a passo):</p>
+
+      <div class="warning">
+        <span class="warning-icon">🔢</span>
+        <div class="warning-content">
+          <strong>Antes: confira seu Node.</strong> Rode <code>node -v</code> no terminal — os
+          instaladores via npm pedem <strong>Node 22 ou maior</strong>. Número menor? Baixe a
+          versão nova em <code>nodejs.org</code> (mesmo ritual do Cap 4).
+        </div>
+      </div>
+
+      <div class="toggler">
+        <div class="toggler-header" onclick="toggleSection(this)">
+          <span>⭐ Claude Code (a recomendada do prof)</span><span class="toggler-arrow">▼</span>
+        </div>
+        <div class="toggler-body">
+          <p style="font-size:0.9rem">Instala com o npm que você já conhece:</p>
+          <div class="tool-cmd"><span class="c"># instalar (uma vez só):</span>
+npm install -g @anthropic-ai/claude-code
+
+<span class="c"># abrir NA PASTA do projeto (igual você faz com code .):</span>
+cd mini-loja-com-agente
+claude</div>
+          <p style="font-size:0.85rem;color:var(--text-dim)">Na primeira vez ele abre o navegador
+          pra você entrar na sua conta Claude. Pelo npm ele NÃO se atualiza sozinho — de vez em
+          quando rode <code>npm install -g @anthropic-ai/claude-code@latest</code>. (Se você vir
+          por aí um instalador via <code>curl</code>: é o outro caminho oficial, que se atualiza
+          sozinho — os dois funcionam.) Atenção: precisa de conta com <strong>plano pago</strong>
+          (Pro) ou chave de API — o plano gratuito do claude.ai não inclui o Claude Code (na aula
+          o prof mostra as opções).</p>
+        </div>
+      </div>
+
+      <div class="toggler" style="margin-top:10px">
+        <div class="toggler-header" onclick="toggleSection(this)">
+          <span>🟢 Codex (OpenAI)</span><span class="toggler-arrow">▼</span>
+        </div>
+        <div class="toggler-body">
+          <p style="font-size:0.9rem">Esse instala com o velho conhecido <code>npm</code> (pede
+          Node 22+; entra com a conta do ChatGPT):</p>
+          <div class="tool-cmd"><span class="c"># instalar (repare no @openai/ — codex "sem sobrenome" é OUTRO pacote!):</span>
+npm install -g @openai/codex
+
+<span class="c"># abrir na pasta do projeto:</span>
+cd mini-loja-com-agente
+codex</div>
+        </div>
+      </div>
+
+      <div class="toggler" style="margin-top:10px">
+        <div class="toggler-header" onclick="toggleSection(this)">
+          <span>🔵 Antigravity (Google)</span><span class="toggler-arrow">▼</span>
+        </div>
+        <div class="toggler-body">
+          <p style="font-size:0.9rem">Duas portas de entrada, com a sua conta Google: o
+          <strong>editor Antigravity</strong> (baixa em <code>antigravity.google</code>, instala
+          como o VSCode, abre a pasta e o agente fica no painel) e o <strong>Antigravity
+          CLI</strong>, o irmão de terminal — comando <code>agy</code>. Esse é o único da lista
+          que <strong>não mora no npm</strong> (o Google distribui um programa pronto, sem
+          depender do Node) — o instalador é uma linha também, só que com outro carteiro:</p>
+          <div class="tool-cmd"><span class="c"># macOS / Linux:</span>
+curl -fsSL https://antigravity.google/cli/install.sh | bash
+
+<span class="c"># Windows (no PowerShell):</span>
+irm https://antigravity.google/cli/install.ps1 | iex
+
+<span class="c"># abrir na pasta do projeto:</span>
+cd mini-loja-com-agente
+agy</div>
+          <p style="font-size:0.85rem;color:var(--text-dim)">Se você achar tutoriais antigos
+          mandando <code>npm install -g @google/gemini-cli</code>: era a ferramenta anterior do
+          Google — o Antigravity CLI é o substituto oficial dela desde meados de 2026.</p>
+        </div>
+      </div>
+
+      <div class="warning" style="margin-top:14px">
+        <span class="warning-icon">📋</span>
+        <div class="warning-content">
+          <strong>Comandos mudam de versão!</strong> Se algum comando acima reclamar, vale a regra
+          de sempre: <strong>leia o erro</strong> — e confira o site oficial da ferramenta (ou
+          pergunte na aula). Instalar ferramenta nova faz parte da vida de dev.
+        </div>
+      </div>
+
+      <div class="concept">
+        <div class="concept-title">🚦 O agente PEDE licença — e isso é seu primeiro superpoder</div>
+        <p>Repara numa coisa linda quando você usar: antes de editar um arquivo ou rodar um
+        comando, o agente <strong>pede permissão</strong> ("posso editar o App.jsx?", "posso rodar
+        npm install?"). Esses avisos são o seu <strong>primeiro posto de revisão</strong>: leia o
+        que ele quer fazer ANTES de apertar o sim. Aceitar tudo no automático é dirigir de olho
+        fechado.</p>
+      </div>
+
+      <div class="tip">
+        <span class="tip-icon">👋</span>
+        <div class="tip-content">
+          <strong>Primeiro "oi" (sem medo):</strong> com a ferramenta aberta numa pasta de projeto,
+          pergunte: <em>"O que é este projeto? Explique pra um iniciante."</em> Perguntar não mexe
+          em nada — e você vai ver o loop em ação: ele LÊ seus arquivos antes de responder. Esse é
+          o P1 do treino logo mais.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ PROMPT = SPEC ═══════════════ -->
+  <section class="step-section" id="prompt">
+    <div class="step-header">
+      <div class="step-number sn-mint">✍️</div>
+      <div>
+        <div class="step-title">Prompt = mini-spec (a arte do pedido)</div>
+        <div class="step-sub">Pedido vago sai caro. Os 4 ingredientes do pedido de engenheiro</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p>Você viu na máquina do loop: pedido vago, o agente <strong>decide por você</strong> — e
+      decide "do jeito da internet", não do jeito do nosso curso. A ferramenta é a mesma; o que
+      separa o amador do engenheiro é o <strong>pedido</strong>. Compare 👇</p>
+
+      <div class="psm" id="psm">
+        <div class="ps-toggle">
+          <button class="vago active" data-m="vago">🌀 prompt vago</button>
+          <button class="spec" data-m="spec">📋 prompt-spec</button>
+        </div>
+        <div class="ps-grid">
+          <div class="ps-code" id="ps-code"></div>
+          <div class="ps-out" id="ps-out"></div>
+        </div>
+        <div class="ps-note" id="ps-note">…</div>
+      </div>
+
+      <p>O prompt da direita não é "texto bonito" — é uma <strong>mini-especificação</strong>, o
+      mesmo documento que um tech lead escreve pra qualquer dev do time. A receita tem
+      <strong>4 ingredientes</strong>:</p>
+
+      <ul class="about-bullets">
+        <li><div><strong>1. CONTEXTO</strong> — onde estamos: "projeto React com Vite; componentes em <code>src/components/</code>; estilo com CSS Modules". <em>(O agente não adivinha seu projeto — ou lê, ou você conta.)</em></div></li>
+        <li><div><strong>2. TAREFA</strong> — o que fazer, específico: "crie um componente <code>Rodape.jsx</code> com o texto X". <em>(Uma tarefa por pedido: lembra da didática do curso — um conceito por vez? Vale pra ele também.)</em></div></li>
+        <li><div><strong>3. RESTRIÇÕES</strong> — como fazer e como NÃO fazer: "arrow function; CSS Module próprio; NÃO instale nenhuma biblioteca". <em>(É a cerca que mantém o código do NOSSO jeito.)</em></div></li>
+        <li><div><strong>4. CRITÉRIO DE ACEITE</strong> — como saber que ficou pronto: "pronto quando o rodapé aparecer em todas as páginas com o fundo escuro". <em>(Sem isso, "pronto" é opinião do estagiário.)</em></div></li>
+      </ul>
+
+      <div class="tip">
+        <span class="tip-icon">💼</span>
+        <div class="tip-content">
+          <strong>Isso tem nome no mercado.</strong> Saber escrever esse pedido é hoje uma
+          habilidade de contratação (chamam de <em>prompt engineering</em>, e o time mais chique
+          fala <em>context engineering</em>). Repara na ironia deliciosa: pra escrever as
+          RESTRIÇÕES, você precisa… <strong>saber React</strong>. Quem nunca ouviu falar de arrow
+          function ou CSS Module não consegue nem PEDIR direito. Os Caps 1–8 eram isso.
+        </div>
+      </div>
+
+      <div class="quiz" style="margin-top:16px">
+        <div class="quiz-q"><span class="q-emoji">✍️</span> Qual destes pedidos é um prompt-spec?</div>
+        <div class="quiz-options">
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">"faz uma tela de login bem legal"</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">"arruma os bugs"</button>
+          <button class="quiz-opt" data-correct="true" onclick="checkQuiz(this,true)">"No projeto React (Vite), crie src/components/Aviso.jsx: arrow function, recebe a prop texto, CSS Module próprio, sem bibliotecas novas. Pronto quando aparecer no topo da Home."</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">"você é um programador sênior muito bom, capriche"</button>
+        </div>
+        <div class="quiz-feedback" data-correct="Contexto ✓ tarefa ✓ restrições ✓ aceite ✓ — spec completa!" data-wrong="Procura os 4 ingredientes em cada opção…" data-explain="Só a terceira tem os 4 ingredientes: contexto (projeto React/Vite), tarefa específica (criar Aviso.jsx com prop texto), restrições (arrow, CSS Module, sem libs) e critério de aceite (aparecer no topo da Home). Elogiar o agente ('você é sênior') não substitui NENHUM ingrediente — máximo deixa ele animado. 😄"></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ REVISÃO ═══════════════ -->
+  <section class="step-section" id="revisao">
+    <div class="step-header">
+      <div class="step-number sn-red" style="background:linear-gradient(135deg,var(--accent2),#ff8b6b)">👀</div>
+      <div>
+        <div class="step-title">Revisão: a regra de ouro</div>
+        <div class="step-sub">Nunca aceite um código que você não consegue explicar em voz alta</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p>O agente terminou e disse "pronto! ✨". Agora começa o <strong>SEU</strong> trabalho.
+      Quando um agente edita seu projeto, ele mostra um <strong>diff</strong> — a lista do que
+      mudou (você vai ver: linha verde com <code>+</code> entrou, linha vermelha com
+      <code>-</code> saiu). O diff é a sua mesa de cirurgia. O ritual, <strong>sempre na
+      ordem</strong>:</p>
+
+      <ul class="about-bullets">
+        <li><div><strong>① Rodou?</strong> — abre no navegador e testa o critério de aceite que VOCÊ escreveu.</div></li>
+        <li><div><strong>② Li o diff?</strong> — linha por linha. Verde por verde.</div></li>
+        <li><div><strong>③ Segue o nosso padrão?</strong> — rafce? CSS Module? axios? Ou veio "jeito da internet"?</div></li>
+        <li><div><strong>④ Tem algo que eu NÃO pedi?</strong> — arquivo extra, biblioteca nova no package.json, "melhorias" por conta própria…</div></li>
+        <li><div><strong>⑤ Consigo explicar em voz alta?</strong> — se não consegue, não aceita: peça "explique o que você fez e por quê" (o agente adora explicar — use-o de tutor!).</div></li>
+      </ul>
+
+      <p style="color:var(--text-dim);margin:14px 0 4px">Treina o olho: você pediu SÓ um rodapé
+      (arrow + CSS Module, sem libs). No diff abaixo o agente entregou… com <strong>3
+      intrusos</strong>. Clica nas linhas suspeitas 👇</p>
+
+      <div class="cim" id="cim">
+        <div class="ci-head">
+          <span style="font-size:0.8rem;color:var(--text-dim)">📨 pedido: "crie o Rodape (arrow function + CSS Module, <b>não instale nada</b>)"</span>
+          <span class="ci-score">intrusos: <b id="ci-score">0</b>/3</span>
+        </div>
+        <div class="ci-diff" id="ci-diff"></div>
+        <div class="ci-note" id="ci-note">…</div>
+      </div>
+
+      <div class="concept">
+        <div class="concept-title">💼 Por que isso é inegociável no mercado</div>
+        <p>Nas empresas, todo código passa por <strong>code review</strong>: outro dev lê e aprova
+        antes de entrar no produto. Código de IA não pula a fila — pelo contrário: "gerado por IA
+        e ninguém revisou" é <strong>reprovação na certa</strong> (e motivo de incidente famoso).
+        O dev que o mercado quer em 2026 não é o que digita mais rápido: é o que consegue dizer
+        <em>"pode subir, EU revisei"</em> — e sustentar. É literalmente o emprego.</p>
+      </div>
+
+      <div class="tip">
+        <span class="tip-icon">🐢</span>
+        <div class="tip-content">
+          <strong>"Mas revisar não é lento?"</strong> — Menos que o estrago. E olha o truque: como
+          VOCÊ fez tudo na mão até aqui, você sabe quanto custa um rodapé, um formulário, uma
+          rota. Se o diff veio 10× maior do que você faria… tem coisa errada. Seu "gabarito
+          mental" é o detector de fumaça — e é por isso que a Fase 1 do Cap 10 vai ser na mão.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ BUGZILLA ═══════════════ -->
+  <section class="step-section" id="bugzilla">
+    <div class="step-header">
+      <div class="step-number sn-red">🐛</div>
+      <div>
+        <div class="step-title">BugZilla apresenta: os 5 clássicos da era dos agentes</div>
+        <div class="step-sub">Bugs novos pra uma era nova — e um deles não é nem de código</div>
+      </div>
+    </div>
+
+    <div class="bug-box">
+      <span class="bug-icon">🐛</span>
+      <div class="bug-content">
+        <strong>Bug 1 — a lib fantasma (alucinação):</strong>
+        <code>import { useFetch } from 'react'</code> — convincente, confiante… e inexistente.
+        <strong>Antídoto:</strong> rodar SEMPRE (o Vite acusa na hora) + desconfiar de qualquer
+        nome que você nunca viu nos Caps 1–8. Se não estudamos, investigue antes de aceitar.
+      </div>
+    </div>
+
+    <div class="bug-box" style="margin-top:14px">
+      <span class="bug-icon">🐛</span>
+      <div class="bug-content">
+        <strong>Bug 2 — o pedido vago que virou reforma:</strong> "melhora aí" → diff com 14
+        arquivos, projeto irreconhecível. <strong>Antídoto:</strong> prompt-spec (tarefa UMA,
+        restrições claras). Já aconteceu? <em>"Desfaça tudo. Agora mude SÓ o CartaoProduto.jsx:
+        …"</em> — agentes sabem desfazer o que acabaram de fazer, é só pedir.
+      </div>
+    </div>
+
+    <div class="bug-box" style="margin-top:14px">
+      <span class="bug-icon">🐛</span>
+      <div class="bug-content">
+        <strong>Bug 3 — a dependência clandestina:</strong> você pediu um formulário, ganhou
+        <code>react-hook-form</code> no <code>package.json</code>. Funciona? Sim. É o combinado?
+        Não — e agora seu projeto carrega uma peça que você não sabe operar.
+        <strong>Antídoto:</strong> o diff do <code>package.json</code> se lê SEMPRE, e "não
+        instale nada" entra nas restrições do prompt.
+      </div>
+    </div>
+
+    <div class="bug-box" style="margin-top:14px">
+      <span class="bug-icon">🐛</span>
+      <div class="bug-content">
+        <strong>Bug 4 — a dívida de compreensão:</strong> o único bug que não mora no código —
+        mora em você. Aceitou 3 diffs sem ler; agora não sabe onde nada está, não consegue nem
+        DESCREVER o próximo pedido, e a entrevista de emprego ("me explica esse projeto do seu
+        portfólio?") vira pesadelo. <strong>Antídoto:</strong> a regra de ouro, sem exceção — e
+        usar o agente de tutor: "explique o que você fez" é de graça.
+      </div>
+    </div>
+
+    <div class="bug-box" style="margin-top:14px">
+      <span class="bug-icon">🐛</span>
+      <div class="bug-content">
+        <strong>Bug 5 — a regra esquecida:</strong> na 5ª mensagem você disse "sempre CSS
+        Modules"; na 25ª ele voltou pro CSS global. Não é teimosia — é a <strong>mesa de contexto
+        cheia</strong> (a regra caiu da borda). <strong>Antídoto:</strong> regra importante mora
+        em ARQUIVO relido sempre, não na conversa. É o <code>AGENTS.md</code> — estrela do
+        Cap 10.
+      </div>
+    </div>
+
+    <div class="toggler" style="margin-top:14px">
+      <div class="toggler-header" onclick="toggleSection(this)">
+        <span>👀 Macete de ouro do BugZilla</span><span class="toggler-arrow">▼</span>
+      </div>
+      <div class="toggler-body">
+        <div class="tip" style="margin:0">
+          <span class="tip-icon">🔦</span>
+          <div class="tip-content">
+            Recebeu um diff e bateu a preguiça de revisar? Pergunta-detector: <em>"eu conseguiria
+            reescrever isso na mão, mais devagar?"</em> Se sim, revise rapidinho e aceite. Se
+            NÃO… você está prestes a colocar no SEU projeto um código que você não domina — e aí a
+            revisão não é burocracia, é sobrevivência. Peça explicação ao agente até a resposta
+            virar "sim".
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ LEMA ═══════════════ -->
+  <section class="step-section">
+    <div class="card" style="text-align:center;background:linear-gradient(135deg,rgba(167,139,250,0.10),rgba(108,99,255,0.06));border-color:rgba(167,139,250,0.22)">
+      <div style="font-family:'Caveat',cursive;font-size:clamp(1.7rem,5.4vw,2.7rem);color:var(--accent6);font-weight:700;line-height:1.15">
+        VOCÊ É O ENGENHEIRO.<br>O AGENTE É A FERRAMENTA. 🧑‍✈️
+      </div>
+      <p class="text-dim" style="max-width:560px;margin:10px auto 0">
+        E ferramenta boa na mão de quem sabe o que está fazendo… constrói coisa grande.
+        Bora pro treino — <strong style="color:var(--text)">com uma CÓPIA da Mini-loja</strong>,
+        que ninguém é doido. 😄
+      </p>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ TREINO ═══════════════ -->
+  <section class="step-section" id="treino">
+    <div class="step-header">
+      <div class="step-number sn-react">⌨️</div>
+      <div>
+        <div class="step-title">Treino — domando o estagiário</div>
+        <div class="step-sub">Primeiro papo, primeira edição, primeiro estrago (de propósito)</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="warning">
+        <span class="warning-icon">🛟</span>
+        <div class="warning-content">
+          <strong>Passo 0, antes de TUDO: faça uma cópia.</strong> No Explorador de arquivos,
+          copie a pasta <code>mini-loja</code> inteira e renomeie a cópia para
+          <code>mini-loja-com-agente</code>. Abra a CÓPIA no VSCode e rode <code>npm install</code>
+          nela. O agente só encosta na cópia — sua Mini-loja original dos Caps 4–8 fica
+          intocada. <em>(No mercado isso se faz com git e branches — você aprende na metade
+          backend. Por enquanto: cópia de pasta, simples e honesto.)</em>
+        </div>
+      </div>
+
+      <!-- trilha de progresso -->
+      <div class="arena-track">
+        <span class="at-dot lv1">1</span><span class="at-arrow">→</span>
+        <span class="at-dot lv1">2</span><span class="at-arrow">→</span>
+        <span class="at-dot lv2">3</span><span class="at-arrow">→</span>
+        <span class="at-dot lv2">4</span><span class="at-arrow">→</span>
+        <span class="at-dot lv3">🏆</span>
+      </div>
+
+      <!-- 1. guiado — instalar + primeiro papo -->
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">👨‍🏫</span><div>
+          <div class="exercise-title">Passo 1 — o primeiro papo (com o prof)</div>
+          <div class="exercise-sub">Instalar a ferramenta + deixar o agente LER o projeto</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>1) Instale e entre na
+        ferramenta escolhida (seção 🛠️). 2) No terminal, entre na pasta
+        <code>mini-loja-com-agente</code> e abra o agente nela. 3) Primeiro pedido — só leitura,
+        zero risco:</p></div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">seu primeiro prompt (digite você — não copie!)</span><span class="lang-badge prompt">PROMPT</span></div>
+<pre>Explique este projeto para um iniciante: o que cada arquivo
+dentro de src/ faz? Não mude nada — só explique.</pre>
+        </div>
+        <div class="tip"><span class="tip-icon">🍿</span><div class="tip-content">Repara no
+        <strong>loop acontecendo ao vivo</strong>: ele vai pedir/avisar que está lendo App.jsx,
+        pages/, CartaoProduto.jsx… e SÓ DEPOIS responder. E agora o teste supremo: <strong>você
+        construiu este projeto</strong> — a explicação dele está certa? Nota pro estagiário. 📝</div></div>
+      </div>
+
+      <!-- 2. guiado — tutor -->
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">👨‍🏫</span><div>
+          <div class="exercise-title">Passo 2 — o agente como tutor (com o prof)</div>
+          <div class="exercise-sub">Pergunta dirigida numa linha que você conhece bem</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>Peça uma aula particular
+        sobre um trecho que você mesmo escreveu no Cap 7:</p></div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">prompt</span><span class="lang-badge prompt">PROMPT</span></div>
+<pre>Explique linha por linha o useEffect que está em
+src/pages/Home.jsx. Por que o array de dependências está vazio?
+Não mude nada.</pre>
+        </div>
+        <div class="tip"><span class="tip-icon">🧠</span><div class="tip-content">Confere com o
+        mnemônico do Cap 7: ele explicou o <strong>O QUE</strong> (a função) e o
+        <strong>QUANDO</strong> (o <code>[]</code> = só quando montar)? Percebeu que "não mude
+        nada" virou parte do prompt? <strong>Restrição</strong> não é só pra código — é pra
+        qualquer pedido. Esse uso-tutor vale ouro na véspera de prova. 😄</div></div>
+      </div>
+
+      <!-- 3. guiado — primeira edição -->
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">👨‍🏫</span><div>
+          <div class="exercise-title">Passo 3 — a primeira edição, com ritual completo (com o prof) ⭐</div>
+          <div class="exercise-sub">Um prompt-spec de verdade + a revisão dos 5 passos</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>1) Mande o pedido abaixo
+        — repara nos 4 ingredientes marcados. 2) Quando ele terminar, <strong>NÃO aceite ainda</strong>:
+        rode o ritual ①–⑤ da seção 👀 com o prof, no telão, linha por linha do diff. 3) Só então
+        aceite e veja no navegador.</p></div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">prompt-spec — os 4 ingredientes em ação</span><span class="lang-badge prompt">PROMPT</span></div>
+<pre>[CONTEXTO] Este é um projeto React com Vite. Os componentes
+ficam em src/ e usamos CSS Modules para estilo.
+
+[TAREFA] Crie um componente de rodapé em src/Rodape.jsx e
+mostre ele no final de todas as páginas, com o texto:
+"Mini-loja — feita no curso Fullstack 💜".
+
+[RESTRIÇÕES] Componente como arrow function (const Rodape = ...,
+com export default). Estilo num CSS Module próprio
+(Rodape.module.css): fundo escuro, texto centralizado.
+NÃO instale nenhuma biblioteca. NÃO mexa em nenhum outro
+componente além do App.jsx (para exibir o rodapé).
+
+[ACEITE] Pronto quando o rodapé aparecer na Home E na página
+Sobre, sem nenhum erro no terminal do Vite.</pre>
+        </div>
+        <div class="mini-browser" data-url="localhost:5173/" data-h="200">
+<script type="text/html" data-mp="html">
+  <div style="font-family:sans-serif">
+    <nav style="display:flex;gap:12px;border-bottom:2px solid #e2e8f0;padding-bottom:6px;font-size:13px">
+      <a style="color:#0ea5e9;font-weight:800;text-decoration:none">🛒 Loja</a>
+      <a style="color:#64748b;font-weight:700;text-decoration:none">👋 Sobre</a>
+    </nav>
+    <div style="display:flex;gap:10px;justify-content:center;margin:12px 0;font-size:26px">⌨️ 🖥️ 🪑 🖱️</div>
+    <div style="background:#1e293b;color:#e2e8f0;text-align:center;padding:8px;border-radius:8px;font-size:12px">
+      Mini-loja — feita no curso Fullstack 💜
+    </div>
+  </div>
+</script>
+        </div>
+        <div class="tip"><span class="tip-icon">👀</span><div class="tip-content">Perguntas do
+        ritual pra fazer em voz alta no ③ e ④: o Rodape veio como <strong>arrow</strong>? O CSS é
+        <code>Rodape.module.css</code> com <code>import styles</code>? O diff tocou só em
+        <code>Rodape.jsx</code>, <code>Rodape.module.css</code> e <code>App.jsx</code>? O
+        <code>package.json</code> ficou <strong>intocado</strong>?</div></div>
+      </div>
+
+      <!-- 4. solo — A/B -->
+      <div class="exercise solo">
+        <div class="exercise-header"><span class="exercise-icon">🧑‍💻</span><div>
+          <div class="exercise-title">Passo 4 — o experimento A/B (sozinho/a)</div>
+          <div class="exercise-sub">A MESMA feature pedida dos dois jeitos — sinta a diferença</div></div>
+        </div>
+        <div class="drill-tags"><span class="drill-level lv2"><span class="stars">★★</span> médio</span><span class="drill-tag">prompt vago × spec</span><span class="drill-tag">desfazer</span></div>
+        <div class="concept"><div class="concept-title">💡 Missão</div><p>A feature: um selo
+        <strong>"🔥 Promoção"</strong> nos produtos com <code>preco &lt; 100</code> (o porteiro
+        <code>&amp;&amp;</code> do Cap 5!). <strong>Rodada A</strong> — peça mal, de propósito:
+        <em>"bota uma promoção aí"</em>. Analise o que veio (mexeu em quê? inventou desconto?
+        instalou algo?). <strong>NÃO aceite</strong> (ou aceite e mande <em>"desfaça tudo que você
+        acabou de fazer"</em>). <strong>Rodada B</strong> — agora escreva VOCÊ um prompt-spec com
+        os 4 ingredientes. Compare os dois diffs: tamanho, arquivos tocados, padrão do curso.</p></div>
+        <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Tenta antes!</strong> A rodada B é sua — escreva o prompt sem olhar o gabarito. Os 4 ingredientes estão na seção ✍️.</div></div>
+        <div class="toggler">
+          <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — Ver um prompt-spec de referência</span><span class="toggler-arrow">▼</span></div>
+          <div class="toggler-body"><div class="code-block">
+            <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">rodada B — um gabarito possível (o seu pode ser diferente e melhor!)</span><span class="lang-badge prompt">PROMPT</span></div>
+<pre>[CONTEXTO] Projeto React (Vite). Os cards da vitrine são o
+componente src/CartaoProduto.jsx, que recebe as props nome,
+preco e emoji. Estilo com CSS Modules.
+
+[TAREFA] Adicione um selo "🔥 Promoção" que aparece APENAS nos
+produtos com preco menor que 100.
+
+[RESTRIÇÕES] Use renderização condicional com &amp;&amp; (sem if, sem
+ternário aqui). Mexa SOMENTE em CartaoProduto.jsx e no
+CSS Module dele. Não crie componente novo, não instale nada,
+não altere os dados nem os preços.
+
+[ACEITE] Pronto quando o Mouse Gamer (R$ 89) mostrar o selo e
+o Monitor (R$ 1450) NÃO mostrar.</pre>
+          </div>
+          <div class="tip" style="margin-top:10px"><span class="tip-icon">⚖️</span><div class="tip-content">O que costuma acontecer na rodada A: desconto calculado que ninguém pediu, selo em produto errado (o agente CHUTA a regra: "promoção = mais barato que quanto?"), CSS global, às vezes até preço alterado no db.json. Nada disso é o agente "sendo burro" — é ele preenchendo os buracos do SEU pedido com o padrão da internet. Buraco no pedido = decisão delegada.</div></div></div>
+        </div>
+      </div>
+
+      <!-- 5. solo chefão — sabotagem -->
+      <div class="exercise solo">
+        <div class="exercise-header"><span class="exercise-icon">🏆</span><div>
+          <div class="exercise-title">Passo 5 — CHEFÃO: a sabotagem (sozinho/a)</div>
+          <div class="exercise-sub">O agente detetive investiga — mas quem assina o conserto é você</div></div>
+        </div>
+        <div class="drill-tags"><span class="drill-level lv3"><span class="stars">★★★</span> desafio</span><span class="drill-tag">diagnóstico</span><span class="drill-tag">Caps 5+7 na veia</span></div>
+        <div class="concept"><div class="concept-title">💡 Missão</div><p>1) Sabote a cópia com
+        DOIS crimes, você mesmo, no VSCode: <strong>apague a prop <code>key</code></strong> do
+        <code>.map()</code> da vitrine, e <strong>apague a linha <code>import axios</code></strong>
+        da Home. Salve e olhe o estrago no navegador e no console (F12). 2) Agora o pedido —
+        investigação SEM conserto:</p></div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">prompt do detetive</span><span class="lang-badge prompt">PROMPT</span></div>
+<pre>Este projeto está com defeitos. Investigue e me EXPLIQUE o que
+está errado, onde, e por que isso quebra — mas NÃO corrija
+nada. Quero consertar eu mesmo/a.</pre>
+        </div>
+        <div class="concept"><div class="concept-title">🎯 Fechamento</div><p>3) Leia o relatório
+        dele: achou os dois? Explicou como você explicaria? 4) <strong>Conserte na mão</strong>
+        (você sabe: Cap 5 e Cap 7) e confira tudo verde. Esse fluxo — <em>agente investiga, humano
+        decide e conserta</em> — é exatamente como dev sênior usa IA pra caçar bug em sistema
+        grande.</p></div>
+        <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Tenta antes!</strong> Antes de mandar o prompt, escreva num papel o que VOCÊ acha que cada crime causa. Depois compare com o relatório do agente.</div></div>
+        <div class="toggler">
+          <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — O que o relatório deve conter</span><span class="toggler-arrow">▼</span></div>
+          <div class="toggler-body">
+            <div class="tip" style="margin:0"><span class="tip-icon">🕵️</span><div class="tip-content">
+              <strong>Crime 1 (key):</strong> warning no console — "Each child in a list should
+              have a unique key prop" — e risco de itens "trocarem de identidade" ao mudar a lista
+              (a máquina 🔑 do Cap 5!). Conserto: <code>key={p.id}</code> no elemento do
+              <code>.map()</code>. <strong>Crime 2 (import axios):</strong> tela quebra com
+              "axios is not defined" na hora do useEffect. Conserto: devolver o
+              <code>import axios from "axios"</code> no topo da Home. Se o agente achou os dois E
+              você consertou sem olhar aqui: chefão derrotado. 🏆
+            </div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- desafio para casa -->
+      <div class="exercise home" style="margin-top:18px">
+        <div class="exercise-header"><span class="exercise-icon">🏠</span><div>
+          <div class="exercise-title">Desafio para Casa — tutor particular &amp; test-drive</div>
+          <div class="exercise-sub">Dois usos que valem pra vida (e pra prova 😄)</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">💡 Missão</div><p>1) <strong>Sabatina:</strong>
+        peça ao agente: <em>"Me faça 5 perguntas sobre useState e useEffect, uma de cada vez.
+        Espere minha resposta e corrija explicando."</em> — e encare. 2) <strong>Test-drive:</strong>
+        instale uma SEGUNDA ferramenta do panorama e repita o Passo 1 nela. Compare: qual explicou
+        melhor? Qual pediu permissão mais claramente? Traga sua opinião de "review de ferramenta"
+        no próximo sábado — vamos usar MUITO o agente no projeto do Cap 10. 🚀</p></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ RESUMO ═══════════════ -->
+  <section class="step-section" id="resumo">
+    <div class="step-header">
+      <div class="step-number sn-mint">🎒</div>
+      <div>
+        <div class="step-title">O que você leva deste capítulo</div>
+        <div class="step-sub">O motor, o loop, o pedido e o ritual</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <ul class="about-bullets">
+        <li><div><strong>LLM</strong> = completador de próxima palavra treinado na internet. Não "sabe" — <strong>prevê o plausível</strong>. Em código (texto cheio de padrão), isso rende MUITO.</div></li>
+        <li><div><strong>Dois limites:</strong> a <strong>mesa de contexto</strong> (o que sai dela é esquecido — regra importante mora em arquivo!) e a <strong>alucinação</strong> (inventa com confiança: confie, mas confira RODANDO).</div></li>
+        <li><div><strong>Agente</strong> = LLM + mãos (ler, editar, rodar) + o <strong>loop</strong> (planejar → agir → observar → repetir). Claude Code, Codex, Antigravity, Copilot, Cursor: nomes diferentes, mesmo loop.</div></li>
+        <li><div><strong>Prompt = mini-spec</strong>, com 4 ingredientes: CONTEXTO + TAREFA + RESTRIÇÕES + CRITÉRIO DE ACEITE. Buraco no pedido = decisão delegada ao estagiário.</div></li>
+        <li><div><strong>O ritual de revisão:</strong> ① rodou? ② li o diff? ③ segue nosso padrão? ④ algo que não pedi? ⑤ <strong>explico em voz alta?</strong> Sem o ⑤, não aceita.</div></li>
+        <li><div><strong>A regra de ouro:</strong> nunca aceite um código que você não consegue explicar. Você é o engenheiro; o agente é a ferramenta.</div></li>
+      </ul>
+
+      <div class="quiz" style="margin-top:16px">
+        <div class="quiz-q"><span class="q-emoji">🎫</span> Quiz de saída: o agente terminou a tarefa e disse "Pronto! ✨". Qual é o seu próximo passo?</div>
+        <div class="quiz-options">
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">Aceitar — ele testou, tá testado</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">Pedir "revisa aí pra mim" pro próprio agente e aceitar o que ele disser</button>
+          <button class="quiz-opt" data-correct="true" onclick="checkQuiz(this,true)">Rodar o ritual: testar no navegador, ler o diff, conferir o padrão, caçar o que não pedi — e só aceitar se eu souber explicar</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">Mandar mais 3 tarefas — tempo é dinheiro</button>
+        </div>
+        <div class="quiz-feedback" data-correct="Ritual completo. Você já pensa como tech lead. 🧑‍✈️" data-wrong="'Pronto', pra quem? Quem assina esse código?" data-explain="O 'pronto' do agente significa 'o MEU loop terminou' — não 'está do jeito do SEU projeto'. Pedir revisão ao próprio agente até ajuda (ele acha coisa!), mas não substitui a sua: quem assina o código, sustenta o código. O ritual ①–⑤ leva minutos e é o que separa quem USA IA de quem é usado por ela."></div>
+      </div>
+
+      <div class="tip" style="margin-top:16px">
+        <span class="tip-icon">➡️</span>
+        <div class="tip-content">
+          <strong>No próximo capítulo (Cap 10):</strong> o projeto que fecha o Frontend — o
+          <strong>GestorPRO</strong>: sistema de clientes, fornecedores e produtos. Fase 1 na mão
+          (você já sabe por quê 😉), depois o agente entra — trabalhando do NOSSO jeito, porque as
+          regras vão estar escritas num arquivo que VOCÊ vai escrever: o <code>AGENTS.md</code>.
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:22px;display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+        <a href="../../index.html" style="display:inline-block;padding:14px 28px;background:var(--surface2);color:var(--text);font-weight:800;border-radius:50px;font-size:1rem;text-decoration:none;border:1px solid rgba(255,255,255,0.12)">
+          ← voltar ao hub
+        </a>
+        <a href="../10-projeto-gestor/" style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg,var(--accent6),#8b91ff);color:#0a0a12;font-weight:900;border-radius:50px;font-size:1rem;text-decoration:none">
+          Próximo: Cap 10 — Projeto GestorPRO 🗂️
+        </a>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="footer">
+  Feito com <span class="heart">♥</span> pela <strong style="color:var(--text)">programa AI</strong> ·
+  <a href="../../index.html">Hub do curso</a> · Cap 09 — IA &amp; Agentes
+</footer>
+
+<script src="../../shared/scripts.js" defer></script>
+<script type="module" src="../../shared/motion-fx.js"></script>
+<script type="module">
+  // ── Motor das máquinas didáticas do Cap 09 ──
+  // Motion (CDN) é tempero; sem internet TUDO continua funcionando (CSS + Web Animations).
+  let animate=null;
+  try{ ({animate}=await import('https://cdn.jsdelivr.net/npm/motion@11/+esm')); }catch(e){}
+  const onView=(el,fn)=>{ if(!el) return;
+    const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){fn();io.disconnect();}})},{threshold:.3});
+    io.observe(el); };
+  const esc=(s)=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+  /* ════ 🔮 Máquina da Próxima Palavra ════ */
+  (()=>{
+    const root=document.getElementById('pwm'); if(!root) return;
+    const chips=[...root.querySelectorAll('.pw-chip')];
+    const sent=root.querySelector('#pw-sent');
+    const cands=root.querySelector('#pw-cands');
+    const note=root.querySelector('#pw-note');
+    let timer=[],running=false;
+    const RUNS=[
+      { start:'O gato subiu no',
+        steps:[
+          {cands:[['telhado',62],['muro',23],['sofá',9]],add:' telhado'},
+          {cands:[['e',44],['.',31],['para',12]],add:' e'},
+          {cands:[['não',38],['miou',27],['ficou',18]],add:' não'},
+          {cands:[['desceu',71],['quis',14],['voltou',8]],add:' desceu'}
+        ],
+        note:'Palavra por palavra, sempre a mais PROVÁVEL — dado tudo que veio antes. Uma resposta do ChatGPT inteira é esse processo repetido milhares de vezes.'},
+      { start:'const [contador,',
+        code:true,
+        steps:[
+          {cands:[['setContador]',91],['setCount]',6],['mudaContador]',2]],add:' setContador]'},
+          {cands:[['= useState(',89],['= useEffect(',5],['= 0',3]],add:' = useState('},
+          {cands:[['0)',84],['1)',9],['"0")',4]],add:'0)'}
+        ],
+        note:'Viu as porcentagens? Código é MUITO previsível — você mesmo previu junto, aposto. Por isso a IA programa tão bem: ela leu milhões de useState iguaizinhos aos seus.'},
+      { start:'O hook do React para buscar dados é o',
+        code:true,
+        steps:[
+          {cands:[['useEffect(',41],['useFetch(',38],['useData(',12]],add:' useEffect('}
+        ],
+        note:'😱 Olha o segundo colocado COLADO no primeiro: useFetch soa tão plausível que quase ganha… e ele NÃO EXISTE no React. Num dia de azar, sai ele — com toda a confiança. Isso é a alucinação, assunto da próxima seção.'}
+    ];
+    const clear=()=>{timer.forEach(t=>clearTimeout(t));timer=[];};
+    const run=(i)=>{
+      clear(); running=true;
+      chips.forEach((c,ci)=>c.classList.toggle('active',ci===i));
+      const R=RUNS[i];
+      sent.innerHTML=esc(R.start);
+      cands.innerHTML=''; note.textContent='prevendo…';
+      let acc=R.start, delay=300;
+      R.steps.forEach((st)=>{
+        timer.push(setTimeout(()=>{
+          cands.innerHTML=st.cands.map(([t,p])=>
+            '<span class="pw-cand"><span class="bar"></span><b>'+esc(t)+'</b><small>'+p+'%</small></span>').join('');
+          requestAnimationFrame(()=>requestAnimationFrame(()=>{
+            [...cands.querySelectorAll('.pw-cand')].forEach((el,ei)=>{
+              el.querySelector('.bar').style.width=st.cands[ei][1]+'%';
+            });
+          }));
+        },delay));
+        delay+=750;
+        timer.push(setTimeout(()=>{
+          const first=cands.querySelector('.pw-cand');
+          if(first) first.classList.add('win');
+        },delay));
+        delay+=450;
+        timer.push(setTimeout(()=>{
+          acc+=st.add;
+          sent.innerHTML=esc(acc.slice(0,acc.length-st.add.length))+'<span class="pw-new">'+esc(st.add)+'</span>';
+        },delay));
+        delay+=350;
+      });
+      timer.push(setTimeout(()=>{ note.textContent=R.note; cands.innerHTML=''; running=false; },delay+200));
+    };
+    chips.forEach((c)=>c.addEventListener('click',()=>run(Number(c.dataset.i))));
+    onView(root,()=>run(0));
+  })();
+
+  /* ════ 📦 Mesa de Contexto ════ */
+  (()=>{
+    const root=document.getElementById('mcm'); if(!root) return;
+    const table=root.querySelector('#mc-table');
+    const fill=root.querySelector('#mc-fill');
+    const pct=root.querySelector('#mc-pct');
+    const lost=root.querySelector('#mc-lost');
+    const note=root.querySelector('#mc-note');
+    const CAP=12;
+    let blocks=[],ruleLost=false,fileN=0,talkN=0;
+    const draw=()=>{
+      const total=blocks.reduce((s,b)=>s+b.size,0);
+      const p=Math.min(100,Math.round(total/CAP*100));
+      fill.style.width=p+'%'; fill.classList.toggle('full',p>=85);
+      pct.textContent=p+'%';
+      table.innerHTML=blocks.map((b,i)=>'<span class="mc-block '+(b.cls||'')+'" data-i="'+i+'">'+b.txt+'</span>').join('');
+    };
+    const push=(b)=>{
+      blocks.push(b);
+      let total=blocks.reduce((s,x)=>s+x.size,0);
+      const fell=[];
+      while(total>CAP && blocks.length>1){
+        const old=blocks.shift(); fell.push(old);
+        total=blocks.reduce((s,x)=>s+x.size,0);
+      }
+      draw();
+      if(fell.length){
+        lost.innerHTML='caiu da mesa: '+fell.map(f=>'<span class="gone">'+f.txt+'</span>').join('');
+        const ruleFell=fell.some(f=>f.cls==='rule');
+        if(ruleFell && !ruleLost){
+          ruleLost=true;
+          note.innerHTML='🚨 <b>A REGRA caiu da mesa!</b> A partir de agora o agente responde SEM saber que era pra usar CSS Modules — e nem avisa. Não é teimosia: pra ele, a regra nunca existiu.';
+        }else{
+          note.textContent='a mesa encheu → o mais ANTIGO cai pra abrir espaço. O que caiu, ele esquece.';
+        }
+      }else{
+        note.textContent='coube na mesa — tudo isso entra na conta da próxima previsão.';
+      }
+    };
+    const reset=()=>{
+      blocks=[];ruleLost=false;fileN=0;talkN=0;lost.innerHTML='';
+      push({txt:'📜 regra: "use CSS Modules"',size:1,cls:'rule'});
+      push({txt:'💬 seu pedido',size:1});
+      note.textContent='a mesa começa com a sua regra e o pedido. Agora vá enchendo… 👇';
+    };
+    root.querySelector('#mc-add-talk').addEventListener('click',()=>{talkN++;push({txt:'💬 conversa #'+talkN,size:2});});
+    root.querySelector('#mc-add-file').addEventListener('click',()=>{fileN++;push({txt:'📄 arquivo'+fileN+'.jsx',size:2});});
+    root.querySelector('#mc-add-big').addEventListener('click',()=>{push({txt:'🐘 relatorio-completo.pdf',size:6,cls:'big'});});
+    root.querySelector('#mc-reset').addEventListener('click',reset);
+    onView(root,reset);
+  })();
+
+  /* ════ 🔁 Loop do Agente ════ */
+  (()=>{
+    const root=document.getElementById('lpm'); if(!root) return;
+    const pedido=root.querySelector('#lp-pedido');
+    const steps=[...root.querySelectorAll('.lp-step')];
+    const consoleEl=root.querySelector('#lp-console');
+    const result=root.querySelector('#lp-result');
+    const note=root.querySelector('#lp-note');
+    let timers=[];
+    const clear=()=>{timers.forEach(t=>clearTimeout(t));timers=[];};
+    const log=(txt)=>{
+      if(consoleEl.textContent.startsWith('//')) consoleEl.textContent='';
+      consoleEl.innerHTML+=txt+'\n';
+      consoleEl.scrollTop=consoleEl.scrollHeight;
+    };
+    const play=(mode)=>{
+      clear();
+      steps.forEach(s=>s.classList.remove('on'));
+      consoleEl.textContent='// …'; consoleEl.textContent='';
+      result.textContent='…'; note.textContent='o loop está rodando…';
+      const CLARO={
+        pedido:'📨 "Adicione um botão de curtir ❤️ no CartaoProduto.jsx — arrow function, CSS Module, sem bibliotecas novas."',
+        script:[
+          [0,'<span class="t">🧠 plano:</span> 1 estado curtido + botão no card. Vou ler o componente primeiro.'],
+          [1,'<span class="t">→ ler_arquivo(</span>"src/CartaoProduto.jsx"<span class="t">)</span>'],
+          [2,'<span class="t">→ editar_arquivo(</span>"src/CartaoProduto.jsx"<span class="t">)</span> + useState + botão'],
+          [3,'<span class="t">→ rodar(</span>"npm run dev"<span class="t">)</span>'],
+          [4,'<span class="t">✗ erro:</span> \'styles\' is not defined (esqueci o import do CSS Module!)'],
+          [5,'<span class="t">→ editar_arquivo:</span> import styles from "./CartaoProduto.module.css"'],
+          [6,'<span class="t">✓ rodou limpo.</span> Tarefa concluída.']
+        ],
+        result:'✅ resultado: botão ❤️ em cada card, arrow function, CSS Module. 2 arquivos tocados.',
+        note:'Repara no MEIO do loop: deu erro… e ele LEU o erro e corrigiu sozinho. É isso que um chat não faz. Mas repara também: quem confere se ficou do jeito combinado é você.'
+      };
+      const VAGO={
+        pedido:'📨 "melhora o site aí"',
+        script:[
+          [0,'<span class="t">🧠 plano:</span> "melhorar"… vou modernizar o visual, refatorar e adicionar libs úteis!'],
+          [1,'<span class="t">→ ler_arquivo(</span>×14 arquivos<span class="t">)</span>'],
+          [2,'<span class="t">→ editar_arquivo(</span>×14<span class="t">)</span> + <span class="t">rodar(</span>"npm install styled-components framer-motion"<span class="t">)</span>'],
+          [3,'<span class="t">→ rodar(</span>"npm run dev"<span class="t">)</span>'],
+          [5,'<span class="t">→ ajustes finais…</span>'],
+          [6,'<span class="t">✓ rodou.</span> "Melhorei o site! ✨"']
+        ],
+        result:'😱 resultado: 14 arquivos reescritos, 2 bibliotecas que você não conhece, CSS Modules viraram styled-components. Ele está FELIZ.',
+        note:'O loop terminou "com sucesso"… fazendo o que ELE decidiu. Pedido vago não trava o agente — entrega o volante pra ele. A cerca é o seu pedido: próxima seção. ✍️'
+      };
+      const S=(mode==='claro')?CLARO:VAGO;
+      pedido.textContent=S.pedido;
+      const visited=new Set();
+      let d=300;
+      S.script.forEach(([si,txt])=>{
+        timers.push(setTimeout(()=>{
+          visited.add(si);
+          steps.forEach(s=>s.classList.toggle('on',visited.has(Number(s.dataset.s))));
+          log(txt);
+        },d));
+        d+=900;
+      });
+      timers.push(setTimeout(()=>{ result.textContent=S.result; note.textContent=S.note; },d+100));
+    };
+    root.querySelector('#lp-claro').addEventListener('click',()=>play('claro'));
+    root.querySelector('#lp-vago').addEventListener('click',()=>play('vago'));
+    onView(root,()=>play('claro'));
+  })();
+
+  /* ════ ⚖️ Prompt Vago × Spec ════ */
+  (()=>{
+    const root=document.getElementById('psm'); if(!root) return;
+    const btns=[...root.querySelectorAll('.ps-toggle button')];
+    const code=root.querySelector('#ps-code');
+    const out=root.querySelector('#ps-out');
+    const note=root.querySelector('#ps-note');
+    const M={
+      vago:{
+        code:'"faz um rodapé aí no site"',
+        out:'<b style="font-size:0.8rem">o que veio:</b><ul>'+
+          '<li><span class="tag-bad">✗</span> <b>function Rodape()</b> — declaração clássica (nosso curso: arrow/rafce)</li>'+
+          '<li><span class="tag-bad">✗</span> <b>rodape.css global</b> — pode colidir com outros estilos (Cap 5!)</li>'+
+          '<li><span class="tag-bad">✗</span> instalou <b>react-icons</b> sem avisar</li>'+
+          '<li><span class="tag-bad">✗</span> texto em inglês: "All rights reserved"</li></ul>',
+        note:'Nada disso é "errado" pra internet — é o padrão MÉDIO do que o modelo leu. Mas não é o padrão do NOSSO projeto. Buraco no pedido = decisão delegada.'
+      },
+      spec:{
+        code:'[CONTEXTO] Projeto React (Vite),\ncomponentes em src/, estilo com\nCSS Modules.\n\n[TAREFA] Crie src/Rodape.jsx com o\ntexto "Mini-loja — Curso Fullstack".\n\n[RESTRIÇÕES] Arrow function (rafce).\nCSS Module próprio. NÃO instale\nnada. Só toque em Rodape.jsx,\nRodape.module.css e App.jsx.\n\n[ACEITE] Rodapé visível na Home e\nna Sobre, terminal sem erros.',
+        out:'<b style="font-size:0.8rem">o que veio:</b><ul>'+
+          '<li><span class="tag-ok">✓</span> <b>const Rodape = () =&gt; …</b> com export default</li>'+
+          '<li><span class="tag-ok">✓</span> <b>Rodape.module.css</b> + import styles</li>'+
+          '<li><span class="tag-ok">✓</span> package.json <b>intocado</b></li>'+
+          '<li><span class="tag-ok">✓</span> diff pequeno: 3 arquivos, fácil de revisar</li></ul>',
+        note:'MESMA ferramenta, MESMO modelo — o que mudou foi o pedido. E olha o bônus: diff pequeno e previsível é diff fácil de revisar. Spec boa facilita a SUA parte do trabalho também.'
+      }
+    };
+    const set=(m)=>{
+      btns.forEach(b=>b.classList.toggle('active',b.dataset.m===m));
+      code.textContent=M[m].code;
+      out.innerHTML=M[m].out;
+      note.textContent=M[m].note;
+      if(animate) animate(out,{opacity:[0.4,1]},{duration:.3});
+    };
+    btns.forEach(b=>b.addEventListener('click',()=>set(b.dataset.m)));
+    onView(root,()=>set('vago'));
+  })();
+
+  /* ════ 🕵️ Caça ao Intruso ════ */
+  (()=>{
+    const root=document.getElementById('cim'); if(!root) return;
+    const diff=root.querySelector('#ci-diff');
+    const score=root.querySelector('#ci-score');
+    const note=root.querySelector('#ci-note');
+    const LINES=[
+      {t:'file',txt:'📄 package.json'},
+      {t:'ctx', txt:'    "axios": "^1.7.0",'},
+      {t:'add', txt:'+   "react-icons": "^5.2.0",',intr:true,
+        reason:'🚨 Intruso 1: dependência NOVA que ninguém pediu — o prompt dizia "não instale nada". O diff do package.json se lê SEMPRE.'},
+      {t:'ctx', txt:'    "react-router-dom": "^6.23.0"'},
+      {t:'file',txt:'📄 src/Rodape.jsx (novo)'},
+      {t:'add', txt:'+ import { FaHeart } from "react-icons/fa"'},
+      {t:'add', txt:'+ import "./rodape.css"',intr:true,
+        reason:'🚨 Intruso 2: CSS GLOBAL (rodape.css, sem .module). Nosso padrão desde o Cap 5 é CSS Module: rodape.module.css + import styles.'},
+      {t:'add', txt:'+'},
+      {t:'add', txt:'+ function Rodape() {',intr:true,
+        reason:'🚨 Intruso 3: function declarada! A convenção do curso é arrow function via rafce: const Rodape = () =&gt; { … }.'},
+      {t:'add', txt:'+   return ('},
+      {t:'add', txt:'+     &lt;footer className="rodape"&gt;'},
+      {t:'add', txt:'+       Mini-loja — feita no curso Fullstack &lt;FaHeart /&gt;'},
+      {t:'add', txt:'+     &lt;/footer&gt;'},
+      {t:'add', txt:'+   )'},
+      {t:'add', txt:'+ }'},
+      {t:'add', txt:'+ export default Rodape'}
+    ];
+    let found=0;
+    diff.innerHTML=LINES.map((l,i)=>{
+      if(l.t==='file') return '<span class="ci-line file">'+l.txt+'</span>';
+      return '<button type="button" class="ci-line '+l.t+'" data-i="'+i+'">'+l.txt+'</button>';
+    }).join('');
+    diff.addEventListener('click',(ev)=>{
+      const el=ev.target.closest('button.ci-line'); if(!el) return;
+      const L=LINES[Number(el.dataset.i)];
+      if(L.intr){
+        if(!el.classList.contains('found')){
+          el.classList.add('found'); found++;
+          score.textContent=String(found);
+          note.innerHTML=L.reason+(found===3?'<br><b style="color:#46d39a">🏆 3/3! Diff reprovado com louvor — agora é pedir: "refaça seguindo as restrições do pedido".</b>':'');
+        }else{
+          note.innerHTML=L.reason;
+        }
+      }else{
+        el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake');
+        note.textContent='essa linha está ok — o texto e a estrutura do footer foram bem. Continua caçando: o problema é COMO foi feito.';
+      }
+    });
+    onView(root,()=>{ note.textContent='clique nas linhas que violam o pedido (dica: são 3 — uma nem é código JSX).'; });
+  })();
+</script>
+</body>
+</html>

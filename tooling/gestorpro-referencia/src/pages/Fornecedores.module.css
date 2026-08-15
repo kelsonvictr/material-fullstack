@@ -1,0 +1,32 @@
+.pagina {
+  max-width: 900px;
+  margin: 24px auto;
+  padding: 0 16px;
+}
+
+.botaoNovo {
+  display: inline-block;
+  margin: 8px 0 16px;
+  padding: 8px 16px;
+  background: #0ea5e9;
+  color: #fff;
+  font-weight: 800;
+  border-radius: 8px;
+  text-decoration: none;
+}
+
+.tabela {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tabela th,
+.tabela td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.tabela th {
+  background: #f1f5f9;
+}

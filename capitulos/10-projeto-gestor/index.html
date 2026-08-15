@@ -1,0 +1,1755 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cap 10 — Projeto: GestorPRO | Curso Fullstack</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=JetBrains+Mono:wght@400;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../shared/styles.css">
+<link rel="stylesheet" href="../../shared/components.css">
+<link rel="stylesheet" href="../../shared/animations.css">
+<style>
+  /* ── mono didático: SEMPRE sem ligaduras (=> não vira ⇒, != não vira ≠) ── */
+  .mono,.gp-url,.gp-route,.bc-req,.bc-res,.bc-db,.ci-line,.ag-file{
+    font-family:'JetBrains Mono',monospace;
+    font-variant-ligatures:none;font-feature-settings:"liga" 0,"clig" 0,"calt" 0}
+
+  .cmp{color:var(--react);font-weight:600}
+  .lang-badge.prompt{background:linear-gradient(135deg,var(--accent6),#8b91ff);color:#0a0a12}
+  .fase{display:inline-block;font-size:0.66rem;font-weight:800;border-radius:999px;padding:3px 10px;margin-left:8px;vertical-align:middle}
+  .fase.f1{background:rgba(97,218,251,0.15);color:var(--react);border:1px solid rgba(97,218,251,0.4)}
+  .fase.f2{background:rgba(167,139,250,0.15);color:#c9b8ff;border:1px solid rgba(167,139,250,0.4)}
+  .fase.f3{background:rgba(70,211,154,0.15);color:#46d39a;border:1px solid rgba(70,211,154,0.4)}
+
+  /* divisor de encontro */
+  .encontro{display:flex;align-items:center;gap:14px;margin:26px 0 10px}
+  .encontro .linha{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(167,139,250,0.5),transparent)}
+  .encontro .rotulo{font-family:'Caveat',cursive;font-size:clamp(1.4rem,4vw,2rem);color:var(--accent6);font-weight:700;white-space:nowrap}
+
+  /* ═══ 🗺️ GPS do GestorPRO (mesmo motor do Cap 8) ═══ */
+  .gpsm{background:linear-gradient(180deg,#0b1020,#0d0d1a);border:1px solid rgba(97,218,251,0.3);
+    border-radius:16px;padding:18px;margin:14px 0}
+  .gp-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+  .gp-lab{font-size:0.74rem;color:var(--text-dim);font-weight:700}
+  .gp-chip{border:1px solid rgba(97,218,251,0.45);background:var(--surface2);color:#61dafb;
+    font-family:'JetBrains Mono',monospace;font-variant-ligatures:none;font-feature-settings:"liga" 0,"clig" 0,"calt" 0;
+    font-weight:700;font-size:0.72rem;padding:8px 12px;border-radius:10px;cursor:pointer;transition:all .2s}
+  .gp-chip:hover{transform:translateY(-2px)}
+  .gp-chip.active{border-color:#fff;color:#fff;background:rgba(255,255,255,0.08)}
+  .gp-bar{display:flex;align-items:center;gap:8px;background:#06060c;border:1px solid rgba(255,255,255,0.12);
+    border-radius:999px;padding:8px 16px;margin-bottom:12px}
+  .gp-url{font-size:0.8rem;color:#cdd6f4}
+  .gp-url b{color:var(--accent5);font-weight:700}
+  .gp-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:14px;align-items:start}
+  @media (max-width:640px){.gp-grid{grid-template-columns:1fr}}
+  .gp-routes{display:flex;flex-direction:column;gap:6px}
+  .gp-route{display:flex;align-items:center;gap:8px;background:#0b0b14;border:1px solid rgba(255,255,255,0.1);
+    border-radius:10px;padding:9px 12px;font-size:0.7rem;color:var(--text-dim);transition:all .2s;white-space:nowrap;overflow-x:auto}
+  .gp-route.hit{border-color:rgba(70,211,154,0.65);background:rgba(70,211,154,0.1);color:#fff}
+  .gp-route.miss{opacity:.45}
+  .gp-route .r-path{color:var(--accent5);font-weight:700}
+  .gp-route .r-el{color:var(--react);font-weight:700}
+  .gp-screen{background:#fff;border-radius:12px;padding:14px;min-height:130px;font-family:'Nunito',sans-serif;color:#111;text-align:center}
+  .gp-note{margin-top:12px;background:#0b0b14;border:1px solid rgba(255,255,255,0.1);border-radius:10px;
+    padding:10px 12px;font-size:0.82rem;color:#cdd6f4;text-align:center;min-height:40px}
+
+  /* ═══ 📮 Balcão do CRUD ═══ */
+  .bcm{background:linear-gradient(180deg,#0b1020,#0d0d1a);border:1px solid rgba(247,183,49,0.35);
+    border-radius:16px;padding:18px;margin:14px 0}
+  .bc-controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+  .bc-controls button{border:1px solid rgba(255,255,255,0.16);background:var(--surface2);
+    font-family:'JetBrains Mono',monospace;font-variant-ligatures:none;font-feature-settings:"liga" 0,"clig" 0,"calt" 0;
+    font-weight:700;font-size:0.7rem;padding:8px 12px;border-radius:10px;cursor:pointer;transition:all .2s;color:var(--text-dim)}
+  .bc-controls button:hover{transform:translateY(-2px)}
+  .bc-controls button.get{border-color:rgba(97,218,251,0.5);color:#61dafb}
+  .bc-controls button.post{border-color:rgba(70,211,154,0.5);color:#46d39a}
+  .bc-controls button.put{border-color:rgba(247,183,49,0.5);color:var(--accent5)}
+  .bc-controls button.del{border-color:rgba(255,71,87,0.5);color:#ff8b8b}
+  .bc-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start}
+  @media (max-width:680px){.bc-grid{grid-template-columns:1fr}}
+  .bc-col-title{font-size:0.72rem;color:var(--text-dim);font-weight:800;margin-bottom:6px;text-transform:uppercase;letter-spacing:.4px}
+  .bc-req,.bc-res{background:#06060c;border:1px solid rgba(255,255,255,0.12);border-radius:10px;
+    padding:10px 12px;font-size:0.68rem;color:#cdd6f4;white-space:pre-wrap;min-height:84px;line-height:1.7}
+  .bc-req .m-get{color:#61dafb;font-weight:700}.bc-req .m-post{color:#46d39a;font-weight:700}
+  .bc-req .m-put{color:var(--accent5);font-weight:700}.bc-req .m-del{color:#ff8b8b;font-weight:700}
+  .bc-res.ok{border-color:rgba(70,211,154,0.4)}
+  .bc-res.err{border-color:rgba(255,71,87,0.5)}
+  .bc-lane{display:flex;align-items:center;gap:6px;margin:10px 0;font-size:0.78rem;color:var(--text-dim)}
+  .bc-road{flex:1;height:2px;background:rgba(255,255,255,0.12);position:relative;border-radius:2px}
+  .bc-env{position:absolute;top:-11px;left:0;font-size:1rem;transition:left 1s ease}
+  .bc-env.go{left:calc(100% - 18px)}
+  .bc-db{background:#06060c;border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:10px 12px;
+    font-size:0.66rem;color:#8b93b0;line-height:1.9;margin-top:12px;overflow-x:auto}
+  .bc-db .row{display:block;white-space:pre;transition:all .4s;border-radius:6px;padding:0 6px}
+  .bc-db .row.new{background:rgba(70,211,154,0.14);color:#7ef0c4}
+  .bc-db .row.changed{background:rgba(247,183,49,0.14);color:#ffd47e}
+  .bc-db .row.dead{opacity:0;transform:translateX(12px)}
+  .bc-note{margin-top:10px;background:#0b0b14;border:1px solid rgba(255,255,255,0.1);border-radius:10px;
+    padding:10px 12px;font-size:0.82rem;color:#cdd6f4;text-align:center;min-height:40px}
+
+  /* ═══ 🕵️ Revisor de Plantão (mesmo motor do Cap 9) ═══ */
+  .cim{background:linear-gradient(180deg,#0b1020,#0d0d1a);border:1px solid rgba(255,71,87,0.3);
+    border-radius:16px;padding:18px;margin:14px 0}
+  .ci-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+  .ci-score{font-size:0.78rem;color:var(--text-dim);font-weight:700}
+  .ci-score b{color:#46d39a}
+  .ci-diff{background:#06060c;border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:8px 0;overflow-x:auto}
+  .ci-line{display:block;width:100%;text-align:left;border:0;background:transparent;color:#8b93b0;
+    font-size:0.68rem;padding:3px 14px;cursor:pointer;white-space:pre;transition:background .15s;line-height:1.65}
+  .ci-line:hover{background:rgba(255,255,255,0.05)}
+  .ci-line.add{color:#7ef0c4}
+  .ci-line.file{color:#c9b8ff;font-weight:700;cursor:default}
+  .ci-line.found{background:rgba(255,71,87,0.14);color:#ff8b8b;font-weight:700}
+  .ci-line.shake{animation:cishake .3s}
+  @keyframes cishake{25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+  .ci-note{margin-top:10px;background:#0b0b14;border:1px solid rgba(255,255,255,0.1);border-radius:10px;
+    padding:10px 12px;font-size:0.82rem;color:#cdd6f4;text-align:center;min-height:40px}
+
+  /* AGENTS.md em destaque */
+  .ag-file{background:#06060c;border:1px solid rgba(167,139,250,0.4);border-radius:12px;
+    padding:14px 16px;font-size:0.7rem;color:#cdd6f4;white-space:pre-wrap;line-height:1.75}
+  .ag-file .h{color:#c9b8ff;font-weight:700}
+  .ag-file .no{color:#ff8b8b;font-weight:700}
+  .ag-file .yes{color:#7ef0c4}
+
+  /* mockup do sistema no hero da visão */
+  .mock{background:#fff;border-radius:14px;padding:14px;font-family:'Nunito',sans-serif;color:#111;margin:14px 0}
+  .mock-nav{display:flex;gap:14px;align-items:center;border-bottom:2px solid #e2e8f0;padding-bottom:8px;margin-bottom:12px;font-size:0.8rem}
+  .mock-nav b{color:#0f172a}
+  .mock-nav span{color:#64748b;font-weight:700}
+  .mock-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  @media (max-width:560px){.mock-cards{grid-template-columns:1fr}}
+  .mock-card{border:1px solid #e2e8f0;border-radius:10px;padding:12px;text-align:center}
+  .mock-card .n{font-size:1.5rem;font-weight:900;color:#0f172a}
+  .mock-card .l{font-size:0.72rem;color:#64748b;font-weight:700}
+
+  @media (prefers-reduced-motion: reduce){
+    .gp-chip,.gp-route,.bc-env,.bc-db .row,.ci-line{transition:none;animation:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-orbs"><div class="orb"></div><div class="orb"></div><div class="orb"></div></div>
+<div class="progress-track"><div class="progress-bar"></div></div>
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<button class="menu-toggle" onclick="openSidebar()" aria-label="Abrir menu">☰</button>
+<div class="sidebar-overlay"></div>
+<nav class="sidebar-nav">
+  <button class="sidebar-close" onclick="closeSidebar()" aria-label="Fechar">✕</button>
+  <div class="sidebar-header">
+    <h3>🗂️ Cap 10 · GestorPRO</h3>
+    <a class="sidebar-back" href="../../index.html">← Voltar ao hub</a>
+  </div>
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Encontro A — na mão</div>
+    <a class="sidebar-link" onclick="goTo('visao')"><span class="dot" style="background:var(--accent6)"></span> 🏗️ O sistema</a>
+    <a class="sidebar-link" onclick="goTo('arquitetura')"><span class="dot" style="background:var(--react)"></span> 🗺️ Arquitetura</a>
+    <a class="sidebar-link" onclick="goTo('fundacao')"><span class="dot" style="background:var(--json)"></span> 🧱 Fundação</a>
+    <a class="sidebar-link" onclick="goTo('verbos')"><span class="dot" style="background:var(--accent5)"></span> 📮 Os 4 verbos do HTTP</a>
+    <a class="sidebar-link" onclick="goTo('listar')"><span class="dot" style="background:var(--react)"></span> 👥 Clientes: listar</a>
+    <a class="sidebar-link" onclick="goTo('cadastrar')"><span class="dot" style="background:var(--accent7)"></span> ➕ Clientes: cadastrar</a>
+    <a class="sidebar-link" onclick="goTo('excluir')"><span class="dot" style="background:var(--bug)"></span> 🗑️ Clientes: excluir</a>
+    <a class="sidebar-link" onclick="goTo('editar')"><span class="dot" style="background:var(--accent5)"></span> ✏️ Clientes: editar</a>
+  </div>
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Encontro B — com o agente</div>
+    <a class="sidebar-link" onclick="goTo('agentsmd')"><span class="dot" style="background:var(--accent6)"></span> 📜 AGENTS.md</a>
+    <a class="sidebar-link" onclick="goTo('fornecedores')"><span class="dot" style="background:var(--accent6)"></span> 🚚 Fornecedores: junto</a>
+    <a class="sidebar-link" onclick="goTo('produtos')"><span class="dot" style="background:var(--accent7)"></span> 📦 Produtos: você comanda</a>
+    <a class="sidebar-link" onclick="goTo('dashboard')"><span class="dot" style="background:var(--accent5)"></span> 📊 Chefão: o Dashboard</a>
+    <a class="sidebar-link" onclick="goTo('bugzilla')"><span class="dot" style="background:var(--bug)"></span> BugZilla 🐛</a>
+    <a class="sidebar-link" onclick="goTo('resumo')"><span class="dot" style="background:var(--accent7)"></span> 🎓 Formatura do front</a>
+  </div>
+</nav>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section class="hero">
+  <div class="hero-icons" data-motion="float">🗂️ 👥 📦</div>
+  <span class="hero-badge" style="background:linear-gradient(135deg,var(--accent6),#8b91ff);color:#0a0a12">Capítulo 10 · Projeto final do Frontend</span>
+  <h1>Projeto: <span class="ia" style="color:var(--accent6)">GestorPRO</span> — seu primeiro sistema de verdade</h1>
+  <p class="subtitle">
+    Clientes, fornecedores e produtos. Cadastrar, listar, editar e excluir. Rotas, formulários
+    e um dashboard. Construído em três fases: <strong style="color:var(--react)">na mão</strong>
+    (você), <strong style="color:var(--accent6)">junto</strong> (você + agente) e
+    <strong style="color:var(--accent7)">você comanda</strong> (você escreve os prompts).
+    É o projeto que <strong>fecha o Frontend</strong> — e abre o seu portfólio.
+  </p>
+  <div class="hero-stack">
+    <span class="stack-chip react">⚛️ tudo dos Caps 4–8</span>
+    <span class="stack-chip js">📮 CRUD (o nome novo)</span>
+    <span class="stack-chip" style="border-color:rgba(167,139,250,0.5);color:#c9b8ff">📜 AGENTS.md</span>
+    <span class="stack-chip" style="border-color:rgba(167,139,250,0.5);color:#c9b8ff">🤖 seu agente</span>
+    <span class="stack-chip node">🖥️ json-server</span>
+  </div>
+</section>
+
+<div class="container">
+
+  <!-- ═══════════════ AQUECIMENTO ═══════════════ -->
+  <section class="step-section">
+    <div class="card">
+      <div class="quiz">
+        <div class="quiz-q"><span class="q-emoji">🔥</span> Aquecimento: você agora TEM um agente que programa. Por que a Fase 1 deste projeto vai ser 100% na mão, sem ele?</div>
+        <div class="quiz-options">
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">Porque o agente não sabe fazer CRUD</button>
+          <button class="quiz-opt" data-correct="true" onclick="checkQuiz(this,true)">Porque o módulo feito na mão vira meu GABARITO: sem ele, eu não sei julgar se o que o agente entregar está do nosso jeito</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">Porque agente é proibido em projeto final</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">Pra durar mais aulas</button>
+        </div>
+        <div class="quiz-feedback" data-correct="Exato — é a regra de ouro do Cap 9 em ação." data-wrong="Lembra do detector de fumaça do Cap 9…" data-explain="No Cap 9 você aprendeu: revisar exige saber quanto custa e como se faz. O módulo Clientes, feito inteirinho na mão, vira seu gabarito mental — quando o agente fizer o módulo Fornecedores (que é IGUAL em estrutura), você vai saber exatamente o que esperar em cada arquivo. É assim que dev sênior trabalha: domina o padrão, delega a repetição, revisa tudo."></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <div class="encontro"><div class="linha"></div><div class="rotulo">📍 Encontro A — a fundação e o gabarito (na mão)</div><div class="linha"></div></div>
+
+  <!-- ═══════════════ VISÃO ═══════════════ -->
+  <section class="step-section" id="visao">
+    <div class="step-header">
+      <div class="step-number" style="background:linear-gradient(135deg,var(--accent6),#8b91ff)">🏗️</div>
+      <div>
+        <div class="step-title">O sistema que vamos construir</div>
+        <div class="step-sub">Um mini-ERP: gestão de clientes, fornecedores e produtos</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p>Até aqui você construiu uma <strong>loja</strong> (o lado que o cliente vê). Hoje você
+      muda de cadeira: vai construir o <strong>sistema de gestão</strong> — a tela que a EMPRESA
+      usa por trás do balcão. É o tipo de software que paga a maioria dos salários da nossa área:
+      todo comércio, clínica, escola e prefeitura vive de um sistema assim.</p>
+
+      <div class="mock" data-motion="rise">
+        <div class="mock-nav"><b>🗂️ GestorPRO</b><span>👥 Clientes</span><span>🚚 Fornecedores</span><span>📦 Produtos</span></div>
+        <div class="mock-cards">
+          <div class="mock-card"><div class="n">3</div><div class="l">👥 clientes</div></div>
+          <div class="mock-card"><div class="n">2</div><div class="l">🚚 fornecedores</div></div>
+          <div class="mock-card"><div class="n">4</div><div class="l">📦 produtos</div></div>
+        </div>
+      </div>
+
+      <p>O GestorPRO tem <strong>3 módulos</strong> — e os três têm a MESMA estrutura: uma tela
+      de <strong>listar</strong>, uma de <strong>cadastrar</strong>, um botão de
+      <strong>excluir</strong> e uma tela de <strong>editar</strong>. Essa repetição é proposital,
+      e é o coração da didática do capítulo:</p>
+
+      <ul class="about-bullets">
+        <li><div><strong>👥 Clientes — NA MÃO</strong> <span class="fase f1">fase 1</span> — você constrói o módulo inteiro no VSCode, como sempre. Ele vira o <strong>gabarito</strong>.</div></li>
+        <li><div><strong>🚚 Fornecedores — JUNTO</strong> <span class="fase f2">fase 2</span> — o agente constrói seguindo o gabarito, com prompts prontos do material — e você <strong>revisa cada diff</strong>.</div></li>
+        <li><div><strong>📦 Produtos — VOCÊ COMANDA</strong> <span class="fase f3">fase 3</span> — você escreve os próprios prompts e assina a revisão sozinho/a.</div></li>
+      </ul>
+
+      <div class="concept">
+        <div class="concept-title">🎓 Zero conceito novo de React</div>
+        <p>Leia de novo, porque é bonito: <strong>este projeto inteiro usa só o que você já
+        sabe</strong> — componentes rafce, props, <code>.map()</code> + <code>key</code>, CSS
+        Modules, porteiros <code>&amp;&amp;</code>/ternário, useState, formulários controlados,
+        useEffect, axios, json-server, Routes/Link/useParams. As únicas novidades são
+        <strong>3 verbos novos do HTTP</strong> (até hoje você só usou GET) e <strong>2
+        ferramentinhas</strong> que vamos apresentar com calma na hora certa. Se você fez os Caps
+        4–9, você já sabe fazer um sistema. Hoje só vamos provar isso.</p>
+      </div>
+
+      <div class="tip">
+        <span class="tip-icon">🔌</span>
+        <div class="tip-content">
+          <strong>E o backend?</strong> O json-server continua sendo nossa "cozinha de mentira" na
+          porta 3000. Na 2ª metade do curso, você vai construir a cozinha DE VERDADE (em Java) — e
+          o GestorPRO vai ligar nela trocando praticamente só o endereço. Mesmo axios, mesmos
+          verbos. É por isso que este projeto é o fecho perfeito do front.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ ARQUITETURA ═══════════════ -->
+  <section class="step-section" id="arquitetura">
+    <div class="step-header">
+      <div class="step-number sn-react">🗺️</div>
+      <div>
+        <div class="step-title">Arquitetura: rotas, pastas e dados</div>
+        <div class="step-sub">O mapa completo antes do primeiro tijolo</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p>Sistema de verdade começa no papel. Nosso mapa de rotas (repara no padrão — cada módulo
+      tem as mesmas 3 rotas, só muda o nome):</p>
+
+      <div class="gpsm" id="gps1">
+        <div class="gp-chips">
+          <span class="gp-lab">URL:</span>
+          <button class="gp-chip active" data-u="/">/</button>
+          <button class="gp-chip" data-u="/clientes">/clientes</button>
+          <button class="gp-chip" data-u="/clientes/novo">/clientes/novo</button>
+          <button class="gp-chip" data-u="/clientes/2/editar">/clientes/2/editar</button>
+          <button class="gp-chip" data-u="/relatorios">/relatorios (não existe!)</button>
+        </div>
+        <div class="gp-bar">🔒 <span class="gp-url">localhost:5173<b id="gp1-url">/</b></span></div>
+        <div class="gp-grid">
+          <div class="gp-routes" id="gp1-routes"></div>
+          <div class="gp-screen" id="gp1-screen"></div>
+        </div>
+        <div class="gp-note" id="gp1-note">…</div>
+      </div>
+
+      <p style="margin-top:14px">As <strong>pastas</strong> seguem o costume que você pegou nos
+      Caps 8 e 05b: páginas em <code>src/pages/</code>, componentes reutilizáveis em
+      <code>src/components/</code>:</p>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">a árvore do projeto (como vai ficar no fim)</span><span class="lang-badge js">TXT</span></div>
+<pre>gestorpro/
+├── db.json                  ← os dados (json-server)
+└── src/
+    ├── main.jsx             ← o plugue (+ abraço do BrowserRouter)
+    ├── App.jsx              ← o mapa de rotas
+    ├── components/
+    │   ├── Navbar.jsx       ← o menu que aparece em TODAS as páginas
+    │   └── Navbar.module.css
+    └── pages/
+        ├── Dashboard.jsx
+        ├── Clientes.jsx         ClienteNovo.jsx       ClienteEditar.jsx
+        ├── Fornecedores.jsx     FornecedorNovo.jsx    FornecedorEditar.jsx
+        ├── Produtos.jsx         ProdutoNovo.jsx       ProdutoEditar.jsx
+        ├── NaoEncontrada.jsx
+        └── (cada page com seu .module.css quando precisar)</pre>
+      </div>
+
+      <p>E os <strong>dados</strong>: um <code>db.json</code> com TRÊS coleções (no Cap 7 era uma
+      só — o json-server aceita quantas você quiser, e cada uma vira um endpoint):</p>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">db.json — as três coleções</span><span class="lang-badge json">JSON</span></div>
+<pre>{
+  "clientes": [
+    { "id": 1, "nome": "Ana Souza", "email": "ana@gmail.com", "telefone": "(83) 99999-1111", "cidade": "João Pessoa" },
+    { "id": 2, "nome": "Bruno Lima", "email": "bruno@gmail.com", "telefone": "(83) 98888-2222", "cidade": "Campina Grande" },
+    { "id": 3, "nome": "Carla Dias", "email": "carla@gmail.com", "telefone": "(83) 97777-3333", "cidade": "Recife" }
+  ],
+  "fornecedores": [
+    { "id": 1, "nome": "TechDistrib", "cnpj": "12.345.678/0001-90", "categoria": "Eletrônicos", "telefone": "(11) 4002-8922" },
+    { "id": 2, "nome": "Móveis Nordeste", "cnpj": "98.765.432/0001-10", "categoria": "Móveis", "telefone": "(81) 3333-4444" }
+  ],
+  "produtos": [
+    { "id": 1, "nome": "Teclado Mecânico", "preco": 320, "estoque": 12, "categoria": "Periféricos" },
+    { "id": 2, "nome": "Monitor 27 pol", "preco": 1450, "estoque": 4, "categoria": "Monitores" },
+    { "id": 3, "nome": "Cadeira Gamer", "preco": 980, "estoque": 7, "categoria": "Móveis" },
+    { "id": 4, "nome": "Mouse Gamer", "preco": 89, "estoque": 2, "categoria": "Periféricos" }
+  ]
+}</pre>
+      </div>
+
+      <div class="tip">
+        <span class="tip-icon">🧭</span>
+        <div class="tip-content">
+          Com o json-server no ar, cada coleção responde no seu endereço:
+          <code>localhost:3000/clientes</code>, <code>localhost:3000/fornecedores</code>,
+          <code>localhost:3000/produtos</code> — e o "por id" que você usou no Cap 8 também:
+          <code>/clientes/2</code>. Teste no navegador quando subir!
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ FUNDAÇÃO ═══════════════ -->
+  <section class="step-section" id="fundacao">
+    <div class="step-header">
+      <div class="step-number sn-js">🧱</div>
+      <div>
+        <div class="step-title">Fundação <span class="fase f1">fase 1 · na mão</span></div>
+        <div class="step-sub">Vite + rotas + Navbar + json-server — tudo revisão dos Caps 4–8</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="warning">
+        <span class="warning-icon">🖐️</span>
+        <div class="warning-content">
+          <strong>Regra do Encontro A: agente DESLIGADO.</strong> Hoje é VSCode puro, como nos
+          Caps 4–8. O agente só entra no próximo encontro — e aí você vai agradecer cada linha
+          que digitou hoje. <em>(Aviso de IDE de sempre: o código tem MUITA arrow <code>=&gt;</code> —
+          se a sua IDE desenhar <code>⇒</code>, você digita <code>=</code> + <code>&gt;</code>.)</em>
+        </div>
+      </div>
+
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">👨‍🏫</span><div>
+          <div class="exercise-title">Passo 1 — nasce o GestorPRO (com o prof)</div>
+          <div class="exercise-sub">Vite + faxina + as duas instalações + db.json + dois terminais</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>O ritual que você já fez
+        um monte de vezes (Cap 4 + 05b + Cap 7 + Cap 8), agora de uma vez só: 1) <code>npm create
+        vite@latest gestorpro</code> (React + JavaScript) → <code>cd gestorpro</code> →
+        <code>npm install</code>. 2) Faxina: esvaziar <code>App.css</code> e
+        <code>index.css</code> (conteúdo, não o arquivo!) e limpar o <code>App.jsx</code>.
+        3) Instalar as duas peças do projeto: <code>npm install axios react-router-dom</code>.
+        4) Criar o <code>db.json</code> na raiz com as 3 coleções da seção anterior (pode copiar —
+        dado de exemplo não é código 😄). 5) Dois terminais: <code>npm run dev</code> num,
+        <code>npx json-server db.json</code> no outro. 6) Conferir no navegador:
+        <code>localhost:3000/clientes</code> respondendo JSON.</p></div>
+        <div class="terminal" data-typewriter>
+          <div class="code-header" style="background:rgba(255,255,255,0.04);padding:8px 14px;border-radius:14px 14px 0 0">
+            <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+            <span class="filename">Terminal 1 · na pasta gestorpro</span>
+          </div>
+          <div class="terminal-body">
+            <span class="prompt">$</span> <span class="typed" data-text="npm install axios react-router-dom"></span><span class="cursor"></span>
+            <br><span class="out">added 12 packages in 3s</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">👨‍🏫</span><div>
+          <div class="exercise-title">Passo 2 — o esqueleto navegável (com o prof)</div>
+          <div class="exercise-sub">BrowserRouter + Navbar + o mapa de rotas com páginas "em obras"</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>1) No
+        <code>main.jsx</code>: o abraço do <span class="cmp">&lt;BrowserRouter&gt;</span> (Cap 8,
+        igualzinho). 2) Crie <code>src/components/Navbar.jsx</code> (rafce) com os Links e o CSS
+        Module dele. 3) Crie as pages iniciais em <code>src/pages/</code>: <span class="cmp">Dashboard</span>,
+        <span class="cmp">Clientes</span>, <span class="cmp">Fornecedores</span> e
+        <span class="cmp">Produtos</span> (por enquanto, cada uma só com um <code>&lt;h2&gt;</code>
+        "🚧 em obras") + a <span class="cmp">NaoEncontrada</span>. 4) Monte o mapa no App. 5) Passeie
+        clicando na Navbar: 4 páginas + 404 funcionando, <strong>sem F5</strong>.</p></div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/components/Navbar.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">import</span> <span class="punc">{</span> <span class="var">Link</span> <span class="punc">}</span> <span class="kw">from</span> <span class="st">"react-router-dom"</span>
+<span class="kw">import</span> <span class="var">styles</span> <span class="kw">from</span> <span class="st">"./Navbar.module.css"</span>
+
+<span class="kw">const</span> <span class="fn">Navbar</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;nav</span> <span class="atr">className</span><span class="op">=</span>{<span class="var">styles</span>.<span class="var">navbar</span>}<span class="tag">&gt;</span>
+      <span class="tag">&lt;</span><span class="cmp">Link</span> <span class="atr">to</span><span class="op">=</span><span class="st">"/"</span> <span class="atr">className</span><span class="op">=</span>{<span class="var">styles</span>.<span class="var">logo</span>}<span class="tag">&gt;</span>🗂️ GestorPRO<span class="tag">&lt;/</span><span class="cmp">Link</span><span class="tag">&gt;</span>
+      <span class="tag">&lt;div</span> <span class="atr">className</span><span class="op">=</span>{<span class="var">styles</span>.<span class="var">links</span>}<span class="tag">&gt;</span>
+        <span class="tag">&lt;</span><span class="cmp">Link</span> <span class="atr">to</span><span class="op">=</span><span class="st">"/clientes"</span><span class="tag">&gt;</span>👥 Clientes<span class="tag">&lt;/</span><span class="cmp">Link</span><span class="tag">&gt;</span>
+        <span class="tag">&lt;</span><span class="cmp">Link</span> <span class="atr">to</span><span class="op">=</span><span class="st">"/fornecedores"</span><span class="tag">&gt;</span>🚚 Fornecedores<span class="tag">&lt;/</span><span class="cmp">Link</span><span class="tag">&gt;</span>
+        <span class="tag">&lt;</span><span class="cmp">Link</span> <span class="atr">to</span><span class="op">=</span><span class="st">"/produtos"</span><span class="tag">&gt;</span>📦 Produtos<span class="tag">&lt;/</span><span class="cmp">Link</span><span class="tag">&gt;</span>
+      <span class="tag">&lt;/div&gt;</span>
+    <span class="tag">&lt;/nav&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">Navbar</span></pre>
+        </div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx — o mapa completo do Encontro A</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">import</span> <span class="punc">{</span> <span class="var">Routes</span>, <span class="var">Route</span> <span class="punc">}</span> <span class="kw">from</span> <span class="st">"react-router-dom"</span>
+<span class="kw">import</span> <span class="var">Navbar</span> <span class="kw">from</span> <span class="st">"./components/Navbar.jsx"</span>
+<span class="kw">import</span> <span class="var">Dashboard</span> <span class="kw">from</span> <span class="st">"./pages/Dashboard.jsx"</span>
+<span class="kw">import</span> <span class="var">Clientes</span> <span class="kw">from</span> <span class="st">"./pages/Clientes.jsx"</span>
+<span class="kw">import</span> <span class="var">Fornecedores</span> <span class="kw">from</span> <span class="st">"./pages/Fornecedores.jsx"</span>
+<span class="kw">import</span> <span class="var">Produtos</span> <span class="kw">from</span> <span class="st">"./pages/Produtos.jsx"</span>
+<span class="kw">import</span> <span class="var">NaoEncontrada</span> <span class="kw">from</span> <span class="st">"./pages/NaoEncontrada.jsx"</span>
+
+<span class="kw">const</span> <span class="fn">App</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span>
+      <span class="tag">&lt;</span><span class="cmp">Navbar</span> <span class="tag">/&gt;</span>
+      <span class="tag">&lt;</span><span class="cmp">Routes</span><span class="tag">&gt;</span>
+        <span class="tag">&lt;</span><span class="cmp">Route</span> <span class="atr">path</span><span class="op">=</span><span class="st">"/"</span> <span class="atr">element</span><span class="op">=</span>{<span class="tag">&lt;</span><span class="cmp">Dashboard</span> <span class="tag">/&gt;</span>} <span class="tag">/&gt;</span>
+        <span class="tag">&lt;</span><span class="cmp">Route</span> <span class="atr">path</span><span class="op">=</span><span class="st">"/clientes"</span> <span class="atr">element</span><span class="op">=</span>{<span class="tag">&lt;</span><span class="cmp">Clientes</span> <span class="tag">/&gt;</span>} <span class="tag">/&gt;</span>
+        <span class="tag">&lt;</span><span class="cmp">Route</span> <span class="atr">path</span><span class="op">=</span><span class="st">"/fornecedores"</span> <span class="atr">element</span><span class="op">=</span>{<span class="tag">&lt;</span><span class="cmp">Fornecedores</span> <span class="tag">/&gt;</span>} <span class="tag">/&gt;</span>
+        <span class="tag">&lt;</span><span class="cmp">Route</span> <span class="atr">path</span><span class="op">=</span><span class="st">"/produtos"</span> <span class="atr">element</span><span class="op">=</span>{<span class="tag">&lt;</span><span class="cmp">Produtos</span> <span class="tag">/&gt;</span>} <span class="tag">/&gt;</span>
+        <span class="tag">&lt;</span><span class="cmp">Route</span> <span class="atr">path</span><span class="op">=</span><span class="st">"*"</span> <span class="atr">element</span><span class="op">=</span>{<span class="tag">&lt;</span><span class="cmp">NaoEncontrada</span> <span class="tag">/&gt;</span>} <span class="tag">/&gt;</span>
+      <span class="tag">&lt;/</span><span class="cmp">Routes</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">App</span></pre>
+        </div>
+        <div class="tip"><span class="tip-icon">🧠</span><div class="tip-content">Repara: a Navbar
+        fica <strong>fora</strong> do Routes (aparece em toda página — Cap 8) e as rotas de
+        <code>/novo</code> e <code>/editar</code> ainda NÃO existem — cada uma entra no mapa na
+        hora em que a gente construir a tela dela. Um conceito por vez, uma rota por vez. 😉</div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ OS 4 VERBOS ═══════════════ -->
+  <section class="step-section" id="verbos">
+    <div class="step-header">
+      <div class="step-number sn-yellow">📮</div>
+      <div>
+        <div class="step-title">Os 4 verbos do HTTP (a teoria nova do capítulo)</div>
+        <div class="step-sub">Até hoje você só PEDIA dados. Hoje aprende a criar, trocar e apagar</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p>Hora da única teoria realmente nova do projeto — e ela é deliciosa de simples. Desde o
+      Cap 7, toda conversa sua com a API foi <code>axios.get(...)</code>: <strong>GET</strong> é o
+      verbo de <em>pedir para ler</em>. Mas o HTTP tem outros verbos, e um sistema de gestão usa
+      os 4 principais:</p>
+
+      <div class="analogy">
+        <div class="analogy-title">🏤 O balcão do cartório</div>
+        <p>Pensa no json-server como um cartório com um arquivo de fichas (o <code>db.json</code>).
+        Você chega no balcão e o VERBO do seu envelope diz o que quer fazer:
+        <strong>GET</strong> = "me mostra as fichas" (só leitura, nada muda) ·
+        <strong>POST</strong> = "registra esta ficha NOVA" (o cartório carimba um id novo) ·
+        <strong>PUT</strong> = "TROCA a ficha de número X por esta aqui" (por isso a URL leva o id!) ·
+        <strong>DELETE</strong> = "rasga a ficha de número X". Mesmo balcão, mesmo endereço —
+        o verbo muda tudo.</p>
+      </div>
+
+      <p>No axios, cada verbo é um método com a mesma cara do <code>get</code> que você já usa:</p>
+
+      <div class="code-block">
+        <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">a família completa do axios</span><span class="lang-badge js">JS</span></div>
+<pre><span class="cm">// LER a lista (o velho conhecido do Cap 7):</span>
+<span class="var">axios</span>.<span class="fn">get</span>(<span class="st">"http://localhost:3000/clientes"</span>)
+
+<span class="cm">// CRIAR: o 2º argumento é o objeto com os dados da ficha nova</span>
+<span class="cm">// (repare: SEM id — quem carimba o id é o servidor!)</span>
+<span class="var">axios</span>.<span class="fn">post</span>(<span class="st">"http://localhost:3000/clientes"</span>, <span class="punc">{</span> <span class="var">nome</span><span class="punc">:</span> <span class="st">"Diego"</span>, <span class="var">cidade</span><span class="punc">:</span> <span class="st">"Patos"</span> <span class="punc">}</span>)
+
+<span class="cm">// TROCAR: o id vai na URL (QUAL ficha) e o objeto novo vai no 2º argumento</span>
+<span class="var">axios</span>.<span class="fn">put</span>(<span class="st">"http://localhost:3000/clientes/2"</span>, <span class="punc">{</span> <span class="var">nome</span><span class="punc">:</span> <span class="st">"Bruno Lima"</span>, <span class="var">cidade</span><span class="punc">:</span> <span class="st">"Sousa"</span> <span class="punc">}</span>)
+
+<span class="cm">// APAGAR: só a URL com o id — não tem "corpo", só o alvo</span>
+<span class="var">axios</span>.<span class="fn">delete</span>(<span class="st">"http://localhost:3000/clientes/3"</span>)</pre>
+      </div>
+
+      <div class="concept">
+        <div class="concept-title">📛 O nome de mercado: CRUD</div>
+        <p>Esse quarteto tem apelido famoso: <strong>CRUD</strong> — <strong>C</strong>reate
+        (POST), <strong>R</strong>ead (GET), <strong>U</strong>pdate (PUT),
+        <strong>D</strong>elete (DELETE). Quando uma vaga pedir "experiência com CRUD", é ISSO:
+        cadastrar, listar, editar e excluir. Ao fim de hoje, você terá feito um CRUD triplo —
+        pode escrever no currículo sem corar. 😄</p>
+      </div>
+
+      <p style="color:var(--text-dim);margin:14px 0 4px">Brinca de cartório: mande cada verbo e
+      repare no que acontece com o <code>db.json</code> (e no que NÃO acontece) 👇</p>
+
+      <div class="bcm" id="bcm">
+        <div class="bc-controls">
+          <button class="get" data-v="get">GET /clientes</button>
+          <button class="post" data-v="post">POST /clientes</button>
+          <button class="put" data-v="put">PUT /clientes/2</button>
+          <button class="del" data-v="del">DELETE /clientes/3</button>
+          <button class="del" data-v="puterr">💥 PUT /clientes (sem id)</button>
+          <button data-v="reset">↺ zerar</button>
+        </div>
+        <div class="bc-grid">
+          <div>
+            <div class="bc-col-title">📨 requisição (o envelope)</div>
+            <div class="bc-req" id="bc-req">escolha um verbo 👆</div>
+          </div>
+          <div>
+            <div class="bc-col-title">📬 resposta do json-server</div>
+            <div class="bc-res" id="bc-res">…</div>
+          </div>
+        </div>
+        <div class="bc-lane">🧑‍💻<div class="bc-road"><span class="bc-env" id="bc-env">✉️</span></div>🏤</div>
+        <div class="bc-col-title">🗄️ db.json → "clientes" (o arquivo de fichas)</div>
+        <div class="bc-db" id="bc-db"></div>
+        <div class="bc-note" id="bc-note">…</div>
+      </div>
+
+      <div class="quiz" style="margin-top:16px">
+        <div class="quiz-q"><span class="q-emoji">📮</span> O usuário clicou em "excluir" no fornecedor de id 5. Qual é a chamada certa?</div>
+        <div class="quiz-options">
+          <button class="quiz-opt" onclick="checkQuiz(this,false)"><code>axios.get("http://localhost:3000/fornecedores/5")</code></button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)"><code>axios.delete("http://localhost:3000/fornecedores")</code></button>
+          <button class="quiz-opt" data-correct="true" onclick="checkQuiz(this,true)"><code>axios.delete("http://localhost:3000/fornecedores/5")</code></button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)"><code>axios.post("http://localhost:3000/fornecedores/5", { excluir: true })</code></button>
+        </div>
+        <div class="quiz-feedback" data-correct="Verbo certo + alvo certo. Cartório aprova. 🏤" data-wrong="Verbo diz O QUE fazer; a URL diz EM QUEM…" data-explain="Excluir = verbo DELETE, e a URL precisa apontar UMA ficha: /fornecedores/5. Sem o id, você estaria pedindo pra rasgar a coleção inteira (o servidor recusa). GET só lê; e POST com { excluir: true } criaria uma ficha nova esquisita — verbo errado não vira certo com dado criativo. 😄"></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ CLIENTES: LISTAR ═══════════════ -->
+  <section class="step-section" id="listar">
+    <div class="step-header">
+      <div class="step-number sn-react">👥</div>
+      <div>
+        <div class="step-title">Clientes: a listagem <span class="fase f1">fase 1 · na mão</span></div>
+        <div class="step-sub">useEffect + axios + tabela — zero conceito novo (anota isso!)</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p>Bora dar vida à página <span class="cmp">Clientes</span>. E aqui vai um detalhe de gente
+      grande: sistema de gestão não usa cardzinho — usa <strong>tabela</strong>. Adivinha quem
+      aprendeu <code>&lt;table&gt;</code>, <code>&lt;tr&gt;</code> e <code>&lt;td&gt;</code> lá no
+      Cap 1 e vai reencontrar tudo agora? 😄 A receita da página é o padrão canônico do Cap 7,
+      linha por linha:</p>
+
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">👨‍🏫</span><div>
+          <div class="exercise-title">Passo 3 — a tabela de clientes (com o prof)</div>
+          <div class="exercise-sub">O padrão canônico do Cap 7, agora em tabela</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>Reescreva a
+        <code>src/pages/Clientes.jsx</code>: estado <code>clientes</code> começando
+        <code>[]</code>, estados <code>carregando</code> e <code>erro</code>, useEffect com axios
+        (modo <code>[]</code> — "quando montar"), porteiros, e a tabela com <code>.map()</code> +
+        <code>key</code>. Crie também o <code>Clientes.module.css</code> com um estilo básico de
+        tabela. Teste: os 3 clientes do db.json na tela.</p></div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/pages/Clientes.jsx — versão 1 (só listar)</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">import</span> <span class="punc">{</span> <span class="var">useState</span>, <span class="var">useEffect</span> <span class="punc">}</span> <span class="kw">from</span> <span class="st">"react"</span>
+<span class="kw">import</span> <span class="var">axios</span> <span class="kw">from</span> <span class="st">"axios"</span>
+<span class="kw">import</span> <span class="var">styles</span> <span class="kw">from</span> <span class="st">"./Clientes.module.css"</span>
+
+<span class="kw">const</span> <span class="fn">Clientes</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">const</span> [<span class="var">clientes</span>, <span class="var">setClientes</span>] <span class="op">=</span> <span class="fn">useState</span>([])
+  <span class="kw">const</span> [<span class="var">carregando</span>, <span class="var">setCarregando</span>] <span class="op">=</span> <span class="fn">useState</span>(<span class="kw">true</span>)
+  <span class="kw">const</span> [<span class="var">erro</span>, <span class="var">setErro</span>] <span class="op">=</span> <span class="fn">useState</span>(<span class="kw">false</span>)
+
+  <span class="fn">useEffect</span>(() <span class="op">=&gt;</span> <span class="punc">{</span>
+    <span class="var">axios</span>.<span class="fn">get</span>(<span class="st">"http://localhost:3000/clientes"</span>)
+      .<span class="fn">then</span>((<span class="var">res</span>) <span class="op">=&gt;</span> <span class="punc">{</span>
+        <span class="fn">setClientes</span>(<span class="var">res</span>.<span class="var">data</span>)
+        <span class="fn">setCarregando</span>(<span class="kw">false</span>)
+      <span class="punc">}</span>)
+      .<span class="fn">catch</span>(() <span class="op">=&gt;</span> <span class="punc">{</span>
+        <span class="fn">setErro</span>(<span class="kw">true</span>)
+        <span class="fn">setCarregando</span>(<span class="kw">false</span>)
+      <span class="punc">}</span>)
+  <span class="punc">}</span>, [])
+
+  <span class="kw">if</span> (<span class="var">carregando</span>) <span class="punc">{</span> <span class="kw">return</span> <span class="tag">&lt;p&gt;</span>⏳ Carregando clientes...<span class="tag">&lt;/p&gt;</span> <span class="punc">}</span>
+  <span class="kw">if</span> (<span class="var">erro</span>) <span class="punc">{</span> <span class="kw">return</span> <span class="tag">&lt;p&gt;</span>😵 Não consegui falar com o servidor. Ele está de pé?<span class="tag">&lt;/p&gt;</span> <span class="punc">}</span>
+
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div</span> <span class="atr">className</span><span class="op">=</span>{<span class="var">styles</span>.<span class="var">pagina</span>}<span class="tag">&gt;</span>
+      <span class="tag">&lt;h2&gt;</span>👥 Clientes<span class="tag">&lt;/h2&gt;</span>
+      <span class="tag">&lt;table</span> <span class="atr">className</span><span class="op">=</span>{<span class="var">styles</span>.<span class="var">tabela</span>}<span class="tag">&gt;</span>
+        <span class="tag">&lt;thead&gt;</span>
+          <span class="tag">&lt;tr&gt;</span>
+            <span class="tag">&lt;th&gt;</span>Nome<span class="tag">&lt;/th&gt;</span><span class="tag">&lt;th&gt;</span>E-mail<span class="tag">&lt;/th&gt;</span><span class="tag">&lt;th&gt;</span>Telefone<span class="tag">&lt;/th&gt;</span><span class="tag">&lt;th&gt;</span>Cidade<span class="tag">&lt;/th&gt;</span>
+          <span class="tag">&lt;/tr&gt;</span>
+        <span class="tag">&lt;/thead&gt;</span>
+        <span class="tag">&lt;tbody&gt;</span>
+          {<span class="var">clientes</span>.<span class="fn">map</span>((<span class="var">c</span>) <span class="op">=&gt;</span> (
+            <span class="tag">&lt;tr</span> <span class="atr">key</span><span class="op">=</span>{<span class="var">c</span>.<span class="var">id</span>}<span class="tag">&gt;</span>
+              <span class="tag">&lt;td&gt;</span>{<span class="var">c</span>.<span class="var">nome</span>}<span class="tag">&lt;/td&gt;</span>
+              <span class="tag">&lt;td&gt;</span>{<span class="var">c</span>.<span class="var">email</span>}<span class="tag">&lt;/td&gt;</span>
+              <span class="tag">&lt;td&gt;</span>{<span class="var">c</span>.<span class="var">telefone</span>}<span class="tag">&lt;/td&gt;</span>
+              <span class="tag">&lt;td&gt;</span>{<span class="var">c</span>.<span class="var">cidade</span>}<span class="tag">&lt;/td&gt;</span>
+            <span class="tag">&lt;/tr&gt;</span>
+          ))}
+        <span class="tag">&lt;/tbody&gt;</span>
+      <span class="tag">&lt;/table&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">Clientes</span></pre>
+        </div>
+        <div class="mini-browser" data-url="localhost:5173/clientes" data-h="200">
+<script type="text/html" data-mp="html">
+  <div style="font-family:sans-serif">
+    <nav style="display:flex;gap:12px;border-bottom:2px solid #e2e8f0;padding-bottom:6px;font-size:12px">
+      <b>🗂️ GestorPRO</b><span style="color:#0ea5e9;font-weight:800">👥 Clientes</span>
+      <span style="color:#64748b;font-weight:700">🚚 Fornecedores</span><span style="color:#64748b;font-weight:700">📦 Produtos</span>
+    </nav>
+    <h3 style="margin:8px 0 6px;font-size:14px">👥 Clientes</h3>
+    <table style="width:100%;border-collapse:collapse;font-size:11px">
+      <tr style="text-align:left;background:#f1f5f9"><th style="padding:4px">Nome</th><th>E-mail</th><th>Telefone</th><th>Cidade</th></tr>
+      <tr><td style="padding:4px">Ana Souza</td><td>ana@gmail.com</td><td>(83) 99999-1111</td><td>João Pessoa</td></tr>
+      <tr style="background:#f8fafc"><td style="padding:4px">Bruno Lima</td><td>bruno@gmail.com</td><td>(83) 98888-2222</td><td>Campina Grande</td></tr>
+      <tr><td style="padding:4px">Carla Dias</td><td>carla@gmail.com</td><td>(83) 97777-3333</td><td>Recife</td></tr>
+    </table>
+  </div>
+</script>
+        </div>
+        <div class="tip"><span class="tip-icon">🏅</span><div class="tip-content"><strong>Momento
+        de orgulho (fale em voz alta):</strong> nesta página não tem UMA linha nova. useState do
+        Cap 6, useEffect+axios+porteiros do Cap 7, <code>.map()</code>+<code>key</code> do Cap 5,
+        tabela do Cap 1, CSS Module do Cap 5. Você acabou de escrever uma tela de sistema
+        profissional só com o que já sabia.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ CLIENTES: CADASTRAR ═══════════════ -->
+  <section class="step-section" id="cadastrar">
+    <div class="step-header">
+      <div class="step-number sn-mint">➕</div>
+      <div>
+        <div class="step-title">Clientes: cadastrar <span class="fase f1">fase 1 · na mão</span></div>
+        <div class="step-sub">Formulário controlado + POST + a novidade útil: useNavigate</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p>Agora a tela <code>/clientes/novo</code>: um formulário controlado (Cap 6 — um
+      <code>useState</code> por campo, <code>value</code> + <code>onChange</code>) que, ao salvar,
+      manda um <strong>POST</strong> e volta pra listagem. E aqui entra a <strong>2ª novidade
+      honesta</strong> do capítulo:</p>
+
+      <div class="concept">
+        <div class="concept-title">🧭 useNavigate — o Link que acontece via código</div>
+        <p>O <span class="cmp">&lt;Link&gt;</span> navega quando o usuário <strong>clica</strong>.
+        Mas depois de salvar, quem decide voltar pra listagem é o seu <strong>código</strong> —
+        dentro do <code>.then()</code>, quando o servidor confirmar. Pra isso o Router dá um hook
+        irmão do useParams: o <strong>useNavigate</strong>. Você chama
+        <code>const navigate = useNavigate()</code> no topo (mesma cerimônia dos outros hooks) e
+        ganha uma função: <code>navigate("/clientes")</code> = "vá para /clientes agora". É um
+        Link programável — nada além disso.</p>
+      </div>
+
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">👨‍🏫</span><div>
+          <div class="exercise-title">Passo 4 — o formulário de cadastro (com o prof)</div>
+          <div class="exercise-sub">4 inputs controlados + axios.post + navigate de volta</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>1) Crie
+        <code>src/pages/ClienteNovo.jsx</code> com o código abaixo, digitando junto. 2) No App, a
+        rota nova: <code>path="/clientes/novo"</code>. 3) Na página Clientes, o botão de entrada:
+        um <span class="cmp">Link</span> pra <code>/clientes/novo</code> ("+ Novo cliente").
+        4) Teste o ciclo completo: preencher → Salvar → cair na listagem → <strong>o cliente novo
+        está lá</strong> (e no db.json também — abre o arquivo e VÊ o registro com id carimbado!).</p></div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/pages/ClienteNovo.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">import</span> <span class="punc">{</span> <span class="var">useState</span> <span class="punc">}</span> <span class="kw">from</span> <span class="st">"react"</span>
+<span class="kw">import</span> <span class="punc">{</span> <span class="var">useNavigate</span> <span class="punc">}</span> <span class="kw">from</span> <span class="st">"react-router-dom"</span>
+<span class="kw">import</span> <span class="var">axios</span> <span class="kw">from</span> <span class="st">"axios"</span>
+<span class="kw">import</span> <span class="var">styles</span> <span class="kw">from</span> <span class="st">"./ClienteNovo.module.css"</span>
+
+<span class="kw">const</span> <span class="fn">ClienteNovo</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">const</span> [<span class="var">nome</span>, <span class="var">setNome</span>] <span class="op">=</span> <span class="fn">useState</span>(<span class="st">""</span>)
+  <span class="kw">const</span> [<span class="var">email</span>, <span class="var">setEmail</span>] <span class="op">=</span> <span class="fn">useState</span>(<span class="st">""</span>)
+  <span class="kw">const</span> [<span class="var">telefone</span>, <span class="var">setTelefone</span>] <span class="op">=</span> <span class="fn">useState</span>(<span class="st">""</span>)
+  <span class="kw">const</span> [<span class="var">cidade</span>, <span class="var">setCidade</span>] <span class="op">=</span> <span class="fn">useState</span>(<span class="st">""</span>)
+  <span class="kw">const</span> <span class="var">navigate</span> <span class="op">=</span> <span class="fn">useNavigate</span>()
+
+  <span class="kw">const</span> <span class="fn">salvar</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
+    <span class="kw">if</span> (<span class="var">nome</span> <span class="op">===</span> <span class="st">""</span>) <span class="punc">{</span>
+      <span class="fn">alert</span>(<span class="st">"O nome é obrigatório!"</span>)
+      <span class="kw">return</span>   <span class="cm">// o porteiro do Cap 8: para aqui, nem chama a API</span>
+    <span class="punc">}</span>
+    <span class="var">axios</span>.<span class="fn">post</span>(<span class="st">"http://localhost:3000/clientes"</span>, <span class="punc">{</span>
+      <span class="var">nome</span><span class="punc">:</span> <span class="var">nome</span>,
+      <span class="var">email</span><span class="punc">:</span> <span class="var">email</span>,
+      <span class="var">telefone</span><span class="punc">:</span> <span class="var">telefone</span>,
+      <span class="var">cidade</span><span class="punc">:</span> <span class="var">cidade</span>
+    <span class="punc">}</span>)
+      .<span class="fn">then</span>(() <span class="op">=&gt;</span> <span class="fn">navigate</span>(<span class="st">"/clientes"</span>))   <span class="cm">// salvou? volta pra lista</span>
+  <span class="punc">}</span>
+
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div</span> <span class="atr">className</span><span class="op">=</span>{<span class="var">styles</span>.<span class="var">pagina</span>}<span class="tag">&gt;</span>
+      <span class="tag">&lt;h2&gt;</span>➕ Novo cliente<span class="tag">&lt;/h2&gt;</span>
+      <span class="tag">&lt;input</span> <span class="atr">placeholder</span><span class="op">=</span><span class="st">"Nome"</span> <span class="atr">value</span><span class="op">=</span>{<span class="var">nome</span>} <span class="atr">onChange</span><span class="op">=</span>{(<span class="var">e</span>) <span class="op">=&gt;</span> <span class="fn">setNome</span>(<span class="var">e</span>.<span class="var">target</span>.<span class="var">value</span>)} <span class="tag">/&gt;</span>
+      <span class="tag">&lt;input</span> <span class="atr">placeholder</span><span class="op">=</span><span class="st">"E-mail"</span> <span class="atr">value</span><span class="op">=</span>{<span class="var">email</span>} <span class="atr">onChange</span><span class="op">=</span>{(<span class="var">e</span>) <span class="op">=&gt;</span> <span class="fn">setEmail</span>(<span class="var">e</span>.<span class="var">target</span>.<span class="var">value</span>)} <span class="tag">/&gt;</span>
+      <span class="tag">&lt;input</span> <span class="atr">placeholder</span><span class="op">=</span><span class="st">"Telefone"</span> <span class="atr">value</span><span class="op">=</span>{<span class="var">telefone</span>} <span class="atr">onChange</span><span class="op">=</span>{(<span class="var">e</span>) <span class="op">=&gt;</span> <span class="fn">setTelefone</span>(<span class="var">e</span>.<span class="var">target</span>.<span class="var">value</span>)} <span class="tag">/&gt;</span>
+      <span class="tag">&lt;input</span> <span class="atr">placeholder</span><span class="op">=</span><span class="st">"Cidade"</span> <span class="atr">value</span><span class="op">=</span>{<span class="var">cidade</span>} <span class="atr">onChange</span><span class="op">=</span>{(<span class="var">e</span>) <span class="op">=&gt;</span> <span class="fn">setCidade</span>(<span class="var">e</span>.<span class="var">target</span>.<span class="var">value</span>)} <span class="tag">/&gt;</span>
+      <span class="tag">&lt;button</span> <span class="atr">onClick</span><span class="op">=</span>{<span class="var">salvar</span>}<span class="tag">&gt;</span>💾 Salvar<span class="tag">&lt;/button&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">ClienteNovo</span></pre>
+        </div>
+        <div class="warning"><span class="warning-icon">🪪</span><div class="warning-content">
+          <strong>Dois detalhes de gente grande no objeto do POST:</strong> 1) escrevemos
+          <code>nome: nome</code> — a chave da ficha e a variável do estado, par por par (Cap 2:
+          objeto é chave + valor). 2) <strong>NÃO mandamos id</strong> — quem carimba o id é o
+          cartório (você viu na máquina 📮). Mandar id na mão é o Bug 2 do BugZilla de hoje.
+          <em>(E não estranhe o carimbo: o json-server das versões novas gera o id como um
+          código de letras e números — tipo <code>"XKp8zR"</code> — em vez de 4, 5, 6. Funciona
+          igualzinho.)</em>
+        </div></div>
+        <div class="tip"><span class="tip-icon">🧠</span><div class="tip-content">E repara no
+        <code>onClick={salvar}</code> <strong>sem parênteses</strong> — a pegadinha do Cap 6
+        continua valendo: entregamos a função, não executamos ela na renderização.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ CLIENTES: EXCLUIR ═══════════════ -->
+  <section class="step-section" id="excluir">
+    <div class="step-header">
+      <div class="step-number sn-red">🗑️</div>
+      <div>
+        <div class="step-title">Clientes: excluir <span class="fase f1">fase 1 · na mão</span></div>
+        <div class="step-sub">DELETE + o conceito-mor: servidor e tela são dois mundos</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p>Excluir é o verbo mais perigoso do balcão — então todo sistema decente
+      <strong>pergunta antes</strong>. Pra isso usamos o <code>window.confirm</code>: o primo do
+      <code>alert</code> que você conhece desde o Cap 3, só que com pergunta — ele abre a
+      caixinha "OK / Cancelar" e devolve <code>true</code> ou <code>false</code> (um boolean,
+      Cap 2!). Perfeito pra um <code>if</code>.</p>
+
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">👨‍🏫</span><div>
+          <div class="exercise-title">Passo 5 — o botão de excluir (com o prof)</div>
+          <div class="exercise-sub">confirm → axios.delete → atualizar o estado com .filter()</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>Na
+        <code>Clientes.jsx</code>: 1) crie a função <code>excluir</code> (abaixo). 2) Na tabela,
+        uma coluna nova "Ações" com o botão em cada linha. 3) Teste: excluir a Carla → confirmar →
+        ela some da tela E do db.json.</p></div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/pages/Clientes.jsx — a função e o botão novos</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="cm">// dentro do componente, junto dos estados:</span>
+<span class="kw">const</span> <span class="fn">excluir</span> <span class="op">=</span> (<span class="var">id</span>) <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">if</span> (<span class="var">window</span>.<span class="fn">confirm</span>(<span class="st">"Tem certeza que quer excluir este cliente?"</span>)) <span class="punc">{</span>
+    <span class="var">axios</span>.<span class="fn">delete</span>(<span class="st">"http://localhost:3000/clientes/"</span> <span class="op">+</span> <span class="var">id</span>)
+      .<span class="fn">then</span>(() <span class="op">=&gt;</span> <span class="punc">{</span>
+        <span class="cm">// o servidor já rasgou a ficha — agora avisamos a TELA:</span>
+        <span class="fn">setClientes</span>(<span class="var">clientes</span>.<span class="fn">filter</span>((<span class="var">c</span>) <span class="op">=&gt;</span> <span class="var">c</span>.<span class="var">id</span> <span class="op">!==</span> <span class="var">id</span>))
+      <span class="punc">}</span>)
+  <span class="punc">}</span>
+<span class="punc">}</span>
+
+<span class="cm">// e na tabela, a célula nova em cada linha do .map():</span>
+<span class="tag">&lt;td&gt;</span>
+  <span class="tag">&lt;button</span> <span class="atr">onClick</span><span class="op">=</span>{() <span class="op">=&gt;</span> <span class="fn">excluir</span>(<span class="var">c</span>.<span class="var">id</span>)}<span class="tag">&gt;</span>🗑️ Excluir<span class="tag">&lt;/button&gt;</span>
+<span class="tag">&lt;/td&gt;</span></pre>
+        </div>
+        <div class="concept"><div class="concept-title">🌍 O conceito-mor do CRUD: dois mundos</div>
+        <p>Olha o <code>.then()</code> com carinho, porque ele carrega A lição do capítulo: o
+        <code>axios.delete</code> apaga a ficha <strong>no servidor</strong> — mas a tela mostra o
+        <strong>estado</strong>, que é outro mundo (é a cópia que o useEffect trouxe lá no
+        início). Se você não atualizar o estado, o cliente excluído continua na tela até o
+        próximo F5 — o sistema fica parecendo quebrado sem estar. Por isso o
+        <code>setClientes(clientes.filter(...))</code>: o <code>.filter</code> (Cap 2/6!) monta
+        uma lista nova <em>sem</em> o excluído — repare no <code>!==</code>, "ficam só os que NÃO
+        têm esse id" — e o set redesenha. <strong>Servidor atualizado + estado atualizado = os
+        dois mundos em paz.</strong></p></div>
+        <div class="tip"><span class="tip-icon">🎯</span><div class="tip-content">E o
+        <code>onClick={() =&gt; excluir(c.id)}</code>? É a arrow inline do Cap 6 — precisamos
+        passar o id do cliente DAQUELA linha, então embrulhamos a chamada numa função. Sem o
+        embrulho (<code>onClick={excluir(c.id)}</code>) ela executaria na renderização — a
+        pegadinha clássica.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ CLIENTES: EDITAR ═══════════════ -->
+  <section class="step-section" id="editar">
+    <div class="step-header">
+      <div class="step-number sn-yellow">✏️</div>
+      <div>
+        <div class="step-title">Clientes: editar <span class="fase f1">fase 1 · na mão</span></div>
+        <div class="step-sub">useParams + GET por id + PUT — o CRUD se fecha</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p>Última peça do gabarito — e ela é uma montagem de peças conhecidas: a tela de editar é o
+      <strong>formulário do cadastro</strong> + a <strong>página Detalhes do Cap 8</strong>. A
+      URL diz QUAL cliente (<code>/clientes/2/editar</code> → useParams), um GET por id busca a
+      ficha atual e <strong>pré-enche os estados</strong>, e o salvar usa <strong>PUT</strong> em
+      vez de POST — porque agora não é ficha nova, é troca.</p>
+
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">👨‍🏫</span><div>
+          <div class="exercise-title">Passo 6 — a tela de editar (com o prof) ⭐</div>
+          <div class="exercise-sub">Cap 6 + Cap 7 + Cap 8 + o verbo novo, todos na mesma página</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>1) Crie
+        <code>src/pages/ClienteEditar.jsx</code> (abaixo). 2) Rota nova no App:
+        <code>path="/clientes/:id/editar"</code>. 3) Na tabela de Clientes, o botão "✏️ Editar"
+        em cada linha — um <span class="cmp">Link</span> com <code>to={"/clientes/" + c.id +
+        "/editar"}</code>. 4) Teste: editar a cidade do Bruno → Salvar → a lista já mostra a
+        mudança (e o db.json também).</p></div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/pages/ClienteEditar.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">import</span> <span class="punc">{</span> <span class="var">useState</span>, <span class="var">useEffect</span> <span class="punc">}</span> <span class="kw">from</span> <span class="st">"react"</span>
+<span class="kw">import</span> <span class="punc">{</span> <span class="var">useParams</span>, <span class="var">useNavigate</span> <span class="punc">}</span> <span class="kw">from</span> <span class="st">"react-router-dom"</span>
+<span class="kw">import</span> <span class="var">axios</span> <span class="kw">from</span> <span class="st">"axios"</span>
+<span class="kw">import</span> <span class="var">styles</span> <span class="kw">from</span> <span class="st">"./ClienteNovo.module.css"</span>   <span class="cm">// mesmo visual do cadastro — reuso!</span>
+
+<span class="kw">const</span> <span class="fn">ClienteEditar</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">const</span> <span class="punc">{</span> <span class="var">id</span> <span class="punc">}</span> <span class="op">=</span> <span class="fn">useParams</span>()
+  <span class="kw">const</span> <span class="var">navigate</span> <span class="op">=</span> <span class="fn">useNavigate</span>()
+  <span class="kw">const</span> [<span class="var">nome</span>, <span class="var">setNome</span>] <span class="op">=</span> <span class="fn">useState</span>(<span class="st">""</span>)
+  <span class="kw">const</span> [<span class="var">email</span>, <span class="var">setEmail</span>] <span class="op">=</span> <span class="fn">useState</span>(<span class="st">""</span>)
+  <span class="kw">const</span> [<span class="var">telefone</span>, <span class="var">setTelefone</span>] <span class="op">=</span> <span class="fn">useState</span>(<span class="st">""</span>)
+  <span class="kw">const</span> [<span class="var">cidade</span>, <span class="var">setCidade</span>] <span class="op">=</span> <span class="fn">useState</span>(<span class="st">""</span>)
+
+  <span class="fn">useEffect</span>(() <span class="op">=&gt;</span> <span class="punc">{</span>
+    <span class="cm">// busca a ficha atual e PRÉ-ENCHE o formulário:</span>
+    <span class="var">axios</span>.<span class="fn">get</span>(<span class="st">"http://localhost:3000/clientes/"</span> <span class="op">+</span> <span class="var">id</span>)
+      .<span class="fn">then</span>((<span class="var">res</span>) <span class="op">=&gt;</span> <span class="punc">{</span>
+        <span class="fn">setNome</span>(<span class="var">res</span>.<span class="var">data</span>.<span class="var">nome</span>)
+        <span class="fn">setEmail</span>(<span class="var">res</span>.<span class="var">data</span>.<span class="var">email</span>)
+        <span class="fn">setTelefone</span>(<span class="var">res</span>.<span class="var">data</span>.<span class="var">telefone</span>)
+        <span class="fn">setCidade</span>(<span class="var">res</span>.<span class="var">data</span>.<span class="var">cidade</span>)
+      <span class="punc">}</span>)
+  <span class="punc">}</span>, [<span class="var">id</span>])
+
+  <span class="kw">const</span> <span class="fn">salvar</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
+    <span class="var">axios</span>.<span class="fn">put</span>(<span class="st">"http://localhost:3000/clientes/"</span> <span class="op">+</span> <span class="var">id</span>, <span class="punc">{</span>
+      <span class="var">nome</span><span class="punc">:</span> <span class="var">nome</span>,
+      <span class="var">email</span><span class="punc">:</span> <span class="var">email</span>,
+      <span class="var">telefone</span><span class="punc">:</span> <span class="var">telefone</span>,
+      <span class="var">cidade</span><span class="punc">:</span> <span class="var">cidade</span>
+    <span class="punc">}</span>)
+      .<span class="fn">then</span>(() <span class="op">=&gt;</span> <span class="fn">navigate</span>(<span class="st">"/clientes"</span>))
+  <span class="punc">}</span>
+
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div</span> <span class="atr">className</span><span class="op">=</span>{<span class="var">styles</span>.<span class="var">pagina</span>}<span class="tag">&gt;</span>
+      <span class="tag">&lt;h2&gt;</span>✏️ Editar cliente<span class="tag">&lt;/h2&gt;</span>
+      <span class="cm">{/* os MESMOS 4 inputs controlados do cadastro */}</span>
+      <span class="tag">&lt;input</span> <span class="atr">placeholder</span><span class="op">=</span><span class="st">"Nome"</span> <span class="atr">value</span><span class="op">=</span>{<span class="var">nome</span>} <span class="atr">onChange</span><span class="op">=</span>{(<span class="var">e</span>) <span class="op">=&gt;</span> <span class="fn">setNome</span>(<span class="var">e</span>.<span class="var">target</span>.<span class="var">value</span>)} <span class="tag">/&gt;</span>
+      <span class="tag">&lt;input</span> <span class="atr">placeholder</span><span class="op">=</span><span class="st">"E-mail"</span> <span class="atr">value</span><span class="op">=</span>{<span class="var">email</span>} <span class="atr">onChange</span><span class="op">=</span>{(<span class="var">e</span>) <span class="op">=&gt;</span> <span class="fn">setEmail</span>(<span class="var">e</span>.<span class="var">target</span>.<span class="var">value</span>)} <span class="tag">/&gt;</span>
+      <span class="tag">&lt;input</span> <span class="atr">placeholder</span><span class="op">=</span><span class="st">"Telefone"</span> <span class="atr">value</span><span class="op">=</span>{<span class="var">telefone</span>} <span class="atr">onChange</span><span class="op">=</span>{(<span class="var">e</span>) <span class="op">=&gt;</span> <span class="fn">setTelefone</span>(<span class="var">e</span>.<span class="var">target</span>.<span class="var">value</span>)} <span class="tag">/&gt;</span>
+      <span class="tag">&lt;input</span> <span class="atr">placeholder</span><span class="op">=</span><span class="st">"Cidade"</span> <span class="atr">value</span><span class="op">=</span>{<span class="var">cidade</span>} <span class="atr">onChange</span><span class="op">=</span>{(<span class="var">e</span>) <span class="op">=&gt;</span> <span class="fn">setCidade</span>(<span class="var">e</span>.<span class="var">target</span>.<span class="var">value</span>)} <span class="tag">/&gt;</span>
+      <span class="tag">&lt;button</span> <span class="atr">onClick</span><span class="op">=</span>{<span class="var">salvar</span>}<span class="tag">&gt;</span>💾 Salvar alterações<span class="tag">&lt;/button&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">ClienteEditar</span></pre>
+        </div>
+        <div class="tip"><span class="tip-icon">🔍</span><div class="tip-content"><strong>POST ×
+        PUT, lado a lado (decore pela URL):</strong> POST vai na <strong>coleção</strong>
+        (<code>/clientes</code>) — "registra uma nova". PUT vai na <strong>ficha</strong>
+        (<code>/clientes/2</code>) — "troca ESTA". Os dois levam o objeto completo no 2º
+        argumento. Guarde essa comparação: ela vai ser a estrela da revisão guiada no próximo
+        encontro.</div></div>
+      </div>
+
+      <div class="card" style="text-align:center;background:linear-gradient(135deg,rgba(97,218,251,0.10),rgba(100,108,255,0.06));border-color:rgba(97,218,251,0.22);margin-top:18px">
+        <div style="font-family:'Caveat',cursive;font-size:clamp(1.6rem,5vw,2.4rem);color:var(--react);font-weight:700;line-height:1.15">
+          GABARITO PRONTO. 🏆<br>Você fez um CRUD inteiro na mão.
+        </div>
+        <p class="text-dim" style="max-width:600px;margin:10px auto 0">
+          Listar, cadastrar, excluir, editar — o módulo Clientes está completo, e você sabe o
+          preço de cada linha. <strong style="color:var(--text)">Casa (antes do próximo
+          encontro):</strong> transforme o campo cidade num <code>&lt;select&gt;</code> com 4–5
+          opções (dica: o select controlado usa os MESMOS <code>value</code> + <code>onChange</code>
+          do input) e cadastre pelo menos 5 clientes de verdade pra popular o sistema.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <div class="encontro"><div class="linha"></div><div class="rotulo">📍 Encontro B — o agente entra em cena</div><div class="linha"></div></div>
+
+  <!-- ═══════════════ AGENTS.MD ═══════════════ -->
+  <section class="step-section" id="agentsmd">
+    <div class="step-header">
+      <div class="step-number" style="background:linear-gradient(135deg,var(--accent6),#8b91ff)">📜</div>
+      <div>
+        <div class="step-title">AGENTS.md: as regras da casa <span class="fase f2">fase 2</span></div>
+        <div class="step-sub">A joia do capítulo — o pedido que nunca cai da mesa</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p>Antes de soltar o agente no GestorPRO, lembra do <strong>Bug 5 do Cap 9</strong>: regra
+      dita na conversa cai da mesa de contexto e o agente esquece. A solução de mercado é um
+      arquivo de regras <strong>na raiz do projeto</strong>, que o agente relê sempre:
+      <code>AGENTS.md</code> (Codex, Antigravity e outros) ou <code>CLAUDE.md</code> (Claude
+      Code). É um arquivo de texto comum — e escrever um bom é uma habilidade de engenheiro tão
+      valiosa quanto escrever código.</p>
+
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">👨‍🏫</span><div>
+          <div class="exercise-title">Passo 7 — escrevendo as regras juntos (com o prof)</div>
+          <div class="exercise-sub">Cada regra abaixo existe porque VOCÊ sabe React — repare nisso</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>Crie o arquivo
+        <code>AGENTS.md</code> na raiz do gestorpro (quem usa Claude Code cria
+        <code>CLAUDE.md</code> com o MESMO conteúdo) e digite as regras com o prof, discutindo o
+        PORQUÊ de cada uma:</p></div>
+        <div class="ag-file"><span class="h"># Regras do projeto GestorPRO</span>
+Sistema de gestão feito por um aluno do curso Fullstack (UNIESP).
+
+<span class="h">## Stack permitida (NÃO use NADA fora desta lista)</span>
+<span class="yes">-</span> React com Vite (JavaScript puro — sem TypeScript)
+<span class="yes">-</span> axios para TODA chamada HTTP <span class="no">(nunca fetch)</span>
+<span class="yes">-</span> react-router-dom: Routes, Route, Link, useParams, useNavigate
+<span class="yes">-</span> Hooks permitidos: useState e useEffect — <span class="no">NENHUM outro</span>
+<span class="yes">-</span> CSS Modules (Arquivo.module.css + import styles)
+  <span class="no">(nunca CSS global, styled-components ou Tailwind)</span>
+<span class="no">- NÃO instale nenhuma dependência nova</span>
+
+<span class="h">## Padrões do código</span>
+<span class="yes">-</span> Componente = arrow function com export default:
+  const Nome = () =&gt; { ... }   <span class="no">(nunca function Nome() {})</span>
+<span class="yes">-</span> Páginas em src/pages/, componentes reutilizáveis em src/components/
+<span class="yes">-</span> Formulários controlados: um useState por campo, value + onChange
+  <span class="no">(nunca useRef, nunca biblioteca de formulário)</span>
+<span class="yes">-</span> Requisições com .then()/.catch() <span class="no">(não use async/await)</span>
+<span class="yes">-</span> A API é o json-server em http://localhost:3000
+<span class="yes">-</span> Textos da interface em português do Brasil
+<span class="yes">-</span> O módulo Clientes (src/pages/Cliente*.jsx) é O PADRÃO da casa:
+  toda tela nova segue a estrutura dele
+
+<span class="h">## O que NÃO fazer</span>
+<span class="no">- Não refatore nem "melhore" arquivos fora da tarefa pedida</span>
+<span class="no">- Não mude o db.json sem pedido explícito</span>
+<span class="no">- Não crie testes, README ou configurações extras sem pedido</span></div>
+        <div class="tip" style="margin-top:12px"><span class="tip-icon">💎</span><div class="tip-content">
+          <strong>Pare e olhe o que você escreveu.</strong> "Hooks permitidos", "formulário
+          controlado", "CSS Module", "arrow com export default"… <strong>quem nunca estudou React
+          não consegue escrever NENHUMA dessas linhas</strong> — nem saberia o que proibir. Esse
+          arquivo é a prova material de que os Caps 4–8 são o que te torna capaz de comandar uma
+          IA. Isso tem nome bonito no mercado: <em>engenharia de contexto</em>.
+        </div></div>
+        <div class="concept"><div class="concept-title">🧪 Teste de fogo (com o prof)</div>
+        <p>Abra o agente na pasta do gestorpro e provoque: <em>"Adicione uma tela de relatórios
+        usando a biblioteca de gráficos que preferir"</em>. Um agente lendo o arquivo direito vai
+        <strong>recusar ou avisar</strong> que as regras proíbem dependência nova — e citar o
+        AGENTS.md. Se ele obedecer cegamente… bom, você já sabe revisar. 😏 (Depois peça pra
+        desfazer, claro.)</p></div>
+      </div>
+
+      <div class="quiz" style="margin-top:16px">
+        <div class="quiz-q"><span class="q-emoji">📜</span> Por que a regra "use CSS Modules" funciona melhor no AGENTS.md do que dita na conversa?</div>
+        <div class="quiz-options">
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">Porque em arquivo a regra fica mais formal e o agente respeita por educação</button>
+          <button class="quiz-opt" data-correct="true" onclick="checkQuiz(this,true)">Porque a conversa cai da janela de contexto com o tempo — e o arquivo é relido pelo agente a cada tarefa</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">Porque o agente não entende regras faladas</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">Não muda nada, é só organização</button>
+        </div>
+        <div class="quiz-feedback" data-correct="A mesa de contexto do Cap 9, resolvida com engenharia. 📦" data-wrong="Lembra da máquina 📦 Mesa de Contexto…" data-explain="É o Bug 5 do Cap 9: conversa longa enche a mesa e a regra antiga cai — o agente 'esquece' sem avisar. O arquivo de regras resolve porque as ferramentas releem ele no começo de CADA tarefa: a regra volta pra mesa sempre. Regra importante mora em arquivo — igual combinado de trabalho mora em contrato, não em conversa de corredor."></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ FORNECEDORES ═══════════════ -->
+  <section class="step-section" id="fornecedores">
+    <div class="step-header">
+      <div class="step-number" style="background:linear-gradient(135deg,var(--accent6),#8b91ff)">🚚</div>
+      <div>
+        <div class="step-title">Fornecedores: JUNTO com o agente <span class="fase f2">fase 2</span></div>
+        <div class="step-sub">Uma feature por prompt — e o ritual de revisão em cada uma</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p>Agora sim. O módulo Fornecedores é <strong>estruturalmente idêntico</strong> ao de
+      Clientes (só mudam os campos: nome, CNPJ, categoria, telefone) — repetição perfeita pra
+      delegar. O fluxo de CADA feature é sagrado, sempre o mesmo:</p>
+
+      <ul class="about-bullets">
+        <li><div><strong>1. Prompt</strong> — digite (e adapte!) o prompt-spec do passo;</div></li>
+        <li><div><strong>2. Ritual do Cap 9</strong> — ANTES de aceitar: ① rodou? ② li o diff? ③ segue o AGENTS.md? ④ algo que não pedi? ⑤ explico em voz alta?</div></li>
+        <li><div><strong>3. Testar no navegador</strong> — o critério de aceite do próprio prompt.</div></li>
+      </ul>
+
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">🤖</span><div>
+          <div class="exercise-title">Passo 8 — listagem de fornecedores (você + agente)</div>
+          <div class="exercise-sub">O primeiro diff de verdade do projeto</div></div>
+        </div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">prompt 1 — listagem</span><span class="lang-badge prompt">PROMPT</span></div>
+<pre>Leia o AGENTS.md antes de começar.
+
+Reescreva src/pages/Fornecedores.jsx (hoje é um placeholder
+"em obras") seguindo EXATAMENTE a estrutura de
+src/pages/Clientes.jsx: buscar os fornecedores da API com
+axios no useEffect, estados de carregando e erro, e uma
+tabela com as colunas Nome, CNPJ, Categoria e Telefone.
+Crie também o Fornecedores.module.css no mesmo estilo do
+Clientes.module.css.
+
+Não mexa em nenhum outro arquivo.
+
+Pronto quando: /fornecedores mostrar os 2 fornecedores do
+db.json numa tabela, sem erros no terminal.</pre>
+        </div>
+        <div class="tip"><span class="tip-icon">👀</span><div class="tip-content"><strong>Na
+        revisão (item ③), compare com seu gabarito:</strong> abra o diff e a sua
+        <code>Clientes.jsx</code> lado a lado. Mesma receita? useState([]) + useEffect com
+        <code>[]</code> + porteiros + <code>.map()</code> com <code>key</code>? axios (não
+        fetch)? arrow com export default? Se bater, aceite com orgulho — você acabou de fazer em
+        3 minutos o que levou 25 na mão. <strong>E sabe exatamente o que aceitou.</strong></div></div>
+      </div>
+
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">🤖</span><div>
+          <div class="exercise-title">Passo 9 — cadastrar + excluir (você + agente)</div>
+          <div class="exercise-sub">Dois prompts, dois rituais — já pega o ritmo</div></div>
+        </div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">prompt 2 — cadastro</span><span class="lang-badge prompt">PROMPT</span></div>
+<pre>Seguindo o AGENTS.md e usando src/pages/ClienteNovo.jsx como
+modelo, crie a tela de cadastro de fornecedor:
+
+- src/pages/FornecedorNovo.jsx com formulário controlado
+  (campos: nome, cnpj, categoria, telefone), axios.post SEM
+  enviar id, e useNavigate de volta para /fornecedores
+- a rota /fornecedores/novo no App.jsx
+- o botão/Link "+ Novo fornecedor" na página Fornecedores
+
+Pronto quando: cadastrar um fornecedor novo e ele aparecer
+na listagem e no db.json com id criado pelo servidor.</pre>
+        </div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">prompt 3 — excluir</span><span class="lang-badge prompt">PROMPT</span></div>
+<pre>Seguindo o AGENTS.md e o padrão da função excluir de
+src/pages/Clientes.jsx, adicione o excluir na página
+Fornecedores: coluna "Ações" com botão que pede confirmação
+com window.confirm, chama axios.delete com o id na URL e
+atualiza o estado com .filter().
+
+Pronto quando: excluir um fornecedor e ele sumir da tela
+NA HORA (sem F5) e do db.json.</pre>
+        </div>
+        <div class="warning"><span class="warning-icon">🕵️</span><div class="warning-content">
+          <strong>Ponto de atenção do item ④ (algo que não pedi?):</strong> nesses prompts é
+          comum o agente querer "aproveitar" e estilizar a mais, criar componente genérico de
+          tabela, ou adicionar validações extras. Bonito? Talvez. Pedido? Não. Se apareceu coisa
+          fora do escopo, o AGENTS.md te dá a frase pronta: <em>"refaça — o AGENTS.md diz para
+          não mexer fora da tarefa"</em>.
+        </div></div>
+      </div>
+
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">🤖</span><div>
+          <div class="exercise-title">Passo 10 — editar: a revisão É a aula (você + agente + prof) ⭐</div>
+          <div class="exercise-sub">O diff do PUT lido em voz alta, linha por linha</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">🎯 A cerimônia</div><p>Este passo tem um
+        combinado especial: mande o prompt abaixo, mas a revisão vai ser <strong>coletiva, no
+        telão</strong> — o prof abre o diff e a turma lê linha por linha, comparando com a
+        <code>ClienteEditar.jsx</code> do gabarito: o useParams pegando o id, o GET pré-enchendo
+        os estados, e o <strong>PUT com o id na URL</strong> (ficha certa!) contra o POST na
+        coleção. Se você entender ESSE diff, entendeu o CRUD inteiro.</p></div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">prompt 4 — editar</span><span class="lang-badge prompt">PROMPT</span></div>
+<pre>Seguindo o AGENTS.md e usando src/pages/ClienteEditar.jsx
+como modelo, crie a edição de fornecedor:
+
+- src/pages/FornecedorEditar.jsx: useParams pega o id,
+  axios.get pré-enche o formulário controlado, e o salvar
+  usa axios.put com o id na URL, voltando com useNavigate
+- a rota /fornecedores/:id/editar no App.jsx
+- o botão/Link "✏️ Editar" em cada linha da tabela
+
+Pronto quando: editar a categoria da TechDistrib e a
+mudança aparecer na listagem e no db.json.</pre>
+        </div>
+      </div>
+
+      <p style="color:var(--text-dim);margin:18px 0 4px">Treine o olho de revisor antes do
+      encontro real: este diff de "listagem de fornecedores" viola o AGENTS.md em <strong>3
+      pontos</strong>. Encontre-os 👇</p>
+
+      <div class="cim" id="cim">
+        <div class="ci-head">
+          <span style="font-size:0.8rem;color:var(--text-dim)">📨 pedido: "listagem de fornecedores seguindo o AGENTS.md"</span>
+          <span class="ci-score">violações: <b id="ci-score">0</b>/3</span>
+        </div>
+        <div class="ci-diff" id="ci-diff"></div>
+        <div class="ci-note" id="ci-note">…</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ PRODUTOS ═══════════════ -->
+  <section class="step-section" id="produtos">
+    <div class="step-header">
+      <div class="step-number sn-mint">📦</div>
+      <div>
+        <div class="step-title">Produtos: VOCÊ comanda <span class="fase f3">fase 3</span></div>
+        <div class="step-sub">O cliente pediu, você especifica, o agente executa, você assina</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p>Terceiro módulo, terceira fase da escada: agora <strong>os prompts são seus</strong>. O
+      material te dá o <em>pedido do cliente</em> (como chega na vida real: em português de
+      gente) e o critério de aceite — transformar isso em prompt-spec com os 4 ingredientes é o
+      SEU trabalho. Uma feature por vez, ritual em todas. 🚨 <strong>PARE</strong> e tente antes
+      de abrir qualquer olhinho!</p>
+
+      <div class="exercise solo">
+        <div class="exercise-header"><span class="exercise-icon">🧑‍💻</span><div>
+          <div class="exercise-title">Passo 11 — pedido do cliente: a vitrine de produtos (sozinho/a)</div>
+          <div class="exercise-sub">Listagem com dois porteiros de negócio</div></div>
+        </div>
+        <div class="drill-tags"><span class="drill-level lv2"><span class="stars">★★</span> médio</span><span class="drill-tag">seu prompt</span><span class="drill-tag">porteiros</span></div>
+        <div class="concept"><div class="concept-title">🗣️ O cliente pediu</div><p>"Quero ver
+        meus produtos numa tabela: nome, preço, estoque e categoria. O preço tem que aparecer
+        como dinheiro (R$ na frente). E o mais importante: quando o estoque estiver abaixo de 5,
+        quero um aviso ⚠️ bem visível na linha, porque é hora de comprar mais."</p></div>
+        <div class="concept"><div class="concept-title">✅ Critérios de aceite</div><p>Monitor
+        (estoque 4) e Mouse Gamer (estoque 2) com o selo "⚠️ estoque baixo"; os outros sem selo;
+        preços como "R$ 320". Nada fora do AGENTS.md.</p></div>
+        <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Escreva seu prompt primeiro!</strong> Os 4 ingredientes + qual arquivo é o modelo. Dica de spec: diga COM QUAL ferramenta quer o selo (o porteiro <code>&amp;&amp;</code> do Cap 5 com <code>estoque &lt; 5</code>) — senão o agente decide por você.</div></div>
+        <div class="toggler">
+          <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — prompt de referência + pontos de revisão</span><span class="toggler-arrow">▼</span></div>
+          <div class="toggler-body">
+            <div class="code-block">
+              <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">um prompt de referência (o seu pode ser melhor)</span><span class="lang-badge prompt">PROMPT</span></div>
+<pre>Seguindo o AGENTS.md e a estrutura de src/pages/Clientes.jsx,
+reescreva src/pages/Produtos.jsx: tabela com Nome, Preço,
+Estoque e Categoria, vindos da API.
+
+- Preço exibido como "R$ " + preco
+- Na coluna do estoque, use renderização condicional com &amp;&amp;:
+  quando estoque &lt; 5, mostre também o selo "⚠️ estoque baixo"
+  (estilizado no Produtos.module.css)
+
+Não mexa em outros arquivos.
+
+Pronto quando: Monitor e Mouse Gamer mostrarem o selo e os
+demais não.</pre>
+            </div>
+            <div class="tip" style="margin-top:10px"><span class="tip-icon">👀</span><div class="tip-content">
+              <strong>Pontos de revisão deste diff:</strong> o selo veio com <code>&amp;&amp;</code>
+              (como pedido) ou com if/ternário por conta própria? O <code>estoque &lt; 5</code>
+              compara <strong>número com número</strong> (o estoque já é número no db.json — sem
+              aspas!)? O CSS é Module? Alguma coluna, filtro ou "melhoria" que ninguém pediu?
+            </div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="exercise solo">
+        <div class="exercise-header"><span class="exercise-icon">🧑‍💻</span><div>
+          <div class="exercise-title">Passo 12 — pedido do cliente: cadastrar &amp; excluir (sozinho/a)</div>
+          <div class="exercise-sub">Atenção: preço e estoque são NÚMEROS</div></div>
+        </div>
+        <div class="drill-tags"><span class="drill-level lv2"><span class="stars">★★</span> médio</span><span class="drill-tag">Number()</span><span class="drill-tag">2 prompts</span></div>
+        <div class="concept"><div class="concept-title">🗣️ O cliente pediu</div><p>"Preciso
+        cadastrar produto novo (nome, preço, estoque, categoria) e excluir os descontinuados —
+        com confirmação, pelo amor, que semana passada apaguei uma linha sem querer no Excel."</p></div>
+        <div class="concept"><div class="concept-title">✅ Critérios de aceite</div><p>Cadastro em
+        <code>/produtos/novo</code> voltando pra listagem; excluir com confirmação e some sem F5.
+        <strong>E o detalhe de ouro:</strong> no db.json, preço e estoque devem ser salvos como
+        <strong>números</strong> (sem aspas!) — senão o porteiro <code>estoque &lt; 5</code> e o
+        painel do Dashboard fazem contas erradas.</p></div>
+        <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Lembra do Painel de Props do Cap 4?</strong> Tudo que sai de um input é TEXTO ("320" ≠ 320). Seu prompt precisa mandar converter — você conhece a ferramenta desde o Cap 2: <code>Number(preco)</code>.</div></div>
+        <div class="toggler">
+          <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — o trecho que importa</span><span class="toggler-arrow">▼</span></div>
+          <div class="toggler-body">
+            <div class="code-block">
+              <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">o coração do ProdutoNovo.jsx (pra conferir o diff)</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="var">axios</span>.<span class="fn">post</span>(<span class="st">"http://localhost:3000/produtos"</span>, <span class="punc">{</span>
+  <span class="var">nome</span><span class="punc">:</span> <span class="var">nome</span>,
+  <span class="var">preco</span><span class="punc">:</span> <span class="fn">Number</span>(<span class="var">preco</span>),      <span class="cm">// "320" (texto do input) → 320 (número)</span>
+  <span class="var">estoque</span><span class="punc">:</span> <span class="fn">Number</span>(<span class="var">estoque</span>),
+  <span class="var">categoria</span><span class="punc">:</span> <span class="var">categoria</span>
+<span class="punc">}</span>)</pre>
+            </div>
+            <div class="tip" style="margin-top:10px"><span class="tip-icon">👀</span><div class="tip-content">
+              Se o diff veio SEM o <code>Number()</code>, reprove citando o critério de aceite —
+              e teste a consequência de propósito: cadastre com estoque "3" (texto) e veja o selo
+              do passo 11 falhar. Erro visto com os olhos vale por três explicações.
+            </div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="exercise solo">
+        <div class="exercise-header"><span class="exercise-icon">🧑‍💻</span><div>
+          <div class="exercise-title">Passo 13 — pedido do cliente: editar (sozinho/a)</div>
+          <div class="exercise-sub">O último PUT — agora sem ajuda nenhuma</div></div>
+        </div>
+        <div class="drill-tags"><span class="drill-level lv3"><span class="stars">★★★</span> desafio</span><span class="drill-tag">PUT</span><span class="drill-tag">ciclo completo</span></div>
+        <div class="concept"><div class="concept-title">🗣️ O cliente pediu</div><p>"Os preços
+        mudam toda semana — preciso editar qualquer produto."</p></div>
+        <div class="concept"><div class="concept-title">✅ Critérios de aceite</div><p>Rota
+        <code>/produtos/:id/editar</code>, formulário pré-enchido, PUT com id na URL, números
+        convertidos, volta pra listagem. Revisão assinada por você — <strong>sem olhinho neste
+        passo</strong>: seu gabarito é a ClienteEditar.jsx + o diff dos Fornecedores que você
+        revisou no telão. Confia no processo. 💪</p></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ DASHBOARD ═══════════════ -->
+  <section class="step-section" id="dashboard">
+    <div class="step-header">
+      <div class="step-number sn-yellow">📊</div>
+      <div>
+        <div class="step-title">CHEFÃO: o Dashboard <span class="fase f3">fase 3</span></div>
+        <div class="step-sub">A página inicial que amarra o sistema — e rende o print do portfólio</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="exercise solo">
+        <div class="exercise-header"><span class="exercise-icon">🏆</span><div>
+          <div class="exercise-title">Passo 14 — o painel de controle (sozinho/a)</div>
+          <div class="exercise-sub">Na mão OU por prompt — você escolhe a via, o ritual é o mesmo</div></div>
+        </div>
+        <div class="drill-tags"><span class="drill-level lv3"><span class="stars">★★★</span> chefão</span><span class="drill-tag">3 GETs</span><span class="drill-tag">.length</span><span class="drill-tag">.filter()</span></div>
+        <div class="concept"><div class="concept-title">💡 Missão</div><p>A rota <code>/</code>
+        vira o painel do dono: 1) <strong>3 cards de totais</strong> — clientes, fornecedores e
+        produtos (três <code>axios.get</code> no MESMO useEffect, cada um alimentando um estado;
+        o total é o <code>.length</code> — Cap 5!). 2) Cada card é um <span class="cmp">Link</span>
+        pro seu módulo. 3) <strong>O destaque do dono:</strong> um aviso "⚠️ N produtos com
+        estoque baixo" usando <code>produtos.filter((p) =&gt; p.estoque &lt; 5).length</code> —
+        que só aparece se N &gt; 0 (porteiro <code>&amp;&amp;</code>!). Estilize com capricho no
+        <code>Dashboard.module.css</code>: esse é O print do seu portfólio.</p></div>
+        <div class="mini-browser" data-url="localhost:5173/" data-h="210">
+<script type="text/html" data-mp="html">
+  <div style="font-family:sans-serif">
+    <nav style="display:flex;gap:12px;border-bottom:2px solid #e2e8f0;padding-bottom:6px;font-size:12px">
+      <b>🗂️ GestorPRO</b><span style="color:#64748b;font-weight:700">👥 Clientes</span>
+      <span style="color:#64748b;font-weight:700">🚚 Fornecedores</span><span style="color:#64748b;font-weight:700">📦 Produtos</span>
+    </nav>
+    <h3 style="margin:8px 0 8px;font-size:14px">📊 Visão geral</h3>
+    <div style="display:flex;gap:8px">
+      <div style="flex:1;border:1px solid #e2e8f0;border-radius:8px;padding:10px;text-align:center"><div style="font-size:20px;font-weight:900">3</div><div style="font-size:10px;color:#64748b;font-weight:700">👥 clientes</div></div>
+      <div style="flex:1;border:1px solid #e2e8f0;border-radius:8px;padding:10px;text-align:center"><div style="font-size:20px;font-weight:900">2</div><div style="font-size:10px;color:#64748b;font-weight:700">🚚 fornecedores</div></div>
+      <div style="flex:1;border:1px solid #e2e8f0;border-radius:8px;padding:10px;text-align:center"><div style="font-size:20px;font-weight:900">4</div><div style="font-size:10px;color:#64748b;font-weight:700">📦 produtos</div></div>
+    </div>
+    <div style="margin-top:8px;background:#fef3c7;border:1px solid #fbbf24;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;color:#92400e">⚠️ 2 produtos com estoque baixo</div>
+  </div>
+</script>
+        </div>
+        <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Tenta antes!</strong> Se for por prompt, escreva a spec completa (os 3 requisitos acima SÃO seus critérios de aceite). Se for na mão, é Cap 7 vezes três.</div></div>
+        <div class="toggler">
+          <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — Ver o Dashboard de referência</span><span class="toggler-arrow">▼</span></div>
+          <div class="toggler-body">
+            <div class="code-block">
+              <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/pages/Dashboard.jsx</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">import</span> <span class="punc">{</span> <span class="var">useState</span>, <span class="var">useEffect</span> <span class="punc">}</span> <span class="kw">from</span> <span class="st">"react"</span>
+<span class="kw">import</span> <span class="punc">{</span> <span class="var">Link</span> <span class="punc">}</span> <span class="kw">from</span> <span class="st">"react-router-dom"</span>
+<span class="kw">import</span> <span class="var">axios</span> <span class="kw">from</span> <span class="st">"axios"</span>
+<span class="kw">import</span> <span class="var">styles</span> <span class="kw">from</span> <span class="st">"./Dashboard.module.css"</span>
+
+<span class="kw">const</span> <span class="fn">Dashboard</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">const</span> [<span class="var">clientes</span>, <span class="var">setClientes</span>] <span class="op">=</span> <span class="fn">useState</span>([])
+  <span class="kw">const</span> [<span class="var">fornecedores</span>, <span class="var">setFornecedores</span>] <span class="op">=</span> <span class="fn">useState</span>([])
+  <span class="kw">const</span> [<span class="var">produtos</span>, <span class="var">setProdutos</span>] <span class="op">=</span> <span class="fn">useState</span>([])
+
+  <span class="fn">useEffect</span>(() <span class="op">=&gt;</span> <span class="punc">{</span>
+    <span class="var">axios</span>.<span class="fn">get</span>(<span class="st">"http://localhost:3000/clientes"</span>).<span class="fn">then</span>((<span class="var">res</span>) <span class="op">=&gt;</span> <span class="fn">setClientes</span>(<span class="var">res</span>.<span class="var">data</span>))
+    <span class="var">axios</span>.<span class="fn">get</span>(<span class="st">"http://localhost:3000/fornecedores"</span>).<span class="fn">then</span>((<span class="var">res</span>) <span class="op">=&gt;</span> <span class="fn">setFornecedores</span>(<span class="var">res</span>.<span class="var">data</span>))
+    <span class="var">axios</span>.<span class="fn">get</span>(<span class="st">"http://localhost:3000/produtos"</span>).<span class="fn">then</span>((<span class="var">res</span>) <span class="op">=&gt;</span> <span class="fn">setProdutos</span>(<span class="var">res</span>.<span class="var">data</span>))
+  <span class="punc">}</span>, [])
+
+  <span class="kw">const</span> <span class="var">estoqueBaixo</span> <span class="op">=</span> <span class="var">produtos</span>.<span class="fn">filter</span>((<span class="var">p</span>) <span class="op">=&gt;</span> <span class="var">p</span>.<span class="var">estoque</span> <span class="op">&lt;</span> <span class="num">5</span>).<span class="var">length</span>
+
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div</span> <span class="atr">className</span><span class="op">=</span>{<span class="var">styles</span>.<span class="var">painel</span>}<span class="tag">&gt;</span>
+      <span class="tag">&lt;h2&gt;</span>📊 Visão geral<span class="tag">&lt;/h2&gt;</span>
+      <span class="tag">&lt;div</span> <span class="atr">className</span><span class="op">=</span>{<span class="var">styles</span>.<span class="var">cards</span>}<span class="tag">&gt;</span>
+        <span class="tag">&lt;</span><span class="cmp">Link</span> <span class="atr">to</span><span class="op">=</span><span class="st">"/clientes"</span> <span class="atr">className</span><span class="op">=</span>{<span class="var">styles</span>.<span class="var">card</span>}<span class="tag">&gt;</span>
+          <span class="tag">&lt;strong&gt;</span>{<span class="var">clientes</span>.<span class="var">length</span>}<span class="tag">&lt;/strong&gt;</span> 👥 clientes
+        <span class="tag">&lt;/</span><span class="cmp">Link</span><span class="tag">&gt;</span>
+        <span class="tag">&lt;</span><span class="cmp">Link</span> <span class="atr">to</span><span class="op">=</span><span class="st">"/fornecedores"</span> <span class="atr">className</span><span class="op">=</span>{<span class="var">styles</span>.<span class="var">card</span>}<span class="tag">&gt;</span>
+          <span class="tag">&lt;strong&gt;</span>{<span class="var">fornecedores</span>.<span class="var">length</span>}<span class="tag">&lt;/strong&gt;</span> 🚚 fornecedores
+        <span class="tag">&lt;/</span><span class="cmp">Link</span><span class="tag">&gt;</span>
+        <span class="tag">&lt;</span><span class="cmp">Link</span> <span class="atr">to</span><span class="op">=</span><span class="st">"/produtos"</span> <span class="atr">className</span><span class="op">=</span>{<span class="var">styles</span>.<span class="var">card</span>}<span class="tag">&gt;</span>
+          <span class="tag">&lt;strong&gt;</span>{<span class="var">produtos</span>.<span class="var">length</span>}<span class="tag">&lt;/strong&gt;</span> 📦 produtos
+        <span class="tag">&lt;/</span><span class="cmp">Link</span><span class="tag">&gt;</span>
+      <span class="tag">&lt;/div&gt;</span>
+      {<span class="var">estoqueBaixo</span> <span class="op">&gt;</span> <span class="num">0</span> <span class="op">&amp;&amp;</span> (
+        <span class="tag">&lt;p</span> <span class="atr">className</span><span class="op">=</span>{<span class="var">styles</span>.<span class="var">alerta</span>}<span class="tag">&gt;</span>⚠️ {<span class="var">estoqueBaixo</span>} produtos com estoque baixo<span class="tag">&lt;/p&gt;</span>
+      )}
+    <span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">Dashboard</span></pre>
+            </div>
+            <div class="tip" style="margin-top:10px"><span class="tip-icon">🧠</span><div class="tip-content">
+              Três GETs no mesmo useEffect — pode? Pode: o efeito é um só ("quando montar, busca
+              tudo"), cada resposta chega na sua hora e aciona o seu set. E repara que guardamos
+              as LISTAS (não só os números): a conta do estoque baixo precisa da lista inteira
+              pra filtrar.
+            </div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="exercise home" style="margin-top:18px">
+        <div class="exercise-header"><span class="exercise-icon">🏠</span><div>
+          <div class="exercise-title">Desafio para Casa — o polimento final</div>
+          <div class="exercise-sub">Três melhorias, cada uma por uma via diferente</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">💡 Missão</div><p>1) <strong>Na mão:</strong>
+        busca ao vivo na listagem de clientes (input controlado + <code>.filter()</code> com
+        <code>.includes()</code> — o P6 do Cap 6, agora no sistema). 2) <strong>Por prompt, com
+        ritual:</strong> plural correto nos cards do Dashboard ("1 cliente" × "3 clientes" —
+        ternário). 3) <strong>Por prompt, com ritual:</strong> destaque visual (classe
+        condicional) nas linhas de produto com estoque baixo. Traga o sistema completo no
+        próximo sábado — vai ter <strong>demo day</strong>: 2 minutos por aluno mostrando o SEU
+        GestorPRO. 🎤</p></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ BUGZILLA ═══════════════ -->
+  <section class="step-section" id="bugzilla">
+    <div class="step-header">
+      <div class="step-number sn-red">🐛</div>
+      <div>
+        <div class="step-title">BugZilla ataca o CRUD!</div>
+        <div class="step-sub">Os 5 tropeços clássicos do projeto — dois deles vêm do agente</div>
+      </div>
+    </div>
+
+    <div class="bug-box">
+      <span class="bug-icon">🐛</span>
+      <div class="bug-content">
+        <strong>Bug 1 — o F5 revelador:</strong> excluiu, o servidor apagou… mas a tela só muda no
+        F5. Faltou o <code>set</code> no <code>.then()</code> — servidor e estado são
+        <strong>dois mundos</strong>, e você só atualizou um. <strong>Conserto:</strong>
+        <code>setClientes(clientes.filter((c) =&gt; c.id !== id))</code> dentro do then.
+      </div>
+    </div>
+
+    <div class="bug-box" style="margin-top:14px">
+      <span class="bug-icon">🐛</span>
+      <div class="bug-content">
+        <strong>Bug 2 — o id intrometido:</strong> mandou <code>id</code> no objeto do POST e o
+        db.json virou bagunça (ids duplicados, cadastros sumindo). <strong>Conserto:</strong> o
+        objeto do POST vai SEM id — quem carimba é o cartório. (No PUT é o contrário: o id vai,
+        mas na <strong>URL</strong>.)
+      </div>
+    </div>
+
+    <div class="bug-box" style="margin-top:14px">
+      <span class="bug-icon">🐛</span>
+      <div class="bug-content">
+        <strong>Bug 3 — o PUT sem endereço:</strong> <code>axios.put("/fornecedores", ...)</code>
+        sem o <code>/id</code> → 404 na cara. PUT troca UMA ficha; a URL tem que dizer QUAL.
+        <strong>Conserto:</strong> <code>"http://localhost:3000/fornecedores/" + id</code>. Leia
+        toda URL de PUT/DELETE como um endereço de casa: sem número, o carteiro não entrega.
+      </div>
+    </div>
+
+    <div class="bug-box" style="margin-top:14px">
+      <span class="bug-icon">🐛</span>
+      <div class="bug-content">
+        <strong>Bug 4 — o agente rebelde:</strong> o diff veio com <code>react-hook-form</code>,
+        <code>useRef</code> ou um fetch perdido — tudo proibido no AGENTS.md.
+        <strong>Conserto:</strong> não é consertar na mão, é <strong>reprovar citando a
+        regra</strong>: "refaça seguindo o AGENTS.md — formulário controlado com useState, como o
+        módulo Clientes". O arquivo de regras só protege quem o usa na revisão.
+      </div>
+    </div>
+
+    <div class="bug-box" style="margin-top:14px">
+      <span class="bug-icon">🐛</span>
+      <div class="bug-content">
+        <strong>Bug 5 — <code>Failed to fetch</code>, o retorno do rei:</strong> o json-server
+        caiu (fechou o terminal sem querer). A diferença de hoje pro Cap 7: agora VOCÊ diagnostica
+        de olhos fechados — ler o erro → olhar o terminal 2 → <code>npx json-server db.json</code>
+        → F5. Quando esse reflexo vira automático, é sinal de que você virou dev. 🥋
+      </div>
+    </div>
+
+    <div class="toggler" style="margin-top:14px">
+      <div class="toggler-header" onclick="toggleSection(this)">
+        <span>👀 Macete de ouro do BugZilla</span><span class="toggler-arrow">▼</span>
+      </div>
+      <div class="toggler-body">
+        <div class="tip" style="margin:0">
+          <span class="tip-icon">🔦</span>
+          <div class="tip-content">
+            CRUD com defeito se investiga <strong>pela aba Network</strong> (F12): clique na ação
+            e olhe a requisição que saiu. O verbo está certo? A URL tem o id quando devia? O
+            corpo (payload) tem os campos certos, números sem aspas? O status voltou 200/201 ou
+            404? Em 30 segundos você sabe se o problema é do lado de quem PEDE (seu código) ou de
+            quem RESPONDE (servidor fora do ar, URL errada). Metade dos bugs deste capítulo se
+            resolve só de olhar ali.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ FORMATURA ═══════════════ -->
+  <section class="step-section" id="resumo">
+    <div class="step-header">
+      <div class="step-number sn-mint">🎓</div>
+      <div>
+        <div class="step-title">Formatura do Frontend</div>
+        <div class="step-sub">Olha pra trás e mede o caminho — do &lt;h1&gt; ao sistema completo</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p>Respira e olha a linha do tempo do que VOCÊ construiu neste curso:</p>
+
+      <ul class="about-bullets">
+        <li><div><strong>Caps 1–3:</strong> HTML, CSS, JavaScript e o DOM — a página ganhou estrutura, estilo e reação.</div></li>
+        <li><div><strong>Caps 4–5 (+5b):</strong> React — componentes, props, listas, imagens, CSS Modules e cinco projetos no braço.</div></li>
+        <li><div><strong>Caps 6–8:</strong> a Mini-loja ganhou memória (useState), dados de verdade (useEffect + axios + json-server) e endereços (Router).</div></li>
+        <li><div><strong>Cap 9:</strong> você abriu o capô da IA e aprendeu a comandar agentes — prompt-spec e ritual de revisão.</div></li>
+        <li><div><strong>Cap 10:</strong> o GestorPRO — um sistema com CRUD triplo, dashboard e um AGENTS.md escrito por você, construído na mão E com agente, <strong>sem nunca soltar o volante</strong>.</div></li>
+      </ul>
+
+      <div class="quiz" style="margin-top:16px">
+        <div class="quiz-q"><span class="q-emoji">🎫</span> Quiz de saída: no demo day, o cliente pergunta "e se eu editar um produto, o que viaja até o servidor?". A resposta de engenheiro é:</div>
+        <div class="quiz-options">
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">Um GET com os dados novos dentro da URL</button>
+          <button class="quiz-opt" data-correct="true" onclick="checkQuiz(this,true)">Um PUT para /produtos/ID — o id na URL diz QUAL ficha, e o objeto completo vai no corpo</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">Um POST novo — o servidor percebe que é edição pelo nome parecido</button>
+          <button class="quiz-opt" onclick="checkQuiz(this,false)">O db.json inteiro, reescrito pelo React</button>
+        </div>
+        <div class="quiz-feedback" data-correct="Resposta de demo day impecável. 🎤" data-wrong="Verbo diz o quê; URL diz em quem; corpo leva o quê…" data-explain="Editar = PUT em /produtos/ID: a URL aponta a ficha exata e o corpo leva o objeto atualizado (com números como números!). O servidor troca a ficha e responde 200. GET não altera nada, POST criaria um duplicado, e o front NUNCA mexe no db.json direto — todo acesso aos dados passa pelo balcão da API. Essa separação é exatamente o que te prepara pro backend real."></div>
+      </div>
+
+      <div class="tip" style="margin-top:16px">
+        <span class="tip-icon">🔌</span>
+        <div class="tip-content">
+          <strong>E agora?</strong> Agora vem a outra metade do mundo: na parte de
+          <strong>backend</strong> do curso você vai construir a API de verdade — em Java — com
+          banco de dados, validações e login. E no gran finale, o GestorPRO desliga o json-server
+          e liga na SUA API: mesmos verbos, mesmo axios, cozinha nova. O seu front já está pronto
+          pra esse dia. 🚀
+        </div>
+      </div>
+
+      <div class="card" style="text-align:center;background:linear-gradient(135deg,rgba(167,139,250,0.10),rgba(70,211,154,0.06));border-color:rgba(167,139,250,0.25);margin-top:18px">
+        <div style="font-family:'Caveat',cursive;font-size:clamp(1.8rem,5.5vw,2.8rem);color:var(--accent6);font-weight:700;line-height:1.15">
+          FRONTEND: CONCLUÍDO. 🎓<br><span style="color:var(--accent7)">Você não vibe-codou. Você ENGENHEIROU.</span>
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:22px;display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+        <a href="../../index.html" style="display:inline-block;padding:14px 28px;background:var(--surface2);color:var(--text);font-weight:800;border-radius:50px;font-size:1rem;text-decoration:none;border:1px solid rgba(255,255,255,0.12)">
+          ← voltar ao hub
+        </a>
+        <span style="display:inline-block;padding:14px 32px;background:var(--surface2);color:var(--text-dim);font-weight:900;border-radius:50px;font-size:1rem;border:1px dashed rgba(255,255,255,0.2);cursor:default">
+          Próxima parada: Backend (Java) 🔒 em breve
+        </span>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="footer">
+  Feito com <span class="heart">♥</span> pela <strong style="color:var(--text)">programa AI</strong> ·
+  <a href="../../index.html">Hub do curso</a> · Cap 10 — Projeto: GestorPRO
+</footer>
+
+<script src="../../shared/scripts.js" defer></script>
+<script type="module" src="../../shared/motion-fx.js"></script>
+<script type="module">
+  // ── Motor das máquinas didáticas do Cap 10 ──
+  // Motion (CDN) é tempero; sem internet TUDO continua funcionando.
+  let animate=null;
+  try{ ({animate}=await import('https://cdn.jsdelivr.net/npm/motion@11/+esm')); }catch(e){}
+  const onView=(el,fn)=>{ if(!el) return;
+    const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){fn();io.disconnect();}})},{threshold:.3});
+    io.observe(el); };
+
+  /* ════ 🗺️ GPS do GestorPRO ════ */
+  (()=>{
+    const root=document.getElementById('gps1'); if(!root) return;
+    const PAGES={
+      dash:'<h4 style="margin:0 0 6px">📊 Visão geral</h4><div style="display:flex;gap:6px;justify-content:center"><span style="border:1px solid #e2e8f0;border-radius:8px;padding:6px 10px;font-size:0.7rem"><b>3</b> 👥</span><span style="border:1px solid #e2e8f0;border-radius:8px;padding:6px 10px;font-size:0.7rem"><b>2</b> 🚚</span><span style="border:1px solid #e2e8f0;border-radius:8px;padding:6px 10px;font-size:0.7rem"><b>4</b> 📦</span></div>',
+      lista:'<h4 style="margin:0 0 6px">👥 Clientes</h4><p style="margin:0;color:#64748b;font-size:0.75rem">tabela: Ana · Bruno · Carla<br>+ botões editar/excluir</p>',
+      novo:'<h4 style="margin:0 0 6px">➕ Novo cliente</h4><p style="margin:0;color:#64748b;font-size:0.75rem">formulário controlado<br>Salvar → POST → volta pra lista</p>',
+      editar:'<h4 style="margin:0 0 6px">✏️ Editar cliente</h4><p style="margin:0;color:#64748b;font-size:0.75rem">useParams pega o id "2"<br>GET pré-enche → Salvar → PUT</p>',
+      nf:'<h4 style="margin:0 0 6px">🕳️ Página não encontrada</h4><p style="margin:0;color:#64748b;font-size:0.75rem">o curinga * de plantão,<br>com Link de volta</p>'
+    };
+    const ROUTES=[
+      {path:'/',el:'Dashboard'},
+      {path:'/clientes',el:'Clientes'},
+      {path:'/clientes/novo',el:'ClienteNovo'},
+      {path:'/clientes/:id/editar',el:'ClienteEditar'},
+      {path:'*',el:'NaoEncontrada'}
+    ];
+    const ANSWERS={
+      '/':{hit:0,page:'dash',note:'a raiz é o Dashboard — a cara do sistema. (Fornecedores e Produtos têm o MESMO trio de rotas dos clientes.)'},
+      '/clientes':{hit:1,page:'lista',note:'a listagem do módulo. Repara no padrão: /clientes → /clientes/novo → /clientes/:id/editar.'},
+      '/clientes/novo':{hit:2,page:'novo',note:'atenção à ORDEM esperta: "novo" vem antes de ":id/editar" no mapa — senão o Router acharia que "novo" é um id!'},
+      '/clientes/2/editar':{hit:3,page:'editar',note:'a rota dinâmica do Cap 8 de volta: o :id vale "2" e a página busca a ficha certa pra editar.'},
+      '/relatorios':{hit:4,page:'nf',note:'não mapeamos /relatorios → o curinga * pega. Todo sistema decente tem um 404 amigável.'}
+    };
+    const chips=[...root.querySelectorAll('.gp-chip')];
+    const urlEl=root.querySelector('#gp1-url');
+    const routesEl=root.querySelector('#gp1-routes');
+    const screen=root.querySelector('#gp1-screen');
+    const note=root.querySelector('#gp1-note');
+    routesEl.innerHTML=ROUTES.map((r)=>
+      '<div class="gp-route"><span>&lt;Route path=</span><span class="r-path">"'+r.path+'"</span><span> element={</span><span class="r-el">&lt;'+r.el+' /&gt;</span><span>} /&gt;</span></div>'
+    ).join('');
+    const rows=[...routesEl.querySelectorAll('.gp-route')];
+    const set=(u)=>{
+      chips.forEach(c=>c.classList.toggle('active',c.dataset.u===u));
+      urlEl.textContent=u;
+      const a=ANSWERS[u];
+      rows.forEach((row,i)=>{
+        row.classList.toggle('hit',i===a.hit);
+        row.classList.toggle('miss',i!==a.hit);
+      });
+      screen.innerHTML=PAGES[a.page];
+      note.innerHTML=a.note;
+      if(animate) animate(screen,{opacity:[0.4,1]},{duration:.3});
+    };
+    chips.forEach(c=>c.addEventListener('click',()=>set(c.dataset.u)));
+    onView(root,()=>set('/'));
+  })();
+
+  /* ════ 📮 Balcão do CRUD ════ */
+  (()=>{
+    const root=document.getElementById('bcm'); if(!root) return;
+    const req=root.querySelector('#bc-req');
+    const res=root.querySelector('#bc-res');
+    const env=root.querySelector('#bc-env');
+    const dbEl=root.querySelector('#bc-db');
+    const note=root.querySelector('#bc-note');
+    const BASE=[
+      {id:1,nome:'Ana Souza',cidade:'João Pessoa'},
+      {id:2,nome:'Bruno Lima',cidade:'Campina Grande'},
+      {id:3,nome:'Carla Dias',cidade:'Recife'}
+    ];
+    let db=[],busy=false;
+    const draw=(marks)=>{
+      marks=marks||{};
+      dbEl.innerHTML=db.map(c=>{
+        const cls=marks[c.id]||'';
+        return '<span class="row '+cls+'" data-id="'+c.id+'">{ "id": '+c.id+', "nome": "'+c.nome+'", "cidade": "'+c.cidade+'" }</span>';
+      }).join('');
+    };
+    const ACTIONS={
+      get:{
+        req:'<span class="m-get">GET</span> /clientes\n(sem corpo — só o pedido de leitura)',
+        run:()=>{ res.className='bc-res ok'; res.textContent='200 OK\n[ ...as '+db.length+' fichas... ]'; draw();
+          note.textContent='GET devolve uma CÓPIA das fichas e não muda NADA no arquivo — por isso ler é sempre seguro.'; }
+      },
+      post:{
+        req:'<span class="m-post">POST</span> /clientes\ncorpo: { "nome": "Diego Melo", "cidade": "Patos" }\n(repare: SEM id!)',
+        run:()=>{
+          const novoId=db.length?Math.max.apply(null,db.map(c=>c.id))+1:1;
+          db.push({id:novoId,nome:'Diego Melo',cidade:'Patos'});
+          res.className='bc-res ok'; res.textContent='201 Created\n{ "id": '+novoId+', "nome": "Diego Melo", ... }';
+          const m={}; m[novoId]='new'; draw(m);
+          note.textContent='ficha registrada — e olha o id '+novoId+' que o CARTÓRIO carimbou. (No json-server de verdade o carimbo vem como um CÓDIGO de letras e números, tipo "XKp8zR" — o importante é o mesmo: quem cria o id é SEMPRE o servidor.)';
+        }
+      },
+      put:{
+        req:'<span class="m-put">PUT</span> /clientes/2\ncorpo: { "nome": "Bruno Lima", "cidade": "Sousa" }',
+        run:()=>{
+          const alvo=db.find(c=>c.id===2);
+          if(!alvo){ res.className='bc-res err'; res.textContent='404 Not Found\n(a ficha 2 não existe mais)'; draw();
+            note.textContent='a ficha 2 já era — PUT em ficha inexistente dá 404. Zere a máquina pra recomeçar.'; return; }
+          alvo.cidade='Sousa';
+          res.className='bc-res ok'; res.textContent='200 OK\n{ "id": 2, "nome": "Bruno Lima", "cidade": "Sousa" }';
+          draw({2:'changed'});
+          note.textContent='o id na URL disse QUAL ficha; o corpo disse o conteúdo novo. Só a ficha 2 mudou.';
+        }
+      },
+      del:{
+        req:'<span class="m-del">DELETE</span> /clientes/3\n(sem corpo — só o alvo na URL)',
+        run:()=>{
+          const alvo=db.find(c=>c.id===3);
+          if(!alvo){ res.className='bc-res err'; res.textContent='404 Not Found\n(a ficha 3 não existe mais)'; draw();
+            note.textContent='a Carla já foi excluída — apagar duas vezes dá 404. Zere a máquina pra recomeçar.'; return; }
+          draw({3:'dead'});
+          setTimeout(()=>{ db=db.filter(c=>c.id!==3); draw(); },450);
+          res.className='bc-res ok'; res.textContent='200 OK\n{ }';
+          note.textContent='ficha 3 rasgada no SERVIDOR. Detalhe importante: a TELA do seu React não fica sabendo sozinha — quem avisa o estado é o seu .then() com o .filter().';
+        }
+      },
+      puterr:{
+        req:'<span class="m-put">PUT</span> /clientes   💥\ncorpo: { "nome": "Bruno Lima", "cidade": "Sousa" }\n(cadê o id na URL?!)',
+        run:()=>{
+          res.className='bc-res err'; res.textContent='404 Not Found\n(PUT precisa apontar UMA ficha)'; draw();
+          note.textContent='o Bug 3 do capítulo ao vivo: PUT na coleção, sem /id, não tem alvo — o cartório devolve 404 e NADA muda. O endereço de PUT/DELETE sempre termina no número da ficha.';
+        }
+      }
+    };
+    const fire=(v)=>{
+      if(busy) return;
+      if(v==='reset'){ db=JSON.parse(JSON.stringify(BASE)); draw(); req.textContent='escolha um verbo 👆';
+        res.className='bc-res'; res.textContent='…'; note.textContent='arquivo de fichas restaurado. Manda ver.'; return; }
+      busy=true;
+      const A=ACTIONS[v];
+      req.innerHTML=A.req;
+      res.className='bc-res'; res.textContent='…viajando…';
+      env.classList.add('go');
+      setTimeout(()=>{ A.run(); env.classList.remove('go'); busy=false; },1050);
+    };
+    root.querySelectorAll('.bc-controls button').forEach(b=>b.addEventListener('click',()=>fire(b.dataset.v)));
+    onView(root,()=>fire('reset'));
+  })();
+
+  /* ════ 🕵️ Revisor de Plantão ════ */
+  (()=>{
+    const root=document.getElementById('cim'); if(!root) return;
+    const diff=root.querySelector('#ci-diff');
+    const score=root.querySelector('#ci-score');
+    const note=root.querySelector('#ci-note');
+    const LINES=[
+      {t:'file',txt:'📄 src/pages/Fornecedores.jsx'},
+      {t:'add', txt:'+ import { useState, useEffect } from "react"'},
+      {t:'add', txt:'+ import "./fornecedores.css"',intr:true,
+        reason:'🚨 Violação 1: CSS GLOBAL. O AGENTS.md exige CSS Modules — devia ser Fornecedores.module.css com import styles.'},
+      {t:'add', txt:'+'},
+      {t:'add', txt:'+ function Fornecedores() {',intr:true,
+        reason:'🚨 Violação 2: function declarada. A regra da casa é arrow com export default: const Fornecedores = () =&gt; { ... }'},
+      {t:'add', txt:'+   const [fornecedores, setFornecedores] = useState([])'},
+      {t:'add', txt:'+'},
+      {t:'add', txt:'+   useEffect(() =&gt; {'},
+      {t:'add', txt:'+     fetch("http://localhost:3000/fornecedores")',intr:true,
+        reason:'🚨 Violação 3: fetch! O AGENTS.md diz "axios para TODA chamada HTTP". Devia ser axios.get(...).then((res) =&gt; setFornecedores(res.data)).'},
+      {t:'add', txt:'+       .then((res) =&gt; res.json())'},
+      {t:'add', txt:'+       .then((dados) =&gt; setFornecedores(dados))'},
+      {t:'add', txt:'+   }, [])'},
+      {t:'add', txt:'+'},
+      {t:'add', txt:'+   return ('},
+      {t:'add', txt:'+     &lt;table&gt;{fornecedores.map((f) =&gt; ( ...linhas... ))}&lt;/table&gt;'},
+      {t:'add', txt:'+   )'},
+      {t:'add', txt:'+ }'}
+    ];
+    let found=0;
+    diff.innerHTML=LINES.map((l,i)=>{
+      if(l.t==='file') return '<span class="ci-line file">'+l.txt+'</span>';
+      return '<button type="button" class="ci-line '+l.t+'" data-i="'+i+'">'+l.txt+'</button>';
+    }).join('');
+    diff.addEventListener('click',(ev)=>{
+      const el=ev.target.closest('button.ci-line'); if(!el) return;
+      const L=LINES[Number(el.dataset.i)];
+      if(L.intr){
+        if(!el.classList.contains('found')){
+          el.classList.add('found'); found++;
+          score.textContent=String(found);
+          note.innerHTML=L.reason+(found===3?'<br><b style="color:#46d39a">🏆 3/3! Agora a frase pronta: "refaça seguindo o AGENTS.md — axios, arrow function e CSS Module, como o módulo Clientes".</b>':'');
+        }else{
+          note.innerHTML=L.reason;
+        }
+      }else{
+        el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake');
+        note.textContent='essa linha está dentro das regras — a estrutura geral até que veio boa. Continue: são 3 violações.';
+      }
+    });
+    onView(root,()=>{ note.textContent='clique nas linhas que violam o AGENTS.md (são 3).'; });
+  })();
+</script>
+</body>
+</html>

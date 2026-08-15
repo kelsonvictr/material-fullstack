@@ -19,7 +19,12 @@ do backend** que o aluno já construiu (`../backend-fullstack` / `../projetos-fu
 | 6 | `capitulos/06-react-state/` | **Interatividade** | `useState`, eventos em React, formulários controlados |
 | 7 | `capitulos/07-react-efeitos-dados/` | **Dados** | `useEffect`, fetch, json-server (mock da API) |
 | 8 | `capitulos/08-react-router/` | **Navegação** | React Router DOM, SPA com várias páginas |
-| 9 | `capitulos/09-integracao/` | **Integração real** | Axios, login/JWT, consumir a API Spring do ERP, deploy |
+| 9 | `capitulos/09-ia-agentes/` | **IA & Agentes** | Como LLMs/agentes funcionam, panorama (Claude Code/Codex/Antigravity), prompt=spec, ritual de revisão |
+| 10 | `capitulos/10-projeto-gestor/` | **Projeto: GestorPRO** | Sistema de clientes/fornecedores/produtos: CRUD (axios post/put/delete), AGENTS.md, escada "na mão → junto → você comanda" — fecha o front |
+
+> **Mudança de mapa (2026-08-14):** o antigo "Cap 9 — Integração real (JWT/Spring/deploy)"
+> **saiu do frontend** e migra para a metade backend (quando a turma construir a API).
+> Caps 9–10 novos planejados em `09-plano-caps-09-10.md`.
 
 Desafios consolidados podem entrar entre capítulos (ex.: `Nb-desafios`), como no iniciantes-v2.
 
@@ -159,7 +164,20 @@ Dados: Pesquisa Código Fonte TV 2025 (citar fonte sempre).
       entregues** (anatomia-usestate 12s, ciclo-do-estado 14s, anatomia-useeffect 14s,
       vida-do-componente 16s — 1920×1080/30fps, loop, sem áudio, paleta do material, posters no
       frame do payoff) renderizados de `tooling/hyperframes/` (scripts `render:*`, pin 0.7.45).
-- [ ] Caps 8–9 (próximas sessões) — marcados como "🔒 em breve" no hub
+- [x] Cap 8 — Navegação (React Router) — entregue 2026-08-01 junto com a reforma do Cap 7
+      (teoria de API do zero + axios no lugar do fetch). Ver `05-decisoes.md` (2026-08-01).
+- [x] Cap 9 — IA & Agentes (2026-08-14) — entregue conforme `09-plano-caps-09-10.md`:
+      5 máquinas (🔮 Próxima Palavra, 📦 Mesa de Contexto, 🔁 Loop do Agente, ⚖️ Vago×Spec,
+      🕵️ Caça ao Intruso), setup Claude Code/Codex/Antigravity, prompt = mini-spec,
+      ritual de revisão, treino em CÓPIA da Mini-loja. SEM vídeos ainda (render pendente:
+      `loop-do-agente`, `proxima-palavra`). Testado no Chrome.
+- [x] Cap 10 — Projeto GestorPRO (2026-08-14) — entregue conforme `09-plano-caps-09-10.md`:
+      2 encontros (A: fundação + 4 verbos/CRUD + Clientes na mão · B: AGENTS.md +
+      Fornecedores via prompts + Produtos "você comanda" + Dashboard chefão + formatura).
+      3 máquinas (🗺️ GPS, 📮 Balcão do CRUD, 🕵️ Revisor de Plantão), 4 quizzes, escopo
+      100% dentro da stack estudada (novidades: verbos HTTP, useNavigate, window.confirm —
+      com teoria dedicada). Sem vídeos (candidato `quatro-verbos` pendente). Testado no
+      Chrome. **FECHA a metade Frontend do curso.**
 - [x] Memes gerados: `meme-intro-fullstack.png`, `meme-css-centralizar.png`, `meme-js-soma.png`,
       `meme-dom-mudei-tela.png` (Cap 3 — "EU MUDEI A TELA COM CÓDIGO")
 

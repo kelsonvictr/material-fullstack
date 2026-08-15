@@ -1,0 +1,26 @@
+.pagina {
+  max-width: 420px;
+  margin: 24px auto;
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pagina input {
+  padding: 10px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.pagina button {
+  padding: 10px 12px;
+  background: #0ea5e9;
+  color: #fff;
+  font-weight: 800;
+  border: 0;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+}
