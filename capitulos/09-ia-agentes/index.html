@@ -562,7 +562,7 @@
 npm install -g @anthropic-ai/claude-code
 
 <span class="c"># abrir NA PASTA do projeto (igual você faz com code .):</span>
-cd mini-loja-com-agente
+cd loja-cobaia
 claude</div>
           <p style="font-size:0.85rem;color:var(--text-dim)">Na primeira vez ele abre o navegador
           pra você entrar na sua conta Claude. Pelo npm ele NÃO se atualiza sozinho — de vez em
@@ -585,7 +585,7 @@ claude</div>
 npm install -g @openai/codex
 
 <span class="c"># abrir na pasta do projeto:</span>
-cd mini-loja-com-agente
+cd loja-cobaia
 codex</div>
         </div>
       </div>
@@ -608,7 +608,7 @@ curl -fsSL https://antigravity.google/cli/install.sh | bash
 irm https://antigravity.google/cli/install.ps1 | iex
 
 <span class="c"># abrir na pasta do projeto:</span>
-cd mini-loja-com-agente
+cd loja-cobaia
 agy</div>
           <p style="font-size:0.85rem;color:var(--text-dim)">Se você achar tutoriais antigos
           mandando <code>npm install -g @google/gemini-cli</code>: era a ferramenta anterior do
@@ -640,7 +640,7 @@ agy</div>
           <strong>Primeiro "oi" (sem medo):</strong> com a ferramenta aberta numa pasta de projeto,
           pergunte: <em>"O que é este projeto? Explique pra um iniciante."</em> Perguntar não mexe
           em nada — e você vai ver o loop em ação: ele LÊ seus arquivos antes de responder. Esse é
-          o P1 do treino logo mais.
+          o começo do treino logo mais.
         </div>
       </div>
     </div>
@@ -865,8 +865,8 @@ agy</div>
       </div>
       <p class="text-dim" style="max-width:560px;margin:10px auto 0">
         E ferramenta boa na mão de quem sabe o que está fazendo… constrói coisa grande.
-        Bora pro treino — <strong style="color:var(--text)">com uma CÓPIA da Mini-loja</strong>,
-        que ninguém é doido. 😄
+        Bora pro treino — <strong style="color:var(--text)">numa loja-cobaia feita por
+        você</strong>, que estagiário novo não estreia em projeto importante. 😄
       </p>
     </div>
   </section>
@@ -884,14 +884,15 @@ agy</div>
     </div>
     <div class="card">
       <div class="warning">
-        <span class="warning-icon">🛟</span>
+        <span class="warning-icon">🧪</span>
         <div class="warning-content">
-          <strong>Passo 0, antes de TUDO: faça uma cópia.</strong> No Explorador de arquivos,
-          copie a pasta <code>mini-loja</code> inteira e renomeie a cópia para
-          <code>mini-loja-com-agente</code>. Abra a CÓPIA no VSCode e rode <code>npm install</code>
-          nela. O agente só encosta na cópia — sua Mini-loja original dos Caps 4–8 fica
-          intocada. <em>(No mercado isso se faz com git e branches — você aprende na metade
-          backend. Por enquanto: cópia de pasta, simples e honesto.)</em>
+          <strong>O plano do treino: primeiro a COBAIA, depois o agente.</strong> O agente
+          precisa de um projeto pra mexer — e você precisa de um projeto que
+          <strong>conhece por dentro</strong> pra conseguir julgar o que ele fizer. Então o P1 é
+          criar uma mini vitrine do zero, na mão, em ~10 minutos (é o arco dos Caps 4–5, que
+          você já repetiu cinco vezes nos desafios do 05b). Regra de segurança que vale pra
+          vida: <strong>agente novo estreia em projeto-cobaia</strong>, nunca num projeto
+          importante. <em>(No mercado, a proteção é o git — vem na metade backend.)</em>
         </div>
       </div>
 
@@ -904,46 +905,76 @@ agy</div>
         <span class="at-dot lv3">🏆</span>
       </div>
 
-      <!-- 1. guiado — instalar + primeiro papo -->
+      <!-- 1. guiado — a cobaia -->
       <div class="exercise guided">
         <div class="exercise-header"><span class="exercise-icon">👨‍🏫</span><div>
-          <div class="exercise-title">Passo 1 — o primeiro papo (com o prof)</div>
-          <div class="exercise-sub">Instalar a ferramenta + deixar o agente LER o projeto</div></div>
+          <div class="exercise-title">Passo 1 — nasce a loja-cobaia (com o prof, NA MÃO)</div>
+          <div class="exercise-sub">Uma mini vitrine em 10 minutos — puro músculo dos Caps 4–5</div></div>
         </div>
-        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>1) Instale e entre na
-        ferramenta escolhida (seção 🛠️). 2) No terminal, entre na pasta
-        <code>mini-loja-com-agente</code> e abra o agente nela. 3) Primeiro pedido — só leitura,
-        zero risco:</p></div>
+        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>Agente ainda
+        DESLIGADO! 1) <code>npm create vite@latest loja-cobaia</code> (React + JavaScript) →
+        <code>cd loja-cobaia</code> → <code>npm install</code>. 2) Faxina de sempre (esvaziar
+        <code>App.css</code>/<code>index.css</code>, limpar o App). 3) Crie
+        <code>src/CartaoProduto.jsx</code> (rafce) com as props <code>nome</code>,
+        <code>preco</code> e <code>emoji</code>. 4) No App: o array <code>produtos</code> com 3
+        itens + <code>.map()</code> com <code>key</code>. 5) <code>npm run dev</code> e confira
+        a vitrine.</p></div>
         <div class="code-block">
-          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">seu primeiro prompt (digite você — não copie!)</span><span class="lang-badge prompt">PROMPT</span></div>
-<pre>Explique este projeto para um iniciante: o que cada arquivo
-dentro de src/ faz? Não mude nada — só explique.</pre>
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx — a cobaia inteira (o CartaoProduto você já sabe de cor)</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">import</span> <span class="var">CartaoProduto</span> <span class="kw">from</span> <span class="st">"./CartaoProduto.jsx"</span>
+
+<span class="kw">const</span> <span class="var">produtos</span> <span class="op">=</span> [
+  <span class="punc">{</span> <span class="var">id</span><span class="punc">:</span> <span class="num">1</span>, <span class="var">nome</span><span class="punc">:</span> <span class="st">"Teclado Mecânico"</span>, <span class="var">preco</span><span class="punc">:</span> <span class="num">320</span>, <span class="var">emoji</span><span class="punc">:</span> <span class="st">"⌨️"</span> <span class="punc">}</span>,
+  <span class="punc">{</span> <span class="var">id</span><span class="punc">:</span> <span class="num">2</span>, <span class="var">nome</span><span class="punc">:</span> <span class="st">"Monitor 27 pol"</span>, <span class="var">preco</span><span class="punc">:</span> <span class="num">1450</span>, <span class="var">emoji</span><span class="punc">:</span> <span class="st">"🖥️"</span> <span class="punc">}</span>,
+  <span class="punc">{</span> <span class="var">id</span><span class="punc">:</span> <span class="num">3</span>, <span class="var">nome</span><span class="punc">:</span> <span class="st">"Mouse Gamer"</span>, <span class="var">preco</span><span class="punc">:</span> <span class="num">89</span>, <span class="var">emoji</span><span class="punc">:</span> <span class="st">"🖱️"</span> <span class="punc">}</span>
+]
+
+<span class="kw">const</span> <span class="fn">App</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span>
+      <span class="tag">&lt;h1&gt;</span>🛒 Loja-cobaia<span class="tag">&lt;/h1&gt;</span>
+      {<span class="var">produtos</span>.<span class="fn">map</span>((<span class="var">p</span>) <span class="op">=&gt;</span> (
+        <span class="tag">&lt;</span><span class="cmp">CartaoProduto</span> <span class="atr">key</span><span class="op">=</span>{<span class="var">p</span>.<span class="var">id</span>} <span class="atr">nome</span><span class="op">=</span>{<span class="var">p</span>.<span class="var">nome</span>} <span class="atr">preco</span><span class="op">=</span>{<span class="var">p</span>.<span class="var">preco</span>} <span class="atr">emoji</span><span class="op">=</span>{<span class="var">p</span>.<span class="var">emoji</span>} <span class="tag">/&gt;</span>
+      ))}
+    <span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">App</span></pre>
         </div>
-        <div class="tip"><span class="tip-icon">🍿</span><div class="tip-content">Repara no
-        <strong>loop acontecendo ao vivo</strong>: ele vai pedir/avisar que está lendo App.jsx,
-        pages/, CartaoProduto.jsx… e SÓ DEPOIS responder. E agora o teste supremo: <strong>você
-        construiu este projeto</strong> — a explicação dele está certa? Nota pro estagiário. 📝</div></div>
+        <div class="tip"><span class="tip-icon">💪</span><div class="tip-content">Por que na
+        mão, se o capítulo é sobre agentes? Porque o treino inteiro depende disso: nos próximos
+        passos você vai <strong>julgar</strong> o que o agente disser e fizer NESTE projeto — e
+        só dá pra julgar o que se conhece por dentro. 10 minutos de músculo agora, superpoder
+        de revisor logo mais.</div></div>
       </div>
 
-      <!-- 2. guiado — tutor -->
+      <!-- 2. guiado — primeiro papo -->
       <div class="exercise guided">
-        <div class="exercise-header"><span class="exercise-icon">👨‍🏫</span><div>
-          <div class="exercise-title">Passo 2 — o agente como tutor (com o prof)</div>
-          <div class="exercise-sub">Pergunta dirigida numa linha que você conhece bem</div></div>
+        <div class="exercise-header"><span class="exercise-icon">🤖</span><div>
+          <div class="exercise-title">Passo 2 — o primeiro papo (com o prof)</div>
+          <div class="exercise-sub">Instalar a ferramenta + deixar o agente LER a cobaia</div></div>
         </div>
-        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>Peça uma aula particular
-        sobre um trecho que você mesmo escreveu no Cap 7:</p></div>
+        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>1) Instale e entre na
+        ferramenta escolhida (seção 🛠️). 2) No terminal, na pasta <code>loja-cobaia</code>,
+        abra o agente. 3) Dois pedidos — só leitura, zero risco:</p></div>
         <div class="code-block">
-          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">prompt</span><span class="lang-badge prompt">PROMPT</span></div>
-<pre>Explique linha por linha o useEffect que está em
-src/pages/Home.jsx. Por que o array de dependências está vazio?
-Não mude nada.</pre>
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">seus primeiros prompts (digite você — não copie!)</span><span class="lang-badge prompt">PROMPT</span></div>
+<pre>Explique este projeto para um iniciante: o que cada arquivo
+dentro de src/ faz? Não mude nada — só explique.
+
+(e depois, a pergunta dirigida:)
+
+Explique linha por linha o .map() que está no App.jsx.
+Por que a prop key existe? Não mude nada.</pre>
         </div>
-        <div class="tip"><span class="tip-icon">🧠</span><div class="tip-content">Confere com o
-        mnemônico do Cap 7: ele explicou o <strong>O QUE</strong> (a função) e o
-        <strong>QUANDO</strong> (o <code>[]</code> = só quando montar)? Percebeu que "não mude
-        nada" virou parte do prompt? <strong>Restrição</strong> não é só pra código — é pra
-        qualquer pedido. Esse uso-tutor vale ouro na véspera de prova. 😄</div></div>
+        <div class="tip"><span class="tip-icon">🍿</span><div class="tip-content">Repara no
+        <strong>loop acontecendo ao vivo</strong>: ele avisa que está lendo App.jsx e
+        CartaoProduto.jsx… e SÓ DEPOIS responde. Agora o teste supremo: <strong>você escreveu
+        esse código há 15 minutos</strong> — a explicação está certa? A resposta sobre a key
+        bateu com a máquina 🔑 do Cap 5? Nota pro estagiário. 📝 E repara: "não mude nada"
+        virou parte do prompt — <strong>restrição</strong> vale até pra pergunta. Esse
+        uso-tutor vale ouro na véspera de prova. 😄</div></div>
       </div>
 
       <!-- 3. guiado — primeira edição -->
@@ -962,28 +993,25 @@ Não mude nada.</pre>
 ficam em src/ e usamos CSS Modules para estilo.
 
 [TAREFA] Crie um componente de rodapé em src/Rodape.jsx e
-mostre ele no final de todas as páginas, com o texto:
-"Mini-loja — feita no curso Fullstack 💜".
+mostre ele embaixo da vitrine, com o texto:
+"Loja-cobaia — feita no curso Fullstack 💜".
 
 [RESTRIÇÕES] Componente como arrow function (const Rodape = ...,
 com export default). Estilo num CSS Module próprio
 (Rodape.module.css): fundo escuro, texto centralizado.
-NÃO instale nenhuma biblioteca. NÃO mexa em nenhum outro
-componente além do App.jsx (para exibir o rodapé).
+NÃO instale nenhuma biblioteca. NÃO mexa no CartaoProduto.jsx —
+só crie os arquivos novos e exiba o rodapé no App.jsx.
 
-[ACEITE] Pronto quando o rodapé aparecer na Home E na página
-Sobre, sem nenhum erro no terminal do Vite.</pre>
+[ACEITE] Pronto quando o rodapé aparecer embaixo dos 3 cards,
+sem nenhum erro no terminal do Vite.</pre>
         </div>
         <div class="mini-browser" data-url="localhost:5173/" data-h="200">
 <script type="text/html" data-mp="html">
   <div style="font-family:sans-serif">
-    <nav style="display:flex;gap:12px;border-bottom:2px solid #e2e8f0;padding-bottom:6px;font-size:13px">
-      <a style="color:#0ea5e9;font-weight:800;text-decoration:none">🛒 Loja</a>
-      <a style="color:#64748b;font-weight:700;text-decoration:none">👋 Sobre</a>
-    </nav>
-    <div style="display:flex;gap:10px;justify-content:center;margin:12px 0;font-size:26px">⌨️ 🖥️ 🪑 🖱️</div>
+    <h3 style="margin:0 0 8px;font-size:15px">🛒 Loja-cobaia</h3>
+    <div style="display:flex;gap:10px;justify-content:center;margin:12px 0;font-size:26px">⌨️ 🖥️ 🖱️</div>
     <div style="background:#1e293b;color:#e2e8f0;text-align:center;padding:8px;border-radius:8px;font-size:12px">
-      Mini-loja — feita no curso Fullstack 💜
+      Loja-cobaia — feita no curso Fullstack 💜
     </div>
   </div>
 </script>
@@ -1029,7 +1057,7 @@ não altere os dados nem os preços.
 [ACEITE] Pronto quando o Mouse Gamer (R$ 89) mostrar o selo e
 o Monitor (R$ 1450) NÃO mostrar.</pre>
           </div>
-          <div class="tip" style="margin-top:10px"><span class="tip-icon">⚖️</span><div class="tip-content">O que costuma acontecer na rodada A: desconto calculado que ninguém pediu, selo em produto errado (o agente CHUTA a regra: "promoção = mais barato que quanto?"), CSS global, às vezes até preço alterado no db.json. Nada disso é o agente "sendo burro" — é ele preenchendo os buracos do SEU pedido com o padrão da internet. Buraco no pedido = decisão delegada.</div></div></div>
+          <div class="tip" style="margin-top:10px"><span class="tip-icon">⚖️</span><div class="tip-content">O que costuma acontecer na rodada A: desconto calculado que ninguém pediu, selo em produto errado (o agente CHUTA a regra: "promoção = mais barato que quanto?"), CSS global, às vezes até preço alterado no array de produtos. Nada disso é o agente "sendo burro" — é ele preenchendo os buracos do SEU pedido com o padrão da internet. Buraco no pedido = decisão delegada.</div></div></div>
         </div>
       </div>
 
@@ -1039,12 +1067,12 @@ o Monitor (R$ 1450) NÃO mostrar.</pre>
           <div class="exercise-title">Passo 5 — CHEFÃO: a sabotagem (sozinho/a)</div>
           <div class="exercise-sub">O agente detetive investiga — mas quem assina o conserto é você</div></div>
         </div>
-        <div class="drill-tags"><span class="drill-level lv3"><span class="stars">★★★</span> desafio</span><span class="drill-tag">diagnóstico</span><span class="drill-tag">Caps 5+7 na veia</span></div>
-        <div class="concept"><div class="concept-title">💡 Missão</div><p>1) Sabote a cópia com
+        <div class="drill-tags"><span class="drill-level lv3"><span class="stars">★★★</span> desafio</span><span class="drill-tag">diagnóstico</span><span class="drill-tag">Caps 4+5 na veia</span></div>
+        <div class="concept"><div class="concept-title">💡 Missão</div><p>1) Sabote a cobaia com
         DOIS crimes, você mesmo, no VSCode: <strong>apague a prop <code>key</code></strong> do
-        <code>.map()</code> da vitrine, e <strong>apague a linha <code>import axios</code></strong>
-        da Home. Salve e olhe o estrago no navegador e no console (F12). 2) Agora o pedido —
-        investigação SEM conserto:</p></div>
+        <code>.map()</code> no App, e <strong>apague a linha <code>export default
+        CartaoProduto</code></strong> no fim do CartaoProduto.jsx. Salve e olhe o estrago no
+        navegador e no console (F12). 2) Agora o pedido — investigação SEM conserto:</p></div>
         <div class="code-block">
           <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">prompt do detetive</span><span class="lang-badge prompt">PROMPT</span></div>
 <pre>Este projeto está com defeitos. Investigue e me EXPLIQUE o que
@@ -1053,7 +1081,7 @@ nada. Quero consertar eu mesmo/a.</pre>
         </div>
         <div class="concept"><div class="concept-title">🎯 Fechamento</div><p>3) Leia o relatório
         dele: achou os dois? Explicou como você explicaria? 4) <strong>Conserte na mão</strong>
-        (você sabe: Cap 5 e Cap 7) e confira tudo verde. Esse fluxo — <em>agente investiga, humano
+        (você sabe: Cap 4 e Cap 5) e confira tudo verde. Esse fluxo — <em>agente investiga, humano
         decide e conserta</em> — é exatamente como dev sênior usa IA pra caçar bug em sistema
         grande.</p></div>
         <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Tenta antes!</strong> Antes de mandar o prompt, escreva num papel o que VOCÊ acha que cada crime causa. Depois compare com o relatório do agente.</div></div>
@@ -1064,10 +1092,11 @@ nada. Quero consertar eu mesmo/a.</pre>
               <strong>Crime 1 (key):</strong> warning no console — "Each child in a list should
               have a unique key prop" — e risco de itens "trocarem de identidade" ao mudar a lista
               (a máquina 🔑 do Cap 5!). Conserto: <code>key={p.id}</code> no elemento do
-              <code>.map()</code>. <strong>Crime 2 (import axios):</strong> tela quebra com
-              "axios is not defined" na hora do useEffect. Conserto: devolver o
-              <code>import axios from "axios"</code> no topo da Home. Se o agente achou os dois E
-              você consertou sem olhar aqui: chefão derrotado. 🏆
+              <code>.map()</code>. <strong>Crime 2 (export default):</strong> a tela quebra e o
+              erro aponta o import do App — o arquivo existe, mas não "entrega" o componente
+              (Cap 4: sem <code>export default</code>, o import não recebe nada). Conserto:
+              devolver o <code>export default CartaoProduto</code> no fim do arquivo. Se o agente
+              achou os dois E você consertou sem olhar aqui: chefão derrotado. 🏆
             </div></div>
           </div>
         </div>
@@ -1366,7 +1395,7 @@ nada. Quero consertar eu mesmo/a.</pre>
         note:'Nada disso é "errado" pra internet — é o padrão MÉDIO do que o modelo leu. Mas não é o padrão do NOSSO projeto. Buraco no pedido = decisão delegada.'
       },
       spec:{
-        code:'[CONTEXTO] Projeto React (Vite),\ncomponentes em src/, estilo com\nCSS Modules.\n\n[TAREFA] Crie src/Rodape.jsx com o\ntexto "Mini-loja — Curso Fullstack".\n\n[RESTRIÇÕES] Arrow function (rafce).\nCSS Module próprio. NÃO instale\nnada. Só toque em Rodape.jsx,\nRodape.module.css e App.jsx.\n\n[ACEITE] Rodapé visível na Home e\nna Sobre, terminal sem erros.',
+        code:'[CONTEXTO] Projeto React (Vite),\ncomponentes em src/, estilo com\nCSS Modules.\n\n[TAREFA] Crie src/Rodape.jsx com o\ntexto "Minha loja — Curso Fullstack".\n\n[RESTRIÇÕES] Arrow function (rafce).\nCSS Module próprio. NÃO instale\nnada. Só toque em Rodape.jsx,\nRodape.module.css e App.jsx.\n\n[ACEITE] Rodapé visível embaixo da\nvitrine, terminal sem erros.',
         out:'<b style="font-size:0.8rem">o que veio:</b><ul>'+
           '<li><span class="tag-ok">✓</span> <b>const Rodape = () =&gt; …</b> com export default</li>'+
           '<li><span class="tag-ok">✓</span> <b>Rodape.module.css</b> + import styles</li>'+
@@ -1407,7 +1436,7 @@ nada. Quero consertar eu mesmo/a.</pre>
         reason:'🚨 Intruso 3: function declarada! A convenção do curso é arrow function via rafce: const Rodape = () =&gt; { … }.'},
       {t:'add', txt:'+   return ('},
       {t:'add', txt:'+     &lt;footer className="rodape"&gt;'},
-      {t:'add', txt:'+       Mini-loja — feita no curso Fullstack &lt;FaHeart /&gt;'},
+      {t:'add', txt:'+       Minha loja — feita no curso Fullstack &lt;FaHeart /&gt;'},
       {t:'add', txt:'+     &lt;/footer&gt;'},
       {t:'add', txt:'+   )'},
       {t:'add', txt:'+ }'},

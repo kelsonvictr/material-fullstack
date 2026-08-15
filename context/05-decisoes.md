@@ -488,6 +488,29 @@ Fornecedores/Produtos como o agente os produziria seguindo o AGENTS.md (que tamb
    texto escuro dos cards pouco legível — em sala (tema claro padrão) fica perfeito; não é
    bug do material, mas se algum aluno usar extensão de dark mode, é a explicação.
 
+## 2026-08-15 — Treino do Cap 9 reformado: a "loja-cobaia" substitui a cópia da Mini-loja
+
+Pedido do prof: a turma atual **não vai ter a Mini-loja** dos Caps 4–8 em mãos — o treino
+não podia depender desse artefato. Nova abordagem, preservando o princípio "você só julga o
+agente num projeto que conhece por dentro":
+
+1. **P1 novo — "nasce a loja-cobaia" (na mão):** o treino abre criando uma mini vitrine do
+   zero em ~10 min (Vite → faxina → CartaoProduto com props → array de 3 produtos + .map com
+   key) — puro músculo dos Caps 4–5/05b, com o App.jsx completo no material. Framing: "agente
+   novo estreia em projeto-cobaia, nunca em projeto importante" (substitui o box da cópia;
+   git continua citado como a proteção de mercado).
+2. **P2 — primeiro papo:** funde os antigos P1+P2; a pergunta dirigida trocou o useEffect
+   (que a cobaia não tem) por ".map() + por que a key existe" (ponte com a máquina 🔑).
+3. **P3 rodapé:** aceite trocado de "Home e Sobre" (cobaia não tem Router) para "embaixo dos
+   3 cards"; texto do rodapé virou "Loja-cobaia — …"; mini-browser atualizado.
+4. **P4 A/B:** intacto (a cobaia tem os preços certos: Mouse 89 mostra o selo, Monitor não);
+   "db.json" da dica virou "array de produtos".
+5. **P5 sabotagem:** crime 2 trocado de "import axios" (inexistente na cobaia) por "apagar o
+   export default do CartaoProduto" (Cap 4). Olhinho atualizado.
+6. Ajustes de coerência: `cd loja-cobaia` nos 3 togglers de setup, lema, tip do "primeiro oi",
+   strings das máquinas ⚖️/🕵️ ("Minha loja"). Cap 10 não referencia a Mini-loja em exercícios
+   (só num recap narrativo — mantido). Verificado no Chrome via DOM (7 checks).
+
 ## Pendências reconhecidas
 - Planejar em detalhe os **Caps 6–9** (React: state → efeitos/dados → router → integração).
   Caps 4 e 5 já fixaram o tom, o setup Vite base e a Mini-loja como artefato contínuo do arco React.
