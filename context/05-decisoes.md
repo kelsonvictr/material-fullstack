@@ -793,6 +793,21 @@ travadas com ele (formato: página própria + atalhos; SEM correção automátic
   Chips digitais usam selo "NO CADERNO" (vs "NO PAPEL" das M1–M6). Gabarito seed v3,
   10/10 carimbos; campos pessoais marcados "(pessoal — sem resposta certa)".
 
+## 2026-08-22 (cont. 5) — Rotas do App.jsx nos Passos 4 e 6 (achado do prof)
+
+*"faltou a parte do App.jsx das rotas de cadastrar e editar, não?"* — procedia: a rota nova
+estava só DESCRITA na tarefa ("2) No App, a rota nova: path=...") sem bloco de código, violando
+a regra "se o aluno digita, tem bloco". Correção:
+- **Passo 4** reordenado como tela → rota → link: 3️⃣ novo bloco `App.jsx` (import
+  ClienteNovo + Route /clientes/novo, "adicione logo abaixo da rota /clientes") + tip
+  "nasceu tela, nasce rota" (sem a linha, /clientes/novo cai no 404 — teste os dois momentos);
+  o Link de entrada virou 4️⃣.
+- **Passo 6** numerado 1️⃣2️⃣3️⃣: novo bloco 2️⃣ `App.jsx` (import ClienteEditar + Route
+  /clientes/:id/editar) + tip do :id dinâmico do Cap 8 ("o mapa de Clientes está completo").
+- **Passo 5** ganhou o tip que faltava: **excluir NÃO ganha rota nem tela** — cadastrar/editar
+  são LUGARES (têm URL), excluir é AÇÃO (acontece na lista) — antecipando o Link×button da
+  coluna Ações.
+
 ## Pendências reconhecidas
 - Planejar em detalhe os **Caps 6–9** (React: state → efeitos/dados → router → integração).
   Caps 4 e 5 já fixaram o tom, o setup Vite base e a Mini-loja como artefato contínuo do arco React.
