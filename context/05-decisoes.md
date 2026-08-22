@@ -758,6 +758,14 @@ travadas com ele (formato: página própria + atalhos; SEM correção automátic
 - **Fase 2 (backlog)**: card "📓 Meu Caderno" no hub com progresso agregado; configs para
   capítulos anteriores; card-PNG de compartilhamento. O motor não tem nada de React — serve
   pros outros cursos do workspace.
+- **GABARITO digital** (`caderno-preenchido.html`, 2026-08-22, pedido do prof — "como tinha
+  o preenchido" da folha): o CONFIG foi extraído para **`caderno-config.js`** (compartilhado
+  — gabarito nunca dessincroniza do caderno do aluno). A página semeia o estado respondido
+  em armazenamento SEPARADO (`caderno:cap10-gabarito` — não toca no caderno do aluno na
+  mesma máquina), com tinta **laranja de professor**, setas do CRUD desenhadas
+  programaticamente (helper `seta()` gera traço+ponta em coords normalizadas), assinaturas
+  rabiscadas nas 8 features, 6/6 carimbado. "↺ zerar" + reload REPLANTA o gabarito (a
+  semeadura só roda se a chave não existir). **Sem link em lugar nenhum**, igual ao da folha.
 
 ## Pendências reconhecidas
 - Planejar em detalhe os **Caps 6–9** (React: state → efeitos/dados → router → integração).

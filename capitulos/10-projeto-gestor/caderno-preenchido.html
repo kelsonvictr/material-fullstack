@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🔑 GABARITO — Caderno de Engenharia · Cap 10 (uso do professor)</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=JetBrains+Mono:wght@400;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../shared/styles.css">
+<link rel="stylesheet" href="../../shared/animations.css">
+<link rel="stylesheet" href="../../shared/caderno.css">
+<style>
+  /* tinta do GABARITO = laranja de professor (a do aluno é azul) */
+  .cad{--caneta:#c2410c}
+  .gab-banner{max-width:980px;margin:18px auto 0;padding:12px 18px;background:#2a1a10;
+    border:1px solid rgba(255,157,107,0.45);border-radius:14px;color:#ffd9c2;
+    font-size:0.82rem;line-height:1.6;position:relative;z-index:1}
+  .gab-banner b{color:#ff9d6b}
+  .gab-banner code{background:#161a26;padding:1px 7px;border-radius:6px;font-size:0.72rem;color:#ffd166}
+</style>
+</head>
+<body class="cad">
+
+<div class="bg-grid"></div>
+<div class="bg-orbs"><div class="orb"></div><div class="orb"></div><div class="orb"></div></div>
+
+<div class="gab-banner">
+  🔑 <b>GABARITO do Caderno de Engenharia</b> — versão respondida, só para o professor
+  consultar. <b>Não está linkada em lugar nenhum</b>; abre só por este endereço. Usa um
+  armazenamento separado (<code>caderno:cap10-gabarito</code>), então não interfere no caderno
+  do aluno nesta máquina. Bagunçou o gabarito mexendo nele? Clique em <b>↺ zerar</b> que ele
+  volta preenchido. A página dos alunos é a <code>caderno.html</code>.
+</div>
+
+<div id="app"></div>
+
+<script src="../../shared/scripts.js" defer></script>
+<script src="../../shared/caderno.js"></script>
+<script src="caderno-config.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════
+   Semeia o estado RESPONDIDO (só se ainda não existir — o
+   botão "zerar" apaga a chave e, ao recarregar, replanta).
+   ═══════════════════════════════════════════════════════════ */
+(function(){
+  const KEY = 'caderno:cap10-gabarito';
+  if (localStorage.getItem(KEY)) return;
+
+  const DATA = '22/08/2026';
+
+  /* traço reto com ponta de seta (coords normalizadas 0..1) */
+  function seta(cor, y, x1, x2){
+    const dir = x2 > x1 ? 1 : -1;
+    return [
+      { cor, pts: [[x1, y], [x2, y]] },
+      { cor, pts: [[x2 - dir*0.018, y - 0.03], [x2, y], [x2 - dir*0.018, y + 0.03]] }
+    ];
+  }
+  /* rabisco de assinatura (dentro do pad 150×38) */
+  function assinatura(){
+    return [{ cor:'#c2410c',
+      pts: [[0.06,0.62],[0.16,0.22],[0.28,0.68],[0.40,0.18],[0.52,0.62],[0.66,0.28],[0.82,0.55],[0.94,0.35]] }];
+  }
+
+  const estado = {
+    v: {
+      /* M1 — portas e gavetas */
+      'm1.portas.p5173':'5173', 'm1.portas.p3000':'3000',
+      'm1.gavetas.endf':'fornecedores',
+      'm1.gavetas.f1':'nome', 'm1.gavetas.f2':'cnpj', 'm1.gavetas.f3':'categoria', 'm1.gavetas.f4':'telefone',
+      'm1.gavetas.endp':'produtos',
+      'm1.gavetas.p1':'nome', 'm1.gavetas.p2':'preco', 'm1.gavetas.p3':'estoque', 'm1.gavetas.p4':'categoria',
+      'm1.gavetas.num1':'preco', 'm1.gavetas.num2':'estoque',
+      'm1.gavetas.carimba':'o servidor',
+      /* M2 — lacunas do mapa */
+      'm2.lacunas.compf':'Fornecedores', 'm2.lacunas.comp404':'NaoEncontrada',
+      'm2.lacunas.novo':'novo', 'm2.lacunas.id':':id', 'm2.lacunas.compedit':'ClienteEditar',
+      'm2.lacunas.mais':'6',
+      /* M3 — legenda CRUD */
+      'm3.legenda.lpost':'C', 'm3.legenda.apost':'registrar ficha NOVA', 'm3.legenda.ipost':'não vai — o servidor cria',
+      'm3.legenda.lput':'U',  'm3.legenda.aput':'TROCAR a ficha X',      'm3.legenda.iput':'na URL: /clientes/2',
+      'm3.legenda.ldel':'D',  'm3.legenda.adel':'rasgar a ficha X',      'm3.legenda.idel':'na URL: /clientes/3',
+      /* M4 — anatomia */
+      'm4.anatomia.hook1':'State', 'm4.anatomia.hook2':'Effect',
+      'm4.anatomia.quem':'axios', 'm4.anatomia.rota':'clientes', 'm4.anatomia.data':'data',
+      /* M5 — ritual + regra */
+      'm5.ritual.r2':'diff', 'm5.ritual.r3':'AGENTS.md', 'm5.ritual.r4':'não pedi', 'm5.ritual.r5':'explicar',
+      'm5.regra.txt':'"Não mexa fora da tarefa pedida" — é o que protege o código que eu já revisei e aprovei. (Não há resposta certa: o valor está em JUSTIFICAR.)',
+      /* rascunho: nota do gabarito */
+      'rascunho.notas.txt':'(área livre do aluno — sem resposta certa)'
+    },
+    c: {
+      /* M1 — os 4 itens da fundação */
+      'm1.fund.vite':true, 'm1.fund.pecas':true, 'm1.fund.db':true, 'm1.fund.terms':true,
+      /* M2 — as 7 rotas */
+      'm2.rotas.r1':true, 'm2.rotas.r2':true, 'm2.rotas.r3':true, 'm2.rotas.r4':true,
+      'm2.rotas.r5':true, 'm2.rotas.r6':true, 'm2.rotas.r7':true
+    },
+    s: {
+      /* M4 — ciclo na ordem certa */
+      'm4.ciclo.s2':'o useEffect dispara',
+      'm4.ciclo.s3':'axios.get viaja',
+      'm4.ciclo.s4':'a resposta chega (res.data)',
+      'm4.ciclo.s5':'setClientes(...) redesenha'
+    },
+    d: {
+      /* M3 — setas ida (cheia) e volta, na cor de cada verbo, alinhadas às faixas */
+      'm3.setas.tracos': [].concat(
+        seta('#047857', 0.165, 0.06, 0.58), seta('#047857', 0.225, 0.58, 0.06),
+        seta('#b45309', 0.360, 0.06, 0.58), seta('#b45309', 0.420, 0.58, 0.06),
+        seta('#b91c1c', 0.550, 0.06, 0.58), seta('#b91c1c', 0.610, 0.58, 0.06)
+      )
+    },
+    carimbos: { m1:DATA, m2:DATA, m3:DATA, m4:DATA, m5:DATA, m6:DATA },
+    atualizado: null
+  };
+
+  /* M6 — os 5 checks e a assinatura em TODAS as 8 features */
+  ['cli','fl','fce','fe','pl','pce','pe','dash'].forEach(id => {
+    for (let i = 1; i <= 5; i++) estado.c['m6.termo.'+id+'.r'+i] = true;
+    estado.d['m6.termo.'+id+'.ass'] = assinatura();
+  });
+
+  localStorage.setItem(KEY, JSON.stringify(estado));
+})();
+
+/* monta com armazenamento próprio (não toca no caderno do aluno) */
+CadernoEngine.mount(document.getElementById('app'),
+  Object.assign({}, CADERNO_CONFIG, {
+    id: 'cap10-gabarito',
+    subtitulo: 'GABARITO — uso do professor'
+  }));
+</script>
+</body>
+</html>
