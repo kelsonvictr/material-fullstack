@@ -1396,7 +1396,21 @@ npm install axios react-router-dom</pre>
         descendentes: nenhum <code>className</code> nos campos.</div></div>
 
         <div class="code-block">
-          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">3️⃣ src/pages/Clientes.jsx — o Link de entrada (adicione acima da tabela)</span><span class="lang-badge jsx">JSX</span></div>
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">3️⃣ src/App.jsx — a rota nova entra no mapa (adicione)</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="cm">// no topo, junto dos outros imports:</span>
+<span class="kw">import</span> <span class="var">ClienteNovo</span> <span class="kw">from</span> <span class="st">"./pages/ClienteNovo.jsx"</span>
+
+<span class="cm">// e dentro do &lt;Routes&gt;, logo abaixo da rota /clientes:</span>
+<span class="tag">&lt;</span><span class="cmp">Route</span> <span class="atr">path</span><span class="op">=</span><span class="st">"/clientes/novo"</span> <span class="atr">element</span><span class="op">=</span>{<span class="tag">&lt;</span><span class="cmp">ClienteNovo</span> <span class="tag">/&gt;</span>} <span class="tag">/&gt;</span></pre>
+        </div>
+        <div class="tip"><span class="tip-icon">🗺️</span><div class="tip-content"><strong>Nasceu
+        tela, nasce rota</strong> — a ordem de sempre: a tela existiu primeiro (blocos 1 e 2),
+        AGORA ela ganha endereço. Sem essa linha no mapa, digitar
+        <code>/clientes/novo</code> cai no curinga <code>*</code> (o 404). Teste os dois
+        momentos e veja a diferença!</div></div>
+
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">4️⃣ src/pages/Clientes.jsx — o Link de entrada (adicione acima da tabela)</span><span class="lang-badge jsx">JSX</span></div>
 <pre><span class="cm">// no topo do arquivo, junto dos outros imports:</span>
 <span class="kw">import</span> <span class="punc">{</span> <span class="var">Link</span> <span class="punc">}</span> <span class="kw">from</span> <span class="st">"react-router-dom"</span>
 
@@ -1487,6 +1501,12 @@ npm install axios react-router-dom</pre>
         passar o id do cliente DAQUELA linha, então embrulhamos a chamada numa função. Sem o
         embrulho (<code>onClick={excluir(c.id)}</code>) ela executaria na renderização — a
         pegadinha clássica.</div></div>
+        <div class="tip"><span class="tip-icon">🗺️</span><div class="tip-content"><strong>E
+        repara: excluir NÃO ganhou rota nem tela.</strong> Cadastrar e editar são
+        <strong>lugares</strong> — têm URL própria, o usuário "vai até lá". Excluir é uma
+        <strong>ação</strong>: acontece ali mesmo na lista, sem sair do lugar. Por isso o mapa
+        do App.jsx não muda neste passo — e por isso, daqui a pouco na coluna Ações, editar vai
+        ser um <span class="cmp">Link</span> e excluir um <code>&lt;button&gt;</code>.</div></div>
       </div>
     </div>
   </section>
@@ -1522,7 +1542,7 @@ npm install axios react-router-dom</pre>
         "/editar"}</code>. 4) Teste: editar a cidade do Bruno → Salvar → a lista já mostra a
         mudança (e o db.json também).</p></div>
         <div class="code-block">
-          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/pages/ClienteEditar.jsx</span><span class="lang-badge jsx">JSX</span></div>
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">1️⃣ src/pages/ClienteEditar.jsx</span><span class="lang-badge jsx">JSX</span></div>
 <pre><span class="kw">import</span> <span class="punc">{</span> <span class="var">useState</span>, <span class="var">useEffect</span> <span class="punc">}</span> <span class="kw">from</span> <span class="st">"react"</span>
 <span class="kw">import</span> <span class="punc">{</span> <span class="var">useParams</span>, <span class="var">useNavigate</span> <span class="punc">}</span> <span class="kw">from</span> <span class="st">"react-router-dom"</span>
 <span class="kw">import</span> <span class="var">axios</span> <span class="kw">from</span> <span class="st">"axios"</span>
@@ -1574,7 +1594,21 @@ npm install axios react-router-dom</pre>
         </div>
 
         <div class="code-block">
-          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/pages/Clientes.jsx — a coluna "Ações" COMPLETA (confira a sua)</span><span class="lang-badge jsx">JSX</span></div>
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">2️⃣ src/App.jsx — a última rota do gabarito entra no mapa (adicione)</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="cm">// no topo, junto dos outros imports:</span>
+<span class="kw">import</span> <span class="var">ClienteEditar</span> <span class="kw">from</span> <span class="st">"./pages/ClienteEditar.jsx"</span>
+
+<span class="cm">// e dentro do &lt;Routes&gt;, logo abaixo da rota /clientes/novo:</span>
+<span class="tag">&lt;</span><span class="cmp">Route</span> <span class="atr">path</span><span class="op">=</span><span class="st">"/clientes/:id/editar"</span> <span class="atr">element</span><span class="op">=</span>{<span class="tag">&lt;</span><span class="cmp">ClienteEditar</span> <span class="tag">/&gt;</span>} <span class="tag">/&gt;</span></pre>
+        </div>
+        <div class="tip"><span class="tip-icon">🗺️</span><div class="tip-content">O
+        <code>:id</code> é a rota dinâmica do Cap 8: <code>/clientes/2/editar</code> e
+        <code>/clientes/7/editar</code> caem AQUI, e o <code>useParams</code> lá dentro descobre
+        qual número veio. Com essa linha, o mapa de Clientes está completo: 2 telas com endereço
+        próprio (<code>/novo</code> e <code>/:id/editar</code>) + a listagem.</div></div>
+
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">3️⃣ src/pages/Clientes.jsx — a coluna "Ações" COMPLETA (confira a sua)</span><span class="lang-badge jsx">JSX</span></div>
 <pre><span class="cm">// o &lt;th&gt; você já criou no Passo 5 — o que muda agora é o &lt;td&gt;:</span>
 <span class="tag">&lt;td&gt;</span>
   <span class="tag">&lt;</span><span class="cmp">Link</span> <span class="atr">to</span><span class="op">=</span>{<span class="st">"/clientes/"</span> <span class="op">+</span> <span class="var">c</span>.<span class="var">id</span> <span class="op">+</span> <span class="st">"/editar"</span>}<span class="tag">&gt;</span>✏️ Editar<span class="tag">&lt;/</span><span class="cmp">Link</span><span class="tag">&gt;</span>{<span class="st">" "</span>}
