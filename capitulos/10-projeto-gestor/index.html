@@ -567,6 +567,24 @@
             <br><span class="out">added 12 packages in 3s</span>
           </div>
         </div>
+        <div class="tip"><span class="tip-icon">🧹</span><div class="tip-content"><strong>A faxina,
+        item por item</strong> (igual aos Caps 4–8): apague TODO o conteúdo de
+        <code>src/index.css</code> e <code>src/App.css</code> — os arquivos ficam
+        <strong>vazios</strong>, não delete eles. Depois deixe o <code>App.jsx</code> assim (ele
+        vira o mapa de rotas já no próximo passo, mas a gente confere que a tela está limpa
+        antes):</div></div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx — depois da faxina</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">const</span> <span class="fn">App</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span>
+      <span class="tag">&lt;h1&gt;</span>🗂️ GestorPRO<span class="tag">&lt;/h1&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">App</span></pre>
+        </div>
         <div class="papel-missao"><span class="pm-selo">✏️ NO PAPEL · M1</span><span>Área
         <b>⓪ A FUNDAÇÃO</b> (coluna do servidor): marque os 4 quadradinhos conforme fizer, e
         anote as <b>duas portas</b>. Logo abaixo, preencha as <b>gavetas do cartório</b> — os
@@ -586,9 +604,55 @@
         <span class="cmp">Clientes</span>, <span class="cmp">Fornecedores</span> e
         <span class="cmp">Produtos</span> (por enquanto, cada uma só com um <code>&lt;h2&gt;</code>
         "🚧 em obras") + a <span class="cmp">NaoEncontrada</span>. 4) Monte o mapa no App. 5) Passeie
-        clicando na Navbar: 4 páginas + 404 funcionando, <strong>sem F5</strong>.</p></div>
+        clicando na Navbar: 4 páginas + 404 funcionando, <strong>sem F5</strong>.
+        <strong>Todo o código está aqui embaixo, na ordem de criação</strong> — arquivo por
+        arquivo. 📋</p></div>
+
         <div class="code-block">
-          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/components/Navbar.jsx</span><span class="lang-badge jsx">JSX</span></div>
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">1️⃣ src/main.jsx — o plugue ganha o abraço do Router</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">import</span> <span class="punc">{</span> <span class="var">createRoot</span> <span class="punc">}</span> <span class="kw">from</span> <span class="st">"react-dom/client"</span>
+<span class="kw">import</span> <span class="punc">{</span> <span class="var">BrowserRouter</span> <span class="punc">}</span> <span class="kw">from</span> <span class="st">"react-router-dom"</span>
+<span class="kw">import</span> <span class="var">App</span> <span class="kw">from</span> <span class="st">"./App.jsx"</span>
+<span class="kw">import</span> <span class="st">"./index.css"</span>
+
+<span class="fn">createRoot</span>(<span class="var">document</span>.<span class="fn">getElementById</span>(<span class="st">"root"</span>)).<span class="fn">render</span>(
+  <span class="tag">&lt;</span><span class="cmp">BrowserRouter</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;</span><span class="cmp">App</span> <span class="tag">/&gt;</span>
+  <span class="tag">&lt;/</span><span class="cmp">BrowserRouter</span><span class="tag">&gt;</span>
+)</pre>
+        </div>
+        <div class="tip"><span class="tip-icon">🤝</span><div class="tip-content">Só uma linha
+        muda em relação ao Cap 8: o <span class="cmp">&lt;App /&gt;</span> passou a ficar
+        <strong>dentro</strong> do <span class="cmp">&lt;BrowserRouter&gt;</span>. Sem esse
+        abraço, qualquer <span class="cmp">&lt;Link&gt;</span> ou
+        <code>useNavigate</code> lá dentro estoura erro — o Router precisa envolver quem usa
+        ele.</div></div>
+
+        <div class="concept">
+          <div class="concept-title">⌨️ Chama o Rafael do Ceará: são 6 componentes só neste passo</div>
+          <p>Daqui até o fim do projeto você vai criar uns <strong>12 arquivos de
+          componente</strong> — 6 deles agora. <strong>Não digite o esqueleto na mão nenhuma
+          vez.</strong> O ritual é sempre o mesmo: crie o arquivo <code>.jsx</code> com o nome
+          certo (Maiúscula!), digite <code>rafce</code> e aperte <kbd>Tab</kbd>. O snippet já
+          escreve a arrow function <strong>nomeada igual ao arquivo</strong> e o
+          <code>export default</code> — que é exatamente o padrão da casa, o mesmo que você vai
+          exigir do agente no AGENTS.md amanhã.</p>
+        </div>
+        <div class="tip">
+          <span class="tip-icon">⚡</span>
+          <div class="tip-content">
+            <strong>rafce</strong> = <strong>R</strong>eact <strong>A</strong>rrow
+            <strong>F</strong>unction <strong>C</strong>omponent <strong>E</strong>xport.
+            (Macete do prof, do Cap 4: pensa no <strong>Rafael do Ceará</strong> — assim você
+            nunca esquece a ordem das letras. 😄) Vem da extensão <em>ES7+ React snippets</em>,
+            que você instalou no Cap 00b. Se ele colocar um
+            <code>import React from "react"</code> no topo, pode apagar: com Vite moderno você
+            não precisa.
+          </div>
+        </div>
+
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">2️⃣ src/components/Navbar.jsx</span><span class="lang-badge jsx">JSX</span></div>
 <pre><span class="kw">import</span> <span class="punc">{</span> <span class="var">Link</span> <span class="punc">}</span> <span class="kw">from</span> <span class="st">"react-router-dom"</span>
 <span class="kw">import</span> <span class="var">styles</span> <span class="kw">from</span> <span class="st">"./Navbar.module.css"</span>
 
@@ -607,8 +671,83 @@
 
 <span class="kw">export</span> <span class="kw">default</span> <span class="var">Navbar</span></pre>
         </div>
+
         <div class="code-block">
-          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/App.jsx — o mapa completo do Encontro A</span><span class="lang-badge jsx">JSX</span></div>
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">3️⃣ src/components/Navbar.module.css</span><span class="lang-badge css">CSS</span></div>
+<pre><span class="sel">.navbar</span> <span class="punc">{</span>
+  <span class="prop">display</span><span class="punc">:</span> <span class="val">flex</span><span class="punc">;</span>
+  <span class="prop">align-items</span><span class="punc">:</span> <span class="val">center</span><span class="punc">;</span>
+  <span class="prop">justify-content</span><span class="punc">:</span> <span class="val">space-between</span><span class="punc">;</span>
+  <span class="prop">padding</span><span class="punc">:</span> <span class="num">14</span><span class="unit">px</span> <span class="num">24</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">background</span><span class="punc">:</span> <span class="val">#1e293b</span><span class="punc">;</span>
+<span class="punc">}</span>
+
+<span class="sel">.logo</span> <span class="punc">{</span>
+  <span class="prop">color</span><span class="punc">:</span> <span class="val">#fff</span><span class="punc">;</span>
+  <span class="prop">font-weight</span><span class="punc">:</span> <span class="num">800</span><span class="punc">;</span>
+  <span class="prop">font-size</span><span class="punc">:</span> <span class="num">1.1</span><span class="unit">rem</span><span class="punc">;</span>
+  <span class="prop">text-decoration</span><span class="punc">:</span> <span class="val">none</span><span class="punc">;</span>
+<span class="punc">}</span>
+
+<span class="sel">.links</span> <span class="punc">{</span>
+  <span class="prop">display</span><span class="punc">:</span> <span class="val">flex</span><span class="punc">;</span>
+  <span class="prop">gap</span><span class="punc">:</span> <span class="num">18</span><span class="unit">px</span><span class="punc">;</span>
+<span class="punc">}</span>
+
+<span class="cm">/* os Links viram &lt;a&gt; no HTML final — por isso o seletor é ".links a" */</span>
+<span class="sel">.links a</span> <span class="punc">{</span>
+  <span class="prop">color</span><span class="punc">:</span> <span class="val">#cbd5e1</span><span class="punc">;</span>
+  <span class="prop">font-weight</span><span class="punc">:</span> <span class="num">700</span><span class="punc">;</span>
+  <span class="prop">text-decoration</span><span class="punc">:</span> <span class="val">none</span><span class="punc">;</span>
+<span class="punc">}</span>
+
+<span class="sel">.links a</span><span class="sel">:hover</span> <span class="punc">{</span>
+  <span class="prop">color</span><span class="punc">:</span> <span class="val">#fff</span><span class="punc">;</span>
+<span class="punc">}</span></pre>
+        </div>
+
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">4️⃣ src/pages/Clientes.jsx — o MODELO das 4 páginas "em obras"</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">const</span> <span class="fn">Clientes</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span>
+      <span class="tag">&lt;h2&gt;</span>👥 Clientes 🚧 em obras<span class="tag">&lt;/h2&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">Clientes</span></pre>
+        </div>
+        <div class="tip"><span class="tip-icon">📋</span><div class="tip-content">Repita esse
+        molde (rafce + trocar o emoji e o texto do <code>&lt;h2&gt;</code>) para
+        <code>Dashboard.jsx</code> (📊 Visão geral), <code>Fornecedores.jsx</code> (🚚) e
+        <code>Produtos.jsx</code> (📦). São 4 arquivos de 9 linhas — em 2 minutos você tem o
+        sistema inteiro navegável. <strong>É de propósito:</strong> a gente dá vida a uma tela
+        por vez, e você já vê o esqueleto funcionando hoje.</div></div>
+
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">5️⃣ src/pages/NaoEncontrada.jsx — o 404 amigável</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="kw">import</span> <span class="punc">{</span> <span class="var">Link</span> <span class="punc">}</span> <span class="kw">from</span> <span class="st">"react-router-dom"</span>
+
+<span class="kw">const</span> <span class="fn">NaoEncontrada</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div</span> <span class="atr">style</span><span class="op">=</span>{<span class="punc">{</span> <span class="var">textAlign</span><span class="punc">:</span> <span class="st">"center"</span>, <span class="var">marginTop</span><span class="punc">:</span> <span class="st">"40px"</span> <span class="punc">}</span>}<span class="tag">&gt;</span>
+      <span class="tag">&lt;h2&gt;</span>🕳️ Opa! Essa página não existe...<span class="tag">&lt;/h2&gt;</span>
+      <span class="tag">&lt;p&gt;</span>Mas o painel está logo ali:<span class="tag">&lt;/p&gt;</span>
+      <span class="tag">&lt;</span><span class="cmp">Link</span> <span class="atr">to</span><span class="op">=</span><span class="st">"/"</span><span class="tag">&gt;</span>← voltar pro início<span class="tag">&lt;/</span><span class="cmp">Link</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span>
+
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">NaoEncontrada</span></pre>
+        </div>
+        <div class="tip"><span class="tip-icon">🎨</span><div class="tip-content">Essa é a
+        <strong>única</strong> página do projeto com <code>style={{ }}</code> inline (Cap 4) em
+        vez de CSS Module — são só duas regrinhas, não vale um arquivo só pra isso. Todo o resto
+        do sistema usa Module, como manda a regra da casa.</div></div>
+
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">6️⃣ src/App.jsx — o mapa completo do Encontro A</span><span class="lang-badge jsx">JSX</span></div>
 <pre><span class="kw">import</span> <span class="punc">{</span> <span class="var">Routes</span>, <span class="var">Route</span> <span class="punc">}</span> <span class="kw">from</span> <span class="st">"react-router-dom"</span>
 <span class="kw">import</span> <span class="var">Navbar</span> <span class="kw">from</span> <span class="st">"./components/Navbar.jsx"</span>
 <span class="kw">import</span> <span class="var">Dashboard</span> <span class="kw">from</span> <span class="st">"./pages/Dashboard.jsx"</span>
@@ -775,13 +914,14 @@
           <div class="exercise-sub">O padrão canônico do Cap 7, agora em tabela</div></div>
         </div>
         <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>Reescreva a
-        <code>src/pages/Clientes.jsx</code>: estado <code>clientes</code> começando
-        <code>[]</code>, estados <code>carregando</code> e <code>erro</code>, useEffect com axios
-        (modo <code>[]</code> — "quando montar"), porteiros, e a tabela com <code>.map()</code> +
-        <code>key</code>. Crie também o <code>Clientes.module.css</code> com um estilo básico de
-        tabela. Teste: os 3 clientes do db.json na tela.</p></div>
+        <code>src/pages/Clientes.jsx</code> (tchau, "em obras"): estado <code>clientes</code>
+        começando <code>[]</code>, estados <code>carregando</code> e <code>erro</code>, useEffect
+        com axios (modo <code>[]</code> — "quando montar"), porteiros, e a tabela com
+        <code>.map()</code> + <code>key</code>. Depois crie o
+        <code>Clientes.module.css</code> — <strong>o código dos dois arquivos está
+        aqui</strong>. Teste: os 3 clientes do db.json na tela.</p></div>
         <div class="code-block">
-          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/pages/Clientes.jsx — versão 1 (só listar)</span><span class="lang-badge jsx">JSX</span></div>
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">1️⃣ src/pages/Clientes.jsx — versão 1 (só listar)</span><span class="lang-badge jsx">JSX</span></div>
 <pre><span class="kw">import</span> <span class="punc">{</span> <span class="var">useState</span>, <span class="var">useEffect</span> <span class="punc">}</span> <span class="kw">from</span> <span class="st">"react"</span>
 <span class="kw">import</span> <span class="var">axios</span> <span class="kw">from</span> <span class="st">"axios"</span>
 <span class="kw">import</span> <span class="var">styles</span> <span class="kw">from</span> <span class="st">"./Clientes.module.css"</span>
@@ -832,6 +972,52 @@
 
 <span class="kw">export</span> <span class="kw">default</span> <span class="var">Clientes</span></pre>
         </div>
+
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">2️⃣ src/pages/Clientes.module.css — o visual de tabela do sistema</span><span class="lang-badge css">CSS</span></div>
+<pre><span class="sel">.pagina</span> <span class="punc">{</span>
+  <span class="prop">max-width</span><span class="punc">:</span> <span class="num">900</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">margin</span><span class="punc">:</span> <span class="num">24</span><span class="unit">px</span> <span class="val">auto</span><span class="punc">;</span>
+  <span class="prop">padding</span><span class="punc">:</span> <span class="num">0</span> <span class="num">16</span><span class="unit">px</span><span class="punc">;</span>
+<span class="punc">}</span>
+
+<span class="cm">/* o Link "+ Novo cliente" que entra no Passo 4 */</span>
+<span class="sel">.botaoNovo</span> <span class="punc">{</span>
+  <span class="prop">display</span><span class="punc">:</span> <span class="val">inline-block</span><span class="punc">;</span>
+  <span class="prop">margin</span><span class="punc">:</span> <span class="num">8</span><span class="unit">px</span> <span class="num">0</span> <span class="num">16</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">padding</span><span class="punc">:</span> <span class="num">8</span><span class="unit">px</span> <span class="num">16</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">background</span><span class="punc">:</span> <span class="val">#0ea5e9</span><span class="punc">;</span>
+  <span class="prop">color</span><span class="punc">:</span> <span class="val">#fff</span><span class="punc">;</span>
+  <span class="prop">font-weight</span><span class="punc">:</span> <span class="num">800</span><span class="punc">;</span>
+  <span class="prop">border-radius</span><span class="punc">:</span> <span class="num">8</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">text-decoration</span><span class="punc">:</span> <span class="val">none</span><span class="punc">;</span>
+<span class="punc">}</span>
+
+<span class="sel">.tabela</span> <span class="punc">{</span>
+  <span class="prop">width</span><span class="punc">:</span> <span class="num">100</span><span class="unit">%</span><span class="punc">;</span>
+  <span class="cm">/* junta as bordas das células numa linha só — visual de planilha */</span>
+  <span class="prop">border-collapse</span><span class="punc">:</span> <span class="val">collapse</span><span class="punc">;</span>
+<span class="punc">}</span>
+
+<span class="sel">.tabela th</span>,
+<span class="sel">.tabela td</span> <span class="punc">{</span>
+  <span class="prop">padding</span><span class="punc">:</span> <span class="num">10</span><span class="unit">px</span> <span class="num">12</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">text-align</span><span class="punc">:</span> <span class="val">left</span><span class="punc">;</span>
+  <span class="prop">border-bottom</span><span class="punc">:</span> <span class="num">1</span><span class="unit">px</span> <span class="val">solid</span> <span class="val">#e2e8f0</span><span class="punc">;</span>
+<span class="punc">}</span>
+
+<span class="sel">.tabela th</span> <span class="punc">{</span>
+  <span class="prop">background</span><span class="punc">:</span> <span class="val">#f1f5f9</span><span class="punc">;</span>
+<span class="punc">}</span></pre>
+        </div>
+        <div class="tip"><span class="tip-icon">🎨</span><div class="tip-content">Repara que o
+        Module tem seletores <strong>descendentes</strong> (<code>.tabela th</code>,
+        <code>.tabela td</code>): você marca só o <code>&lt;table&gt;</code> com
+        <code>className={styles.tabela}</code> e o CSS alcança todas as células lá dentro — não
+        precisa de <code>className</code> em cada <code>&lt;td&gt;</code>. E o
+        <code>.botaoNovo</code> já fica pronto aqui, mesmo o botão só nascendo no Passo 4:
+        CSS de sobra não quebra nada. 😉</div></div>
+
         <div class="mini-browser" data-url="localhost:5173/clientes" data-h="200">
 <script type="text/html" data-mp="html">
   <div style="font-family:sans-serif">
@@ -904,7 +1090,7 @@
         4) Teste o ciclo completo: preencher → Salvar → cair na listagem → <strong>o cliente novo
         está lá</strong> (e no db.json também — abre o arquivo e VÊ o registro com id carimbado!).</p></div>
         <div class="code-block">
-          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/pages/ClienteNovo.jsx</span><span class="lang-badge jsx">JSX</span></div>
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">1️⃣ src/pages/ClienteNovo.jsx</span><span class="lang-badge jsx">JSX</span></div>
 <pre><span class="kw">import</span> <span class="punc">{</span> <span class="var">useState</span> <span class="punc">}</span> <span class="kw">from</span> <span class="st">"react"</span>
 <span class="kw">import</span> <span class="punc">{</span> <span class="var">useNavigate</span> <span class="punc">}</span> <span class="kw">from</span> <span class="st">"react-router-dom"</span>
 <span class="kw">import</span> <span class="var">axios</span> <span class="kw">from</span> <span class="st">"axios"</span>
@@ -945,6 +1131,53 @@
 
 <span class="kw">export</span> <span class="kw">default</span> <span class="var">ClienteNovo</span></pre>
         </div>
+
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">2️⃣ src/pages/ClienteNovo.module.css — o visual de formulário</span><span class="lang-badge css">CSS</span></div>
+<pre><span class="cm">/* flex column + gap = os campos empilhados com respiro entre eles */</span>
+<span class="sel">.pagina</span> <span class="punc">{</span>
+  <span class="prop">max-width</span><span class="punc">:</span> <span class="num">420</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">margin</span><span class="punc">:</span> <span class="num">24</span><span class="unit">px</span> <span class="val">auto</span><span class="punc">;</span>
+  <span class="prop">padding</span><span class="punc">:</span> <span class="num">0</span> <span class="num">16</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">display</span><span class="punc">:</span> <span class="val">flex</span><span class="punc">;</span>
+  <span class="prop">flex-direction</span><span class="punc">:</span> <span class="val">column</span><span class="punc">;</span>
+  <span class="prop">gap</span><span class="punc">:</span> <span class="num">10</span><span class="unit">px</span><span class="punc">;</span>
+<span class="punc">}</span>
+
+<span class="sel">.pagina input</span> <span class="punc">{</span>
+  <span class="prop">padding</span><span class="punc">:</span> <span class="num">10</span><span class="unit">px</span> <span class="num">12</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">border</span><span class="punc">:</span> <span class="num">1</span><span class="unit">px</span> <span class="val">solid</span> <span class="val">#cbd5e1</span><span class="punc">;</span>
+  <span class="prop">border-radius</span><span class="punc">:</span> <span class="num">8</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">font-size</span><span class="punc">:</span> <span class="num">1</span><span class="unit">rem</span><span class="punc">;</span>
+<span class="punc">}</span>
+
+<span class="sel">.pagina button</span> <span class="punc">{</span>
+  <span class="prop">padding</span><span class="punc">:</span> <span class="num">10</span><span class="unit">px</span> <span class="num">12</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">background</span><span class="punc">:</span> <span class="val">#0ea5e9</span><span class="punc">;</span>
+  <span class="prop">color</span><span class="punc">:</span> <span class="val">#fff</span><span class="punc">;</span>
+  <span class="prop">font-weight</span><span class="punc">:</span> <span class="num">800</span><span class="punc">;</span>
+  <span class="prop">border</span><span class="punc">:</span> <span class="num">0</span><span class="punc">;</span>
+  <span class="prop">border-radius</span><span class="punc">:</span> <span class="num">8</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">font-size</span><span class="punc">:</span> <span class="num">1</span><span class="unit">rem</span><span class="punc">;</span>
+  <span class="prop">cursor</span><span class="punc">:</span> <span class="val">pointer</span><span class="punc">;</span>
+<span class="punc">}</span></pre>
+        </div>
+        <div class="tip"><span class="tip-icon">♻️</span><div class="tip-content"><strong>Guarde
+        bem esse arquivo:</strong> ele é o único CSS de formulário do projeto inteiro. As outras
+        <strong>5 telas de formulário</strong> (editar cliente, e as de fornecedor e produto)
+        vão simplesmente <code>import</code> ele — <em>reuso de verdade</em>, igual empresa faz.
+        Repara também que os seletores são <code>input</code> e <code>button</code>
+        descendentes: nenhum <code>className</code> nos campos.</div></div>
+
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">3️⃣ src/pages/Clientes.jsx — o Link de entrada (adicione acima da tabela)</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="cm">// no topo do arquivo, junto dos outros imports:</span>
+<span class="kw">import</span> <span class="punc">{</span> <span class="var">Link</span> <span class="punc">}</span> <span class="kw">from</span> <span class="st">"react-router-dom"</span>
+
+<span class="cm">// e no return, entre o &lt;h2&gt; e a &lt;table&gt;:</span>
+<span class="tag">&lt;</span><span class="cmp">Link</span> <span class="atr">to</span><span class="op">=</span><span class="st">"/clientes/novo"</span> <span class="atr">className</span><span class="op">=</span>{<span class="var">styles</span>.<span class="var">botaoNovo</span>}<span class="tag">&gt;</span>+ Novo cliente<span class="tag">&lt;/</span><span class="cmp">Link</span><span class="tag">&gt;</span></pre>
+        </div>
+
         <div class="warning"><span class="warning-icon">🪪</span><div class="warning-content">
           <strong>Dois detalhes de gente grande no objeto do POST:</strong> 1) escrevemos
           <code>nome: nome</code> — a chave da ficha e a variável do estado, par por par (Cap 2:
@@ -1005,7 +1238,10 @@
   <span class="punc">}</span>
 <span class="punc">}</span>
 
-<span class="cm">// e na tabela, a célula nova em cada linha do .map():</span>
+<span class="cm">// no &lt;thead&gt;, a coluna nova no fim da linha de títulos:</span>
+<span class="tag">&lt;th&gt;</span>Ações<span class="tag">&lt;/th&gt;</span>
+
+<span class="cm">// e no &lt;tbody&gt;, a célula nova em cada linha do .map():</span>
 <span class="tag">&lt;td&gt;</span>
   <span class="tag">&lt;button</span> <span class="atr">onClick</span><span class="op">=</span>{() <span class="op">=&gt;</span> <span class="fn">excluir</span>(<span class="var">c</span>.<span class="var">id</span>)}<span class="tag">&gt;</span>🗑️ Excluir<span class="tag">&lt;/button&gt;</span>
 <span class="tag">&lt;/td&gt;</span></pre>
@@ -1110,6 +1346,32 @@
 
 <span class="kw">export</span> <span class="kw">default</span> <span class="var">ClienteEditar</span></pre>
         </div>
+
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/pages/Clientes.jsx — a coluna "Ações" COMPLETA (confira a sua)</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="cm">// o &lt;th&gt; você já criou no Passo 5 — o que muda agora é o &lt;td&gt;:</span>
+<span class="tag">&lt;td&gt;</span>
+  <span class="tag">&lt;</span><span class="cmp">Link</span> <span class="atr">to</span><span class="op">=</span>{<span class="st">"/clientes/"</span> <span class="op">+</span> <span class="var">c</span>.<span class="var">id</span> <span class="op">+</span> <span class="st">"/editar"</span>}<span class="tag">&gt;</span>✏️ Editar<span class="tag">&lt;/</span><span class="cmp">Link</span><span class="tag">&gt;</span>{<span class="st">" "</span>}
+  <span class="tag">&lt;button</span> <span class="atr">onClick</span><span class="op">=</span>{() <span class="op">=&gt;</span> <span class="fn">excluir</span>(<span class="var">c</span>.<span class="var">id</span>)}<span class="tag">&gt;</span>🗑️ Excluir<span class="tag">&lt;/button&gt;</span>
+<span class="tag">&lt;/td&gt;</span></pre>
+        </div>
+        <div class="tip"><span class="tip-icon">🧩</span><div class="tip-content"><strong>Fecha a
+        conta:</strong> a sua <code>Clientes.jsx</code> agora tem 5 colunas (Nome, E-mail,
+        Telefone, Cidade, Ações), a função <code>excluir</code>, o <span class="cmp">Link</span>
+        "+ Novo cliente" e o <span class="cmp">Link</span> "✏️ Editar" por linha. Repara na
+        diferença dentro do <code>&lt;td&gt;</code>: <strong>editar é
+        <span class="cmp">Link</span></strong> (navegação — leva pra outra tela) e
+        <strong>excluir é <code>&lt;button&gt;</code></strong> (ação — acontece ali mesmo). Confundir
+        os dois é o erro de UI mais comum em sistema de gestão.</div></div>
+        <div class="concept"><div class="concept-title">🔤 Que negócio é esse de <code>{" "}</code>?</div>
+        <p>Detalhe pequeno, efeito visível: quando dois elementos JSX ficam em
+        <strong>linhas separadas</strong>, o React <strong>joga fora</strong> o espaço entre
+        eles — o resultado sairia <code>✏️ Editar🗑️ Excluir</code>, tudo grudado. O
+        <code>{" "}</code> é a forma de dizer "aqui vai um espaço de verdade": lembra da regra
+        do Cap 4 de que <strong>chaves em JSX = JavaScript</strong>? Então
+        <code>{" "}</code> é só uma string com um espaço, entregue de propósito. Se você
+        preferir, dá pra resolver com CSS (um <code>gap</code>) — mas o
+        <code>{" "}</code> é o jeito rápido que você vai ver em código de verdade por aí.</p></div>
         <div class="tip"><span class="tip-icon">🔍</span><div class="tip-content"><strong>POST ×
         PUT, lado a lado (decore pela URL):</strong> POST vai na <strong>coleção</strong>
         (<code>/clientes</code>) — "registra uma nova". PUT vai na <strong>ficha</strong>
@@ -1128,7 +1390,34 @@
         </div>
         <p class="text-dim" style="max-width:600px;margin:10px auto 0">
           Listar, cadastrar, excluir, editar — o módulo Clientes está completo, e você sabe o
-          preço de cada linha. <strong style="color:var(--text)">Casa (antes do próximo
+          preço de cada linha.
+        </p>
+
+        <div class="code-block" style="text-align:left;margin:18px auto 0;max-width:640px">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">confira: os 14 arquivos que VOCÊ digitou hoje</span><span class="lang-badge js">TXT</span></div>
+<pre>gestorpro/
+├── db.json                       P1  ✔ 3 coleções
+└── src/
+    ├── main.jsx                  P2  ✔ BrowserRouter
+    ├── App.jsx                   P2  ✔ + rotas do P4 e P6
+    ├── index.css  App.css            ✔ vazios (faxina)
+    ├── components/
+    │   ├── Navbar.jsx            P2  ✔
+    │   └── Navbar.module.css     P2  ✔
+    └── pages/
+        ├── Dashboard.jsx         P2  ✔ ainda "em obras"
+        ├── Fornecedores.jsx      P2  ✔ ainda "em obras"
+        ├── Produtos.jsx          P2  ✔ ainda "em obras"
+        ├── NaoEncontrada.jsx     P2  ✔ o 404
+        ├── Clientes.jsx           P3  ✔ +excluir +Ações
+        ├── Clientes.module.css    P3  ✔
+        ├── ClienteNovo.jsx        P4  ✔ POST
+        ├── ClienteNovo.module.css P4  ✔ serve a 6 telas!
+        └── ClienteEditar.jsx      P6  ✔ GET + PUT</pre>
+        </div>
+
+        <p class="text-dim" style="max-width:600px;margin:14px auto 0">
+          <strong style="color:var(--text)">Casa (antes do próximo
           encontro):</strong> transforme o campo cidade num <code>&lt;select&gt;</code> com 4–5
           opções (dica: o select controlado usa os MESMOS <code>value</code> + <code>onChange</code>
           do input) e cadastre pelo menos 5 clientes de verdade pra popular o sistema.
@@ -1573,6 +1862,54 @@ demais não.</pre>
 <span class="punc">}</span>
 
 <span class="kw">export</span> <span class="kw">default</span> <span class="var">Dashboard</span></pre>
+            </div>
+            <div class="code-block">
+              <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">src/pages/Dashboard.module.css</span><span class="lang-badge css">CSS</span></div>
+<pre><span class="sel">.painel</span> <span class="punc">{</span>
+  <span class="prop">max-width</span><span class="punc">:</span> <span class="num">900</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">margin</span><span class="punc">:</span> <span class="num">24</span><span class="unit">px</span> <span class="val">auto</span><span class="punc">;</span>
+  <span class="prop">padding</span><span class="punc">:</span> <span class="num">0</span> <span class="num">16</span><span class="unit">px</span><span class="punc">;</span>
+<span class="punc">}</span>
+
+<span class="cm">/* flex-wrap = em tela pequena os cards quebram pra linha de baixo sozinhos */</span>
+<span class="sel">.cards</span> <span class="punc">{</span>
+  <span class="prop">display</span><span class="punc">:</span> <span class="val">flex</span><span class="punc">;</span>
+  <span class="prop">gap</span><span class="punc">:</span> <span class="num">14</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">flex-wrap</span><span class="punc">:</span> <span class="val">wrap</span><span class="punc">;</span>
+<span class="punc">}</span>
+
+<span class="sel">.card</span> <span class="punc">{</span>
+  <span class="prop">flex</span><span class="punc">:</span> <span class="num">1</span><span class="punc">;</span>
+  <span class="prop">min-width</span><span class="punc">:</span> <span class="num">180</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">border</span><span class="punc">:</span> <span class="num">1</span><span class="unit">px</span> <span class="val">solid</span> <span class="val">#e2e8f0</span><span class="punc">;</span>
+  <span class="prop">border-radius</span><span class="punc">:</span> <span class="num">12</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">padding</span><span class="punc">:</span> <span class="num">20</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">text-align</span><span class="punc">:</span> <span class="val">center</span><span class="punc">;</span>
+  <span class="cm">/* o card é um Link, então tira o sublinhado e a cor de link */</span>
+  <span class="prop">text-decoration</span><span class="punc">:</span> <span class="val">none</span><span class="punc">;</span>
+  <span class="prop">color</span><span class="punc">:</span> <span class="val">#0f172a</span><span class="punc">;</span>
+  <span class="prop">font-weight</span><span class="punc">:</span> <span class="num">700</span><span class="punc">;</span>
+<span class="punc">}</span>
+
+<span class="sel">.card</span><span class="sel">:hover</span> <span class="punc">{</span>
+  <span class="prop">border-color</span><span class="punc">:</span> <span class="val">#0ea5e9</span><span class="punc">;</span>
+<span class="punc">}</span>
+
+<span class="cm">/* display:block faz o número pular pra própria linha, em cima do rótulo */</span>
+<span class="sel">.card strong</span> <span class="punc">{</span>
+  <span class="prop">display</span><span class="punc">:</span> <span class="val">block</span><span class="punc">;</span>
+  <span class="prop">font-size</span><span class="punc">:</span> <span class="num">2</span><span class="unit">rem</span><span class="punc">;</span>
+<span class="punc">}</span>
+
+<span class="sel">.alerta</span> <span class="punc">{</span>
+  <span class="prop">margin-top</span><span class="punc">:</span> <span class="num">16</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">padding</span><span class="punc">:</span> <span class="num">10</span><span class="unit">px</span> <span class="num">14</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">background</span><span class="punc">:</span> <span class="val">#fef3c7</span><span class="punc">;</span>
+  <span class="prop">border</span><span class="punc">:</span> <span class="num">1</span><span class="unit">px</span> <span class="val">solid</span> <span class="val">#fbbf24</span><span class="punc">;</span>
+  <span class="prop">border-radius</span><span class="punc">:</span> <span class="num">10</span><span class="unit">px</span><span class="punc">;</span>
+  <span class="prop">color</span><span class="punc">:</span> <span class="val">#92400e</span><span class="punc">;</span>
+  <span class="prop">font-weight</span><span class="punc">:</span> <span class="num">700</span><span class="punc">;</span>
+<span class="punc">}</span></pre>
             </div>
             <div class="tip" style="margin-top:10px"><span class="tip-icon">🧠</span><div class="tip-content">
               Três GETs no mesmo useEffect — pode? Pode: o efeito é um só ("quando montar, busca

@@ -611,6 +611,56 @@ sai legível em impressora P&B (aluno preenche de caneta). Zoom 0.66 só em tela
    `context/00-overview.md` l.13 — é a **biografia/carreira do prof**, não a marca do curso;
    trocar ali criaria erro factual (a página já tem "Empresário na programa AI" à parte).
 
+## 2026-08-22 (cont. 2) — Cap 10: TODO o código na tela (os CSS Modules faltavam) + rafce
+
+Pedido do prof: *"o material tem que ter todos os códigos para os alunos copiarem, passo a
+passo, e o css? a explicação do rafce…"*. Auditoria confirmou o buraco: **nenhum dos CSS
+Modules tinha código** — o material dizia "crie também o Clientes.module.css" e largava o
+aluno. Faltavam também `main.jsx`, as pages "em obras", `NaoEncontrada.jsx` e a coluna
+"Ações" consolidada. Tudo copiado **de `tooling/gestorpro-referencia/`** (código já rodado
+no Chrome), com comentários didáticos acrescentados:
+
+- **Passo 1**: tip da faxina (index.css/App.css **vazios**, não deletados) + `App.jsx` limpo.
+- **Passo 2** (virou o passo mais denso, blocos numerados 1️⃣–6️⃣): `main.jsx` com o abraço do
+  BrowserRouter (+ tip "sem o abraço, Link/useNavigate estouram") · **box rafce** ·
+  `Navbar.jsx` (já tinha) · **`Navbar.module.css`** (+ nota do seletor `.links a`, porque
+  `Link` vira `<a>`) · **`Clientes.jsx` "em obras" como MODELO das 4 pages** (+ tip mandando
+  repetir pras outras 3) · **`NaoEncontrada.jsx`** (+ tip: é a ÚNICA tela com `style={{}}`
+  inline, o resto é Module) · `App.jsx`.
+- **Passo 3**: **`Clientes.module.css`** + tip sobre seletor descendente (`.tabela th/td` —
+  não precisa className em cada `<td>`) e sobre o `.botaoNovo` já vir pronto pro Passo 4.
+- **Passo 4**: **`ClienteNovo.module.css`** (+ tip: **este arquivo serve 6 telas** — reuso de
+  verdade) e o **Link "+ Novo cliente"** que antes só era descrito.
+- **Passo 6**: bloco da **coluna "Ações" completa** (`<th>` + `<td>` com Link editar E button
+  excluir) + tip com a lição de UI: **editar é `Link` (navega), excluir é `button` (age)**.
+- **Passo 14**: **`Dashboard.module.css`** no olhinho, junto do `Dashboard.jsx`.
+- **Fecho do Encontro A**: checklist em árvore dos **12 arquivos digitados**, com o passo de
+  origem de cada um — o aluno confere se não pulou nada.
+
+**rafce reforçado** (Passo 2, onde nascem 6 componentes de uma vez): `.concept` com o ritual
+(arquivo → `rafce` → <kbd>Tab</kbd>) + `.tip` no formato exato do Cap 4 — sigla **R**eact
+**A**rrow **F**unction **C**omponent **E**xport, macete "Rafael do Ceará", aviso do
+`import React` descartável. ⚠️ **Erro pego em revisão:** a sigla é *React* Arrow…, NÃO
+"Rafael Arrow…" — o "Rafael do Ceará" é só mnemônico da ORDEM das letras.
+NB (achado do agente): **Caps 05 e 07 não reforçam o rafce** — lacuna de continuidade a
+corrigir quando tocar neles.
+
+Escopo mantido: os módulos **Fornecedores e Produtos continuam SEM código pronto** — eles são
+feitos pelo agente (fases 2 e 3), então o material dá prompts e pontos de revisão, não o
+gabarito. Dar o código ali mataria a didática do capítulo.
+
+**Verificação (diff programático + revisor):** os 6 blocos copiados batem **linha a linha**
+com `tooling/gestorpro-referencia/` (só acrescentam comentários didáticos); as 10 classes
+`styles.XXX` usadas no JSX cruzam 1:1 com as definidas nos CSS; zero Unicode proibido em
+`<pre>`; zero `<>&` sem escapar. Três correções aplicadas na revisão:
+1. **`<th>Ações</th>` migrou do Passo 6 para o Passo 5** (é lá que a coluna nasce) — senão a
+   tabela do aluno fica com 5 `<td>` e 4 `<th>` entre um passo e outro.
+2. **`{" "}` entre o Link "Editar" e o botão "Excluir"** (estava faltando; sem ele o JSX cola
+   os dois: "✏️ Editar🗑️ Excluir"). Como é sintaxe nova, ganhou `.concept` próprio
+   explicando que JSX descarta o espaço entre elementos em linhas separadas.
+3. Checklist final dizia "12 arquivos" — são **14** (o "12" colidia com os *12 componentes*
+   citados no box do rafce, que está correto).
+
 ## Pendências reconhecidas
 - Planejar em detalhe os **Caps 6–9** (React: state → efeitos/dados → router → integração).
   Caps 4 e 5 já fixaram o tom, o setup Vite base e a Mini-loja como artefato contínuo do arco React.
