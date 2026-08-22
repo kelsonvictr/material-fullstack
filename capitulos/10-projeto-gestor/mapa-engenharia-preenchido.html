@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GABARITO — Mapa de Engenharia (uso do professor)</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=JetBrains+Mono:wght@400;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  /* ── mono didático: SEMPRE sem ligaduras (=> não vira ⇒, != não vira ≠) ── */
+  pre, code, .mono, .verbo, .rota-path, .campo-mono{
+    font-family:'JetBrains Mono',monospace;
+    font-variant-ligatures:none;font-feature-settings:"liga" 0,"clig" 0,"calt" 0;
+  }
+
+  :root{
+    --ink:#1f2a4d;        /* tinta principal (azul-marinho de prancheta) */
+    --ink-soft:#5b6689;   /* tinta secundária */
+    --ink-faint:#aab3cf;  /* linhas de apoio */
+    --paper:#ffffff;
+    --grid:#eef1fa;       /* quadriculado de fundo, bem claro */
+    --lapis:#8d94ad;      /* cinza "área de lápis" */
+    --get:#0369a1; --post:#047857; --put:#b45309; --del:#b91c1c;
+    --miss:#7c3aed;       /* selo de missão */
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{background:#3c4257}
+  body{font-family:'Nunito',sans-serif;color:var(--ink);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact}
+
+  /* ═══════════ barra só de tela (some na impressão) ═══════════ */
+  .toolbar{max-width:1122px;margin:18px auto 6px;padding:14px 18px;background:#232838;
+    border:1px solid #454c63;border-radius:14px;color:#e8ebf5;display:flex;gap:14px;
+    align-items:center;flex-wrap:wrap;font-size:0.9rem}
+  .toolbar b{color:#ffd166}
+  .toolbar .bt{margin-left:auto;border:0;background:#7c5cff;color:#fff;font-family:'Nunito',sans-serif;
+    font-weight:800;font-size:0.95rem;padding:12px 22px;border-radius:999px;cursor:pointer}
+  .toolbar .bt:hover{filter:brightness(1.1)}
+  .toolbar .dica{flex-basis:100%;font-size:0.8rem;color:#aab3cf;line-height:1.55}
+  .toolbar .dica code{background:#161a26;padding:1px 6px;border-radius:6px;font-size:0.75rem;color:#ffd166}
+
+  /* ═══════════ a folha ═══════════ */
+  .sheet{width:297mm;height:209mm;background:var(--paper);margin:12px auto;position:relative;
+    box-shadow:0 10px 40px rgba(0,0,0,0.45);padding:7mm;overflow:hidden;
+    background-image:
+      linear-gradient(var(--grid) 1px,transparent 1px),
+      linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+    background-size:5mm 5mm;background-position:3.5mm 3.5mm}
+  .frame{position:absolute;inset:5mm;border:0.6mm solid var(--ink);pointer-events:none}
+  .frame::after{content:"";position:absolute;inset:1.1mm;border:0.2mm solid var(--ink)}
+
+  .sheet-inner{position:relative;height:100%;padding:3.2mm;display:flex;flex-direction:column;gap:2.6mm}
+
+  /* cabeçalho da folha */
+  .cab{display:flex;align-items:stretch;gap:3mm;border-bottom:0.5mm solid var(--ink);padding-bottom:2mm;flex-shrink:0}
+  .cab-logo{font-size:8.4mm;line-height:1.15;align-self:center}
+  .cab-titulos{flex:1}
+  .cab-kicker{font-size:2.6mm;font-weight:900;letter-spacing:1.2mm;text-transform:uppercase;color:var(--ink-soft)}
+  .cab-h1{font-size:6.6mm;font-weight:900;letter-spacing:-0.1mm;line-height:1.32}
+  .cab-h1 .fina{font-weight:600;color:var(--ink-soft)}
+  .cab-aviso{align-self:center;text-align:right;font-size:2.7mm;color:var(--ink-soft);
+    font-weight:700;line-height:1.5;max-width:70mm}
+  .cab-aviso .selo-mini{display:inline-flex;align-items:center;gap:1mm;border:0.3mm solid var(--miss);
+    color:var(--miss);border-radius:2mm;padding:0.6mm 2mm;font-weight:900;font-size:2.6mm}
+
+  /* selo de missão */
+  .missao{display:inline-flex;align-items:center;gap:1.1mm;background:var(--miss);color:#fff;
+    border-radius:5mm;padding:0.7mm 2.4mm 0.7mm 1.6mm;font-size:2.7mm;font-weight:900;
+    vertical-align:middle;white-space:nowrap}
+  .missao::before{content:"✏️";font-size:2.8mm}
+
+  /* área de desenho do aluno (lápis) */
+  .lapis{border:0.35mm dashed var(--lapis);border-radius:2.5mm;background:rgba(141,148,173,0.05)}
+  .lapis-label{font-size:2.4mm;color:var(--lapis);font-weight:800;text-transform:uppercase;letter-spacing:0.4mm}
+
+  /* linha pra escrever */
+  .blank{display:inline-block;border-bottom:0.4mm solid var(--ink-soft);min-width:16mm;height:3.6mm;vertical-align:baseline}
+  .blank.curto{min-width:9mm}
+  .blank.longo{min-width:30mm}
+
+  /* ═══════════ corpo página 1 ═══════════ */
+  .p1-corpo{flex:1;display:grid;grid-template-columns:102mm 58mm 1fr;gap:3mm;min-height:0}
+  .zona{border:0.45mm solid var(--ink);border-radius:3mm;background:#fff;
+    display:flex;flex-direction:column;overflow:hidden}
+  .zona-cab{display:flex;align-items:center;gap:2mm;padding:1.8mm 3mm;border-bottom:0.35mm solid var(--ink);
+    background:var(--ink);color:#fff}
+  .zona-cab .zc-emoji{font-size:4mm}
+  .zona-cab .zc-titulo{font-weight:900;font-size:3.4mm;letter-spacing:0.2mm}
+  .zona-cab .zc-sub{margin-left:auto;font-size:2.5mm;font-weight:700;opacity:0.85}
+  .zona-corpo{flex:1;padding:2mm 2.6mm;display:flex;flex-direction:column;gap:1.8mm;min-height:0}
+
+  /* — navegador — */
+  .browser-chrome{border:0.35mm solid var(--ink);border-radius:2.5mm;overflow:hidden}
+  .bc-top{display:flex;align-items:center;gap:1.6mm;background:#e9edf8;padding:1mm 2.4mm;border-bottom:0.3mm solid var(--ink-faint)}
+  .bc-dot{width:2.2mm;height:2.2mm;border-radius:50%;border:0.3mm solid var(--ink-soft)}
+  .bc-url{flex:1;border:0.3mm solid var(--ink-faint);border-radius:4mm;background:#fff;
+    font-size:2.6mm;padding:0.6mm 2.4mm;color:var(--ink-soft);font-weight:700}
+  .bc-url b{color:var(--ink)}
+  .bc-body{padding:1.4mm 2.2mm 1.1mm;display:flex;flex-direction:column;gap:1.3mm}
+  .navbar-fake{display:flex;gap:2.6mm;align-items:center;border:0.3mm solid var(--ink);border-radius:1.6mm;
+    padding:1mm 2.4mm;font-size:2.7mm;font-weight:800}
+  .navbar-fake .resto{color:var(--ink-soft);font-weight:700}
+  .navbar-fake .tag-comp{margin-left:auto;font-size:2.4mm;color:var(--ink-soft);font-weight:700}
+
+  /* etapa numerada (a ordem de construção) */
+  .etapa-num{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;
+    width:4.4mm;height:4.4mm;border-radius:50%;background:var(--ink);color:#fff;
+    font-size:2.6mm;font-weight:900;line-height:1}
+  .esqueleto{border:0.3mm solid var(--ink-faint);border-radius:2mm;padding:1.2mm 2.2mm;font-size:2.4mm;line-height:1.6}
+  .esqueleto .es-cab{font-weight:900;font-size:2.75mm;display:flex;align-items:center;gap:1.5mm;margin-bottom:0.4mm}
+  .esqueleto .es-txt{color:var(--ink-soft);font-weight:700}
+  .esqueleto .es-txt b{color:var(--ink)}
+
+  .anatomia{border:0.3mm solid var(--ink-faint);border-radius:2mm;padding:1.2mm 2.2mm;font-size:2.45mm;line-height:1.6}
+  .anatomia .titulo-arq{font-weight:900;font-size:2.75mm;display:flex;align-items:center;gap:1.5mm;margin-bottom:0.4mm}
+  .anatomia code{font-size:2.25mm;font-weight:600}
+
+  .rotas{font-size:2.35mm;line-height:1.42}
+  .rotas-titulo{font-weight:900;font-size:2.75mm;display:flex;align-items:center;gap:1.5mm;margin-bottom:0.6mm}
+  .rota-linha{display:flex;gap:1.4mm;align-items:baseline;white-space:nowrap}
+  .rota-path{color:var(--ink);font-weight:700;font-size:2.35mm}
+  .rota-seta{color:var(--ink-faint)}
+  .rota-el{font-size:2.4mm;color:var(--ink-soft);font-weight:600}
+  .rt-cx{width:2.5mm;height:2.5mm;border:0.35mm solid var(--ink-soft);border-radius:0.6mm;
+    flex-shrink:0;align-self:center}
+  .rt-quando{font-size:1.95mm;font-weight:900;color:var(--miss);border:0.25mm solid var(--miss);
+    border-radius:1mm;padding:0 0.8mm;flex-shrink:0;width:10.4mm;text-align:center}
+  .rt-quando.b{color:var(--post);border-color:var(--post)}
+
+  /* — estrada http — */
+  .estrada-corpo{flex:1;display:flex;flex-direction:column;gap:1.6mm;min-height:0}
+  .faixa{flex:1;display:flex;flex-direction:column;border:0.3mm solid var(--ink-faint);border-radius:2mm;
+    padding:1.4mm 2mm;min-height:0}
+  .faixa-cab{display:flex;align-items:center;gap:1.6mm}
+  .verbo{font-weight:700;font-size:2.8mm;color:#fff;border-radius:1.4mm;padding:0.5mm 2mm}
+  .verbo.get{background:var(--get)} .verbo.post{background:var(--post)}
+  .verbo.put{background:var(--put)} .verbo.del{background:var(--del)}
+  .faixa-url{font-size:2.6mm;color:var(--ink-soft);font-weight:700}
+  .faixa-area{flex:1;position:relative;margin-top:1mm}
+  .seta-exemplo{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;gap:1mm}
+  .seta-ida,.seta-volta{display:flex;align-items:center;font-size:2.4mm;font-weight:700;gap:1mm}
+  .seta-ida .tra{flex:1;height:0;border-top:0.5mm solid var(--get);position:relative}
+  .seta-ida .tra::after{content:"";position:absolute;right:-0.5mm;top:-1.5mm;border:1.3mm solid transparent;border-left-color:var(--get)}
+  .seta-volta .tra{flex:1;height:0;border-top:0.5mm dashed var(--get);position:relative}
+  .seta-volta .tra::before{content:"";position:absolute;left:-0.5mm;top:-1.5mm;border:1.3mm solid transparent;border-right-color:var(--get)}
+  .seta-ida .rot,.seta-volta .rot{color:var(--get)}
+
+  /* — servidor — */
+  .fundacao{border:0.3mm solid var(--ink-faint);border-radius:2mm;padding:1.2mm 2.2mm;font-size:2.4mm}
+  .fundacao .f-cab{font-weight:900;font-size:2.75mm;display:flex;align-items:center;gap:1.5mm;margin-bottom:0.6mm}
+  .fundacao .f-item{display:flex;gap:1.4mm;align-items:baseline;line-height:1.62;color:var(--ink-soft);font-weight:700}
+  .fundacao .f-item b{color:var(--ink);font-weight:700}
+  .fundacao .f-item .rt-cx{align-self:center}
+  .cartorio{border:0.3mm solid var(--ink-faint);border-radius:2mm;padding:1.6mm 2.2mm}
+  .cartorio-cab{display:flex;align-items:center;gap:1.6mm;font-weight:900;font-size:2.9mm;margin-bottom:1mm}
+  .cartorio-cab .porta{margin-left:auto;font-size:2.4mm;color:var(--ink-soft);font-weight:700}
+  .gaveta{border:0.3mm solid var(--ink);border-radius:1.8mm;margin-top:1.4mm;overflow:hidden}
+  .gaveta-cab{display:flex;align-items:center;gap:1.6mm;padding:1mm 2.2mm;background:#e9edf8;
+    font-size:2.7mm;font-weight:800;border-bottom:0.3mm solid var(--ink-faint)}
+  .gaveta-cab .end{margin-left:auto;font-size:2.35mm;color:var(--ink-soft);font-weight:600}
+  .gaveta-corpo{padding:1mm 2.2mm;font-size:2.5mm;line-height:1.6;color:var(--ink-soft)}
+  .gaveta-corpo b{color:var(--ink)}
+  .campo-mono{font-size:2.45mm}
+
+  /* rodapé página 1: ciclo + legenda CRUD + carimbo */
+  .p1-rodape{display:grid;grid-template-columns:104mm 1fr 74mm;gap:3mm;height:42mm;flex-shrink:0}
+
+  .ciclo{border:0.45mm solid var(--ink);border-radius:3mm;padding:2mm 2.6mm;display:flex;flex-direction:column}
+  .ciclo-titulo{font-weight:900;font-size:3mm;display:flex;align-items:center;gap:1.6mm}
+  .ciclo-corpo{flex:1;display:flex;align-items:center;justify-content:space-between;gap:1mm;padding:0 1mm}
+  .ciclo-passo{display:flex;flex-direction:column;align-items:center;gap:0.8mm;width:13.4mm}
+  .ciclo-bola{width:8.6mm;height:8.6mm;border-radius:50%;border:0.45mm solid var(--ink);display:flex;
+    align-items:center;justify-content:center;font-weight:900;font-size:3.4mm;background:#fff}
+  .ciclo-bola.vazia{border-style:dashed;border-color:var(--lapis);color:var(--lapis)}
+  .ciclo-rot{font-size:2.15mm;font-weight:700;color:var(--ink-soft);text-align:center;line-height:1.25;min-height:6.6mm}
+  .ciclo-rot .blank{min-width:11mm;height:2.8mm}
+  .ciclo-liga{flex:1;height:0;border-top:0.4mm solid var(--ink-faint);position:relative;top:-4.6mm}
+  .ciclo-liga::after{content:"";position:absolute;right:-0.4mm;top:-1.25mm;border:1.05mm solid transparent;border-left-color:var(--ink-faint)}
+  .ciclo-banco{font-size:2.35mm;color:var(--ink-soft);border-top:0.3mm dashed var(--ink-faint);padding-top:1mm;line-height:1.5}
+  .ciclo-banco b{color:var(--miss)}
+
+  .legenda{border:0.45mm solid var(--ink);border-radius:3mm;padding:2mm 2.6mm;display:flex;flex-direction:column}
+  .legenda-titulo{font-weight:900;font-size:3mm;display:flex;align-items:center;gap:1.6mm;margin-bottom:1.2mm}
+  .legenda table{width:100%;border-collapse:collapse;flex:1}
+  .legenda th{font-size:2.3mm;text-transform:uppercase;letter-spacing:0.3mm;color:var(--ink-soft);
+    border-bottom:0.35mm solid var(--ink);padding:0.6mm 1.4mm;text-align:left}
+  .legenda td{font-size:2.6mm;border-bottom:0.25mm solid var(--ink-faint);padding:0.9mm 1.4mm;font-weight:700}
+  .legenda tr:last-child td{border-bottom:0}
+  .legenda .letra{width:9mm;text-align:center}
+  .legenda .letra .blank{min-width:5mm}
+
+  /* carimbo técnico */
+  .carimbo{border:0.6mm solid var(--ink);display:grid;
+    grid-template-columns:1fr 1fr;grid-auto-rows:auto;background:#fff}
+  .carimbo .cel{border:0.25mm solid var(--ink);padding:0.9mm 1.8mm;min-height:6.2mm}
+  .carimbo .cel.full{grid-column:1/-1}
+  .carimbo .rot{font-size:2.05mm;font-weight:800;text-transform:uppercase;letter-spacing:0.35mm;color:var(--ink-soft)}
+  .carimbo .val{font-size:2.9mm;font-weight:900}
+  .carimbo .val.caveat{font-family:'Caveat',cursive;font-size:4.2mm;font-weight:700;color:var(--ink-soft)}
+  .carimbo .escreve{border-bottom:0.35mm solid var(--ink-soft);height:4mm}
+
+  /* ═══════════ corpo página 2 ═══════════ */
+  .p2-corpo{flex:1;display:grid;grid-template-columns:1fr 88mm;gap:3mm;min-height:0}
+
+  /* esteira do agente */
+  .esteira{border:0.45mm solid var(--ink);border-radius:3mm;padding:2.2mm 3mm 1.4mm;display:flex;flex-direction:column}
+  .esteira-titulo{font-weight:900;font-size:3.2mm;display:flex;align-items:center;gap:1.8mm}
+  .esteira-corpo{flex:1;display:grid;grid-template-columns:1fr 8mm 1fr 8mm 1fr;align-items:stretch;gap:0;padding-top:1.4mm}
+  .est-caixa{border:0.4mm solid var(--ink);border-radius:2.4mm;padding:1.4mm 2mm;display:flex;flex-direction:column;gap:0.8mm}
+  .est-caixa .ec-cab{font-weight:900;font-size:2.9mm;display:flex;gap:1.4mm;align-items:center}
+  .est-caixa .ec-sub{font-size:2.4mm;color:var(--ink-soft);font-weight:700;line-height:1.45}
+  .est-caixa ul{list-style:none;font-size:2.5mm;line-height:1.68;color:var(--ink)}
+  .est-caixa li{display:flex;gap:1.4mm;align-items:baseline}
+  .est-caixa li::before{content:"▸";color:var(--miss);font-weight:900}
+  .est-caixa li .blank{min-width:17mm}
+  .est-seta{align-self:center;position:relative;height:0;border-top:0.5mm solid var(--ink);margin:0 0.6mm}
+  .est-seta::after{content:"";position:absolute;right:-0.6mm;top:-1.6mm;border:1.4mm solid transparent;border-left-color:var(--ink)}
+  .est-retorno{margin-top:1.2mm;display:flex;align-items:center;gap:2mm;font-size:2.55mm;font-weight:800;color:var(--del)}
+  .est-retorno .tra{flex:1;height:0;border-top:0.5mm dashed var(--del);position:relative}
+  .est-retorno .tra::before{content:"";position:absolute;left:-0.5mm;top:-1.5mm;border:1.3mm solid transparent;border-right-color:var(--del)}
+
+  .ritual-caixa .cheque{display:flex;gap:1.6mm;align-items:baseline;font-size:2.45mm;line-height:1.6;white-space:nowrap}
+  .ritual-caixa .num{font-weight:900;color:var(--miss)}
+  .ritual-caixa .blank{min-width:18mm}
+
+  /* escada */
+  .escada{border:0.45mm solid var(--ink);border-radius:3mm;padding:2.2mm 3mm;display:flex;flex-direction:column;flex-shrink:0}
+  .escada-titulo{font-weight:900;font-size:3mm;display:flex;align-items:center;gap:1.8mm;margin-bottom:1.2mm}
+  .escada-corpo{flex:1;display:flex;align-items:flex-end;gap:2.4mm}
+  .degrau{flex:1;border:0.4mm solid var(--ink);border-bottom-width:1mm;border-radius:2mm 2mm 0 0;
+    padding:1.2mm 2mm;display:flex;flex-direction:column;gap:0.5mm;justify-content:flex-start}
+  .degrau .d-fase{font-size:2.2mm;font-weight:900;letter-spacing:0.3mm;text-transform:uppercase}
+  .degrau .d-nome{font-weight:900;font-size:2.8mm}
+  .degrau .d-quem{font-size:2.3mm;color:var(--ink-soft);font-weight:700;line-height:1.4}
+  .degrau.d1{min-height:11mm;border-color:var(--get)} .degrau.d1 .d-fase{color:var(--get)}
+  .degrau.d2{min-height:13.5mm;border-color:var(--miss)} .degrau.d2 .d-fase{color:var(--miss)}
+  .degrau.d3{min-height:16mm;border-color:var(--post)} .degrau.d3 .d-fase{color:var(--post)}
+
+  /* coluna direita p2 */
+  .regras{border:0.45mm solid var(--ink);border-radius:3mm;padding:2.4mm 3mm}
+  .regras-titulo{font-weight:900;font-size:3.2mm;display:flex;align-items:center;gap:1.8mm}
+  .regras pre{font-size:2.35mm;line-height:1.65;color:var(--ink);white-space:pre-wrap;margin-top:1.1mm}
+  .regras pre .h{font-weight:700;color:var(--miss)}
+  .regras pre .nao{color:var(--del);font-weight:700}
+  .regras .escreva{margin-top:1mm;font-size:2.4mm;font-weight:700;color:var(--ink-soft);line-height:1.8}
+
+  .aceite{border:0.45mm solid var(--ink);border-radius:3mm;padding:2.4mm 3mm;display:flex;flex-direction:column;flex-shrink:0}
+  .aceite-titulo{font-weight:900;font-size:3.2mm;display:flex;align-items:center;gap:1.8mm;margin-bottom:1.4mm}
+  .aceite-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 5mm}
+  .aceite table{width:100%;border-collapse:collapse}
+  .aceite th{font-size:2.05mm;text-transform:uppercase;letter-spacing:0.25mm;color:var(--ink-soft);
+    border-bottom:0.35mm solid var(--ink);padding:0.5mm 1mm;text-align:left}
+  .aceite td{font-size:2.45mm;border-bottom:0.25mm solid var(--ink-faint);padding:0.7mm 1mm;font-weight:700}
+  .aceite .via{font-size:2.25mm;font-weight:800;white-space:nowrap}
+  .aceite .via.mao{color:var(--get)} .aceite .via.junto{color:var(--miss)} .aceite .via.cmd{color:var(--post)}
+  .aceite .caixinhas{display:flex;gap:0.9mm}
+  .aceite .cx{width:3mm;height:3mm;border:0.35mm solid var(--ink-soft);border-radius:0.7mm;display:inline-block}
+  .aceite .ass{border-bottom:0.35mm solid var(--ink-soft);min-width:19mm;display:inline-block;height:3.6mm}
+
+  .p2-rodape{display:grid;grid-template-columns:1fr 74mm;gap:3mm;align-items:stretch;flex-shrink:0}
+  .frase-final{border:0.45mm solid var(--ink);border-radius:3mm;padding:2mm 3mm;display:flex;align-items:center;gap:3mm}
+  .frase-final .cav{font-family:'Caveat',cursive;font-size:5.4mm;font-weight:700;color:var(--ink);line-height:1.1}
+  .frase-final .cav b{color:var(--miss)}
+  .frase-final .obs{font-size:2.5mm;color:var(--ink-soft);font-weight:700;line-height:1.5;margin-left:auto;max-width:70mm;text-align:right}
+
+  /* ═══════════ GABARITO — respostas em "caneta" ═══════════ */
+  .resp{font-family:'Caveat',cursive;font-weight:700;color:#c2410c;font-size:2.9mm;
+    line-height:1.05;padding:0 0.4mm;border-bottom:0.3mm solid rgba(194,65,12,0.4)}
+  .resp.mono{font-family:'JetBrains Mono',monospace;font-size:2.05mm;font-weight:700;
+    line-height:1.1;font-variant-ligatures:none;font-feature-settings:"liga" 0,"clig" 0,"calt" 0}
+  .rt-cx.ok{border-color:#c2410c;position:relative}
+  .rt-cx.ok::after{content:"x";position:absolute;left:0.45mm;top:-0.9mm;color:#c2410c;
+    font-family:'Caveat',cursive;font-size:3.4mm;font-weight:700;line-height:1}
+  .seta-exemplo.g-post .tra{border-top-color:var(--post)}
+  .seta-exemplo.g-post .tra::after{border-left-color:var(--post)}
+  .seta-exemplo.g-post .tra::before{border-right-color:var(--post)}
+  .seta-exemplo.g-post .rot{color:var(--post)}
+  .seta-exemplo.g-put .tra{border-top-color:var(--put)}
+  .seta-exemplo.g-put .tra::after{border-left-color:var(--put)}
+  .seta-exemplo.g-put .tra::before{border-right-color:var(--put)}
+  .seta-exemplo.g-put .rot{color:var(--put)}
+  .seta-exemplo.g-del .tra{border-top-color:var(--del)}
+  .seta-exemplo.g-del .tra::after{border-left-color:var(--del)}
+  .seta-exemplo.g-del .tra::before{border-right-color:var(--del)}
+  .seta-exemplo.g-del .rot{color:var(--del)}
+  .nota-prof{margin-top:0.6mm;font-family:'Caveat',cursive;font-size:2.8mm;color:#c2410c;font-weight:700;line-height:1.1}
+
+  /* preview em tela menor: encolhe a folha (não afeta a impressão) */
+  @media screen and (max-width:1180px){.sheet{zoom:0.66}}
+
+  /* ═══════════ impressão ═══════════ */
+  @page{size:A4 landscape;margin:0}
+  @media print{
+    html,body{background:#fff}
+    .toolbar{display:none}
+    .sheet{margin:0;box-shadow:none;page-break-after:always}
+    .sheet:last-child{page-break-after:auto}
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════ barra de instruções (só na tela) ═══════════ -->
+<div class="toolbar">
+  <span>🔑 <b>GABARITO do Mapa de Engenharia</b> — versão preenchida, só para o professor consultar.</span>
+  <button class="bt" onclick="window.print()">🖨️ Imprimir</button>
+  <span class="dica">
+    <b style="color:#ff9d6b">Esta é a folha do aluno com as respostas em laranja.</b>
+    Não está linkada em lugar nenhum do material — abra pelo endereço direto.
+    Para imprimir a versão em branco (a que vai pra turma), use
+    <code>mapa-engenharia.html</code>.<br>
+    Na janela de impressão: papel <code>A4</code> · orientação <code>paisagem</code> ·
+    <code>frente e verso: virar na borda curta</code> · margens <code>nenhuma</code> ·
+    ative <code>imprimir planos de fundo</code>. Sai bem até em impressora preto-e-branco —
+    o aluno preenche de caneta/lápis. Os selos <b style="color:#c9b8ff">✏️ M1…M6</b> marcam
+    a hora de preencher cada área durante a aula (frente = Encontro A, verso = Encontro B).
+  </span>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     FOLHA 1 — ENCONTRO A: A ARQUITETURA
+     ═══════════════════════════════════════════════════════════ -->
+<div class="sheet">
+  <div class="frame"></div>
+  <div class="sheet-inner">
+
+    <div class="cab">
+      <div class="cab-logo">🗂️</div>
+      <div class="cab-titulos">
+        <div class="cab-kicker">Curso Fullstack · programa AI · Capítulo 10</div>
+        <div class="cab-h1">GABARITO <span class="fina">/ a arquitetura</span></div>
+      </div>
+      <div class="cab-aviso">
+        <span class="selo-mini">✏️ M1…M4</span><br>
+        preencha cada área quando o prof anunciar a missão — este papel é o SEU projeto
+      </div>
+    </div>
+
+    <!-- as três zonas: navegador · estrada · servidor -->
+    <div class="p1-corpo">
+
+      <!-- ── ZONA 1: o navegador ── -->
+      <div class="zona">
+        <div class="zona-cab">
+          <span class="zc-emoji">🖥️</span>
+          <span class="zc-titulo">O NAVEGADOR — seu React</span>
+          <span class="zc-sub">localhost:5173</span>
+        </div>
+        <div class="zona-corpo">
+
+          <div class="browser-chrome">
+            <div class="bc-body">
+              <div class="navbar-fake">🗂️ GestorPRO <span class="resto">👥 🚚 📦</span>
+                <span class="tag-comp">a &lt;Navbar /&gt; fica FORA do Routes</span>
+              </div>
+
+              <div class="esqueleto">
+                <div class="es-cab"><span class="etapa-num">1</span> Primeiro o ESQUELETO — Passo 2</div>
+                <div class="es-txt">main.jsx: &lt;BrowserRouter&gt; abraça o &lt;App /&gt; · nasce a <b>Navbar</b> ·
+                  as pages nascem <b>"em obras"</b> (só um &lt;h2&gt;). <b>Tela primeiro, rota depois!</b></div>
+              </div>
+
+              <div class="rotas">
+                <div class="rotas-titulo"><span class="etapa-num">2</span> O MAPA QUE CRESCE (App.jsx) — marque ☐ quando a rota nascer
+                  <span class="missao">M2</span>
+                </div>
+                <div class="rota-linha"><span class="rt-cx ok"></span><span class="rt-quando">Passo 2</span><span class="rota-path">/</span><span class="rota-seta">→</span><span class="rota-el">&lt;Dashboard /&gt;</span></div>
+                <div class="rota-linha"><span class="rt-cx ok"></span><span class="rt-quando">Passo 2</span><span class="rota-path">/clientes</span><span class="rota-seta">→</span><span class="rota-el">&lt;Clientes /&gt;</span></div>
+                <div class="rota-linha"><span class="rt-cx ok"></span><span class="rt-quando">Passo 2</span><span class="rota-path">/fornecedores</span><span class="rota-seta">→</span><span class="rota-el">&lt;<span class="resp mono">Fornecedores</span> /&gt;</span></div>
+                <div class="rota-linha"><span class="rt-cx ok"></span><span class="rt-quando">Passo 2</span><span class="rota-path">/produtos</span><span class="rota-seta">→</span><span class="rota-el">&lt;Produtos /&gt;</span></div>
+                <div class="rota-linha"><span class="rt-cx ok"></span><span class="rt-quando">Passo 2</span><span class="rota-path">*</span><span class="rota-seta">→</span><span class="rota-el">&lt;<span class="resp mono">NaoEncontrada</span> /&gt; (o curinga do 404)</span></div>
+                <div class="rota-linha"><span class="rt-cx ok"></span><span class="rt-quando">Passo 4</span><span class="rota-path">/clientes/<span class="resp mono">novo</span></span><span class="rota-seta">→</span><span class="rota-el">&lt;ClienteNovo /&gt;</span></div>
+                <div class="rota-linha"><span class="rt-cx ok"></span><span class="rt-quando">Passo 6</span><span class="rota-path">/clientes/<span class="resp mono">:id</span>/editar</span><span class="rota-seta">→</span><span class="rota-el">&lt;<span class="resp mono">ClienteEditar</span> /&gt;</span></div>
+                <div class="rota-linha"><span class="rt-cx ok"></span><span class="rt-quando b">Enc. B</span><span class="rota-el">+6: as mesmas 2 rotas de 🚚 e 📦 (o agente escreve, você revisa)</span></div>
+              </div>
+
+              <div class="anatomia">
+                <div class="titulo-arq"><span class="etapa-num">3</span> Só então a ANATOMIA de uma listagem — Passo 3
+                  <span class="missao">M4</span>
+                </div>
+                a lista: <code>const [clientes, setClientes] = use<span class="resp mono">State</span>([])</code><br>
+                busca ao montar: <code>use<span class="resp mono">Effect</span>(() =&gt; { ... }, [])</code><br>
+                o pedido HTTP: <code><span class="resp mono">axios</span>.get("http://localhost:3000/<span class="resp mono">clientes</span>")</code><br>
+                resposta na tela: <code>setClientes(res.<span class="resp mono">data</span>)</code> + <code>.map()</code> + <code>key</code>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── ZONA 2: a estrada HTTP ── -->
+      <div class="zona">
+        <div class="zona-cab">
+          <span class="zc-emoji">📮</span>
+          <span class="zc-titulo">A ESTRADA — axios</span>
+          <span class="zc-sub">HTTP</span>
+        </div>
+        <div class="zona-corpo estrada-corpo">
+
+          <div class="faixa">
+            <div class="faixa-cab"><span class="verbo get">GET</span><span class="faixa-url">/clientes</span></div>
+            <div class="faixa-area">
+              <div class="seta-exemplo">
+                <div class="seta-ida"><span class="rot">pedido</span><span class="tra"></span></div>
+                <div class="seta-volta"><span class="tra"></span><span class="rot">200 + as fichas (res.data)</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="faixa lapis">
+            <div class="faixa-cab"><span class="verbo post">POST</span><span class="faixa-url">/<span class="resp mono">clientes</span> &nbsp;corpo: { ficha SEM <span class="resp mono">id</span> }</span></div>
+            <div class="faixa-area"><div class="seta-exemplo g-post"><div class="seta-ida"><span class="rot">a ficha nova (sem id)</span><span class="tra"></span></div><div class="seta-volta"><span class="tra"></span><span class="rot">201 + a ficha ja COM id</span></div></div></div>
+          </div>
+
+          <div class="faixa lapis">
+            <div class="faixa-cab"><span class="verbo put">PUT</span><span class="faixa-url">/clientes/<span class="resp mono">2</span> &nbsp;corpo: { ficha inteira }</span></div>
+            <div class="faixa-area"><div class="seta-exemplo g-put"><div class="seta-ida"><span class="rot">o id na URL diz QUAL ficha</span><span class="tra"></span></div><div class="seta-volta"><span class="tra"></span><span class="rot">200 + a ficha trocada</span></div></div></div>
+          </div>
+
+          <div class="faixa lapis">
+            <div class="faixa-cab"><span class="verbo del">DELETE</span><span class="faixa-url">/clientes/<span class="resp mono">3</span> &nbsp;(sem corpo)</span></div>
+            <div class="faixa-area"><div class="seta-exemplo g-del"><div class="seta-ida"><span class="rot">so o alvo na URL</span><span class="tra"></span></div><div class="seta-volta"><span class="tra"></span><span class="rot">200 { } — a TELA, quem avisa e o .filter()</span></div></div></div>
+          </div>
+
+          <div style="text-align:center;font-size:2.5mm;font-weight:800;color:var(--ink-soft)">
+            <span class="missao">M3 · desenhe as 3 setas</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── ZONA 3: o servidor ── -->
+      <div class="zona">
+        <div class="zona-cab">
+          <span class="zc-emoji">🏤</span>
+          <span class="zc-titulo">O SERVIDOR — json-server</span>
+          <span class="zc-sub">localhost:3000</span>
+        </div>
+        <div class="zona-corpo">
+          <div class="fundacao">
+            <div class="f-cab"><span class="etapa-num">0</span> A FUNDAÇÃO — Passo 1 <span class="missao">M1</span></div>
+            <div class="f-item"><span class="rt-cx ok"></span><span><b>npm create vite@latest gestorpro</b> (React + JavaScript) + faxina</span></div>
+            <div class="f-item"><span class="rt-cx ok"></span><span><b>npm install axios react-router-dom</b> (as 2 peças do projeto)</span></div>
+            <div class="f-item"><span class="rt-cx ok"></span><span>criar o <b>db.json</b> na raiz — são as gavetas aqui debaixo 👇</span></div>
+            <div class="f-item"><span class="rt-cx ok"></span><span>2 terminais: <b>npm run dev</b> → porta <span class="resp mono">5173</span> ·
+              <b>npx json-server db.json</b> → porta <span class="resp mono">3000</span></span></div>
+          </div>
+
+          <div class="cartorio">
+            <div class="cartorio-cab">🗄️ db.json — o arquivo de fichas do cartório
+              <span class="porta">quem carimba o id? <span class="resp">o servidor</span></span>
+            </div>
+
+            <div class="gaveta">
+              <div class="gaveta-cab">👥 "clientes" <span class="end">responde em /clientes</span></div>
+              <div class="gaveta-corpo campo-mono">
+                { "id", <b>"nome"</b>, <b>"email"</b>, <b>"telefone"</b>, <b>"cidade"</b> }<br>
+                Ana Souza · Bruno Lima · Carla Dias <b>+ os que você cadastrar</b>
+              </div>
+            </div>
+
+            <div class="gaveta lapis" style="border-style:dashed">
+              <div class="gaveta-cab">🚚 "fornecedores" <span class="end">responde em /<span class="resp mono">fornecedores</span></span></div>
+              <div class="gaveta-corpo campo-mono">
+                { "id", "<span class="resp mono">nome</span>", "<span class="resp mono">cnpj</span>", "<span class="resp mono">categoria</span>", "<span class="resp mono">telefone</span>" }<span class="missao" style="margin-left:2mm">M1 · os campos</span>
+              </div>
+            </div>
+
+            <div class="gaveta lapis" style="border-style:dashed">
+              <div class="gaveta-cab">📦 "produtos" <span class="end">responde em /<span class="resp mono">produtos</span></span></div>
+              <div class="gaveta-corpo campo-mono">
+                { "id", "<span class="resp mono">nome</span>", "<span class="resp mono">preco</span>", "<span class="resp mono">estoque</span>", "<span class="resp mono">categoria</span>" }<br>
+                ⚠️ fora o id, DOIS campos você digita como <b>NÚMEROS</b> (sem aspas) — circule quais! <span class="resp">preco e estoque</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- rodapé: ciclo da listagem · legenda CRUD · carimbo -->
+    <div class="p1-rodape">
+
+      <div class="ciclo">
+        <div class="ciclo-titulo">🔁 O ciclo de UMA listagem — numere e nomeie os passos
+          <span class="missao">M4</span>
+        </div>
+        <div class="ciclo-corpo">
+          <div class="ciclo-passo"><div class="ciclo-bola">1</div><div class="ciclo-rot">página monta<br>(1ª renderização)</div></div>
+          <div class="ciclo-liga"></div>
+          <div class="ciclo-passo"><div class="ciclo-bola" style="border-color:#c2410c;color:#c2410c">2</div><div class="ciclo-rot"><span class="resp" style="font-size:2.2mm;border:0;line-height:1.15">o useEffect<br>dispara</span></div></div>
+          <div class="ciclo-liga"></div>
+          <div class="ciclo-passo"><div class="ciclo-bola" style="border-color:#c2410c;color:#c2410c">3</div><div class="ciclo-rot"><span class="resp" style="font-size:2.2mm;border:0;line-height:1.15">axios.get<br>viaja</span></div></div>
+          <div class="ciclo-liga"></div>
+          <div class="ciclo-passo"><div class="ciclo-bola" style="border-color:#c2410c;color:#c2410c">4</div><div class="ciclo-rot"><span class="resp" style="font-size:2.2mm;border:0;line-height:1.15">a resposta chega<br>(res.data)</span></div></div>
+          <div class="ciclo-liga"></div>
+          <div class="ciclo-passo"><div class="ciclo-bola" style="border-color:#c2410c;color:#c2410c">5</div><div class="ciclo-rot"><span class="resp" style="font-size:2.2mm;border:0;line-height:1.15">setClientes(...)<br>redesenha</span></div></div>
+          <div class="ciclo-liga"></div>
+          <div class="ciclo-passo"><div class="ciclo-bola">6</div><div class="ciclo-rot">tabela na tela 🎉</div></div>
+        </div>
+        <div class="ciclo-banco">
+          <b>banco de palavras:</b> useEffect dispara · axios.get viaja · resposta chega (res.data) ·
+          setClientes(...) redesenha
+        </div>
+      </div>
+
+      <div class="legenda">
+        <div class="legenda-titulo">📛 O nome de mercado: C.R.U.D. <span class="missao">M3</span></div>
+        <table>
+          <tr><th>verbo</th><th class="letra">letra</th><th>ação no cartório</th><th>o id vai…</th></tr>
+          <tr><td><span class="verbo get" style="font-size:2.4mm">GET</span></td><td class="letra">R</td><td>ler as fichas</td><td>só no "por id"</td></tr>
+          <tr><td><span class="verbo post" style="font-size:2.4mm">POST</span></td><td class="letra"><span class="resp">C</span></td><td><span class="resp">registrar ficha NOVA</span></td><td><span class="resp">nao vai — o servidor cria</span></td></tr>
+          <tr><td><span class="verbo put" style="font-size:2.4mm">PUT</span></td><td class="letra"><span class="resp">U</span></td><td><span class="resp">TROCAR a ficha X</span></td><td><span class="resp">na URL: /clientes/2</span></td></tr>
+          <tr><td><span class="verbo del" style="font-size:2.4mm">DELETE</span></td><td class="letra"><span class="resp">D</span></td><td><span class="resp">rasgar a ficha X</span></td><td><span class="resp">na URL: /clientes/3</span></td></tr>
+        </table>
+      </div>
+
+      <div class="carimbo">
+        <div class="cel full"><div class="rot">Projeto</div><div class="val">GESTORPRO — sistema de gestão (mini-ERP)</div></div>
+        <div class="cel"><div class="rot">Eng. responsável (você!)</div><div class="escreve"></div></div>
+        <div class="cel"><div class="rot">Data</div><div class="escreve"></div></div>
+        <div class="cel"><div class="rot">Stack</div><div class="val" style="font-size:2.5mm">React · axios · json-server</div></div>
+        <div class="cel"><div class="rot">Folha</div><div class="val">1/2 — ENCONTRO A</div></div>
+        <div class="cel full"><div class="rot">Escala</div><div class="val caveat">1:1 — do papel pro VSCode, sem atalho</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     FOLHA 2 (VERSO) — ENCONTRO B: A LINHA DE PRODUÇÃO
+     ═══════════════════════════════════════════════════════════ -->
+<div class="sheet">
+  <div class="frame"></div>
+  <div class="sheet-inner">
+
+    <div class="cab">
+      <div class="cab-logo">🤖</div>
+      <div class="cab-titulos">
+        <div class="cab-kicker">Curso Fullstack · programa AI · Capítulo 10 · Mapa de Engenharia (verso)</div>
+        <div class="cab-h1">GABARITO <span class="fina">/ a produção com o agente</span></div>
+      </div>
+      <div class="cab-aviso">
+        <span class="selo-mini">✏️ M5…M6</span><br>
+        aqui você não desenha caixas — você ASSINA aceites, como engenheiro que revisa
+      </div>
+    </div>
+
+    <div class="p2-corpo">
+
+        <!-- a esteira -->
+        <div class="esteira">
+          <div class="esteira-titulo">🔁 O ciclo de CADA feature do Encontro B
+            <span class="missao">M5 · complete o ritual</span>
+          </div>
+          <div class="esteira-corpo">
+            <div class="est-caixa">
+              <div class="ec-cab">🧑‍💻 VOCÊ escreve o prompt-spec</div>
+              <div class="ec-sub">os 4 ingredientes do Cap 9:</div>
+              <ul>
+                <li>CONTEXTO (qual arquivo é o modelo)</li>
+                <li>TAREFA (específica, uma por vez)</li>
+                <li>RESTRIÇÕES (o AGENTS.md!)</li>
+                <li>CRITÉRIO DE ACEITE ("pronto quando…")</li>
+              </ul>
+            </div>
+            <div class="est-seta"></div>
+            <div class="est-caixa">
+              <div class="ec-cab">🤖 O AGENTE devolve um diff</div>
+              <div class="ec-sub">diff não é resultado — é <b>proposta</b>. Quem
+                transforma proposta em código do projeto é a SUA revisão.</div>
+            </div>
+            <div class="est-seta"></div>
+            <div class="est-caixa ritual-caixa">
+              <div class="ec-cab">🕵️ VOCÊ revisa — o ritual ①–⑤</div>
+              <div class="cheque"><span class="num">①</span> rodou sem erro?</div>
+              <div class="cheque"><span class="num">②</span> li o <span class="resp">diff</span>?</div>
+              <div class="cheque"><span class="num">③</span> segue o <span class="resp">AGENTS.md</span>?</div>
+              <div class="cheque"><span class="num">④</span> veio algo que eu <span class="resp">nao pedi</span>?</div>
+              <div class="cheque"><span class="num">⑤</span> sei <span class="resp">explicar</span> em voz alta?</div>
+            </div>
+          </div>
+          <div class="est-retorno">
+            <span>⟲ reprovou em qualquer item? a frase pronta: "refaça — o AGENTS.md diz…"</span>
+            <span class="tra"></span>
+          </div>
+        </div>
+
+        <!-- AGENTS.md -->
+        <div class="regras">
+          <div class="regras-titulo">📜 AGENTS.md — as regras da casa <span class="missao">M5</span></div>
+<pre><span class="h"># stack permitida</span>
+axios (<span class="nao">nunca fetch</span>)
+useState/useEffect · rafce (arrow + export default)
+CSS Modules (<span class="nao">nunca CSS global</span>)
+<span class="nao">- nenhuma dependência nova</span>
+<span class="nao">- não mexa fora da tarefa pedida</span></pre>
+          <div class="escreva">
+            ✍️ a regra que EU acho mais importante (e por quê):<br>
+            <span class="resp" style="border:0;font-size:2.7mm">"nao mexa fora da tarefa pedida" — e o que</span><br>
+            <span class="resp" style="border:0;font-size:2.7mm">protege o codigo que eu ja revisei e aprovei.</span>
+            <div class="nota-prof" style="font-size:2.5mm">(nao ha resposta certa — o valor esta em justificar)</div>
+          </div>
+        </div>
+    </div>
+
+        <!-- a escada -->
+        <div class="escada">
+          <div class="escada-titulo">🪜 A escada do projeto — um módulo por degrau, cada um com o SEU CRUD completo</div>
+          <div class="escada-corpo">
+            <div class="degrau d1">
+              <span class="d-fase">Fase 1 · na mão</span>
+              <span class="d-nome">👥 Clientes</span>
+              <span class="d-quem">você digita tudo — vira o GABARITO da casa</span>
+            </div>
+            <div class="degrau d2">
+              <span class="d-fase">Fase 2 · junto</span>
+              <span class="d-nome">🚚 Fornecedores</span>
+              <span class="d-quem">o agente executa, você revisa CADA diff</span>
+            </div>
+            <div class="degrau d3">
+              <span class="d-fase">Fase 3 · você comanda</span>
+              <span class="d-nome">📦 Produtos + 📊 Dashboard</span>
+              <span class="d-quem">os prompts são seus — e a assinatura também</span>
+            </div>
+          </div>
+        </div>
+
+    <!-- termo de aceite (largura total, 2 colunas de 4 linhas) -->
+    <div class="aceite">
+      <div class="aceite-titulo">🖋️ TERMO DE ACEITE — nada entra no sistema sem revisão
+        <span class="missao">M6 · assine cada entrega</span>
+      </div>
+      <div class="aceite-grid">
+        <table>
+          <tr><th>feature</th><th>via</th><th>ritual ①–⑤</th><th>assinatura do revisor</th></tr>
+          <tr><td>👥 Clientes (CRUD completo)</td><td class="via mao">NA MÃO</td>
+            <td style="font-size:2.1mm;color:var(--ink-soft)">sem diff — testou tudo? ☐</td>
+            <td><span class="ass"></span></td></tr>
+          <tr><td>🚚 Fornecedores: listar</td><td class="via junto">JUNTO</td>
+            <td><span class="caixinhas"><span class="cx"></span><span class="cx"></span><span class="cx"></span><span class="cx"></span><span class="cx"></span></span></td>
+            <td><span class="ass"></span></td></tr>
+          <tr><td>🚚 Fornecedores: cadastrar + excluir</td><td class="via junto">JUNTO</td>
+            <td><span class="caixinhas"><span class="cx"></span><span class="cx"></span><span class="cx"></span><span class="cx"></span><span class="cx"></span></span></td>
+            <td><span class="ass"></span></td></tr>
+          <tr><td>🚚 Fornecedores: editar (no telão)</td><td class="via junto">JUNTO</td>
+            <td><span class="caixinhas"><span class="cx"></span><span class="cx"></span><span class="cx"></span><span class="cx"></span><span class="cx"></span></span></td>
+            <td><span class="ass"></span></td></tr>
+        </table>
+        <table>
+          <tr><th>feature</th><th>via</th><th>ritual ①–⑤</th><th>assinatura do revisor</th></tr>
+          <tr><td>📦 Produtos: listar (selo ⚠️)</td><td class="via cmd">VOCÊ COMANDA</td>
+            <td><span class="caixinhas"><span class="cx"></span><span class="cx"></span><span class="cx"></span><span class="cx"></span><span class="cx"></span></span></td>
+            <td><span class="ass"></span></td></tr>
+          <tr><td>📦 Produtos: cadastrar + excluir</td><td class="via cmd">VOCÊ COMANDA</td>
+            <td><span class="caixinhas"><span class="cx"></span><span class="cx"></span><span class="cx"></span><span class="cx"></span><span class="cx"></span></span></td>
+            <td><span class="ass"></span></td></tr>
+          <tr><td>📦 Produtos: editar</td><td class="via cmd">VOCÊ COMANDA</td>
+            <td><span class="caixinhas"><span class="cx"></span><span class="cx"></span><span class="cx"></span><span class="cx"></span><span class="cx"></span></span></td>
+            <td><span class="ass"></span></td></tr>
+          <tr><td>📊 Dashboard (o chefão)</td><td class="via cmd">VOCÊ ESCOLHE</td>
+            <td><span class="caixinhas"><span class="cx"></span><span class="cx"></span><span class="cx"></span><span class="cx"></span><span class="cx"></span></span></td>
+            <td><span class="ass"></span></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="p2-rodape">
+      <div class="frase-final">
+        <div class="cav">Você não vibe-codou.<br><b>Você ENGENHEIROU.</b></div>
+        <div class="obs">
+          Guarde esta folha: ela é a prova de que você domina o padrão, delega a
+          repetição e revisa tudo — igual dev sênior. 🎓
+        </div>
+      </div>
+      <div class="carimbo">
+        <div class="cel full"><div class="rot">Projeto</div><div class="val">GESTORPRO — sistema de gestão (mini-ERP)</div></div>
+        <div class="cel"><div class="rot">Eng. responsável (você!)</div><div class="escreve"></div></div>
+        <div class="cel"><div class="rot">Data</div><div class="escreve"></div></div>
+        <div class="cel"><div class="rot">Ferramenta de IA usada</div><div class="escreve"></div></div>
+        <div class="cel"><div class="rot">Folha</div><div class="val">2/2 — ENCONTRO B</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

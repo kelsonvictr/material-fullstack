@@ -548,25 +548,32 @@
           <div class="exercise-sub">Vite + faxina + as duas instalações + db.json + dois terminais</div></div>
         </div>
         <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>O ritual que você já fez
-        um monte de vezes (Cap 4 + 05b + Cap 7 + Cap 8), agora de uma vez só: 1) <code>npm create
-        vite@latest gestorpro</code> (React + JavaScript) → <code>cd gestorpro</code> →
-        <code>npm install</code>. 2) Faxina: esvaziar <code>App.css</code> e
-        <code>index.css</code> (conteúdo, não o arquivo!) e limpar o <code>App.jsx</code>.
-        3) Instalar as duas peças do projeto: <code>npm install axios react-router-dom</code>.
-        4) Criar o <code>db.json</code> na raiz com as 3 coleções da seção anterior (pode copiar —
-        dado de exemplo não é código 😄). 5) Dois terminais: <code>npm run dev</code> num,
-        <code>npx json-server db.json</code> no outro. 6) Conferir no navegador:
-        <code>localhost:3000/clientes</code> respondendo JSON.</p></div>
-        <div class="terminal" data-typewriter>
-          <div class="code-header" style="background:rgba(255,255,255,0.04);padding:8px 14px;border-radius:14px 14px 0 0">
-            <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
-            <span class="filename">Terminal 1 · na pasta gestorpro</span>
-          </div>
-          <div class="terminal-body">
-            <span class="prompt">$</span> <span class="typed" data-text="npm install axios react-router-dom"></span><span class="cursor"></span>
-            <br><span class="out">added 12 packages in 3s</span>
-          </div>
+        um monte de vezes (Cap 4 + 05b + Cap 7 + Cap 8), agora de uma vez só — e devagar, porque
+        <strong>tudo depende desta base ficar de pé</strong>: 1) criar o projeto com o Vite.
+        2) Faxina. 3) Instalar as duas peças. 4) Criar o <code>db.json</code>. 5) Subir os
+        <strong>dois servidores</strong> (é a parte nova e a que mais dá nó — tem uma explicação
+        inteira dedicada a ela logo abaixo). 6) Conferir se os dois estão respondendo.</p></div>
+
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">1) nasce o projeto — no terminal, na pasta onde você guarda seus projetos</span><span class="lang-badge bash">BASH</span></div>
+<pre><span class="cm"># cria a pasta do projeto (nas perguntas: React, depois JavaScript)</span>
+npm create vite@latest gestorpro
+
+<span class="cm"># entra na pasta que acabou de nascer</span>
+cd gestorpro
+
+<span class="cm"># baixa o React e as ferramentas do Vite (a pasta node_modules)</span>
+npm install
+
+<span class="cm"># 3) as DUAS peças novas deste projeto</span>
+npm install axios react-router-dom</pre>
         </div>
+        <div class="tip"><span class="tip-icon">📦</span><div class="tip-content"><strong>Por que
+        esses dois?</strong> O <code>axios</code> é o carteiro que fala com a API (Cap 7) e o
+        <code>react-router-dom</code> é o dono das rotas (Cap 8). Eles entram com
+        <code>npm install</code> porque <strong>fazem parte do seu site</strong> — vão junto
+        quando ele for pro ar. Guarde essa ideia, porque o próximo programa que a gente instala
+        é diferente. 👀</div></div>
         <div class="tip"><span class="tip-icon">🧹</span><div class="tip-content"><strong>A faxina,
         item por item</strong> (igual aos Caps 4–8): apague TODO o conteúdo de
         <code>src/index.css</code> e <code>src/App.css</code> — os arquivos ficam
@@ -585,6 +592,180 @@
 
 <span class="kw">export</span> <span class="kw">default</span> <span class="var">App</span></pre>
         </div>
+
+        <div class="tip"><span class="tip-icon">🗄️</span><div class="tip-content"><strong>4) O
+        <code>db.json</code>:</strong> crie o arquivo na <strong>raiz</strong> do
+        <code>gestorpro</code> — a mesma pasta onde está o <code>package.json</code>,
+        <strong>fora</strong> da <code>src/</code>. Cole as 3 coleções que a gente viu na seção
+        de Arquitetura. (Pode copiar sem culpa: dado de exemplo não é código. 😄)</div></div>
+
+        <!-- ── o json-server, com calma ── -->
+        <div class="analogy">
+          <div class="analogy-title">🍽️ O salão e a cozinha: por que DOIS servidores</div>
+          <p>Aqui vem a parte que mais confunde, então vamos com calma — e é a mesma
+          <strong>cozinha de treino</strong> que você subiu no Cap 7, agora com três coleções em
+          vez de uma. A partir de agora o seu computador vai rodar <strong>dois programas ao
+          mesmo tempo</strong>, e cada um tem um trabalho: o <strong>Vite</strong> (aquele do
+          <code>npm run dev</code>) é o
+          <strong>salão do restaurante</strong> — ele monta e serve a TELA que o usuário vê. O
+          <strong>json-server</strong> é a <strong>cozinha</strong> — ele guarda e devolve os
+          DADOS, e ninguém do salão entra lá: pra pedir qualquer coisa, o garçom
+          (<code>axios</code>) leva o pedido até a portinhola. Salão sem cozinha: a tela abre,
+          mas as tabelas vêm vazias e com erro. Cozinha sem salão: os dados existem, mas não tem
+          tela nenhuma. <strong>Você precisa dos dois de pé, ao mesmo tempo, o tempo todo.</strong></p>
+        </div>
+
+        <div class="terminal" data-typewriter>
+          <div class="code-header" style="background:rgba(255,255,255,0.04);padding:8px 14px;border-radius:14px 14px 0 0">
+            <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+            <span class="filename">Terminal 1 · o salão (deixe rodando o dia inteiro)</span>
+          </div>
+          <div class="terminal-body">
+            <span class="prompt">$</span> <span class="typed" data-text="npm run dev"></span><span class="cursor"></span>
+            <br><span class="out">VITE ready in 412 ms</span>
+            <br>
+            <br><span class="out">Local:   http://localhost:5173/</span>
+            <br><span class="out">press h + enter to show help</span>
+          </div>
+        </div>
+        <div class="tip"><span class="tip-icon">🔒</span><div class="tip-content">Repare que o
+        terminal <strong>não devolve o <code>$</code></strong> depois desse comando: ele fica
+        "preso", mostrando o Vite vivo. <strong>Isso é o certo</strong> — servidor é um programa
+        que não termina, fica esperando visita. Muito aluno acha que travou e aperta
+        <kbd>Ctrl</kbd>+<kbd>C</kbd>, que é justamente o comando pra MATAR o servidor. Deixe
+        quietinho e abra outro terminal.</div></div>
+
+        <div class="concept">
+          <div class="concept-title">🤔 npx? Mas eu não usei sempre "npm install"?</div>
+          <p>Boa pergunta — e a diferença é de gente grande. O <code>npm install axios</code>
+          <strong>baixa e GUARDA</strong> o programa dentro do seu projeto (na
+          <code>node_modules</code>, anotado no <code>package.json</code>): é assim com o que faz
+          parte do site. Já o <code>npx json-server</code> significa
+          <strong>"baixa, usa agora e não guarda"</strong> — perfeito para uma ferramenta que só
+          serve <em>enquanto você desenvolve</em> e que <strong>não vai junto</strong> quando o
+          site for publicado. O json-server é exatamente isso: um faz-de-conta de backend, um
+          andaime. Quando a API de verdade (a sua, em Java!) existir, o andaime é retirado e
+          nada no seu React precisa mudar de lugar.</p>
+        </div>
+
+        <div class="concept">
+          <div class="concept-title">🖥️ Como abrir o SEGUNDO terminal no VSCode</div>
+          <p>O terminal onde você rodou o <code>npm run dev</code> está <strong>ocupado</strong>:
+          ele fica preso rodando o Vite e não aceita mais comandos (é assim mesmo, não está
+          travado!). Então você precisa de <strong>outro</strong>. No VSCode:</p>
+          <ul class="about-bullets">
+            <li><div>Olhe o painel do terminal, na parte de baixo. No canto <strong>direito</strong>
+            dele tem um <strong><code>+</code></strong> — clique e nasce um terminal novo, já na
+            pasta do projeto.</div></li>
+            <li><div>Prefere o teclado? <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>'</kbd> (no Mac,
+            <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>'</kbd>). Ou o menu
+            <strong>Terminal → Novo Terminal</strong>.</div></li>
+            <li><div>Do lado do <code>+</code> tem também o ícone de <strong>dividir a tela</strong>
+            (⧉) — assim você vê os dois terminais lado a lado, que é o mais confortável pra aula.</div></li>
+            <li><div>Na lista à direita, os terminais aparecem numerados: dá pra pular de um pro
+            outro clicando. <strong>Não feche nenhum dos dois.</strong></div></li>
+          </ul>
+        </div>
+
+        <div class="terminal" data-typewriter>
+          <div class="code-header" style="background:rgba(255,255,255,0.04);padding:8px 14px;border-radius:14px 14px 0 0">
+            <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+            <span class="filename">Terminal 2 · a cozinha (na raiz do gestorpro, onde está o db.json)</span>
+          </div>
+          <div class="terminal-body">
+            <span class="prompt">$</span> <span class="typed" data-text="npx json-server db.json"></span><span class="cursor"></span>
+            <br><span class="out">JSON Server started on PORT :3000</span>
+            <br><span class="out">Press CTRL-C to stop</span>
+            <br><span class="out">Watching db.json...</span>
+            <br>
+            <br><span class="out">Endpoints:</span>
+            <br><span class="out">http://localhost:3000/clientes</span>
+            <br><span class="out">http://localhost:3000/fornecedores</span>
+            <br><span class="out">http://localhost:3000/produtos</span>
+          </div>
+        </div>
+        <div class="tip"><span class="tip-icon">✅</span><div class="tip-content"><strong>Leia o
+        que ele respondeu — é um presente.</strong> O json-server literalmente
+        <strong>lista os endereços que ele criou</strong>, um por coleção do seu
+        <code>db.json</code>. Se aparecem os três (<code>/clientes</code>,
+        <code>/fornecedores</code>, <code>/produtos</code>), sua cozinha está no ar e seu
+        <code>db.json</code> está bem escrito. <em>(Ele também desenha um rostinho fofo
+        <code>♡⸜(˶˃ ᵕ ˂˶)⸝♡</code> no meio do texto. Não é erro, é só a brincadeira do programa. 😄)</em>
+        E o <code>Watching db.json...</code> quer dizer que ele fica <strong>de olho no
+        arquivo</strong>. Guarde essa frase, porque hoje ela ganha um sentido novo: no Cap 7 você
+        só <em>lia</em> dados, mas a partir do Passo 4 você vai <strong>gravar</strong> — e o
+        json-server escreve no seu <code>db.json</code> <strong>de verdade</strong>. Cadastrou um
+        cliente pela tela? Abra o arquivo e veja ele lá. <em>(Ele também acrescenta uma linha
+        <code>"$schema"</code> no topo do arquivo na primeira gravação — pode deixar quieta, é
+        coisa dele.)</em></div></div>
+
+        <div class="warning"><span class="warning-icon">⌨️</span><div class="warning-content">
+          <strong>Na PRIMEIRA vez, o npx vai te fazer uma pergunta.</strong> Como ele nunca
+          baixou o json-server nesse computador, aparece algo como
+          <em>"Need to install the following packages: json-server@1.x — Ok to proceed? (y)"</em>.
+          <strong>Digite <code>y</code> e dê Enter.</strong> Ele baixa (demora uns segundos na
+          primeira vez, depois é instantâneo) e só então sobe o servidor. Muita gente acha que
+          travou e cancela justo nessa hora. 😅
+        </div></div>
+
+        <div class="concept">
+          <div class="concept-title">🔍 A prova dos nove: veja os dados com seus olhos</div>
+          <p>Antes de escrever UMA linha de React, confira se a cozinha responde. Abra uma aba
+          nova do navegador e digite <code>localhost:3000/clientes</code>. Você vai ver o JSON
+          cru, do jeitinho que o <code>axios</code> vai receber daqui a pouco:</p>
+        </div>
+        <div class="mini-browser" data-url="localhost:3000/clientes" data-h="170">
+<script type="text/html" data-mp="html">
+  <pre style="font-family:ui-monospace,Menlo,monospace;font-size:11px;color:#0f172a;margin:0;white-space:pre-wrap">[
+  {
+    "id": 1,
+    "nome": "Ana Souza",
+    "email": "ana@gmail.com",
+    "telefone": "(83) 99999-1111",
+    "cidade": "João Pessoa"
+  },
+  ...
+]</pre>
+</script>
+        </div>
+        <div class="tip"><span class="tip-icon">🎉</span><div class="tip-content">Viu esse texto?
+        <strong>Parabéns: você acabou de subir uma API.</strong> Sério — esse endereço é uma API
+        de verdade, respondendo HTTP, e qualquer programa do mundo poderia consumir. Guarde a
+        sensação: no segundo semestre você vai construir essa mesma resposta em Java, na
+        mão.</div></div>
+
+        <div class="warning"><span class="warning-icon">🚨</span><div class="warning-content">
+          <strong>Os 3 perrengues clássicos dos dois terminais</strong> (todos vão acontecer com
+          alguém da turma hoje — quando acontecer com você, volte aqui):
+          <ul class="about-bullets" style="margin-top:8px">
+            <li><div><strong>"Fechei o terminal e o site quebrou"</strong> — a tela mostra
+            <em>😵 Não consegui falar com o servidor</em> e o console grita
+            <code>Network Error</code> (o mesmo Bug 5 do Cap 7 — é o jeito do axios dizer "bati
+            na porta e não tinha ninguém"). Traduzindo: a cozinha fechou. Abra o terminal de novo
+            e rode <code>npx json-server db.json</code>. <strong><kbd>Ctrl</kbd>+<kbd>C</kbd> mata
+            o servidor</strong> — só use quando quiser mesmo desligar.</div></li>
+            <li><div><strong>"Port 3000 is already in use"</strong> (ou <code>EADDRINUSE</code>)
+            — já tem um json-server rodando, provavelmente esquecido em outro terminal ou de
+            outra aula. Ache o terminal antigo e dê <kbd>Ctrl</kbd>+<kbd>C</kbd> nele; depois
+            suba de novo. <em>(Dá pra usar outra porta com
+            <code>--port 3001</code>, mas aí TODAS as URLs do seu código mudam — não vale a pena
+            hoje.)</em></div></li>
+            <li><div><strong>"Ele criou um db.json vazio / não achou minhas coleções"</strong> —
+            você rodou na <strong>pasta errada</strong>. O comando tem que ser dado na raiz do
+            <code>gestorpro</code>. Confira com <code>ls</code> (ou <code>dir</code> no Windows):
+            você precisa ver <code>db.json</code> e <code>package.json</code> na lista.</div></li>
+          </ul>
+        </div></div>
+
+        <div class="tip"><span class="tip-icon">🔢</span><div class="tip-content"><strong>Decore
+        as duas portas, elas vão te acompanhar o capítulo inteiro:</strong>
+        <strong style="color:var(--react)">5173</strong> = o <strong>salão</strong> (sua tela
+        React — é a que você abre pra usar o sistema) ·
+        <strong style="color:var(--json)">3000</strong> = a <strong>cozinha</strong> (os dados —
+        você só abre pra conferir, ou o axios abre por você). Errar a porta é o bug bobo mais
+        comum: <code>localhost:3000</code> nunca vai mostrar o seu sistema, e
+        <code>localhost:5173/clientes</code> é a sua PÁGINA de clientes, não o JSON.</div></div>
+
         <div class="papel-missao"><span class="pm-selo">✏️ NO PAPEL · M1</span><span>Área
         <b>⓪ A FUNDAÇÃO</b> (coluna do servidor): marque os 4 quadradinhos conforme fizer, e
         anote as <b>duas portas</b>. Logo abaixo, preencha as <b>gavetas do cartório</b> — os
@@ -2030,10 +2211,12 @@ demais não.</pre>
     <div class="bug-box" style="margin-top:14px">
       <span class="bug-icon">🐛</span>
       <div class="bug-content">
-        <strong>Bug 5 — <code>Failed to fetch</code>, o retorno do rei:</strong> o json-server
-        caiu (fechou o terminal sem querer). A diferença de hoje pro Cap 7: agora VOCÊ diagnostica
-        de olhos fechados — ler o erro → olhar o terminal 2 → <code>npx json-server db.json</code>
-        → F5. Quando esse reflexo vira automático, é sinal de que você virou dev. 🥋
+        <strong>Bug 5 — <code>Network Error</code>, o retorno do rei:</strong> o json-server
+        caiu (fechou o terminal sem querer). É o mesmo Bug 5 do Cap 7, e a mensagem é a do axios:
+        "mandei o pedido e não tinha ninguém na porta 3000". A diferença de hoje: agora VOCÊ
+        diagnostica de olhos fechados — ler o erro, olhar o Terminal 2, rodar
+        <code>npx json-server db.json</code>, F5. Quando esse reflexo vira automático, é sinal de
+        que você virou dev. 🥋
       </div>
     </div>
 

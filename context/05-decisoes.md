@@ -677,6 +677,54 @@ existe, e antecipa o erro *Failed to resolve import* + tela branca) → 6️⃣ 
 Subtítulo do passo virou **"Telas primeiro, menu depois, mapa por último"** — mesmo mote do
 Mapa de Engenharia ("tela primeiro, rota depois"), agora ecoando nos dois lugares.
 
+## 2026-08-22 (cont. 3) — json-server explicado de verdade + GABARITO do Mapa
+
+### Feedback-mor do prof (vale para TODO o material)
+*"está sendo muito direto nas coisas, material didático tem que ser extremamente didático e
+explicativo"* — dito sobre o json-server, que o Passo 1 despachava em **meia linha**
+("5) Dois terminais: `npm run dev` num, `npx json-server db.json` no outro"). Regra que passa
+a valer: **comando novo nunca entra sem o porquê, o passo a passo, o que aparece na tela e o
+que fazer quando der errado.**
+
+### O json-server ganhou tratamento completo (Passo 1)
+Levantamento no Cap 7 (que já ensina json-server) apontou 3 buracos herdados: ele **nunca
+contrasta 5173 × 3000 em palavras**, **não ensina a mecânica de abrir o 2º terminal**, e
+**não menciona que o json-server grava no arquivo**. Tudo resolvido aqui:
+- `.analogy` **"O salão e a cozinha"** — por que DOIS servidores (retoma a "cozinha de treino"
+  do Cap 7); Vite = salão (a tela), json-server = cozinha (os dados), axios = garçom.
+- **Terminal 1** com o output do `npm run dev` + tip explicando que o terminal fica "preso"
+  de propósito (servidor não termina) e que <kbd>Ctrl</kbd>+<kbd>C</kbd> MATA o servidor.
+- `.concept` **"npx? Mas eu não usei sempre npm install?"** — `npm install` guarda no projeto
+  (faz parte do site) × `npx` baixa/usa/não guarda (ferramenta de desenvolvimento, é andaime).
+- `.concept` **"Como abrir o SEGUNDO terminal no VSCode"** — o `+` do painel, o atalho
+  <kbd>Ctrl/Cmd</kbd>+<kbd>Shift</kbd>+<kbd>'</kbd>, o ícone de dividir, e "não feche nenhum".
+- **Terminal 2** com o output **REAL do json-server v1** (capturado rodando de verdade):
+  `JSON Server started on PORT :3000` / `Watching db.json...` / a lista de Endpoints — e tip
+  ensinando a LER esse output como prova de que o db.json está correto (+ aviso de que o
+  kaomoji `♡⸜(˶˃ ᵕ ˂˶)⸝♡` que ele imprime não é erro 😄).
+- `.warning` da pergunta do npx na 1ª vez (*"Ok to proceed? (y)"*) — muita gente cancela achando
+  que travou.
+- Mini-browser com o **JSON cru** em `localhost:3000/clientes` + "parabéns, você subiu uma API".
+- `.warning` **"Os 3 perrengues clássicos"**: fechei o terminal (→ `Network Error`), porta
+  ocupada (`EADDRINUSE`, com a saída via `--port` e por que não vale a pena), pasta errada.
+- Tip final fixando **5173 = salão × 3000 = cozinha** (o buraco nº 1 do Cap 7).
+- Novidade honesta do Cap 10: o `Watching db.json` agora significa **gravação** (Cap 7 era só
+  leitura) — inclui o aviso do `"$schema"` que o json-server v1 acrescenta ao arquivo.
+- Bloco `bash` novo no início com os 4 comandos de criação do projeto, comentados linha a linha.
+
+⚠️ **Correção factual:** o capítulo dizia `Failed to fetch` (mensagem do **fetch**) no aviso e
+no Bug 5 do BugZilla. Com **axios** o erro é **`Network Error`** — que é como o Cap 7 já
+chamava. Corrigido nos dois lugares para o aluno procurar a string certa.
+
+### NOVO: `10-projeto-gestor/mapa-engenharia-preenchido.html` (uso do prof)
+Gabarito da folha, **gerado a partir do original** com as 46 respostas em "caneta" laranja
+(Caveat `.resp` / mono `.resp.mono`): rotas e nomes de componentes, hooks da anatomia, as
+**setas de POST/PUT/DELETE desenhadas** nas cores dos verbos, portas 5173/3000, campos das
+gavetas (+ "preco e estoque" como os numéricos), ciclo da listagem numerado 1→6, legenda
+C.R.U.D. completa e o ritual ①–⑤ respondido. Cabeçalho e toolbar marcam "GABARITO".
+**Deliberadamente SEM link** em qualquer página (pedido do prof) — abre só pelo endereço
+direto; a toolbar lembra que a versão em branco para imprimir é a `mapa-engenharia.html`.
+
 ## Pendências reconhecidas
 - Planejar em detalhe os **Caps 6–9** (React: state → efeitos/dados → router → integração).
   Caps 4 e 5 já fixaram o tom, o setup Vite base e a Mini-loja como artefato contínuo do arco React.
