@@ -764,8 +764,18 @@ travadas com ele (formato: página própria + atalhos; SEM correção automátic
   em armazenamento SEPARADO (`caderno:cap10-gabarito` — não toca no caderno do aluno na
   mesma máquina), com tinta **laranja de professor**, setas do CRUD desenhadas
   programaticamente (helper `seta()` gera traço+ponta em coords normalizadas), assinaturas
-  rabiscadas nas 8 features, 6/6 carimbado. "↺ zerar" + reload REPLANTA o gabarito (a
-  semeadura só roda se a chave não existir). **Sem link em lugar nenhum**, igual ao da folha.
+  rabiscadas nas 8 features, tudo carimbado. A semente é **versionada** (`_seedV`): subiu a
+  versão, gabaritos antigos re-semeiam sozinhos no próximo load; "↺ zerar" + reload também
+  replanta. **Sem link em lugar nenhum**, igual ao da folha.
+- **M7 · FICHÁRIO DAS ENTIDADES** (2026-08-22, pedido do prof — "conteúdo completo das três
+  entidades"): missão nova, **só no Caderno digital** (a folha impressa segue M1–M6). Uma
+  **ficha técnica por entidade** (Clientes/Fornecedores/Produtos), estruturalmente idênticas
+  de propósito: endpoint, campos, rotas, arquivos, quem escreveu/revisou, e checklist dos 5
+  verbos funcionando. Produtos ganha as regras de negócio (Number() nos numéricos, selo
+  `estoque &lt; 5`); Fornecedores registra "modelo = Clientes, código = agente, revisão = eu".
+  Nota final amarra a tese: a simetria das fichas é o que permitiu delegar com segurança.
+  Chip "✏️ NO CADERNO · M7" no fim da seção Produtos do capítulo (quando as 3 existem).
+  43 lacunas + 15 checks; gabarito atualizado (seed v2, 7/7 carimbos).
 
 ## Pendências reconhecidas
 - Planejar em detalhe os **Caps 6–9** (React: state → efeitos/dados → router → integração).

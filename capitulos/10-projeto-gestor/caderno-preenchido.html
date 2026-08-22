@@ -43,7 +43,11 @@
    ═══════════════════════════════════════════════════════════ */
 (function(){
   const KEY = 'caderno:cap10-gabarito';
-  if (localStorage.getItem(KEY)) return;
+  const SEED_V = 2;   // suba este número quando o gabarito ganhar conteúdo novo
+  try {
+    const atual = JSON.parse(localStorage.getItem(KEY) || 'null');
+    if (atual && atual._seedV === SEED_V) return;   // já está na versão atual
+  } catch(e){}
 
   const DATA = '22/08/2026';
 
@@ -85,6 +89,26 @@
       /* M5 — ritual + regra */
       'm5.ritual.r2':'diff', 'm5.ritual.r3':'AGENTS.md', 'm5.ritual.r4':'não pedi', 'm5.ritual.r5':'explicar',
       'm5.regra.txt':'"Não mexa fora da tarefa pedida" — é o que protege o código que eu já revisei e aprovei. (Não há resposta certa: o valor está em JUSTIFICAR.)',
+      /* M7 — fichário: 👥 Clientes */
+      'm7.cli.end':'clientes',
+      'm7.cli.c1':'nome', 'm7.cli.c2':'email', 'm7.cli.c3':'telefone', 'm7.cli.c4':'cidade',
+      'm7.cli.r1':'clientes', 'm7.cli.r2':'novo', 'm7.cli.r3':':id',
+      'm7.cli.a1':'Clientes', 'm7.cli.a2':'ClienteNovo', 'm7.cli.a3':'ClienteEditar',
+      'm7.cli.quem':'eu mesmo',
+      /* M7 — fichário: 🚚 Fornecedores */
+      'm7.forn.end':'fornecedores',
+      'm7.forn.f1':'nome', 'm7.forn.f2':'cnpj', 'm7.forn.f3':'categoria', 'm7.forn.f4':'telefone',
+      'm7.forn.r1':'fornecedores', 'm7.forn.r2':'novo', 'm7.forn.r3':':id',
+      'm7.forn.a1':'Fornecedores', 'm7.forn.a2':'FornecedorNovo', 'm7.forn.a3':'FornecedorEditar',
+      'm7.forn.modelo':'Clientes', 'm7.forn.quem':'o agente', 'm7.forn.rev':'eu',
+      /* M7 — fichário: 📦 Produtos */
+      'm7.prod.end':'produtos',
+      'm7.prod.p1':'nome', 'm7.prod.p2':'preco', 'm7.prod.p3':'estoque', 'm7.prod.p4':'categoria',
+      'm7.prod.r1':'produtos', 'm7.prod.r2':'novo', 'm7.prod.r3':':id',
+      'm7.prod.a1':'Produtos', 'm7.prod.a2':'ProdutoNovo', 'm7.prod.a3':'ProdutoEditar',
+      'm7.prod.n1':'preco', 'm7.prod.n2':'estoque', 'm7.prod.conv':'Number()',
+      'm7.prod.campo':'estoque', 'm7.prod.val':'5',
+      'm7.prod.quem2':'eu mesmo',
       /* rascunho: nota do gabarito */
       'rascunho.notas.txt':'(área livre do aluno — sem resposta certa)'
     },
@@ -110,14 +134,20 @@
         seta('#b91c1c', 0.550, 0.06, 0.58), seta('#b91c1c', 0.610, 0.58, 0.06)
       )
     },
-    carimbos: { m1:DATA, m2:DATA, m3:DATA, m4:DATA, m5:DATA, m6:DATA },
-    atualizado: null
+    carimbos: { m1:DATA, m2:DATA, m3:DATA, m4:DATA, m5:DATA, m6:DATA, m7:DATA },
+    atualizado: null,
+    _seedV: SEED_V
   };
 
   /* M6 — os 5 checks e a assinatura em TODAS as 8 features */
   ['cli','fl','fce','fe','pl','pce','pe','dash'].forEach(id => {
     for (let i = 1; i <= 5; i++) estado.c['m6.termo.'+id+'.r'+i] = true;
     estado.d['m6.termo.'+id+'.ass'] = assinatura();
+  });
+
+  /* M7 — os 5 checks de cada uma das 3 fichas */
+  ['clicheck','forncheck','prodcheck'].forEach(w => {
+    ['g','gid','p','u','d'].forEach(id => { estado.c['m7.'+w+'.'+id] = true; });
   });
 
   localStorage.setItem(KEY, JSON.stringify(estado));

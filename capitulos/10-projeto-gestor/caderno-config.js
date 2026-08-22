@@ -155,6 +155,68 @@ const CADERNO_CONFIG = {
       ]
     },
 
+    /* ── M7 · FICHÁRIO DAS ENTIDADES (só no Caderno digital) ── */
+    {
+      id: 'm7', selo: 'M7',
+      titulo: '📇 Fichário das Entidades',
+      sub: 'a documentação completa do sistema — uma ficha por entidade; preencha quando o módulo dela ficar PRONTO',
+
+      widgets: [
+
+        /* ····· 👥 CLIENTES ····· */
+        { tipo:'nota', html:'━━━━━ 👥 <b>FICHA 1 · CLIENTES</b> — <span style="color:var(--get);font-weight:800">FASE 1 · NA MÃO</span> (o gabarito da casa) · preencha ao fechar o Passo 6 ━━━━━' },
+        { tipo:'blanks', id:'cli', linhas:[
+          'endpoint: <code>localhost:3000/[[end|9|mono]]</code> &nbsp;·&nbsp; campos: { "id", "[[c1|5|mono]]", "[[c2|6|mono]]", "[[c3|9|mono]]", "[[c4|7|mono]]" }',
+          'rotas: listar <code>/[[r1|9|mono]]</code> &nbsp;·&nbsp; cadastrar <code>/clientes/[[r2|5|mono]]</code> &nbsp;·&nbsp; editar <code>/clientes/[[r3|4|mono]]/editar</code>',
+          'arquivos em <code>src/pages/</code>: [[a1|9|mono]].jsx · [[a2|12|mono]].jsx · [[a3|14|mono]].jsx &nbsp;(+ os .module.css)',
+          'quem digitou cada linha: [[quem|8]] 💪'
+        ]},
+        { tipo:'checklist', id:'clicheck', itens:[
+          { id:'g',   html:'<b>GET</b> — a tabela lista os clientes' },
+          { id:'gid', html:'<b>GET por id</b> — o editar abre pré-enchido' },
+          { id:'p',   html:'<b>POST</b> — cadastra e volta pra lista (corpo SEM id!)' },
+          { id:'u',   html:'<b>PUT</b> — salva a edição (id na URL)' },
+          { id:'d',   html:'<b>DELETE</b> — exclui com confirm + <code>.filter()</code> avisando a tela' }
+        ]},
+
+        /* ····· 🚚 FORNECEDORES ····· */
+        { tipo:'nota', html:'━━━━━ 🚚 <b>FICHA 2 · FORNECEDORES</b> — <span style="color:var(--miss);font-weight:800">FASE 2 · JUNTO</span> (o agente executa, você revisa) · preencha ao fechar o Passo 10 ━━━━━' },
+        { tipo:'blanks', id:'forn', linhas:[
+          'endpoint: <code>localhost:3000/[[end|13|mono]]</code> &nbsp;·&nbsp; campos: { "id", "[[f1|5|mono]]", "[[f2|5|mono]]", "[[f3|10|mono]]", "[[f4|9|mono]]" }',
+          'rotas: listar <code>/[[r1|13|mono]]</code> &nbsp;·&nbsp; cadastrar <code>/fornecedores/[[r2|5|mono]]</code> &nbsp;·&nbsp; editar <code>/fornecedores/[[r3|4|mono]]/editar</code>',
+          'arquivos: [[a1|13|mono]].jsx · [[a2|15|mono]].jsx · [[a3|17|mono]].jsx',
+          'o modelo que o agente seguiu foi o módulo [[modelo|9]] &nbsp;·&nbsp; quem escreveu o código: [[quem|9]] &nbsp;·&nbsp; quem revisou CADA diff e assinou: [[rev|6]]'
+        ]},
+        { tipo:'checklist', id:'forncheck', itens:[
+          { id:'g',   html:'<b>GET</b> — os fornecedores na tabela' },
+          { id:'gid', html:'<b>GET por id</b> — editar pré-enchido' },
+          { id:'p',   html:'<b>POST</b> — cadastro funcionando' },
+          { id:'u',   html:'<b>PUT</b> — o diff do editar foi lido NO TELÃO, linha por linha' },
+          { id:'d',   html:'<b>DELETE</b> — com confirm + <code>.filter()</code>' }
+        ]},
+
+        /* ····· 📦 PRODUTOS ····· */
+        { tipo:'nota', html:'━━━━━ 📦 <b>FICHA 3 · PRODUTOS</b> — <span style="color:var(--post);font-weight:800">FASE 3 · VOCÊ COMANDA</span> (os prompts são seus) · preencha ao fechar o Passo 13 ━━━━━' },
+        { tipo:'blanks', id:'prod', linhas:[
+          'endpoint: <code>localhost:3000/[[end|9|mono]]</code> &nbsp;·&nbsp; campos: { "id", "[[p1|5|mono]]", "[[p2|6|mono]]", "[[p3|8|mono]]", "[[p4|10|mono]]" }',
+          'rotas: listar <code>/[[r1|9|mono]]</code> &nbsp;·&nbsp; cadastrar <code>/produtos/[[r2|5|mono]]</code> &nbsp;·&nbsp; editar <code>/produtos/[[r3|4|mono]]/editar</code>',
+          'arquivos: [[a1|9|mono]].jsx · [[a2|12|mono]].jsx · [[a3|14|mono]].jsx',
+          '⚠️ os 2 campos NUMÉRICOS [[n1|6|mono]] e [[n2|8|mono]] passam por [[conv|9|mono]] no formulário — senão viram texto!',
+          'regra de negócio: o selo "⚠️ estoque baixo" aparece quando <code>[[campo|8|mono]] &lt; [[val|3|mono]]</code> (porteiro <code>&amp;&amp;</code> do Cap 5)',
+          'os prompts deste módulo foram escritos por: [[quem2|9]] 🧑‍✈️'
+        ]},
+        { tipo:'checklist', id:'prodcheck', itens:[
+          { id:'g',   html:'<b>GET</b> — tabela com preço "R$ " e o selo ⚠️ nos certos (Monitor e Mouse do seed)' },
+          { id:'gid', html:'<b>GET por id</b> — editar pré-enchido' },
+          { id:'p',   html:'<b>POST</b> — cadastro com <code>Number()</code> (conferi no db.json: SEM aspas nos números)' },
+          { id:'u',   html:'<b>PUT</b> — edição salvando números como números' },
+          { id:'d',   html:'<b>DELETE</b> — com confirm + <code>.filter()</code>' }
+        ]},
+
+        { tipo:'nota', html:'💡 <b>Repare na simetria:</b> as 3 fichas são estruturalmente IDÊNTICAS — só mudam nomes e campos. Essa repetição é o que tornou possível delegar pro agente com segurança. Documentação assim é o que separa "código que funciona" de "sistema que uma equipe consegue manter".' }
+      ]
+    },
+
     /* ── rascunho livre (sem selo — não conta no progresso) ── */
     {
       id: 'rascunho',
