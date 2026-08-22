@@ -580,6 +580,37 @@ sai legível em impressora P&B (aluno preenche de caneta). Zoom 0.66 só em tela
 - Vocabulário conferido contra o Cap 9 (ritual ①–⑤; ingredientes CONTEXTO/TAREFA/
   RESTRIÇÕES/CRITÉRIO DE ACEITE) e rotas/campos contra `tooling/gestorpro-referencia/`.
 
+## 2026-08-22 (continuação) — Fluxo do Mapa corrigido + rebranding "programa AI"
+
+1. **Achado do prof no Mapa de Engenharia:** "tá confuso o fluxo, começa com as rotas do
+   App.jsx mas ainda nem tem os componentes implementados". Estava certo — a folha pedia
+   (M1) o mapa de rotas completo, incluindo `<FornecedorNovo />`/`<ProdutoEditar />`, telas
+   que só nascem no Encontro B. **A folha agora segue a ordem real de construção**, com
+   etapas numeradas em bolinha preta:
+   - **⓪ A FUNDAÇÃO** (Passo 1, zona do servidor): checklist `npm create vite` →
+     `npm install axios react-router-dom` → criar `db.json` → 2 terminais com as portas em
+     branco. Substituiu o "rascunho livre". É a nova **M1**, junto das gavetas do db.json.
+   - **① Primeiro o ESQUELETO** (Passo 2): main.jsx/BrowserRouter · Navbar · pages "em
+     obras". Mote impresso: **"Tela primeiro, rota depois"**.
+   - **② O MAPA QUE CRESCE** (nova **M2**): cada rota é uma linha com ☐ + etiqueta do
+     passo em que ela nasce (Passo 2 ×5 · Passo 4 · Passo 6 · "Enc. B +6"). O aluno marca
+     conforme constrói — some a mentira de mapear tela inexistente e resolve de quebra o
+     achado "8 de 11 rotas".
+   - **③ Só então a ANATOMIA** da listagem (Passo 3) = M4, inalterada.
+   Barra de URL falsa removida (a zona já diz `localhost:5173`) para caber tudo.
+2. **Selos no capítulo remanejados para a cronologia da aula**: saíram os 2 chips da seção
+   Arquitetura (eram prematuros — ali nada foi construído ainda; o card do mapa agora avisa
+   "nada de preencher agora" e resume a ordem ⓪→①→②→③). M1 entrou no Passo 1, M2 no Passo 2,
+   e M2 **reaparece** nos Passos 4 e 6 ("nasceu tela, nasce rota — marque ☐"). Tip do Passo 2
+   reescrito para ensinar a ordem explicitamente.
+3. **Rebranding UNIESP → "programa AI"** (pedido do prof) em todo o material: README,
+   CLAUDE.md, `context/00-overview.md`, `index.html` (title + footer), `shared/styles.css`,
+   Cap 01 (exemplo `<li>`), Cap 10 (AGENTS.md do aluno), `tooling/gestorpro-referencia/
+   AGENTS.md` e os 2 cabeçalhos do Mapa. **Mantido de propósito** em `sobre/index.html` (3
+   pontos: "Professor Universitário na UNIESP", logo na marquee e no logo-wall) e em
+   `context/00-overview.md` l.13 — é a **biografia/carreira do prof**, não a marca do curso;
+   trocar ali criaria erro factual (a página já tem "Empresário na programa AI" à parte).
+
 ## Pendências reconhecidas
 - Planejar em detalhe os **Caps 6–9** (React: state → efeitos/dados → router → integração).
   Caps 4 e 5 já fixaram o tom, o setup Vite base e a Mini-loja como artefato contínuo do arco React.

@@ -102,16 +102,30 @@
   .navbar-fake .resto{color:var(--ink-soft);font-weight:700}
   .navbar-fake .tag-comp{margin-left:auto;font-size:2.4mm;color:var(--ink-soft);font-weight:700}
 
-  .anatomia{border:0.3mm solid var(--ink-faint);border-radius:2mm;padding:1.4mm 2.2mm;font-size:2.5mm;line-height:1.7}
-  .anatomia .titulo-arq{font-weight:900;font-size:2.9mm;display:flex;align-items:center;gap:1.6mm;margin-bottom:0.8mm}
-  .anatomia code{font-size:2.3mm;font-weight:600}
+  /* etapa numerada (a ordem de construção) */
+  .etapa-num{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;
+    width:4.4mm;height:4.4mm;border-radius:50%;background:var(--ink);color:#fff;
+    font-size:2.6mm;font-weight:900;line-height:1}
+  .esqueleto{border:0.3mm solid var(--ink-faint);border-radius:2mm;padding:1.2mm 2.2mm;font-size:2.4mm;line-height:1.6}
+  .esqueleto .es-cab{font-weight:900;font-size:2.75mm;display:flex;align-items:center;gap:1.5mm;margin-bottom:0.4mm}
+  .esqueleto .es-txt{color:var(--ink-soft);font-weight:700}
+  .esqueleto .es-txt b{color:var(--ink)}
 
-  .rotas{font-size:2.45mm;line-height:1.65}
-  .rotas-titulo{font-weight:900;font-size:2.9mm;display:flex;align-items:center;gap:1.6mm;margin-bottom:0.6mm}
-  .rota-linha{display:flex;gap:1.6mm;align-items:baseline;white-space:nowrap}
-  .rota-path{color:var(--ink);font-weight:700;font-size:2.4mm}
+  .anatomia{border:0.3mm solid var(--ink-faint);border-radius:2mm;padding:1.2mm 2.2mm;font-size:2.45mm;line-height:1.6}
+  .anatomia .titulo-arq{font-weight:900;font-size:2.75mm;display:flex;align-items:center;gap:1.5mm;margin-bottom:0.4mm}
+  .anatomia code{font-size:2.25mm;font-weight:600}
+
+  .rotas{font-size:2.35mm;line-height:1.42}
+  .rotas-titulo{font-weight:900;font-size:2.75mm;display:flex;align-items:center;gap:1.5mm;margin-bottom:0.6mm}
+  .rota-linha{display:flex;gap:1.4mm;align-items:baseline;white-space:nowrap}
+  .rota-path{color:var(--ink);font-weight:700;font-size:2.35mm}
   .rota-seta{color:var(--ink-faint)}
-  .rota-el{font-size:2.5mm;color:var(--ink-soft);font-weight:600}
+  .rota-el{font-size:2.4mm;color:var(--ink-soft);font-weight:600}
+  .rt-cx{width:2.5mm;height:2.5mm;border:0.35mm solid var(--ink-soft);border-radius:0.6mm;
+    flex-shrink:0;align-self:center}
+  .rt-quando{font-size:1.95mm;font-weight:900;color:var(--miss);border:0.25mm solid var(--miss);
+    border-radius:1mm;padding:0 0.8mm;flex-shrink:0;width:10.4mm;text-align:center}
+  .rt-quando.b{color:var(--post);border-color:var(--post)}
 
   /* — estrada http — */
   .estrada-corpo{flex:1;display:flex;flex-direction:column;gap:1.6mm;min-height:0}
@@ -132,6 +146,11 @@
   .seta-ida .rot,.seta-volta .rot{color:var(--get)}
 
   /* — servidor — */
+  .fundacao{border:0.3mm solid var(--ink-faint);border-radius:2mm;padding:1.2mm 2.2mm;font-size:2.4mm}
+  .fundacao .f-cab{font-weight:900;font-size:2.75mm;display:flex;align-items:center;gap:1.5mm;margin-bottom:0.6mm}
+  .fundacao .f-item{display:flex;gap:1.4mm;align-items:baseline;line-height:1.62;color:var(--ink-soft);font-weight:700}
+  .fundacao .f-item b{color:var(--ink);font-weight:700}
+  .fundacao .f-item .rt-cx{align-self:center}
   .cartorio{border:0.3mm solid var(--ink-faint);border-radius:2mm;padding:1.6mm 2.2mm}
   .cartorio-cab{display:flex;align-items:center;gap:1.6mm;font-weight:900;font-size:2.9mm;margin-bottom:1mm}
   .cartorio-cab .porta{margin-left:auto;font-size:2.4mm;color:var(--ink-soft);font-weight:700}
@@ -223,7 +242,7 @@
   .regras pre{font-size:2.45mm;line-height:1.8;color:var(--ink);white-space:pre-wrap;margin-top:1.4mm}
   .regras pre .h{font-weight:700;color:var(--miss)}
   .regras pre .nao{color:var(--del);font-weight:700}
-  .regras .escreva{margin-top:1.4mm;font-size:2.55mm;font-weight:700;color:var(--ink-soft);line-height:2.05}
+  .regras .escreva{margin-top:1.2mm;font-size:2.5mm;font-weight:700;color:var(--ink-soft);line-height:1.95}
 
   .aceite{border:0.45mm solid var(--ink);border-radius:3mm;padding:2.4mm 3mm;display:flex;flex-direction:column;flex-shrink:0}
   .aceite-titulo{font-weight:900;font-size:3.2mm;display:flex;align-items:center;gap:1.8mm;margin-bottom:1.4mm}
@@ -282,7 +301,7 @@
     <div class="cab">
       <div class="cab-logo">🗂️</div>
       <div class="cab-titulos">
-        <div class="cab-kicker">Curso Fullstack · UNIESP · Capítulo 10</div>
+        <div class="cab-kicker">Curso Fullstack · programa AI · Capítulo 10</div>
         <div class="cab-h1">MAPA DE ENGENHARIA — GestorPRO <span class="fina">/ a arquitetura</span></div>
       </div>
       <div class="cab-aviso">
@@ -304,33 +323,34 @@
         <div class="zona-corpo">
 
           <div class="browser-chrome">
-            <div class="bc-top">
-              <span class="bc-dot"></span><span class="bc-dot"></span><span class="bc-dot"></span>
-              <span class="bc-url">🔒 localhost:5173<b>/clientes</b></span>
-            </div>
             <div class="bc-body">
               <div class="navbar-fake">🗂️ GestorPRO <span class="resto">👥 🚚 📦</span>
-                <span class="tag-comp">&lt;Navbar /&gt; fora do Routes: aparece em <span class="blank curto"></span> as páginas</span>
+                <span class="tag-comp">a &lt;Navbar /&gt; fica FORA do Routes</span>
+              </div>
+
+              <div class="esqueleto">
+                <div class="es-cab"><span class="etapa-num">1</span> Primeiro o ESQUELETO — Passo 2</div>
+                <div class="es-txt">main.jsx: &lt;BrowserRouter&gt; abraça o &lt;App /&gt; · nasce a <b>Navbar</b> ·
+                  as pages nascem <b>"em obras"</b> (só um &lt;h2&gt;). <b>Tela primeiro, rota depois!</b></div>
               </div>
 
               <div class="rotas">
-                <div class="rotas-titulo">🗺️ O mapa de rotas do App.jsx
-                  <span class="missao">M1 · complete o mapa</span>
+                <div class="rotas-titulo"><span class="etapa-num">2</span> O MAPA QUE CRESCE (App.jsx) — marque ☐ quando a rota nascer
+                  <span class="missao">M2</span>
                 </div>
-                <div class="rota-linha"><span class="rota-path">/</span><span class="rota-seta">→</span><span class="rota-el">&lt;Dashboard /&gt;</span></div>
-                <div class="rota-linha"><span class="rota-path">/clientes</span><span class="rota-seta">→</span><span class="rota-el">&lt;Clientes /&gt;</span></div>
-                <div class="rota-linha"><span class="rota-path">/clientes/novo</span><span class="rota-seta">→</span><span class="rota-el">&lt;ClienteNovo /&gt;</span></div>
-                <div class="rota-linha"><span class="rota-path">/clientes/:id/editar</span><span class="rota-seta">→</span><span class="rota-el">&lt;ClienteEditar /&gt;</span></div>
-                <div class="rota-linha"><span class="rota-path">/fornecedores</span><span class="rota-seta">→</span><span class="rota-el">&lt;<span class="blank longo"></span> /&gt;</span></div>
-                <div class="rota-linha"><span class="rota-path"><span class="blank longo"></span></span><span class="rota-seta">→</span><span class="rota-el">&lt;FornecedorNovo /&gt;</span></div>
-                <div class="rota-linha"><span class="rota-path"><span class="blank longo"></span></span><span class="rota-seta">→</span><span class="rota-el">&lt;ProdutoEditar /&gt;</span></div>
-                <div class="rota-linha"><span class="rota-path">*</span><span class="rota-seta">→</span><span class="rota-el">&lt;<span class="blank longo"></span> /&gt; (o curinga do 404)</span></div>
-                <div class="rota-linha"><span class="rota-el">✏️ faltam mais 3 rotas no MESMO padrão — liste no rascunho livre!</span></div>
+                <div class="rota-linha"><span class="rt-cx"></span><span class="rt-quando">Passo 2</span><span class="rota-path">/</span><span class="rota-seta">→</span><span class="rota-el">&lt;Dashboard /&gt;</span></div>
+                <div class="rota-linha"><span class="rt-cx"></span><span class="rt-quando">Passo 2</span><span class="rota-path">/clientes</span><span class="rota-seta">→</span><span class="rota-el">&lt;Clientes /&gt;</span></div>
+                <div class="rota-linha"><span class="rt-cx"></span><span class="rt-quando">Passo 2</span><span class="rota-path">/fornecedores</span><span class="rota-seta">→</span><span class="rota-el">&lt;<span class="blank longo"></span> /&gt;</span></div>
+                <div class="rota-linha"><span class="rt-cx"></span><span class="rt-quando">Passo 2</span><span class="rota-path">/produtos</span><span class="rota-seta">→</span><span class="rota-el">&lt;Produtos /&gt;</span></div>
+                <div class="rota-linha"><span class="rt-cx"></span><span class="rt-quando">Passo 2</span><span class="rota-path">*</span><span class="rota-seta">→</span><span class="rota-el">&lt;<span class="blank longo"></span> /&gt; (o curinga do 404)</span></div>
+                <div class="rota-linha"><span class="rt-cx"></span><span class="rt-quando">Passo 4</span><span class="rota-path">/clientes/<span class="blank curto"></span></span><span class="rota-seta">→</span><span class="rota-el">&lt;ClienteNovo /&gt;</span></div>
+                <div class="rota-linha"><span class="rt-cx"></span><span class="rt-quando">Passo 6</span><span class="rota-path">/clientes/<span class="blank curto"></span>/editar</span><span class="rota-seta">→</span><span class="rota-el">&lt;<span class="blank longo"></span> /&gt;</span></div>
+                <div class="rota-linha"><span class="rt-cx"></span><span class="rt-quando b">Enc. B</span><span class="rota-el">+6: as mesmas 2 rotas de 🚚 e 📦 (o agente escreve, você revisa)</span></div>
               </div>
 
               <div class="anatomia">
-                <div class="titulo-arq">📄 Clientes.jsx — a anatomia de TODA página de listagem
-                  <span class="missao">M4 · complete os hooks</span>
+                <div class="titulo-arq"><span class="etapa-num">3</span> Só então a ANATOMIA de uma listagem — Passo 3
+                  <span class="missao">M4</span>
                 </div>
                 a lista: <code>const [clientes, setClientes] = use<span class="blank curto"></span>([])</code><br>
                 busca ao montar: <code>use<span class="blank curto"></span>(() =&gt; { ... }, [])</code><br>
@@ -391,6 +411,15 @@
           <span class="zc-sub">localhost:3000</span>
         </div>
         <div class="zona-corpo">
+          <div class="fundacao">
+            <div class="f-cab"><span class="etapa-num">0</span> A FUNDAÇÃO — Passo 1 <span class="missao">M1</span></div>
+            <div class="f-item"><span class="rt-cx"></span><span><b>npm create vite@latest gestorpro</b> (React + JavaScript) + faxina</span></div>
+            <div class="f-item"><span class="rt-cx"></span><span><b>npm install axios react-router-dom</b> (as 2 peças do projeto)</span></div>
+            <div class="f-item"><span class="rt-cx"></span><span>criar o <b>db.json</b> na raiz — são as gavetas aqui debaixo 👇</span></div>
+            <div class="f-item"><span class="rt-cx"></span><span>2 terminais: <b>npm run dev</b> → porta <span class="blank curto"></span> ·
+              <b>npx json-server db.json</b> → porta <span class="blank curto"></span></span></div>
+          </div>
+
           <div class="cartorio">
             <div class="cartorio-cab">🗄️ db.json — o arquivo de fichas do cartório
               <span class="porta">quem carimba o id? <span class="blank curto"></span></span>
@@ -409,7 +438,7 @@
               <div class="gaveta-corpo campo-mono">
                 { "id", "<span class="blank"></span>", "<span class="blank"></span>",
                 "<span class="blank"></span>", "<span class="blank"></span>" }
-                <span class="missao" style="float:right">M2 · os campos</span>
+                <span class="missao" style="float:right">M1 · os campos</span>
               </div>
             </div>
 
@@ -423,11 +452,6 @@
             </div>
           </div>
 
-          <div class="lapis" style="flex:1;position:relative;min-height:12mm">
-            <span class="lapis-label" style="position:absolute;top:1.4mm;left:2mm">
-              ✏️ rascunho livre — anote o que o prof desenhar no quadro
-            </span>
-          </div>
         </div>
       </div>
     </div>
@@ -492,7 +516,7 @@
     <div class="cab">
       <div class="cab-logo">🤖</div>
       <div class="cab-titulos">
-        <div class="cab-kicker">Curso Fullstack · UNIESP · Capítulo 10 · Mapa de Engenharia (verso)</div>
+        <div class="cab-kicker">Curso Fullstack · programa AI · Capítulo 10 · Mapa de Engenharia (verso)</div>
         <div class="cab-h1">GestorPRO <span class="fina">/ a produção com o agente</span></div>
       </div>
       <div class="cab-aviso">

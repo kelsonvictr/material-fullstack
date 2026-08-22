@@ -428,9 +428,13 @@
           <h4>🗺️ Mapa de Engenharia do GestorPRO</h4>
           <p>A4 paisagem: a <strong>frente</strong> é a arquitetura do Encontro A (navegador ⇢
           axios ⇢ json-server) e o <strong>verso</strong> é a linha de produção do Encontro B
-          (prompt ⇢ diff ⇢ ritual ⇢ assinatura). As missões <strong>✏️ M1–M6</strong> marcam a
-          hora de preencher cada área. Prof: imprima frente-e-verso <em>virando na borda
-          curta</em>.</p>
+          (prompt ⇢ diff ⇢ ritual ⇢ assinatura). Prof: imprima frente-e-verso <em>virando na
+          borda curta</em>.</p>
+          <p><strong style="color:#c9b8ff">Nada de preencher agora!</strong> A folha acompanha a
+          <strong>ordem em que a gente constrói</strong>: <strong>⓪ fundação</strong> (M1) →
+          <strong>① esqueleto</strong> → <strong>② mapa de rotas</strong> (M2) →
+          <strong>③ anatomia da página</strong> (M4), com as setas do CRUD (M3) no meio. Cada
+          missão ✏️ aparece aqui no material na hora certa.</p>
           <a class="mc-btn" href="mapa-engenharia.html" target="_blank" rel="noopener">🖨️ abrir a folha pra imprimir</a>
         </div>
       </div>
@@ -454,10 +458,6 @@
         </div>
         <div class="gp-note" id="gp1-note">…</div>
       </div>
-
-      <div class="papel-missao"><span class="pm-selo">✏️ NO PAPEL · M1</span><span>Complete o
-      <b>mapa de rotas</b> da folha: as rotas que faltam (Fornecedores e Produtos) seguem o MESMO
-      padrão do trio de Clientes — escreva sem olhar aqui, depois confira.</span></div>
 
       <p style="margin-top:14px">As <strong>pastas</strong> seguem o costume que você pegou nos
       Caps 8 e 05b: páginas em <code>src/pages/</code>, componentes reutilizáveis em
@@ -516,10 +516,6 @@
         </div>
       </div>
 
-      <div class="papel-missao"><span class="pm-selo">✏️ NO PAPEL · M2</span><span>Preencha as
-      <b>gavetas do cartório</b>: os campos de "fornecedores" e "produtos" e o endereço em que
-      cada coleção responde. Bônus: circule os DOIS campos que são <b>números</b> (sem aspas) —
-      eles voltam pra te assombrar no Passo 12. 😄</span></div>
     </div>
   </section>
 
@@ -571,6 +567,11 @@
             <br><span class="out">added 12 packages in 3s</span>
           </div>
         </div>
+        <div class="papel-missao"><span class="pm-selo">✏️ NO PAPEL · M1</span><span>Área
+        <b>⓪ A FUNDAÇÃO</b> (coluna do servidor): marque os 4 quadradinhos conforme fizer, e
+        anote as <b>duas portas</b>. Logo abaixo, preencha as <b>gavetas do cartório</b> — os
+        campos de "fornecedores" e "produtos" — e circule os DOIS campos que você digita como
+        <b>números</b> (eles voltam pra te assombrar no Passo 12 😄).</span></div>
       </div>
 
       <div class="exercise guided">
@@ -633,10 +634,16 @@
 
 <span class="kw">export</span> <span class="kw">default</span> <span class="var">App</span></pre>
         </div>
-        <div class="tip"><span class="tip-icon">🧠</span><div class="tip-content">Repara: a Navbar
-        fica <strong>fora</strong> do Routes (aparece em toda página — Cap 8) e as rotas de
-        <code>/novo</code> e <code>/editar</code> ainda NÃO existem — cada uma entra no mapa na
-        hora em que a gente construir a tela dela. Um conceito por vez, uma rota por vez. 😉</div></div>
+        <div class="tip"><span class="tip-icon">🧠</span><div class="tip-content">Repara na
+        <strong>ordem</strong>: primeiro as telas nasceram "em obras", <strong>só então</strong>
+        elas entraram no mapa — não dá pra apontar uma rota para uma tela que não existe. Por
+        isso as rotas de <code>/novo</code> e <code>/editar</code> ainda NÃO estão lá: cada uma
+        entra na hora em que a gente construir a tela dela. E a Navbar fica <strong>fora</strong>
+        do Routes (aparece em toda página — Cap 8). Um conceito por vez, uma rota por vez. 😉</div></div>
+        <div class="papel-missao"><span class="pm-selo">✏️ NO PAPEL · M2</span><span>Área
+        <b>② O MAPA QUE CRESCE</b>: complete os nomes que faltam e marque ☐ nas <b>5 rotas do
+        esqueleto</b> — as únicas que existem agora. As linhas "Passo 4" e "Passo 6" ficam em
+        branco de propósito: você volta e marca cada uma quando construir a tela dela.</span></div>
       </div>
     </div>
   </section>
@@ -950,6 +957,9 @@
         <div class="tip"><span class="tip-icon">🧠</span><div class="tip-content">E repara no
         <code>onClick={salvar}</code> <strong>sem parênteses</strong> — a pegadinha do Cap 6
         continua valendo: entregamos a função, não executamos ela na renderização.</div></div>
+        <div class="papel-missao"><span class="pm-selo">✏️ NO PAPEL · M2</span><span>Nasceu
+        tela, nasce rota: volte ao <b>mapa que cresce</b> e marque ☐ a linha do
+        <b>Passo 4</b>.</span></div>
       </div>
     </div>
   </section>
@@ -1106,6 +1116,10 @@
         (<code>/clientes/2</code>) — "troca ESTA". Os dois levam o objeto completo no 2º
         argumento. Guarde essa comparação: ela vai ser a estrela da revisão guiada no próximo
         encontro.</div></div>
+        <div class="papel-missao"><span class="pm-selo">✏️ NO PAPEL · M2</span><span>Última do
+        Encontro A: marque ☐ a linha do <b>Passo 6</b> no mapa. Olhe a coluna toda — as 7 rotas
+        marcadas são o seu esqueleto pronto; a linha "Enc. B" é o que o agente vai escrever
+        amanhã, com você revisando.</span></div>
       </div>
 
       <div class="card" style="text-align:center;background:linear-gradient(135deg,rgba(97,218,251,0.10),rgba(100,108,255,0.06));border-color:rgba(97,218,251,0.22);margin-top:18px">
@@ -1155,7 +1169,7 @@
         <code>CLAUDE.md</code> com o MESMO conteúdo) e digite as regras com o prof, discutindo o
         PORQUÊ de cada uma:</p></div>
         <div class="ag-file"><span class="h"># Regras do projeto GestorPRO</span>
-Sistema de gestão feito por um aluno do curso Fullstack (UNIESP).
+Sistema de gestão feito por um aluno do curso Fullstack (programa AI).
 
 <span class="h">## Stack permitida (NÃO use NADA fora desta lista)</span>
 <span class="yes">-</span> React com Vite (JavaScript puro — sem TypeScript)

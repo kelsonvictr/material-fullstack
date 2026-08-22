@@ -1,6 +1,6 @@
 # Instruções para Claude — Material Frontend (curso Fullstack)
 
-Material didático **da metade Frontend** do curso presencial Programação Fullstack (UNIESP).
+Material didático **da metade Frontend** do curso presencial Programação Fullstack (programa AI).
 Público **iniciante**. Site estático modular (HTML/CSS/JS vanilla, sem build), um capítulo
 por pasta. Culmina consumindo a API do backend que o aluno já construiu.
 

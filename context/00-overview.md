@@ -1,7 +1,7 @@
 # 00 — Visão geral do projeto
 
 ## O que é
-Material didático **da metade Frontend** do curso presencial **Programação Fullstack** (UNIESP
+Material didático **da metade Frontend** do curso presencial **Programação Fullstack** (programa AI
 e turmas relacionadas). Site estático (HTML/CSS/JS vanilla, sem build), modular — um capítulo
 por pasta — servido como página web.
 

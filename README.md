@@ -1,6 +1,6 @@
 # Curso Fullstack — Material de Frontend
 
-Material didático da **metade Frontend** do curso presencial **Programação Fullstack** (UNIESP),
+Material didático da **metade Frontend** do curso presencial **Programação Fullstack** (programa AI),
 prof. Kelson Almeida. Do zero (HTML) até consumir, em React, a mesma API que o aluno construiu
 no backend.
 

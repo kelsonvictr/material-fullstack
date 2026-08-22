@@ -1,5 +1,5 @@
 # Regras do projeto GestorPRO
-Sistema de gestão feito por um aluno do curso Fullstack (UNIESP).
+Sistema de gestão feito por um aluno do curso Fullstack (programa AI).
 
 ## Stack permitida (NÃO use NADA fora desta lista)
 - React com Vite (JavaScript puro — sem TypeScript)
