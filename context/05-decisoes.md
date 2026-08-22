@@ -776,6 +776,22 @@ travadas com ele (formato: página própria + atalhos; SEM correção automátic
   Nota final amarra a tese: a simetria das fichas é o que permitiu delegar com segurança.
   Chip "✏️ NO CADERNO · M7" no fim da seção Produtos do capítulo (quando as 3 existem).
   43 lacunas + 15 checks; gabarito atualizado (seed v2, 7/7 carimbos).
+- **M8–M10 (2026-08-22, "tem como ser mais completo ainda?")**: o Caderno virou o companheiro
+  de engenharia COMPLETO do capítulo — 10 missões:
+  · **M8 · Ferramentas & Diário de Bugs**: as novidades honestas (useNavigate, window.confirm,
+    Number(), família axios), o conceito-mor "dois mundos" em lacunas, e um **diário de
+    incidentes**: marca quais dos 5 BugZilla pegou + escreve o conserto de cada um + o macete
+    da aba Network. Chip no fim do BugZilla.
+  · **M9 · Oficina de Prompts**: o aluno RASCUNHA os 3 prompts dos Passos 11–13 no Caderno
+    antes de mandar pro agente, com checklist dos 4 ingredientes por prompt ("prompt
+    rascunhado e conferido sai melhor que prompt digitado direto no chat"). Chip na abertura
+    da seção Produtos. Gabarito traz os prompts de referência.
+  · **M10 · Retrospectiva & Demo Day**: roteiro dos 2 minutos, o diff que vai explicar
+    ("mostrar prova que o agente é rápido; explicar prova que o engenheiro é você"), a
+    pergunta de saída do PUT em lacunas, e retro pessoal (aprendi/travei/orgulho — "sprint
+    fecha com retro"). Chip no Desafio pra Casa (onde o demo day é anunciado).
+  Chips digitais usam selo "NO CADERNO" (vs "NO PAPEL" das M1–M6). Gabarito seed v3,
+  10/10 carimbos; campos pessoais marcados "(pessoal — sem resposta certa)".
 
 ## Pendências reconhecidas
 - Planejar em detalhe os **Caps 6–9** (React: state → efeitos/dados → router → integração).

@@ -217,6 +217,107 @@ const CADERNO_CONFIG = {
       ]
     },
 
+    /* ── M8 · CAIXA DE FERRAMENTAS & DIÁRIO DE BUGS ── */
+    {
+      id: 'm8', selo: 'M8',
+      titulo: '🧰 Ferramentas novas & Diário de Bugs',
+      sub: 'o que entrou na sua caixa neste capítulo — e o registro dos perrengues que VOCÊ enfrentou',
+      widgets: [
+        { tipo:'nota', html:'🧰 <b>As novidades honestas do capítulo</b> — complete o que cada uma faz:' },
+        { tipo:'blanks', id:'ferr', linhas:[
+          'o <code>useNavigate</code> me dá o <code>navigate("/clientes")</code> — um [[l1|5]] programável: navegar via [[l2|7]], ex. dentro do <code>.then()</code> depois de salvar',
+          'o <code>window.confirm("Tem certeza?")</code> abre OK/Cancelar e devolve [[c1|5|mono]] ou [[c2|6|mono]] — um boolean, perfeito pra um <code>if</code>',
+          'o <code>Number("320")</code> converte o texto do input pra [[n1|7]] — sem ele, preco e estoque entram como [[n2|6]] no db.json e as contas quebram',
+          'a família completa do axios: <code>.get</code> lê · <code>.[[v1|5|mono]]</code> cria · <code>.[[v2|4|mono]]</code> troca · <code>.[[v3|7|mono]]</code> apaga'
+        ]},
+        { tipo:'nota', html:'🌍 <b>O conceito-mor — dois mundos:</b> complete a lição que carrega o capítulo:' },
+        { tipo:'blanks', id:'mundos', linhas:[
+          'o <code>axios.delete</code> apaga a ficha no [[m1|9]] — mas a tela mostra o [[m2|7]], que é outro mundo. Por isso o <code>.then()</code> chama <code>setClientes(clientes.[[m3|7|mono]](...))</code>: os dois mundos em paz.'
+        ]},
+        { tipo:'nota', html:'🐛 <b>Diário de Bugs</b> — engenheiro registra incidente: marque os que VOCÊ pegou hoje…' },
+        { tipo:'checklist', id:'peguei', itens:[
+          { id:'b1', html:'<b>Bug 1 · o F5 revelador</b> — excluiu e a tela só mudou no F5' },
+          { id:'b2', html:'<b>Bug 2 · o id intrometido</b> — mandou id no POST e o db.json bagunçou' },
+          { id:'b3', html:'<b>Bug 3 · o PUT sem endereço</b> — 404 na cara' },
+          { id:'b4', html:'<b>Bug 4 · o agente rebelde</b> — diff com coisa proibida no AGENTS.md' },
+          { id:'b5', html:'<b>Bug 5 · Network Error</b> — o json-server caiu' }
+        ]},
+        { tipo:'nota', html:'…e escreva o <b>conserto</b> de cada um (mesmo os que não pegou — vão cair na prova da vida):' },
+        { tipo:'blanks', id:'conserto', linhas:[
+          '<b>Bug 1:</b> [[b1|38]]',
+          '<b>Bug 2:</b> [[b2|38]]',
+          '<b>Bug 3:</b> [[b3|38]]',
+          '<b>Bug 4:</b> [[b4|38]]',
+          '<b>Bug 5:</b> [[b5|38]]'
+        ]},
+        { tipo:'nota', html:'🔦 <b>Macete de ouro do diagnóstico</b> — em 30 segundos você sabe se o problema é de quem PEDE ou de quem RESPONDE. Complete:' },
+        { tipo:'blanks', id:'macete', linhas:[
+          'CRUD com defeito se investiga pela aba [[aba|9]] do F12: o verbo está certo? a URL tem o [[id|3|mono]] quando devia? os números vieram sem [[aspas|6]]? o status voltou 200/201 ou [[st|4|mono]]?'
+        ]}
+      ]
+    },
+
+    /* ── M9 · OFICINA DE PROMPTS ── */
+    {
+      id: 'm9', selo: 'M9',
+      titulo: '📝 Oficina de Prompts (Produtos)',
+      sub: 'rascunhe AQUI cada prompt dos Passos 11–13 ANTES de mandar pro agente — e confira os 4 ingredientes',
+      widgets: [
+        { tipo:'nota', html:'Os 4 ingredientes de um prompt-spec (Cap 9): <b>CONTEXTO</b> (qual arquivo é o modelo) · <b>TAREFA</b> (específica, uma por vez) · <b>RESTRIÇÕES</b> (o AGENTS.md!) · <b>CRITÉRIO DE ACEITE</b> ("pronto quando…"). Escreva, confira os 4, e SÓ ENTÃO mande.' },
+
+        { tipo:'nota', html:'━━━ 📦 <b>PROMPT 1 · a vitrine</b> (Passo 11) — o cliente pediu: tabela com preço "R$" e selo ⚠️ quando o estoque estiver baixo ━━━' },
+        { tipo:'texto', id:'p1', linhas:4, placeholder:'escreva seu prompt aqui antes de mandar…' },
+        { tipo:'checklist', id:'p1ck', itens:[
+          { id:'ctx', html:'tem CONTEXTO (citei o arquivo-modelo: Clientes.jsx)' },
+          { id:'tar', html:'tem TAREFA específica (tabela + R$ + selo com &amp;&amp;)' },
+          { id:'res', html:'tem RESTRIÇÕES (segue o AGENTS.md · não mexa em outros arquivos)' },
+          { id:'ace', html:'tem ACEITE ("pronto quando: Monitor e Mouse com selo, os demais sem")' }
+        ]},
+
+        { tipo:'nota', html:'━━━ 📦 <b>PROMPT 2 · cadastrar &amp; excluir</b> (Passo 12) — atenção: preco e estoque são NÚMEROS ━━━' },
+        { tipo:'texto', id:'p2', linhas:4, placeholder:'seu prompt…' },
+        { tipo:'checklist', id:'p2ck', itens:[
+          { id:'ctx', html:'tem CONTEXTO (modelos: ClienteNovo.jsx e a função excluir)' },
+          { id:'tar', html:'tem TAREFA (cadastro + excluir com confirm)' },
+          { id:'num', html:'pedi a conversão com Number() — o detalhe de ouro' },
+          { id:'ace', html:'tem ACEITE (números SEM aspas no db.json)' }
+        ]},
+
+        { tipo:'nota', html:'━━━ 📦 <b>PROMPT 3 · editar</b> (Passo 13) — o último PUT, sem olhinho ━━━' },
+        { tipo:'texto', id:'p3', linhas:4, placeholder:'seu prompt…' },
+        { tipo:'checklist', id:'p3ck', itens:[
+          { id:'ctx', html:'tem CONTEXTO (modelo: ClienteEditar.jsx)' },
+          { id:'tar', html:'tem TAREFA (useParams + GET pré-enche + PUT com id na URL)' },
+          { id:'res', html:'tem RESTRIÇÕES (AGENTS.md · Number() nos numéricos)' },
+          { id:'ace', html:'tem ACEITE (editar preço e ver na listagem e no db.json)' }
+        ]},
+
+        { tipo:'nota', html:'💎 <b>Regra da oficina:</b> prompt sem os 4 ingredientes = decisão delegada ao estagiário. Buraco no pedido, surpresa no diff.' }
+      ]
+    },
+
+    /* ── M10 · RETROSPECTIVA & DEMO DAY ── */
+    {
+      id: 'm10', selo: 'M10',
+      titulo: '🎤 Retrospectiva & Demo Day',
+      sub: 'sábado tem demo day: 2 minutos por aluno — prepare o SEU roteiro e feche o projeto como engenheiro',
+      widgets: [
+        { tipo:'nota', html:'🎬 <b>Roteiro dos meus 2 minutos</b> — o que vou mostrar, em ordem (dica: dashboard → um cadastro ao vivo → o selo de estoque):' },
+        { tipo:'texto', id:'roteiro', linhas:3, placeholder:'1) … 2) … 3) …' },
+        { tipo:'nota', html:'🔍 <b>O diff que vou explicar</b> — mostrar prova que o agente é rápido; EXPLICAR prova que o engenheiro é você. Qual diff você domina de olhos fechados, e por quê?' },
+        { tipo:'texto', id:'diff', linhas:3, placeholder:'o diff de … porque …' },
+        { tipo:'nota', html:'🎫 <b>A pergunta de saída, respondida como engenheiro</b> — "editei um produto: o que viaja até o servidor?"' },
+        { tipo:'blanks', id:'saida', linhas:[
+          'um [[verbo|4|mono]] para <code>/produtos/[[alvo|3|mono]]</code> — o id na [[onde|4]] diz QUAL ficha, e o [[oque|6]] leva o objeto completo (números como números!)'
+        ]},
+        { tipo:'nota', html:'🪞 <b>Retrospectiva</b> (isso é ritual de equipe de verdade — sprint fecha com retro):' },
+        { tipo:'texto', id:'aprendi', linhas:2, placeholder:'o que EU mais aprendi neste projeto foi…' },
+        { tipo:'texto', id:'travei', linhas:2, placeholder:'onde travei e como saí…' },
+        { tipo:'texto', id:'orgulho', linhas:2, placeholder:'meu maior orgulho no GestorPRO é…' },
+        { tipo:'nota', html:'🎓 <b>Frontend: CONCLUÍDO.</b> Este caderno é a prova documentada: você domina o padrão, delega a repetição e revisa tudo. Leve-o pro demo day — e guarde o .json de backup!' }
+      ]
+    },
+
     /* ── rascunho livre (sem selo — não conta no progresso) ── */
     {
       id: 'rascunho',

@@ -43,7 +43,7 @@
    ═══════════════════════════════════════════════════════════ */
 (function(){
   const KEY = 'caderno:cap10-gabarito';
-  const SEED_V = 2;   // suba este número quando o gabarito ganhar conteúdo novo
+  const SEED_V = 3;   // suba este número quando o gabarito ganhar conteúdo novo
   try {
     const atual = JSON.parse(localStorage.getItem(KEY) || 'null');
     if (atual && atual._seedV === SEED_V) return;   // já está na versão atual
@@ -109,6 +109,29 @@
       'm7.prod.n1':'preco', 'm7.prod.n2':'estoque', 'm7.prod.conv':'Number()',
       'm7.prod.campo':'estoque', 'm7.prod.val':'5',
       'm7.prod.quem2':'eu mesmo',
+      /* M8 — ferramentas, dois mundos, consertos e macete */
+      'm8.ferr.l1':'Link', 'm8.ferr.l2':'código',
+      'm8.ferr.c1':'true', 'm8.ferr.c2':'false',
+      'm8.ferr.n1':'número', 'm8.ferr.n2':'texto',
+      'm8.ferr.v1':'post', 'm8.ferr.v2':'put', 'm8.ferr.v3':'delete',
+      'm8.mundos.m1':'servidor', 'm8.mundos.m2':'estado', 'm8.mundos.m3':'filter',
+      'm8.conserto.b1':'setClientes(clientes.filter(...)) dentro do .then()',
+      'm8.conserto.b2':'POST sem id no corpo — quem carimba é o servidor',
+      'm8.conserto.b3':'o id vai na URL: "/fornecedores/" + id',
+      'm8.conserto.b4':'reprovar citando a regra: "refaça seguindo o AGENTS.md"',
+      'm8.conserto.b5':'subir o json-server de novo no Terminal 2 + F5',
+      'm8.macete.aba':'Network', 'm8.macete.id':'id', 'm8.macete.aspas':'aspas', 'm8.macete.st':'404',
+      /* M9 — prompts de referência (o do aluno pode ser melhor!) */
+      'm9.p1.txt':'Seguindo o AGENTS.md e a estrutura de src/pages/Clientes.jsx, reescreva src/pages/Produtos.jsx: tabela com Nome, Preço ("R$ " + preco), Estoque e Categoria vindos da API. Na coluna do estoque, renderização condicional com && : quando estoque < 5, mostre o selo "⚠️ estoque baixo" (Produtos.module.css). Não mexa em outros arquivos. Pronto quando: Monitor e Mouse Gamer com selo, os demais sem.',
+      'm9.p2.txt':'Seguindo o AGENTS.md e usando src/pages/ClienteNovo.jsx como modelo, crie ProdutoNovo.jsx (nome, preco, estoque, categoria) com axios.post SEM id e preco/estoque convertidos com Number(), + a rota /produtos/novo e o Link "+ Novo produto". Depois, seguindo a função excluir de Clientes.jsx, adicione o excluir com window.confirm e .filter(). Pronto quando: cadastrar e excluir funcionando, números SEM aspas no db.json.',
+      'm9.p3.txt':'Seguindo o AGENTS.md e usando src/pages/ClienteEditar.jsx como modelo, crie ProdutoEditar.jsx: useParams pega o id, axios.get pré-enche o formulário, salvar usa axios.put com o id na URL e Number() nos numéricos, voltando com useNavigate. + a rota /produtos/:id/editar e o Link "✏️ Editar" na tabela. Pronto quando: editar o preço do Teclado e a mudança aparecer na listagem e no db.json.',
+      /* M10 — demo day (modelos; retro é pessoal) */
+      'm10.roteiro.txt':'1) Dashboard com os totais e o alerta de estoque · 2) cadastro de um produto AO VIVO (aparece na lista e no db.json) · 3) o selo ⚠️ acendendo com estoque 2.',
+      'm10.diff.txt':'O diff do ProdutoEditar: sei explicar o useParams pegando o id, o GET pré-enchendo os estados e o PUT com id na URL — é o Cap 6 + 7 + 8 na mesma tela.',
+      'm10.saida.verbo':'PUT', 'm10.saida.alvo':'ID', 'm10.saida.onde':'URL', 'm10.saida.oque':'corpo',
+      'm10.aprendi.txt':'(pessoal — sem resposta certa)',
+      'm10.travei.txt':'(pessoal — sem resposta certa)',
+      'm10.orgulho.txt':'(pessoal — sem resposta certa)',
       /* rascunho: nota do gabarito */
       'rascunho.notas.txt':'(área livre do aluno — sem resposta certa)'
     },
@@ -134,7 +157,7 @@
         seta('#b91c1c', 0.550, 0.06, 0.58), seta('#b91c1c', 0.610, 0.58, 0.06)
       )
     },
-    carimbos: { m1:DATA, m2:DATA, m3:DATA, m4:DATA, m5:DATA, m6:DATA, m7:DATA },
+    carimbos: { m1:DATA, m2:DATA, m3:DATA, m4:DATA, m5:DATA, m6:DATA, m7:DATA, m8:DATA, m9:DATA, m10:DATA },
     atualizado: null,
     _seedV: SEED_V
   };
@@ -149,6 +172,14 @@
   ['clicheck','forncheck','prodcheck'].forEach(w => {
     ['g','gid','p','u','d'].forEach(id => { estado.c['m7.'+w+'.'+id] = true; });
   });
+
+  /* M8 — os 5 bugs "enfrentados" */
+  ['b1','b2','b3','b4','b5'].forEach(id => { estado.c['m8.peguei.'+id] = true; });
+
+  /* M9 — os checklists dos 3 prompts */
+  estado.c['m9.p1ck.ctx']=true; estado.c['m9.p1ck.tar']=true; estado.c['m9.p1ck.res']=true; estado.c['m9.p1ck.ace']=true;
+  estado.c['m9.p2ck.ctx']=true; estado.c['m9.p2ck.tar']=true; estado.c['m9.p2ck.num']=true; estado.c['m9.p2ck.ace']=true;
+  estado.c['m9.p3ck.ctx']=true; estado.c['m9.p3ck.tar']=true; estado.c['m9.p3ck.res']=true; estado.c['m9.p3ck.ace']=true;
 
   localStorage.setItem(KEY, JSON.stringify(estado));
 })();
