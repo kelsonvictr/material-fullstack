@@ -661,6 +661,22 @@ com `tooling/gestorpro-referencia/` (só acrescentam comentários didáticos); a
 3. Checklist final dizia "12 arquivos" — são **14** (o "12" colidia com os *12 componentes*
    citados no box do rafce, que está correto).
 
+### Passo 2 REORDENADO (2º achado do prof, mesma raiz do anterior)
+*"não tem a maioria desses componentes ainda e já manda importar tudo e fazer os routes?"* —
+olhando o bloco do `App.jsx`. Estava certo: a v1 do Passo 2 mostrava **uma** page de exemplo
+e mandava "repita para as outras 3" **num tip de texto**, e a Navbar (que linka pras telas)
+vinha ANTES das telas. Resultado: o `App.jsx` parecia importar 5 arquivos que o aluno nunca
+viu nascer. **Regra que passa a valer no capítulo inteiro: nada de prosa para criar arquivo —
+se o aluno tem que digitar, tem bloco de código.** Nova ordem do Passo 2:
+1️⃣ `main.jsx` (plugue) → [box rafce] → 2️⃣ **as 4 telas "em obras" num bloco só**, cada uma
+com cabeçalho `// ═══ src/pages/X.jsx ═══` (+ tip avisando que são 4 ARQUIVOS separados) →
+3️⃣ `Navbar.jsx` ("agora sim o menu — aponta pras telas que já existem") → 4️⃣
+`Navbar.module.css` → 5️⃣ `NaoEncontrada.jsx` → **`.warning` de checkpoint** ("Pare e confira
+ANTES de escrever o App.jsx": lista os 6 arquivos, explica que import só resolve se o arquivo
+existe, e antecipa o erro *Failed to resolve import* + tela branca) → 6️⃣ `App.jsx`.
+Subtítulo do passo virou **"Telas primeiro, menu depois, mapa por último"** — mesmo mote do
+Mapa de Engenharia ("tela primeiro, rota depois"), agora ecoando nos dois lugares.
+
 ## Pendências reconhecidas
 - Planejar em detalhe os **Caps 6–9** (React: state → efeitos/dados → router → integração).
   Caps 4 e 5 já fixaram o tom, o setup Vite base e a Mini-loja como artefato contínuo do arco React.

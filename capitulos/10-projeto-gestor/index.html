@@ -595,18 +595,19 @@
       <div class="exercise guided">
         <div class="exercise-header"><span class="exercise-icon">👨‍🏫</span><div>
           <div class="exercise-title">Passo 2 — o esqueleto navegável (com o prof)</div>
-          <div class="exercise-sub">BrowserRouter + Navbar + o mapa de rotas com páginas "em obras"</div></div>
+          <div class="exercise-sub">Telas primeiro, menu depois, mapa por último — 6 arquivos na ordem certa</div></div>
         </div>
-        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p>1) No
-        <code>main.jsx</code>: o abraço do <span class="cmp">&lt;BrowserRouter&gt;</span> (Cap 8,
-        igualzinho). 2) Crie <code>src/components/Navbar.jsx</code> (rafce) com os Links e o CSS
-        Module dele. 3) Crie as pages iniciais em <code>src/pages/</code>: <span class="cmp">Dashboard</span>,
-        <span class="cmp">Clientes</span>, <span class="cmp">Fornecedores</span> e
-        <span class="cmp">Produtos</span> (por enquanto, cada uma só com um <code>&lt;h2&gt;</code>
-        "🚧 em obras") + a <span class="cmp">NaoEncontrada</span>. 4) Monte o mapa no App. 5) Passeie
-        clicando na Navbar: 4 páginas + 404 funcionando, <strong>sem F5</strong>.
-        <strong>Todo o código está aqui embaixo, na ordem de criação</strong> — arquivo por
-        arquivo. 📋</p></div>
+        <div class="concept"><div class="concept-title">🎯 Tarefa</div><p><strong>A ordem
+        importa</strong> — e ela é a mesma do mundo real: <strong>primeiro as telas existem,
+        depois a gente aponta pra elas</strong>. 1️⃣ <code>main.jsx</code> ganha o abraço do
+        <span class="cmp">&lt;BrowserRouter&gt;</span> (Cap 8, igualzinho). 2️⃣ Nascem as
+        <strong>4 telas "em obras"</strong> em <code>src/pages/</code> (cada uma só com um
+        <code>&lt;h2&gt;</code>). 3️⃣ e 4️⃣ Nasce a <span class="cmp">Navbar</span> com o CSS
+        Module dela — o menu só pode linkar pra tela que já existe. 5️⃣ Nasce a
+        <span class="cmp">NaoEncontrada</span>, o 404. 6️⃣ <strong>Só então</strong> o
+        <code>App.jsx</code> liga tudo no mapa de rotas. No fim: passeie clicando na Navbar —
+        4 páginas + 404 funcionando, <strong>sem F5</strong>. Todo o código está aqui embaixo,
+        arquivo por arquivo. 📋</p></div>
 
         <div class="code-block">
           <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">1️⃣ src/main.jsx — o plugue ganha o abraço do Router</span><span class="lang-badge jsx">JSX</span></div>
@@ -629,11 +630,11 @@
         ele.</div></div>
 
         <div class="concept">
-          <div class="concept-title">⌨️ Chama o Rafael do Ceará: são 6 componentes só neste passo</div>
+          <div class="concept-title">⌨️ Chama o Rafael do Ceará: são 6 componentes agora, um atrás do outro</div>
           <p>Daqui até o fim do projeto você vai criar uns <strong>12 arquivos de
-          componente</strong> — 6 deles agora. <strong>Não digite o esqueleto na mão nenhuma
-          vez.</strong> O ritual é sempre o mesmo: crie o arquivo <code>.jsx</code> com o nome
-          certo (Maiúscula!), digite <code>rafce</code> e aperte <kbd>Tab</kbd>. O snippet já
+          componente</strong> — 6 deles nos próximos minutos. <strong>Não digite o esqueleto na
+          mão nenhuma vez.</strong> O ritual é sempre o mesmo: crie o arquivo <code>.jsx</code>
+          com o nome certo (Maiúscula!), digite <code>rafce</code> e aperte <kbd>Tab</kbd>. O snippet já
           escreve a arrow function <strong>nomeada igual ao arquivo</strong> e o
           <code>export default</code> — que é exatamente o padrão da casa, o mesmo que você vai
           exigir do agente no AGENTS.md amanhã.</p>
@@ -652,7 +653,49 @@
         </div>
 
         <div class="code-block">
-          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">2️⃣ src/components/Navbar.jsx</span><span class="lang-badge jsx">JSX</span></div>
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">2️⃣ src/pages/ — as 4 telas "em obras" (crie a pasta e os 4 arquivos)</span><span class="lang-badge jsx">JSX</span></div>
+<pre><span class="cm">// ══════ src/pages/Dashboard.jsx ══════</span>
+<span class="kw">const</span> <span class="fn">Dashboard</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span><span class="tag">&lt;h2&gt;</span>📊 Visão geral 🚧 em obras<span class="tag">&lt;/h2&gt;</span><span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span>
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">Dashboard</span>
+
+<span class="cm">// ══════ src/pages/Clientes.jsx ══════</span>
+<span class="kw">const</span> <span class="fn">Clientes</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span><span class="tag">&lt;h2&gt;</span>👥 Clientes 🚧 em obras<span class="tag">&lt;/h2&gt;</span><span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span>
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">Clientes</span>
+
+<span class="cm">// ══════ src/pages/Fornecedores.jsx ══════</span>
+<span class="kw">const</span> <span class="fn">Fornecedores</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span><span class="tag">&lt;h2&gt;</span>🚚 Fornecedores 🚧 em obras<span class="tag">&lt;/h2&gt;</span><span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span>
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">Fornecedores</span>
+
+<span class="cm">// ══════ src/pages/Produtos.jsx ══════</span>
+<span class="kw">const</span> <span class="fn">Produtos</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span><span class="tag">&lt;h2&gt;</span>📦 Produtos 🚧 em obras<span class="tag">&lt;/h2&gt;</span><span class="tag">&lt;/div&gt;</span>
+  )
+<span class="punc">}</span>
+<span class="kw">export</span> <span class="kw">default</span> <span class="var">Produtos</span></pre>
+        </div>
+        <div class="tip"><span class="tip-icon">📋</span><div class="tip-content"><strong>São 4
+        arquivos separados</strong> (o bloco acima mostra os quatro de uma vez só pra economizar
+        espaço — cada um vai no SEU arquivo). Com o rafce, cada um leva 15 segundos: cria o
+        arquivo, <code>rafce</code> + <kbd>Tab</kbd>, e só troca o emoji e o texto do
+        <code>&lt;h2&gt;</code>. Repara que aqui eles cabem em uma linha só
+        (<code>&lt;div&gt;&lt;h2&gt;…&lt;/h2&gt;&lt;/div&gt;</code>) — é JSX curtinho mesmo, essas
+        telas ainda não fazem nada.</div></div>
+
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">3️⃣ src/components/Navbar.jsx — agora sim o menu (aponta pras telas que já existem)</span><span class="lang-badge jsx">JSX</span></div>
 <pre><span class="kw">import</span> <span class="punc">{</span> <span class="var">Link</span> <span class="punc">}</span> <span class="kw">from</span> <span class="st">"react-router-dom"</span>
 <span class="kw">import</span> <span class="var">styles</span> <span class="kw">from</span> <span class="st">"./Navbar.module.css"</span>
 
@@ -673,7 +716,7 @@
         </div>
 
         <div class="code-block">
-          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">3️⃣ src/components/Navbar.module.css</span><span class="lang-badge css">CSS</span></div>
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">4️⃣ src/components/Navbar.module.css</span><span class="lang-badge css">CSS</span></div>
 <pre><span class="sel">.navbar</span> <span class="punc">{</span>
   <span class="prop">display</span><span class="punc">:</span> <span class="val">flex</span><span class="punc">;</span>
   <span class="prop">align-items</span><span class="punc">:</span> <span class="val">center</span><span class="punc">;</span>
@@ -707,26 +750,7 @@
         </div>
 
         <div class="code-block">
-          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">4️⃣ src/pages/Clientes.jsx — o MODELO das 4 páginas "em obras"</span><span class="lang-badge jsx">JSX</span></div>
-<pre><span class="kw">const</span> <span class="fn">Clientes</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
-  <span class="kw">return</span> (
-    <span class="tag">&lt;div&gt;</span>
-      <span class="tag">&lt;h2&gt;</span>👥 Clientes 🚧 em obras<span class="tag">&lt;/h2&gt;</span>
-    <span class="tag">&lt;/div&gt;</span>
-  )
-<span class="punc">}</span>
-
-<span class="kw">export</span> <span class="kw">default</span> <span class="var">Clientes</span></pre>
-        </div>
-        <div class="tip"><span class="tip-icon">📋</span><div class="tip-content">Repita esse
-        molde (rafce + trocar o emoji e o texto do <code>&lt;h2&gt;</code>) para
-        <code>Dashboard.jsx</code> (📊 Visão geral), <code>Fornecedores.jsx</code> (🚚) e
-        <code>Produtos.jsx</code> (📦). São 4 arquivos de 9 linhas — em 2 minutos você tem o
-        sistema inteiro navegável. <strong>É de propósito:</strong> a gente dá vida a uma tela
-        por vez, e você já vê o esqueleto funcionando hoje.</div></div>
-
-        <div class="code-block">
-          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">5️⃣ src/pages/NaoEncontrada.jsx — o 404 amigável</span><span class="lang-badge jsx">JSX</span></div>
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">5️⃣ src/pages/NaoEncontrada.jsx — o 404 amigável (a 5ª tela)</span><span class="lang-badge jsx">JSX</span></div>
 <pre><span class="kw">import</span> <span class="punc">{</span> <span class="var">Link</span> <span class="punc">}</span> <span class="kw">from</span> <span class="st">"react-router-dom"</span>
 
 <span class="kw">const</span> <span class="fn">NaoEncontrada</span> <span class="op">=</span> () <span class="op">=&gt;</span> <span class="punc">{</span>
@@ -746,8 +770,20 @@
         vez de CSS Module — são só duas regrinhas, não vale um arquivo só pra isso. Todo o resto
         do sistema usa Module, como manda a regra da casa.</div></div>
 
+        <div class="warning"><span class="warning-icon">🛑</span><div class="warning-content">
+          <strong>Pare e confira ANTES de escrever o App.jsx.</strong> O mapa vai
+          <code>import</code> 6 arquivos — e <strong>import só funciona se o arquivo
+          existir</strong>. Olhe a barra lateral do VSCode e confirme que você tem os seis:
+          <code>components/Navbar.jsx</code> · <code>pages/Dashboard.jsx</code> ·
+          <code>pages/Clientes.jsx</code> · <code>pages/Fornecedores.jsx</code> ·
+          <code>pages/Produtos.jsx</code> · <code>pages/NaoEncontrada.jsx</code>. Faltou algum?
+          Crie agora (rafce + <kbd>Tab</kbd>, 15 segundos). Se você escrever o App importando um
+          arquivo que não existe, a tela fica <strong>branca</strong> e o terminal grita
+          <em>"Failed to resolve import"</em> — agora você já sabe o que isso significa. 😉
+        </div></div>
+
         <div class="code-block">
-          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">6️⃣ src/App.jsx — o mapa completo do Encontro A</span><span class="lang-badge jsx">JSX</span></div>
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">6️⃣ src/App.jsx — AGORA sim: o mapa que liga os 6 arquivos</span><span class="lang-badge jsx">JSX</span></div>
 <pre><span class="kw">import</span> <span class="punc">{</span> <span class="var">Routes</span>, <span class="var">Route</span> <span class="punc">}</span> <span class="kw">from</span> <span class="st">"react-router-dom"</span>
 <span class="kw">import</span> <span class="var">Navbar</span> <span class="kw">from</span> <span class="st">"./components/Navbar.jsx"</span>
 <span class="kw">import</span> <span class="var">Dashboard</span> <span class="kw">from</span> <span class="st">"./pages/Dashboard.jsx"</span>
