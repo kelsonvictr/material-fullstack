@@ -725,6 +725,40 @@ C.R.U.D. completa e o ritual ①–⑤ respondido. Cabeçalho e toolbar marcam "
 **Deliberadamente SEM link** em qualquer página (pedido do prof) — abre só pelo endereço
 direto; a toolbar lembra que a versão em branco para imprimir é a `mapa-engenharia.html`.
 
+## 2026-08-22 (cont. 4) — CADERNO DE ENGENHARIA: o documentador digital (novo artefato-plataforma)
+
+Prof não conseguiu imprimir a folha e pediu *"algo interativo e bem criativo, um documentador
+digital moderno, reaproveitável em outros capítulos, com export e localStorage"*. Decisões
+travadas com ele (formato: página própria + atalhos; SEM correção automática; nome:
+**Caderno de Engenharia**; ritmo: caprichado). **Spec completa em
+`context/10-caderno-engenharia.md`** — este registro é o resumo executivo:
+
+- **Motor reutilizável**: `shared/caderno.js` (+`caderno.css`) — `CadernoEngine.mount(el, CONFIG)`
+  com config declarativo. **Capítulo novo = escrever config, zero código.** 7 widgets: nota,
+  checklist, blanks (`[[campo|tam|mono]]`), texto pautado, wordbank (arrastar OU tocar),
+  desenho (canvas de traço, cores, desfazer) e aceite (checks ①–⑤ + **assinatura desenhada**).
+- **Identidade**: papel quadriculado da prancheta + tinta do aluno em **Caveat azul-caneta**
+  (gabarito do prof é laranja — nunca confunde). Concluir missão = **carimbar** (animação de
+  carimbo com data; remove clicando). 6/6 → confete. Chips M1–M6 no topo com progresso.
+- **Persistência**: `caderno:cap10` (estado) + `caderno:aluno` (nome, global entre capítulos),
+  autosave debounce + "✓ salvo". Canvas salva TRAÇOS normalizados (não dataURL) → redesenha
+  nítido em qualquer resize/DPI.
+- **Export**: 🖨️ imprimir preenchido (print CSS A4 retrato) · 💾 baixar/📂 restaurar .json
+  (o material AVISA que localStorage morre) · 📸 PNG via `html2canvas` **vendorizado** em
+  `shared/vendor/` (198KB, progressivo: sem o vendor o botão some).
+- **Cap 10** (`caderno.html`): M1 fundação+gavetas · M2 mapa que cresce · M3 estrada
+  (DESENHA as setas! GET de exemplo no texto) + legenda CRUD · M4 anatomia + ciclo wordbank ·
+  M5 ritual + regra própria · M6 termo com assinaturas · rascunho livre (sem selo).
+- **Integração no capítulo**: os 8 chips `.papel-missao` ganharam `📓 abrir no Caderno`
+  (deep-link `caderno.html#mN`, funciona), CTA da Arquitetura virou "digital OU papel",
+  sidebar com os dois. A folha impressa e o gabarito continuam como estavam.
+- **Testado no Chrome** (funcional, via eventos sintéticos + reload): autosave/restauração ✓,
+  wordbank ✓, desenho+redesenho ✓, assinatura ✓ (exigiu try/catch no `setPointerCapture` —
+  pointerId inválido explodia o handler), carimbo+chip ✓, deep-link ✓. Estado de teste limpo.
+- **Fase 2 (backlog)**: card "📓 Meu Caderno" no hub com progresso agregado; configs para
+  capítulos anteriores; card-PNG de compartilhamento. O motor não tem nada de React — serve
+  pros outros cursos do workspace.
+
 ## Pendências reconhecidas
 - Planejar em detalhe os **Caps 6–9** (React: state → efeitos/dados → router → integração).
   Caps 4 e 5 já fixaram o tom, o setup Vite base e a Mini-loja como artefato contínuo do arco React.

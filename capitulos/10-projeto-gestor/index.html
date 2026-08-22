@@ -198,6 +198,11 @@
   .papel-missao .pm-selo{flex-shrink:0;background:#7c3aed;color:#fff;font-weight:900;font-size:0.7rem;
     border-radius:999px;padding:5px 11px;white-space:nowrap}
   .papel-missao b{color:var(--text)}
+  .papel-missao .pm-link{flex-shrink:0;margin-left:auto;align-self:center;white-space:nowrap;
+    font-size:0.7rem;font-weight:900;color:#c9b8ff;text-decoration:none;border:1px solid rgba(167,139,250,0.45);
+    border-radius:999px;padding:5px 11px;transition:all .2s}
+  .papel-missao .pm-link:hover{background:rgba(124,92,255,0.15);transform:translateY(-1px)}
+  @media (max-width:560px){.papel-missao{flex-wrap:wrap}.papel-missao .pm-link{margin-left:0}}
 
   /* ═══ a jornada do curso (Formatura) ═══ */
   .jornada{display:grid;grid-template-columns:repeat(5,1fr);margin:20px 0 8px}
@@ -264,7 +269,8 @@
   </div>
   <div class="sidebar-group">
     <div class="sidebar-group-title">Material de apoio</div>
-    <a class="sidebar-link" href="mapa-engenharia.html" target="_blank" rel="noopener"><span class="dot" style="background:#fff"></span> 🖨️ Mapa de Engenharia (A4)</a>
+    <a class="sidebar-link" href="caderno.html" target="_blank" rel="noopener"><span class="dot" style="background:#c9b8ff"></span> 📓 Caderno de Engenharia</a>
+    <a class="sidebar-link" href="mapa-engenharia.html" target="_blank" rel="noopener"><span class="dot" style="background:#fff"></span> 🖨️ Mapa pra imprimir (A4)</a>
   </div>
 </nav>
 
@@ -424,18 +430,21 @@
           </div>
         </div>
         <div>
-          <div class="mc-kicker">material de mão · 1 folha por aluno · frente e verso</div>
-          <h4>🗺️ Mapa de Engenharia do GestorPRO</h4>
-          <p>A4 paisagem: a <strong>frente</strong> é a arquitetura do Encontro A (navegador ⇢
-          axios ⇢ json-server) e o <strong>verso</strong> é a linha de produção do Encontro B
-          (prompt ⇢ diff ⇢ ritual ⇢ assinatura). Prof: imprima frente-e-verso <em>virando na
-          borda curta</em>.</p>
+          <div class="mc-kicker">o documentador do projeto · digital ou papel</div>
+          <h4>📓 Caderno de Engenharia — Mapa do GestorPRO</h4>
+          <p>O mapa do sistema inteiro (navegador ⇢ axios ⇢ json-server, e a linha de produção
+          com o agente), preenchido POR VOCÊ durante a aula. No <strong>Caderno digital</strong>
+          você escreve, <strong>desenha as setas</strong>, arrasta palavras e até
+          <strong>assina</strong> o Termo de Aceite — tudo salvo no seu navegador, com backup em
+          .json e versão pra imprimir preenchida. Prefere papel e caneta? A folha A4
+          frente-e-verso continua valendo (imprimir <em>virando na borda curta</em>).</p>
           <p><strong style="color:#c9b8ff">Nada de preencher agora!</strong> A folha acompanha a
           <strong>ordem em que a gente constrói</strong>: <strong>⓪ fundação</strong> (M1) →
           <strong>① esqueleto</strong> → <strong>② mapa de rotas</strong> (M2) →
           <strong>③ anatomia da página</strong> (M4), com as setas do CRUD (M3) no meio. Cada
           missão ✏️ aparece aqui no material na hora certa.</p>
-          <a class="mc-btn" href="mapa-engenharia.html" target="_blank" rel="noopener">🖨️ abrir a folha pra imprimir</a>
+          <a class="mc-btn" href="caderno.html" target="_blank" rel="noopener">📓 abrir o Caderno de Engenharia</a>
+          <a class="mc-btn" style="background:var(--surface2);color:var(--text);border:1px solid rgba(255,255,255,0.16);margin-left:8px" href="mapa-engenharia.html" target="_blank" rel="noopener">🖨️ versão pra imprimir</a>
         </div>
       </div>
 
@@ -770,7 +779,7 @@ npm install axios react-router-dom</pre>
         <b>⓪ A FUNDAÇÃO</b> (coluna do servidor): marque os 4 quadradinhos conforme fizer, e
         anote as <b>duas portas</b>. Logo abaixo, preencha as <b>gavetas do cartório</b> — os
         campos de "fornecedores" e "produtos" — e circule os DOIS campos que você digita como
-        <b>números</b> (eles voltam pra te assombrar no Passo 12 😄).</span></div>
+        <b>números</b> (eles voltam pra te assombrar no Passo 12 😄).</span><a class="pm-link" href="caderno.html#m1" target="_blank" rel="noopener">📓 abrir no Caderno</a></div>
       </div>
 
       <div class="exercise guided">
@@ -999,7 +1008,7 @@ npm install axios react-router-dom</pre>
         <div class="papel-missao"><span class="pm-selo">✏️ NO PAPEL · M2</span><span>Área
         <b>② O MAPA QUE CRESCE</b>: complete os nomes que faltam e marque ☐ nas <b>5 rotas do
         esqueleto</b> — as únicas que existem agora. As linhas "Passo 4" e "Passo 6" ficam em
-        branco de propósito: você volta e marca cada uma quando construir a tela dela.</span></div>
+        branco de propósito: você volta e marca cada uma quando construir a tela dela.</span><a class="pm-link" href="caderno.html#m2" target="_blank" rel="noopener">📓 abrir no Caderno</a></div>
       </div>
     </div>
   </section>
@@ -1091,7 +1100,7 @@ npm install axios react-router-dom</pre>
       <div class="papel-missao"><span class="pm-selo">✏️ NO PAPEL · M3</span><span>Na
       <b>estrada HTTP</b> da folha: desenhe as setas de POST, PUT e DELETE (ida E volta — o GET
       já está lá de exemplo) e complete a <b>legenda C.R.U.D.</b> — letra, ação e onde vai o id
-      de cada verbo.</span></div>
+      de cada verbo.</span><a class="pm-link" href="caderno.html#m3" target="_blank" rel="noopener">📓 abrir no Caderno</a></div>
 
       <div class="quiz" style="margin-top:16px">
         <div class="quiz-q"><span class="q-emoji">📮</span> O usuário clicou em "excluir" no fornecedor de id 5. Qual é a chamada certa?</div>
@@ -1261,7 +1270,7 @@ npm install axios react-router-dom</pre>
         <div class="papel-missao"><span class="pm-selo">✏️ NO PAPEL · M4</span><span>Complete a
         <b>anatomia da Clientes.jsx</b> (os hooks de cada linha) e o <b>ciclo da listagem</b>
         (numere os 6 passos usando o banco de palavras). Se você preencher sem colar da tela,
-        o padrão é seu pra sempre.</span></div>
+        o padrão é seu pra sempre.</span><a class="pm-link" href="caderno.html#m4" target="_blank" rel="noopener">📓 abrir no Caderno</a></div>
       </div>
     </div>
   </section>
@@ -1409,7 +1418,7 @@ npm install axios react-router-dom</pre>
         continua valendo: entregamos a função, não executamos ela na renderização.</div></div>
         <div class="papel-missao"><span class="pm-selo">✏️ NO PAPEL · M2</span><span>Nasceu
         tela, nasce rota: volte ao <b>mapa que cresce</b> e marque ☐ a linha do
-        <b>Passo 4</b>.</span></div>
+        <b>Passo 4</b>.</span><a class="pm-link" href="caderno.html#m2" target="_blank" rel="noopener">📓 abrir no Caderno</a></div>
       </div>
     </div>
   </section>
@@ -1598,7 +1607,7 @@ npm install axios react-router-dom</pre>
         <div class="papel-missao"><span class="pm-selo">✏️ NO PAPEL · M2</span><span>Última do
         Encontro A: marque ☐ a linha do <b>Passo 6</b> no mapa. Olhe a coluna toda — as 7 rotas
         marcadas são o seu esqueleto pronto; a linha "Enc. B" é o que o agente vai escrever
-        amanhã, com você revisando.</span></div>
+        amanhã, com você revisando.</span><a class="pm-link" href="caderno.html#m2" target="_blank" rel="noopener">📓 abrir no Caderno</a></div>
       </div>
 
       <div class="card" style="text-align:center;background:linear-gradient(135deg,rgba(97,218,251,0.10),rgba(100,108,255,0.06));border-color:rgba(97,218,251,0.22);margin-top:18px">
@@ -1719,7 +1728,7 @@ Sistema de gestão feito por um aluno do curso Fullstack (programa AI).
         <div class="papel-missao"><span class="pm-selo">✏️ NO PAPEL · M5</span><span>Vire a folha:
         no verso, complete o <b>ritual ①–⑤</b> de memória e escreva <b>a regra do AGENTS.md que
         VOCÊ considera mais importante</b> (e por quê). Não existe resposta errada — existe
-        engenheiro pensando.</span></div>
+        engenheiro pensando.</span><a class="pm-link" href="caderno.html#m5" target="_blank" rel="noopener">📓 abrir no Caderno</a></div>
       </div>
 
       <div class="quiz" style="margin-top:16px">
@@ -1761,7 +1770,7 @@ Sistema de gestão feito por um aluno do curso Fullstack (programa AI).
       <div class="papel-missao"><span class="pm-selo">✏️ NO PAPEL · M6</span><span>Daqui até o fim
       do projeto, o <b>Termo de Aceite</b> do verso é o seu diário de engenheiro: a cada feature
       entregue, marque os 5 checks do ritual e <b>assine a linha</b>. Feature sem assinatura =
-      feature que não existe. 🖋️</span></div>
+      feature que não existe. 🖋️</span><a class="pm-link" href="caderno.html#m6" target="_blank" rel="noopener">📓 abrir no Caderno</a></div>
 
       <div class="exercise guided">
         <div class="exercise-header"><span class="exercise-icon">🤖</span><div>

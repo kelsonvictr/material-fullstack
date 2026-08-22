@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📓 Caderno de Engenharia — Cap 10 · GestorPRO</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=JetBrains+Mono:wght@400;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../shared/styles.css">
+<link rel="stylesheet" href="../../shared/animations.css">
+<link rel="stylesheet" href="../../shared/caderno.css">
+</head>
+<body class="cad">
+
+<div class="bg-grid"></div>
+<div class="bg-orbs"><div class="orb"></div><div class="orb"></div><div class="orb"></div></div>
+
+<div id="app"></div>
+
+<script src="../../shared/scripts.js" defer></script>
+<script src="../../shared/caderno.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════
+   CONFIG do Caderno — Cap 10 · GestorPRO
+   (espelha a folha impressa mapa-engenharia.html; o gabarito
+   do prof continua sendo mapa-engenharia-preenchido.html)
+   ═══════════════════════════════════════════════════════════ */
+const CONFIG = {
+  id: 'cap10',
+  curso: 'Curso Fullstack · programa AI',
+  capitulo: 'Capítulo 10',
+  titulo: 'Mapa de Engenharia — GestorPRO',
+  subtitulo: 'o sistema inteiro, documentado por você',
+  emoji: '🗂️',
+  stack: 'React · axios · json-server',
+  voltar: 'index.html',
+
+  missoes: [
+
+    /* ── M1 · A FUNDAÇÃO ── */
+    {
+      id: 'm1', selo: 'M1',
+      titulo: '⓪ A Fundação — Passo 1',
+      sub: 'marque cada item conforme fizer · preencha as portas e as gavetas do cartório',
+      widgets: [
+        { tipo:'checklist', id:'fund', itens:[
+          { id:'vite',  html:'<code>npm create vite@latest gestorpro</code> (React + JavaScript) + faxina' },
+          { id:'pecas', html:'<code>npm install axios react-router-dom</code> (as 2 peças do projeto)' },
+          { id:'db',    html:'criar o <code>db.json</code> na raiz — são as gavetas aqui debaixo 👇' },
+          { id:'terms', html:'2 terminais rodando ao mesmo tempo (o salão e a cozinha)' }
+        ]},
+        { tipo:'blanks', id:'portas', linhas:[
+          '<b>npm run dev</b> (o salão) responde na porta [[p5173|6|mono]] &nbsp;·&nbsp; <b>npx json-server db.json</b> (a cozinha) responde na porta [[p3000|6|mono]]'
+        ]},
+        { tipo:'nota', html:'🗄️ <b>db.json — o arquivo de fichas do cartório.</b> A gaveta "clientes" você já conhece: <code>{ "id", "nome", "email", "telefone", "cidade" }</code>. Complete as outras duas:' },
+        { tipo:'blanks', id:'gavetas', linhas:[
+          '🚚 <b>"fornecedores"</b> — responde em /[[endf|13|mono]] · campos: { "id", "[[f1|6|mono]]", "[[f2|6|mono]]", "[[f3|10|mono]]", "[[f4|9|mono]]" }',
+          '📦 <b>"produtos"</b> — responde em /[[endp|9|mono]] · campos: { "id", "[[p1|6|mono]]", "[[p2|6|mono]]", "[[p3|8|mono]]", "[[p4|10|mono]]" }',
+          '⚠️ fora o id, os DOIS campos que você digita como <b>NÚMEROS</b> (sem aspas) são: [[num1|8|mono]] e [[num2|8|mono]]',
+          '🏤 e quem carimba o id de uma ficha nova? [[carimba|12]]'
+        ]}
+      ]
+    },
+
+    /* ── M2 · O MAPA QUE CRESCE ── */
+    {
+      id: 'm2', selo: 'M2',
+      titulo: '② O Mapa que Cresce (App.jsx)',
+      sub: 'tela primeiro, rota depois — marque ☐ quando cada rota NASCER de verdade no seu projeto',
+      widgets: [
+        { tipo:'checklist', id:'rotas', itens:[
+          { id:'r1', html:'<b>[Passo 2]</b> <code>/</code> → <code>&lt;Dashboard /&gt;</code>' },
+          { id:'r2', html:'<b>[Passo 2]</b> <code>/clientes</code> → <code>&lt;Clientes /&gt;</code>' },
+          { id:'r3', html:'<b>[Passo 2]</b> <code>/fornecedores</code> → <code>&lt;<span class="cad-mono">?</span>&gt;</code> <i>(escreva embaixo)</i>' },
+          { id:'r4', html:'<b>[Passo 2]</b> <code>/produtos</code> → <code>&lt;Produtos /&gt;</code>' },
+          { id:'r5', html:'<b>[Passo 2]</b> <code>*</code> → o curinga do 404' },
+          { id:'r6', html:'<b>[Passo 4]</b> a rota do CADASTRO de cliente' },
+          { id:'r7', html:'<b>[Passo 6]</b> a rota do EDITAR de cliente' }
+        ]},
+        { tipo:'blanks', id:'lacunas', linhas:[
+          '<code>/fornecedores</code> aponta pro componente &lt;[[compf|13|mono]] /&gt; &nbsp;·&nbsp; o curinga <code>*</code> aponta pra &lt;[[comp404|14|mono]] /&gt;',
+          'a rota do cadastro é <code>/clientes/[[novo|5|mono]]</code> &nbsp;·&nbsp; a do editar é <code>/clientes/[[id|4|mono]]/editar</code> → &lt;[[compedit|14|mono]] /&gt;',
+          'e no Encontro B entram mais [[mais|3|mono]] rotas — as mesmas 2 de 🚚 e 📦, escritas pelo agente e revisadas por VOCÊ'
+        ]}
+      ]
+    },
+
+    /* ── M3 · A ESTRADA DO CRUD ── */
+    {
+      id: 'm3', selo: 'M3',
+      titulo: '📮 A Estrada do CRUD',
+      sub: 'desenhe as setas de POST, PUT e DELETE — ida E volta (o GET está de exemplo) · depois complete a legenda',
+      widgets: [
+        { tipo:'nota', html:'Exemplo (GET): <span style="color:var(--get);font-weight:800">pedido ─────▶</span> &nbsp;e a volta&nbsp; <span style="color:var(--get);font-weight:800">◀─ ─ ─ 200 + as fichas (res.data)</span>. Agora é sua vez — use uma cor por verbo e escreva nas setas o que viaja em cada direção:' },
+        { tipo:'desenho', id:'setas', altura:230, espessura:2.6,
+          rotulo:'✏️ 🧑‍💻 você (navegador) fica à ESQUERDA · o 🏤 json-server à DIREITA',
+          cores:[
+            { cor:'#047857', rot:'POST (verde)' },
+            { cor:'#b45309', rot:'PUT (âmbar)' },
+            { cor:'#b91c1c', rot:'DELETE (vermelho)' },
+            { cor:'#1d4ed8', rot:'anotações (azul)' }
+          ],
+          fundo:'<div style="display:flex;flex-direction:column;gap:26px;padding-top:4px">'+
+            '<div><span class="cad-verbo" style="background:#047857">POST</span> /clientes &nbsp;<i>corpo: a ficha nova, SEM id</i></div>'+
+            '<div><span class="cad-verbo" style="background:#b45309">PUT</span> /clientes/2 &nbsp;<i>corpo: a ficha inteira</i></div>'+
+            '<div><span class="cad-verbo" style="background:#b91c1c">DELETE</span> /clientes/3 &nbsp;<i>(sem corpo)</i></div></div>'
+        },
+        { tipo:'nota', html:'📛 <b>O nome de mercado: C.R.U.D.</b> — a linha do GET vai de exemplo: <b>GET = R</b> (ler as fichas · id só no "por id"). Complete as outras três:' },
+        { tipo:'blanks', id:'legenda', linhas:[
+          '<span class="cad-mono" style="background:#047857;color:#fff;border-radius:5px;padding:1px 8px;font-weight:700">POST</span> = letra [[lpost|3]] · ação no cartório: [[apost|20]] · o id vai… [[ipost|20]]',
+          '<span class="cad-mono" style="background:#b45309;color:#fff;border-radius:5px;padding:1px 8px;font-weight:700">PUT</span> = letra [[lput|3]] · ação no cartório: [[aput|20]] · o id vai… [[iput|20]]',
+          '<span class="cad-mono" style="background:#b91c1c;color:#fff;border-radius:5px;padding:1px 8px;font-weight:700">DELETE</span> = letra [[ldel|3]] · ação no cartório: [[adel|20]] · o id vai… [[idel|20]]'
+        ]}
+      ]
+    },
+
+    /* ── M4 · ANATOMIA & CICLO ── */
+    {
+      id: 'm4', selo: 'M4',
+      titulo: '📄 Anatomia da listagem & o Ciclo',
+      sub: 'os hooks da Clientes.jsx — e o filme completo de uma listagem, montado por você',
+      widgets: [
+        { tipo:'blanks', id:'anatomia', linhas:[
+          'a lista mora em: <code>const [clientes, setClientes] = use[[hook1|6|mono]]([])</code>',
+          'quem busca quando a página monta: <code>use[[hook2|7|mono]](() =&gt; { ... }, [])</code>',
+          'quem faz o pedido HTTP: <code>[[quem|6|mono]].get("http://localhost:3000/[[rota|9|mono]]")</code>',
+          'a resposta entra na tela por: <code>setClientes(res.[[data|5|mono]])</code> + <code>.map()</code> + <code>key</code>'
+        ]},
+        { tipo:'nota', html:'🔁 <b>O ciclo de UMA listagem</b> — os passos 1 e 6 já estão fixos; arraste as 4 palavras do banco para a ordem certa:' },
+        { tipo:'wordbank', id:'ciclo',
+          sequencia:[
+            { fixo:true, num:'1', rotulo:'página monta<br>(1ª renderização)' },
+            { id:'s2', num:'2' },
+            { id:'s3', num:'3' },
+            { id:'s4', num:'4' },
+            { id:'s5', num:'5' },
+            { fixo:true, num:'6', rotulo:'tabela na tela 🎉' }
+          ],
+          palavras:[ 'setClientes(...) redesenha', 'o useEffect dispara', 'a resposta chega (res.data)', 'axios.get viaja' ]
+        }
+      ]
+    },
+
+    /* ── M5 · RITUAL & AGENTS.md ── */
+    {
+      id: 'm5', selo: 'M5',
+      titulo: '🕵️ O Ritual & o AGENTS.md',
+      sub: 'complete o ritual ①–⑤ de memória · e escreva a SUA regra da casa',
+      widgets: [
+        { tipo:'blanks', id:'ritual', linhas:[
+          '① rodou sem erro? &nbsp;·&nbsp; ② li o [[r2|8]]? &nbsp;·&nbsp; ③ segue o [[r3|11]]?',
+          '④ veio algo que eu [[r4|10]]? &nbsp;·&nbsp; ⑤ sei [[r5|9]] em voz alta?'
+        ]},
+        { tipo:'nota', html:'✍️ <b>A regra do AGENTS.md que EU acho mais importante</b> (e por quê — não existe resposta errada, existe engenheiro justificando):' },
+        { tipo:'texto', id:'regra', linhas:3, placeholder:'escreva aqui com suas palavras…' },
+        { tipo:'nota', html:'💡 os 4 ingredientes do prompt-spec, só de lembrete: <b>CONTEXTO</b> (qual arquivo é o modelo) · <b>TAREFA</b> (específica, uma por vez) · <b>RESTRIÇÕES</b> (o AGENTS.md!) · <b>CRITÉRIO DE ACEITE</b> ("pronto quando…").' }
+      ]
+    },
+
+    /* ── M6 · TERMO DE ACEITE ── */
+    {
+      id: 'm6', selo: 'M6',
+      titulo: '🖋️ Termo de Aceite',
+      sub: 'nada entra no sistema sem revisão: marque os 5 checks do ritual e ASSINE cada feature (desenhe a assinatura!)',
+      widgets: [
+        { tipo:'aceite', id:'termo', linhas:[
+          { id:'cli',  feature:'👥 Clientes (CRUD completo)',          via:'NA MÃO',       viaClasse:'mao' },
+          { id:'fl',   feature:'🚚 Fornecedores: listar',              via:'JUNTO',        viaClasse:'junto' },
+          { id:'fce',  feature:'🚚 Fornecedores: cadastrar + excluir', via:'JUNTO',        viaClasse:'junto' },
+          { id:'fe',   feature:'🚚 Fornecedores: editar (no telão)',   via:'JUNTO',        viaClasse:'junto' },
+          { id:'pl',   feature:'📦 Produtos: listar (selo ⚠️)',        via:'VOCÊ COMANDA', viaClasse:'cmd' },
+          { id:'pce',  feature:'📦 Produtos: cadastrar + excluir',     via:'VOCÊ COMANDA', viaClasse:'cmd' },
+          { id:'pe',   feature:'📦 Produtos: editar',                  via:'VOCÊ COMANDA', viaClasse:'cmd' },
+          { id:'dash', feature:'📊 Dashboard (o chefão)',              via:'VOCÊ ESCOLHE', viaClasse:'cmd' }
+        ]},
+        { tipo:'nota', html:'🖋️ Na linha do Clientes (feito NA MÃO, sem diff) os 5 checks viram um só combinado: <b>testei tudo?</b> Feature sem assinatura = feature que não existe.' }
+      ]
+    },
+
+    /* ── rascunho livre (sem selo — não conta no progresso) ── */
+    {
+      id: 'rascunho',
+      titulo: '✍️ Rascunho livre',
+      sub: 'anote o que o prof desenhar no quadro, dúvidas pra perguntar, ideias pro seu sistema',
+      widgets: [
+        { tipo:'texto', id:'notas', linhas:4, placeholder:'suas anotações…' },
+        { tipo:'desenho', id:'sketch', altura:220, rotulo:'✏️ área de desenho livre',
+          cores:[ { cor:'#1d4ed8', rot:'azul' }, { cor:'#b91c1c', rot:'vermelho' },
+                  { cor:'#047857', rot:'verde' }, { cor:'#1f2a4d', rot:'preto' } ] }
+      ]
+    }
+  ]
+};
+
+CadernoEngine.mount(document.getElementById('app'), CONFIG);
+</script>
+</body>
+</html>
