@@ -13,7 +13,8 @@
    o símbolo errado e o código não compila. Vem ANTES de
    qualquer outra declaração de pre/code para não ser sobrescrita.
    ========================================================= */
-pre, code, .code-block pre, .terminal, .terminal-body, textarea, .pg-code, .pg-console{
+pre, code, .code-block pre, .terminal, .terminal-body, textarea, .pg-code, .pg-console,
+.code-header .filename, .lang-badge, .drill-tag{
   font-variant-ligatures:none;
   font-feature-settings:"liga" 0,"clig" 0,"calt" 0;
   -webkit-font-feature-settings:"liga" 0,"clig" 0,"calt" 0;

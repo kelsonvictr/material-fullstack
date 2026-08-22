@@ -8,11 +8,14 @@ Reaproveitado e provado no `programacao-iniciantes-v2`. Arquivos em `shared/`:
 JetBrains Mono reescreve `->`, `!=`, `>=`, `<=` como símbolos Unicode. Para iniciante é
 catastrófico. No topo do `styles.css`, **antes** de qualquer `pre`/`code`:
 ```css
-pre, code, .code-block pre, .terminal, .terminal-body{
+pre, code, .code-block pre, .terminal, .terminal-body, textarea, .pg-code, .pg-console,
+.code-header .filename, .lang-badge, .drill-tag{
   font-variant-ligatures:none;
   font-feature-settings:"liga" 0,"clig" 0,"calt" 0;
 }
 ```
+(2026-08-22: `.filename`/`.lang-badge`/`.drill-tag` entraram na lista — são mono no
+components.css e ficavam FORA do kill; o `.code-header` é irmão do `pre`, não filho.)
 Checklist visual: `->` aparece como `-`+`>`? `!=` como `!`+`=`? Se vir `→`/`≠`, está ativo.
 Além disso: **escapar sempre `<` `>` `&`** dentro de `<pre>` (`&lt;` `&gt;` `&amp;`).
 

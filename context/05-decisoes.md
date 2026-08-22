@@ -537,6 +537,49 @@ vitrine × sistema de gestão). Trilha nova (guiado ★ → solo com prompt pró
 3. Trilha `.arena-track` com 10 pontos; título "Treino — Operação UAU: do zero à SUA loja".
    Verificado no Chrome (10 dots, 10 passos + casa, glow-up e SneakerLab renderizando).
 
+## 2026-08-22 — Cap 10 redesign visual + Mapa de Engenharia impresso (novo artefato)
+
+Pedido do prof: (a) tela do Cap 10 "bem mais bonita e moderna"; (b) **um papel impresso**
+com o desenho arquitetural do GestorPRO, com pré-desenhos que a turma preenche em aula
+(setas, useState, axios…) — a visão de engenharia do que todos estão construindo.
+
+### (a) Redesign do capítulo (`10-projeto-gestor/index.html`)
+1. **Hero 2.0**: janela do GestorPRO em mockup claro (`.app-float`/`.app-win`, perspective
+   rotateX que aplaina no hover) com os 4 verbos orbitando (`.fv.get/.post/.put/.del`,
+   `logoFloat` do shared). Chips somem <760px.
+2. **Escada das 3 fases** (`.escada3`/`.e3`): substitui os bullets da seção Visão — degraus
+   com alturas crescentes nas cores das fases (ciano/roxo/verde). O `.mock` antigo saiu
+   (CSS e markup) — o hero já mostra o sistema.
+3. **Divisores de encontro** ganharam selo-letra (`.encontro .letra`, A roxo / B verde-ciano
+   via `.encB`).
+4. **Jornada da formatura** (`.jornada`/`.j-step`): linha do tempo horizontal Caps 1–3 →
+   4–5 → 6–8 → 9 → 10 (nó atual com glow), vira coluna <680px. Substitui os bullets.
+5. Motion: `data-motion="rise"` + `data-motion-child` nos componentes novos;
+   `prefers-reduced-motion` cobre tudo.
+
+### (b) Mapa de Engenharia (`10-projeto-gestor/mapa-engenharia.html`) — NOVO
+Folha A4 **paisagem, frente e verso**, estética "prancheta de engenharia": moldura dupla,
+quadriculado 5mm, carimbo técnico (nome do aluno = "eng. responsável", data, folha 1/2,
+escala "1:1 — do papel pro VSCode, sem atalho"). Tinta azul-marinho + cores por verbo;
+sai legível em impressora P&B (aluno preenche de caneta). Zoom 0.66 só em tela (preview).
+- **Frente (Encontro A)**: 3 zonas — 🖥️ NAVEGADOR (navbar + mapa de rotas com lacunas +
+  anatomia da Clientes.jsx com hooks em lacunas) · 📮 ESTRADA (4 faixas de verbo; GET vem
+  desenhado de exemplo, POST/PUT/DELETE são áreas de lápis) · 🏤 SERVIDOR (db.json como
+  gavetas de cartório; fornecedores/produtos com campos em branco + "circule os 2 números").
+  Rodapé: ciclo da listagem (6 bolas, banco de palavras) + legenda C.R.U.D. + carimbo.
+- **Verso (Encontro B)**: esteira prompt-spec (4 ingredientes do Cap 9) → diff → ritual
+  ①–⑤ (lacunas) com seta de reprovação · AGENTS.md resumido + "escreva a SUA regra" ·
+  escada dos módulos · **TERMO DE ACEITE**: 8 features × (via, 5 checkboxes do ritual,
+  assinatura do revisor) — feature sem assinatura = feature que não existe.
+- **Missões ✏️ M1–M6** amarram papel e aula: selos roxos na folha + divs `.papel-missao`
+  no capítulo nos pontos exatos (M1 rotas/#arquitetura, M2 gavetas/#arquitetura, M3 setas
+  CRUD/#verbos, M4 anatomia+ciclo/#listar, M5 ritual+regra/#agentsmd, M6 termo/#fornecedores).
+- Entradas no capítulo: card `.mapa-cta` na seção Arquitetura (folhinha 🖥️⇢📮⇢🏤 + botão
+  imprimir) e link "Material de apoio" na sidebar. Impressão: A4 paisagem, frente-e-verso
+  **virar na borda curta**, fundos ativados.
+- Vocabulário conferido contra o Cap 9 (ritual ①–⑤; ingredientes CONTEXTO/TAREFA/
+  RESTRIÇÕES/CRITÉRIO DE ACEITE) e rotas/campos contra `tooling/gestorpro-referencia/`.
+
 ## Pendências reconhecidas
 - Planejar em detalhe os **Caps 6–9** (React: state → efeitos/dados → router → integração).
   Caps 4 e 5 já fixaram o tom, o setup Vite base e a Mini-loja como artefato contínuo do arco React.

@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="../../shared/animations.css">
 <style>
   /* ── mono didático: SEMPRE sem ligaduras (=> não vira ⇒, != não vira ≠) ── */
-  .mono,.gp-url,.gp-route,.bc-req,.bc-res,.bc-db,.ci-line,.ag-file{
+  .mono,.gp-url,.gp-route,.bc-req,.bc-res,.bc-db,.ci-line,.ag-file,.fv,.aw-url{
     font-family:'JetBrains Mono',monospace;
     font-variant-ligatures:none;font-feature-settings:"liga" 0,"clig" 0,"calt" 0}
 
@@ -22,9 +22,16 @@
   .fase.f3{background:rgba(70,211,154,0.15);color:#46d39a;border:1px solid rgba(70,211,154,0.4)}
 
   /* divisor de encontro */
-  .encontro{display:flex;align-items:center;gap:14px;margin:26px 0 10px}
-  .encontro .linha{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(167,139,250,0.5),transparent)}
-  .encontro .rotulo{font-family:'Caveat',cursive;font-size:clamp(1.4rem,4vw,2rem);color:var(--accent6);font-weight:700;white-space:nowrap}
+  .encontro{display:flex;align-items:center;gap:16px;margin:36px 0 14px}
+  .encontro .linha{flex:1;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,rgba(167,139,250,0.55),transparent)}
+  .encontro .rotulo{display:flex;align-items:center;gap:12px;font-family:'Caveat',cursive;
+    font-size:clamp(1.5rem,4.2vw,2.2rem);color:var(--accent6);font-weight:700;white-space:nowrap}
+  .encontro .letra{font-family:'Nunito',sans-serif;width:46px;height:46px;border-radius:14px;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;font-size:1.35rem;font-weight:900;color:#0a0a12;
+    background:linear-gradient(135deg,var(--accent6),#8b91ff);box-shadow:0 8px 26px rgba(167,139,250,0.35)}
+  .encontro.encB .letra{background:linear-gradient(135deg,var(--accent7),#4fd1ff);box-shadow:0 8px 26px rgba(70,211,154,0.3)}
+  .encontro.encB .rotulo{color:var(--accent7)}
+  @media (max-width:560px){.encontro .rotulo{white-space:normal;line-height:1.1}}
 
   /* ═══ 🗺️ GPS do GestorPRO (mesmo motor do Cap 8) ═══ */
   .gpsm{background:linear-gradient(180deg,#0b1020,#0d0d1a);border:1px solid rgba(97,218,251,0.3);
@@ -112,19 +119,111 @@
   .ag-file .no{color:#ff8b8b;font-weight:700}
   .ag-file .yes{color:#7ef0c4}
 
-  /* mockup do sistema no hero da visão */
-  .mock{background:#fff;border-radius:14px;padding:14px;font-family:'Nunito',sans-serif;color:#111;margin:14px 0}
-  .mock-nav{display:flex;gap:14px;align-items:center;border-bottom:2px solid #e2e8f0;padding-bottom:8px;margin-bottom:12px;font-size:0.8rem}
-  .mock-nav b{color:#0f172a}
-  .mock-nav span{color:#64748b;font-weight:700}
-  .mock-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-  @media (max-width:560px){.mock-cards{grid-template-columns:1fr}}
-  .mock-card{border:1px solid #e2e8f0;border-radius:10px;padding:12px;text-align:center}
-  .mock-card .n{font-size:1.5rem;font-weight:900;color:#0f172a}
-  .mock-card .l{font-size:0.72rem;color:#64748b;font-weight:700}
+  /* ═══ HERO 2.0 — a janela do sistema flutuando, com os 4 verbos orbitando ═══ */
+  .app-float{position:relative;max-width:640px;margin:40px auto 0;
+    animation:fadeSlideUp 0.9s cubic-bezier(0.22,1,0.36,1) 0.6s both}
+  .app-win{position:relative;background:#fff;border-radius:16px;overflow:hidden;
+    transform:perspective(1100px) rotateX(5deg);transform-origin:50% 100%;
+    box-shadow:0 24px 70px rgba(97,218,251,0.14),0 20px 45px rgba(167,139,250,0.12),0 12px 35px rgba(0,0,0,0.55);
+    transition:transform .5s cubic-bezier(0.22,1,0.36,1)}
+  .app-float:hover .app-win{transform:perspective(1100px) rotateX(0deg)}
+  .aw-bar{display:flex;align-items:center;gap:8px;background:#eef2f9;padding:9px 14px;border-bottom:1px solid #e2e8f0}
+  .aw-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+  .aw-url{flex:1;background:#fff;border:1px solid #e2e8f0;border-radius:999px;font-size:0.7rem;
+    color:#64748b;font-weight:600;padding:4px 14px;text-align:left}
+  .aw-url b{color:#0f172a;font-weight:700}
+  .aw-body{padding:14px 16px 16px;font-family:'Nunito',sans-serif;color:#0f172a;text-align:left}
+  .aw-nav{display:flex;gap:14px;font-size:0.8rem;border-bottom:2px solid #e2e8f0;padding-bottom:8px;flex-wrap:wrap}
+  .aw-nav b{color:#0f172a}
+  .aw-nav span{color:#64748b;font-weight:700}
+  .aw-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+  .aw-card{border:1px solid #e2e8f0;border-radius:12px;padding:10px;text-align:center;background:#f8fafc}
+  .aw-card .n{font-size:1.45rem;font-weight:900;color:#0f172a;line-height:1.1}
+  .aw-card .l{font-size:0.68rem;color:#64748b;font-weight:800}
+  .aw-alert{margin-top:10px;background:#fef3c7;border:1px solid #fbbf24;border-radius:10px;
+    padding:6px 12px;font-size:0.74rem;font-weight:800;color:#92400e}
+  .fv{position:absolute;z-index:2;font-weight:700;font-size:0.72rem;padding:7px 13px;border-radius:11px;
+    background:rgba(13,13,26,0.92);border:1px solid;box-shadow:0 8px 26px rgba(0,0,0,0.45);
+    animation:logoFloat 5.5s ease-in-out infinite}
+  .fv.get{color:#61dafb;border-color:rgba(97,218,251,0.55);top:-16px;left:-26px}
+  .fv.post{color:#46d39a;border-color:rgba(70,211,154,0.55);top:34%;right:-40px;animation-delay:1.2s}
+  .fv.put{color:var(--accent5);border-color:rgba(247,183,49,0.55);bottom:26%;left:-48px;animation-delay:2.1s}
+  .fv.del{color:#ff8b8b;border-color:rgba(255,71,87,0.5);bottom:-14px;right:-20px;animation-delay:3s}
+  @media (max-width:760px){.fv{display:none}.app-win{transform:none}}
+
+  /* ═══ a escada das 3 fases (seção Visão) ═══ */
+  .escada3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;align-items:end;margin:22px 0 8px}
+  .e3{border:1px solid;border-bottom-width:4px;border-radius:14px 14px 6px 6px;padding:14px 15px;
+    background:linear-gradient(180deg,rgba(255,255,255,0.03),transparent);
+    display:flex;flex-direction:column;gap:6px;transition:transform .25s}
+  .e3:hover{transform:translateY(-4px)}
+  .e3-fase{font-size:0.62rem;font-weight:900;letter-spacing:0.6px;text-transform:uppercase}
+  .e3-nome{font-weight:900;font-size:1.05rem;color:var(--text)}
+  .e3-desc{font-size:0.8rem;color:var(--text-dim);line-height:1.55}
+  .e3.f1x{border-color:rgba(97,218,251,0.4);min-height:122px}
+  .e3.f1x .e3-fase{color:var(--react)}
+  .e3.f2x{border-color:rgba(167,139,250,0.45);min-height:152px}
+  .e3.f2x .e3-fase{color:#c9b8ff}
+  .e3.f3x{border-color:rgba(70,211,154,0.45);min-height:182px}
+  .e3.f3x .e3-fase{color:#46d39a}
+  @media (max-width:640px){.escada3{grid-template-columns:1fr;align-items:stretch}.e3{min-height:0!important}}
+
+  /* ═══ CTA do Mapa de Engenharia (o papel da aula) ═══ */
+  .mapa-cta{display:grid;grid-template-columns:150px 1fr;gap:22px;align-items:center;
+    background:linear-gradient(135deg,rgba(124,92,255,0.10),rgba(97,218,251,0.05));
+    border:1px solid rgba(167,139,250,0.35);border-radius:18px;padding:20px 22px;margin:18px 0}
+  .mc-paper{position:relative;width:150px;height:110px;justify-self:center}
+  .mc-folha{position:absolute;inset:0;background:#fff;border-radius:6px;border:1px solid #cbd5e1;
+    background-image:linear-gradient(#eef1fa 1px,transparent 1px),linear-gradient(90deg,#eef1fa 1px,transparent 1px);
+    background-size:10px 10px;box-shadow:0 12px 28px rgba(0,0,0,0.4)}
+  .mc-folha.tras{transform:rotate(3.5deg) translate(7px,5px)}
+  .mc-folha.frente{transform:rotate(-3.5deg);display:flex;align-items:center;justify-content:center;
+    gap:7px;font-size:1.25rem;transition:transform .3s}
+  .mapa-cta:hover .mc-folha.frente{transform:rotate(-1deg) translateY(-3px)}
+  .mc-folha .setinha{font-size:0.85rem;color:#7c3aed;font-weight:900}
+  .mc-folha .lapis{position:absolute;bottom:6px;right:8px;font-size:0.95rem}
+  .mc-kicker{font-size:0.64rem;font-weight:900;letter-spacing:1.4px;text-transform:uppercase;color:#c9b8ff}
+  .mapa-cta h4{font-size:1.25rem;font-weight:900;margin:4px 0 6px;color:var(--text)}
+  .mapa-cta p{font-size:0.88rem;color:var(--text-dim);margin:0 0 12px;line-height:1.6}
+  .mc-btn{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--accent6),#8b91ff);
+    color:#0a0a12;font-weight:900;font-size:0.88rem;padding:11px 20px;border-radius:999px;
+    text-decoration:none;transition:transform .2s,box-shadow .2s}
+  .mc-btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(167,139,250,0.35)}
+  @media (max-width:600px){.mapa-cta{grid-template-columns:1fr}.mc-paper{display:none}}
+
+  /* lembrete de preencher o papel (missões M1–M6) */
+  .papel-missao{display:flex;align-items:center;gap:12px;margin:16px 0 4px;padding:10px 14px;
+    border:1px dashed rgba(124,92,255,0.5);border-radius:12px;background:rgba(124,92,255,0.06);
+    font-size:0.85rem;color:var(--text-dim);line-height:1.55}
+  .papel-missao .pm-selo{flex-shrink:0;background:#7c3aed;color:#fff;font-weight:900;font-size:0.7rem;
+    border-radius:999px;padding:5px 11px;white-space:nowrap}
+  .papel-missao b{color:var(--text)}
+
+  /* ═══ a jornada do curso (Formatura) ═══ */
+  .jornada{display:grid;grid-template-columns:repeat(5,1fr);margin:20px 0 8px}
+  .j-step{position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;
+    text-align:center;padding:0 8px}
+  .j-step::before{content:"";position:absolute;top:22px;left:-50%;width:100%;height:2px;
+    background:rgba(255,255,255,0.12)}
+  .j-step:first-child::before{display:none}
+  .j-dot{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-size:1.2rem;background:var(--surface2);border:2px solid rgba(255,255,255,0.14);
+    position:relative;z-index:1;flex-shrink:0}
+  .j-step.atual .j-dot{border-color:var(--accent6);box-shadow:0 0 26px rgba(167,139,250,0.45)}
+  .j-txt{display:flex;flex-direction:column;gap:3px;align-items:center}
+  .j-caps{font-size:0.6rem;font-weight:900;letter-spacing:0.5px;color:var(--text-dim);text-transform:uppercase}
+  .j-tit{font-size:0.8rem;font-weight:800;color:var(--text);line-height:1.3}
+  .j-sub{font-size:0.7rem;color:var(--text-dim);line-height:1.5}
+  @media (max-width:680px){
+    .jornada{grid-template-columns:1fr;gap:14px}
+    .j-step{flex-direction:row;text-align:left;padding:0}
+    .j-step::before{display:none}
+    .j-txt{align-items:flex-start}
+  }
 
   @media (prefers-reduced-motion: reduce){
-    .gp-chip,.gp-route,.bc-env,.bc-db .row,.ci-line{transition:none;animation:none}
+    .gp-chip,.gp-route,.bc-env,.bc-db .row,.ci-line,.app-float,.app-win,.fv,.e3,
+    .mc-btn,.mc-folha.frente{transition:none;animation:none}
   }
 </style>
 </head>
@@ -163,6 +262,10 @@
     <a class="sidebar-link" onclick="goTo('bugzilla')"><span class="dot" style="background:var(--bug)"></span> BugZilla 🐛</a>
     <a class="sidebar-link" onclick="goTo('resumo')"><span class="dot" style="background:var(--accent7)"></span> 🎓 Formatura do front</a>
   </div>
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Material de apoio</div>
+    <a class="sidebar-link" href="mapa-engenharia.html" target="_blank" rel="noopener"><span class="dot" style="background:#fff"></span> 🖨️ Mapa de Engenharia (A4)</a>
+  </div>
 </nav>
 
 <!-- ═══════════════ HERO ═══════════════ -->
@@ -183,6 +286,30 @@
     <span class="stack-chip" style="border-color:rgba(167,139,250,0.5);color:#c9b8ff">📜 AGENTS.md</span>
     <span class="stack-chip" style="border-color:rgba(167,139,250,0.5);color:#c9b8ff">🤖 seu agente</span>
     <span class="stack-chip node">🖥️ json-server</span>
+  </div>
+
+  <div class="app-float">
+    <span class="fv get">GET</span>
+    <span class="fv post">POST</span>
+    <span class="fv put">PUT</span>
+    <span class="fv del">DELETE</span>
+    <div class="app-win">
+      <div class="aw-bar">
+        <span class="aw-dot" style="background:#fb6058"></span>
+        <span class="aw-dot" style="background:#fbbe2e"></span>
+        <span class="aw-dot" style="background:#2aca44"></span>
+        <span class="aw-url">🔒 localhost:5173<b>/</b></span>
+      </div>
+      <div class="aw-body">
+        <div class="aw-nav"><b>🗂️ GestorPRO</b><span>👥 Clientes</span><span>🚚 Fornecedores</span><span>📦 Produtos</span></div>
+        <div class="aw-cards">
+          <div class="aw-card"><div class="n">3</div><div class="l">👥 clientes</div></div>
+          <div class="aw-card"><div class="n">2</div><div class="l">🚚 fornecedores</div></div>
+          <div class="aw-card"><div class="n">4</div><div class="l">📦 produtos</div></div>
+        </div>
+        <div class="aw-alert">⚠️ 2 produtos com estoque baixo</div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -206,7 +333,7 @@
 
   <div class="section-connector"><div class="line"></div></div>
 
-  <div class="encontro"><div class="linha"></div><div class="rotulo">📍 Encontro A — a fundação e o gabarito (na mão)</div><div class="linha"></div></div>
+  <div class="encontro"><div class="linha"></div><div class="rotulo"><span class="letra">A</span> Encontro A — a fundação e o gabarito (na mão)</div><div class="linha"></div></div>
 
   <!-- ═══════════════ VISÃO ═══════════════ -->
   <section class="step-section" id="visao">
@@ -224,25 +351,28 @@
       usa por trás do balcão. É o tipo de software que paga a maioria dos salários da nossa área:
       todo comércio, clínica, escola e prefeitura vive de um sistema assim.</p>
 
-      <div class="mock" data-motion="rise">
-        <div class="mock-nav"><b>🗂️ GestorPRO</b><span>👥 Clientes</span><span>🚚 Fornecedores</span><span>📦 Produtos</span></div>
-        <div class="mock-cards">
-          <div class="mock-card"><div class="n">3</div><div class="l">👥 clientes</div></div>
-          <div class="mock-card"><div class="n">2</div><div class="l">🚚 fornecedores</div></div>
-          <div class="mock-card"><div class="n">4</div><div class="l">📦 produtos</div></div>
-        </div>
-      </div>
-
       <p>O GestorPRO tem <strong>3 módulos</strong> — e os três têm a MESMA estrutura: uma tela
       de <strong>listar</strong>, uma de <strong>cadastrar</strong>, um botão de
       <strong>excluir</strong> e uma tela de <strong>editar</strong>. Essa repetição é proposital,
-      e é o coração da didática do capítulo:</p>
+      e é o coração da didática do capítulo — uma <strong>escada de três degraus</strong>:</p>
 
-      <ul class="about-bullets">
-        <li><div><strong>👥 Clientes — NA MÃO</strong> <span class="fase f1">fase 1</span> — você constrói o módulo inteiro no VSCode, como sempre. Ele vira o <strong>gabarito</strong>.</div></li>
-        <li><div><strong>🚚 Fornecedores — JUNTO</strong> <span class="fase f2">fase 2</span> — o agente constrói seguindo o gabarito, com prompts prontos do material — e você <strong>revisa cada diff</strong>.</div></li>
-        <li><div><strong>📦 Produtos — VOCÊ COMANDA</strong> <span class="fase f3">fase 3</span> — você escreve os próprios prompts e assina a revisão sozinho/a.</div></li>
-      </ul>
+      <div class="escada3" data-motion="rise">
+        <div class="e3 f1x" data-motion-child>
+          <span class="e3-fase">Fase 1 · na mão</span>
+          <span class="e3-nome">👥 Clientes</span>
+          <span class="e3-desc">você constrói o módulo inteiro no VSCode, como sempre — ele vira o <strong>gabarito</strong> da casa.</span>
+        </div>
+        <div class="e3 f2x" data-motion-child>
+          <span class="e3-fase">Fase 2 · junto</span>
+          <span class="e3-nome">🚚 Fornecedores</span>
+          <span class="e3-desc">o agente constrói seguindo o gabarito, com prompts prontos do material — e você <strong>revisa cada diff</strong>.</span>
+        </div>
+        <div class="e3 f3x" data-motion-child>
+          <span class="e3-fase">Fase 3 · você comanda</span>
+          <span class="e3-nome">📦 Produtos</span>
+          <span class="e3-desc">os prompts são <strong>seus</strong> — e a assinatura da revisão também. Sozinho/a no volante.</span>
+        </div>
+      </div>
 
       <div class="concept">
         <div class="concept-title">🎓 Zero conceito novo de React</div>
@@ -280,8 +410,33 @@
     </div>
 
     <div class="card">
-      <p>Sistema de verdade começa no papel. Nosso mapa de rotas (repara no padrão — cada módulo
-      tem as mesmas 3 rotas, só muda o nome):</p>
+      <p>Sistema de verdade começa <strong>no papel</strong> — e hoje isso é literal: cada um
+      recebe uma folha com o desenho de engenharia do que vamos construir. Ela vai sendo
+      preenchida <strong>durante a aula</strong> (setas do CRUD, hooks, rotas, campos do db.json)
+      — no fim do capítulo, o papel é a prova de que você entende o sistema de ponta a ponta:</p>
+
+      <div class="mapa-cta" data-motion="rise">
+        <div class="mc-paper" aria-hidden="true">
+          <div class="mc-folha tras"></div>
+          <div class="mc-folha frente">
+            🖥️<span class="setinha">⇢</span>📮<span class="setinha">⇢</span>🏤
+            <span class="lapis">✏️</span>
+          </div>
+        </div>
+        <div>
+          <div class="mc-kicker">material de mão · 1 folha por aluno · frente e verso</div>
+          <h4>🗺️ Mapa de Engenharia do GestorPRO</h4>
+          <p>A4 paisagem: a <strong>frente</strong> é a arquitetura do Encontro A (navegador ⇢
+          axios ⇢ json-server) e o <strong>verso</strong> é a linha de produção do Encontro B
+          (prompt ⇢ diff ⇢ ritual ⇢ assinatura). As missões <strong>✏️ M1–M6</strong> marcam a
+          hora de preencher cada área. Prof: imprima frente-e-verso <em>virando na borda
+          curta</em>.</p>
+          <a class="mc-btn" href="mapa-engenharia.html" target="_blank" rel="noopener">🖨️ abrir a folha pra imprimir</a>
+        </div>
+      </div>
+
+      <p>E aqui na tela, o mesmo mapa em versão viva. Nosso mapa de rotas (repara no padrão —
+      cada módulo tem as mesmas 3 rotas, só muda o nome):</p>
 
       <div class="gpsm" id="gps1">
         <div class="gp-chips">
@@ -299,6 +454,10 @@
         </div>
         <div class="gp-note" id="gp1-note">…</div>
       </div>
+
+      <div class="papel-missao"><span class="pm-selo">✏️ NO PAPEL · M1</span><span>Complete o
+      <b>mapa de rotas</b> da folha: as rotas que faltam (Fornecedores e Produtos) seguem o MESMO
+      padrão do trio de Clientes — escreva sem olhar aqui, depois confira.</span></div>
 
       <p style="margin-top:14px">As <strong>pastas</strong> seguem o costume que você pegou nos
       Caps 8 e 05b: páginas em <code>src/pages/</code>, componentes reutilizáveis em
@@ -356,6 +515,11 @@
           <code>/clientes/2</code>. Teste no navegador quando subir!
         </div>
       </div>
+
+      <div class="papel-missao"><span class="pm-selo">✏️ NO PAPEL · M2</span><span>Preencha as
+      <b>gavetas do cartório</b>: os campos de "fornecedores" e "produtos" e o endereço em que
+      cada coleção responde. Bônus: circule os DOIS campos que são <b>números</b> (sem aspas) —
+      eles voltam pra te assombrar no Passo 12. 😄</span></div>
     </div>
   </section>
 
@@ -561,6 +725,11 @@
         <div class="bc-note" id="bc-note">…</div>
       </div>
 
+      <div class="papel-missao"><span class="pm-selo">✏️ NO PAPEL · M3</span><span>Na
+      <b>estrada HTTP</b> da folha: desenhe as setas de POST, PUT e DELETE (ida E volta — o GET
+      já está lá de exemplo) e complete a <b>legenda C.R.U.D.</b> — letra, ação e onde vai o id
+      de cada verbo.</span></div>
+
       <div class="quiz" style="margin-top:16px">
         <div class="quiz-q"><span class="q-emoji">📮</span> O usuário clicou em "excluir" no fornecedor de id 5. Qual é a chamada certa?</div>
         <div class="quiz-options">
@@ -678,6 +847,11 @@
         Cap 6, useEffect+axios+porteiros do Cap 7, <code>.map()</code>+<code>key</code> do Cap 5,
         tabela do Cap 1, CSS Module do Cap 5. Você acabou de escrever uma tela de sistema
         profissional só com o que já sabia.</div></div>
+
+        <div class="papel-missao"><span class="pm-selo">✏️ NO PAPEL · M4</span><span>Complete a
+        <b>anatomia da Clientes.jsx</b> (os hooks de cada linha) e o <b>ciclo da listagem</b>
+        (numere os 6 passos usando o banco de palavras). Se você preencher sem colar da tela,
+        o padrão é seu pra sempre.</span></div>
       </div>
     </div>
   </section>
@@ -951,7 +1125,7 @@
 
   <div class="section-connector"><div class="line"></div></div>
 
-  <div class="encontro"><div class="linha"></div><div class="rotulo">📍 Encontro B — o agente entra em cena</div><div class="linha"></div></div>
+  <div class="encontro encB"><div class="linha"></div><div class="rotulo"><span class="letra">B</span> Encontro B — o agente entra em cena</div><div class="linha"></div></div>
 
   <!-- ═══════════════ AGENTS.MD ═══════════════ -->
   <section class="step-section" id="agentsmd">
@@ -1021,6 +1195,11 @@ Sistema de gestão feito por um aluno do curso Fullstack (UNIESP).
         <strong>recusar ou avisar</strong> que as regras proíbem dependência nova — e citar o
         AGENTS.md. Se ele obedecer cegamente… bom, você já sabe revisar. 😏 (Depois peça pra
         desfazer, claro.)</p></div>
+
+        <div class="papel-missao"><span class="pm-selo">✏️ NO PAPEL · M5</span><span>Vire a folha:
+        no verso, complete o <b>ritual ①–⑤</b> de memória e escreva <b>a regra do AGENTS.md que
+        VOCÊ considera mais importante</b> (e por quê). Não existe resposta errada — existe
+        engenheiro pensando.</span></div>
       </div>
 
       <div class="quiz" style="margin-top:16px">
@@ -1055,9 +1234,14 @@ Sistema de gestão feito por um aluno do curso Fullstack (UNIESP).
 
       <ul class="about-bullets">
         <li><div><strong>1. Prompt</strong> — digite (e adapte!) o prompt-spec do passo;</div></li>
-        <li><div><strong>2. Ritual do Cap 9</strong> — ANTES de aceitar: ① rodou? ② li o diff? ③ segue o AGENTS.md? ④ algo que não pedi? ⑤ explico em voz alta?</div></li>
-        <li><div><strong>3. Testar no navegador</strong> — o critério de aceite do próprio prompt.</div></li>
+        <li><div><strong>2. Ritual do Cap 9</strong> — ANTES de aceitar, sempre na ordem: ① rodou? (teste no navegador o critério de aceite do próprio prompt) ② li o diff? ③ segue o AGENTS.md? ④ algo que não pedi? ⑤ explico em voz alta?</div></li>
+        <li><div><strong>3. Assinar</strong> — passou nos 5? Marca os checks e assina a linha no Termo de Aceite da folha. 🖋️</div></li>
       </ul>
+
+      <div class="papel-missao"><span class="pm-selo">✏️ NO PAPEL · M6</span><span>Daqui até o fim
+      do projeto, o <b>Termo de Aceite</b> do verso é o seu diário de engenheiro: a cada feature
+      entregue, marque os 5 checks do ritual e <b>assine a linha</b>. Feature sem assinatura =
+      feature que não existe. 🖋️</span></div>
 
       <div class="exercise guided">
         <div class="exercise-header"><span class="exercise-icon">🤖</span><div>
@@ -1254,7 +1438,7 @@ demais não.</pre>
               <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">o coração do ProdutoNovo.jsx (pra conferir o diff)</span><span class="lang-badge jsx">JSX</span></div>
 <pre><span class="var">axios</span>.<span class="fn">post</span>(<span class="st">"http://localhost:3000/produtos"</span>, <span class="punc">{</span>
   <span class="var">nome</span><span class="punc">:</span> <span class="var">nome</span>,
-  <span class="var">preco</span><span class="punc">:</span> <span class="fn">Number</span>(<span class="var">preco</span>),      <span class="cm">// "320" (texto do input) → 320 (número)</span>
+  <span class="var">preco</span><span class="punc">:</span> <span class="fn">Number</span>(<span class="var">preco</span>),      <span class="cm">// "320" (texto do input) vira 320 (número)</span>
   <span class="var">estoque</span><span class="punc">:</span> <span class="fn">Number</span>(<span class="var">estoque</span>),
   <span class="var">categoria</span><span class="punc">:</span> <span class="var">categoria</span>
 <span class="punc">}</span>)</pre>
@@ -1501,13 +1685,33 @@ demais não.</pre>
     <div class="card">
       <p>Respira e olha a linha do tempo do que VOCÊ construiu neste curso:</p>
 
-      <ul class="about-bullets">
-        <li><div><strong>Caps 1–3:</strong> HTML, CSS, JavaScript e o DOM — a página ganhou estrutura, estilo e reação.</div></li>
-        <li><div><strong>Caps 4–5 (+5b):</strong> React — componentes, props, listas, imagens, CSS Modules e cinco projetos no braço.</div></li>
-        <li><div><strong>Caps 6–8:</strong> a Mini-loja ganhou memória (useState), dados de verdade (useEffect + axios + json-server) e endereços (Router).</div></li>
-        <li><div><strong>Cap 9:</strong> você abriu o capô da IA e aprendeu a comandar agentes — prompt-spec e ritual de revisão.</div></li>
-        <li><div><strong>Cap 10:</strong> o GestorPRO — um sistema com CRUD triplo, dashboard e um AGENTS.md escrito por você, construído na mão E com agente, <strong>sem nunca soltar o volante</strong>.</div></li>
-      </ul>
+      <div class="jornada" data-motion="rise">
+        <div class="j-step" data-motion-child>
+          <span class="j-dot">🧱</span>
+          <span class="j-txt"><span class="j-caps">caps 1–3</span><span class="j-tit">A base</span>
+          <span class="j-sub">HTML, CSS, JS e DOM — a página ganhou estrutura, estilo e reação</span></span>
+        </div>
+        <div class="j-step" data-motion-child>
+          <span class="j-dot">⚛️</span>
+          <span class="j-txt"><span class="j-caps">caps 4–5 (+5b)</span><span class="j-tit">React</span>
+          <span class="j-sub">componentes, props, listas, CSS Modules e cinco projetos no braço</span></span>
+        </div>
+        <div class="j-step" data-motion-child>
+          <span class="j-dot">🛒</span>
+          <span class="j-txt"><span class="j-caps">caps 6–8</span><span class="j-tit">A Mini-loja</span>
+          <span class="j-sub">memória (useState), dados de verdade (axios + json-server) e endereços (Router)</span></span>
+        </div>
+        <div class="j-step" data-motion-child>
+          <span class="j-dot">🤖</span>
+          <span class="j-txt"><span class="j-caps">cap 9</span><span class="j-tit">IA &amp; agentes</span>
+          <span class="j-sub">o capô da IA aberto — prompt-spec e ritual de revisão</span></span>
+        </div>
+        <div class="j-step atual" data-motion-child>
+          <span class="j-dot">🗂️</span>
+          <span class="j-txt"><span class="j-caps">cap 10</span><span class="j-tit">GestorPRO</span>
+          <span class="j-sub">CRUD triplo + dashboard + AGENTS.md, na mão E com agente — <strong>sem soltar o volante</strong></span></span>
+        </div>
+      </div>
 
       <div class="quiz" style="margin-top:16px">
         <div class="quiz-q"><span class="q-emoji">🎫</span> Quiz de saída: no demo day, o cliente pergunta "e se eu editar um produto, o que viaja até o servidor?". A resposta de engenheiro é:</div>
