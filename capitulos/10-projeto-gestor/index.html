@@ -265,6 +265,11 @@
     <a class="sidebar-link" onclick="goTo('produtos')"><span class="dot" style="background:var(--accent7)"></span> 📦 Produtos: você comanda</a>
     <a class="sidebar-link" onclick="goTo('dashboard')"><span class="dot" style="background:var(--accent5)"></span> 📊 Chefão: o Dashboard</a>
     <a class="sidebar-link" onclick="goTo('bugzilla')"><span class="dot" style="background:var(--bug)"></span> BugZilla 🐛</a>
+    <div class="sidebar-group-title">Encontro C — o lançamento</div>
+    <a class="sidebar-link" onclick="goTo('glowup')"><span class="dot" style="background:#ff8ac2"></span> 💅 Glow-up do visual</a>
+    <a class="sidebar-link" onclick="goTo('login')"><span class="dot" style="background:var(--accent5)"></span> 🔐 Login &amp; Registro</a>
+    <a class="sidebar-link" onclick="goTo('github')"><span class="dot" style="background:#e8ecf4"></span> 🐙 GitHub</a>
+    <a class="sidebar-link" onclick="goTo('vercel')"><span class="dot" style="background:var(--react)"></span> 🚀 Vercel: no ar</a>
     <a class="sidebar-link" onclick="goTo('resumo')"><span class="dot" style="background:var(--accent7)"></span> 🎓 Formatura do front</a>
   </div>
   <div class="sidebar-group">
@@ -284,7 +289,9 @@
     e um dashboard. Construído em três fases: <strong style="color:var(--react)">na mão</strong>
     (você), <strong style="color:var(--accent6)">junto</strong> (você + agente) e
     <strong style="color:var(--accent7)">você comanda</strong> (você toca o ciclo inteiro sozinho/a).
-    É o projeto que <strong>fecha o Frontend</strong> — e abre o seu portfólio.
+    E no fim, o lançamento: visual profissional, login, GitHub e deploy na Vercel — o sistema
+    <strong>publicado na internet</strong>. É o projeto que <strong>fecha o Frontend</strong> —
+    e abre o seu portfólio.
   </p>
   <div class="hero-stack">
     <span class="stack-chip react">⚛️ tudo dos Caps 4–8</span>
@@ -2229,8 +2236,9 @@ mudança aparecer na listagem e no db.json como número
         ritual:</strong> plural correto nos cards do Dashboard ("1 cliente" × "3 clientes" —
         ternário). 3) <strong>Por prompt, com ritual:</strong> destaque visual (classe
         condicional) nas linhas de produto com estoque baixo. Traga o sistema completo no
-        próximo sábado — vai ter <strong>demo day</strong>: 2 minutos por aluno mostrando o SEU
-        GestorPRO. 🎤</p></div>
+        próximo sábado: é o <strong>Encontro C — o lançamento</strong> (visual novo, login,
+        GitHub e Vercel) — e o capítulo fecha com o <strong>demo day</strong>: 2 minutos por
+        aluno mostrando o SEU GestorPRO já publicado. 🎤</p></div>
 
         <div class="papel-missao"><span class="pm-selo">✏️ NO CADERNO · M10</span><span>Prepare
         o SEU demo day: o roteiro dos 2 minutos, <b>qual diff você vai explicar</b> (mostrar
@@ -2333,13 +2341,446 @@ mudança aparecer na listagem e no db.json como número
 
   <div class="section-connector"><div class="line"></div></div>
 
+  <div class="encontro encB"><div class="linha"></div><div class="rotulo"><span class="letra">C</span> Encontro C — polimento e lançamento 🚀</div><div class="linha"></div></div>
+
+  <!-- ═══════════════ GLOW-UP ═══════════════ -->
+  <section class="step-section" id="glowup">
+    <div class="step-header">
+      <div class="step-number" style="background:linear-gradient(135deg,#ff8ac2,#ffb37a)">💅</div>
+      <div>
+        <div class="step-title">Glow-up: visual de sistema pago <span class="fase f3">fase 3</span></div>
+        <div class="step-sub">Funcionar você já provou — agora ele precisa PARECER profissional</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p>O GestorPRO funciona — mas ainda tem cara de exercício. Sistema que vai pro portfólio
+      (e pro demo day!) precisa de identidade visual. E essa é a tarefa PERFEITA pro agente:
+      mexer em vários arquivos de CSS ao mesmo tempo é repetição pura — você já fez esse drill
+      no glow-up da Operação UAU do Cap 9.</p>
+
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">🤖</span><div>
+          <div class="exercise-title">Passo 15 — o glow-up geral (você no comando)</div>
+          <div class="exercise-sub">O maior diff do projeto até aqui — e o ritual segura ele</div></div>
+        </div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">prompt 9 — glow-up</span><span class="lang-badge prompt">PROMPT</span></div>
+<pre>Leia o AGENTS.md antes de começar.
+
+Modernize o visual do GestorPRO inteiro, mexendo APENAS nos
+arquivos .module.css, no index.css e nas classes/estrutura
+visual do JSX das páginas. NÃO altere nenhuma lógica:
+useState, useEffect, axios e rotas ficam exatamente como
+estão.
+
+Identidade a seguir:
+- fundo claro neutro, cartões brancos com cantos bem
+  arredondados e sombra suave
+- uma cor de destaque (índigo/violeta) na nav, nos links
+  e nos botões principais
+- tabelas com cabeçalho destacado, linhas com hover e
+  espaçamento generoso
+- formulários com labels, inputs grandes e botão primário
+- o selo "estoque baixo" como uma badge pill âmbar
+- os cards do Dashboard maiores, com o número gigante
+
+Pronto quando: as 3 listagens, os 3 cadastros, as 3 edições,
+o excluir e o Dashboard continuarem funcionando iguais, com
+o visual novo e zero erro no terminal.</pre>
+        </div>
+        <div class="warning"><span class="warning-icon">🧪</span><div class="warning-content">
+          <strong>Este diff toca quase todos os arquivos — e é aqui que aluno desatento se
+          perde.</strong> O item ① do ritual (rodou?) vira um <strong>teste de regressão</strong>:
+          pegue o Termo de Aceite da folha e refaça CADA linha assinada — listar, cadastrar,
+          editar e excluir nas 3 entidades, mais o Dashboard. "Ficou bonito" não é critério de
+          aceite; "ficou bonito E tudo continua funcionando" é.
+        </div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ LOGIN ═══════════════ -->
+  <section class="step-section" id="login">
+    <div class="step-header">
+      <div class="step-number sn-yellow">🔐</div>
+      <div>
+        <div class="step-title">Login &amp; Registro (de mentira) <span class="fase f3">fase 3</span></div>
+        <div class="step-sub">O fluxo de autenticação completo — com um crachá de brinquedo, por enquanto</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p>Todo sistema de gestão tem uma porta na frente: <strong>login</strong>. A autenticação
+      DE VERDADE (senha criptografada, token, validações) mora no servidor — e é uma das
+      estrelas da metade <strong>backend</strong> do curso, em Java. Mas as TELAS e o FLUXO são
+      trabalho de front, e dá pra construir tudo hoje com um truque honesto: uma coleção
+      <code>usuarios</code> no json-server fazendo papel de "cadastro de funcionários".</p>
+
+      <div class="concept"><div class="concept-title">🎫 Ferramenta nova: o localStorage</div>
+      <p>Quando você entra num sistema, o navegador precisa <em>lembrar</em> que você entrou —
+      mesmo depois de um F5. O lugar disso é o <strong>localStorage</strong>: um bolsinho do
+      navegador que guarda textos por site. Três movimentos:
+      <code>localStorage.setItem("chave", texto)</code> guarda,
+      <code>localStorage.getItem("chave")</code> lê, e
+      <code>localStorage.removeItem("chave")</code> apaga. Como ele só guarda TEXTO, objetos
+      entram com <code>JSON.stringify(obj)</code> e saem com <code>JSON.parse(texto)</code> —
+      os mesmos tradutores de JSON que você conhece desde o Cap 3.</p></div>
+
+      <div class="warning"><span class="warning-icon">🚨</span><div class="warning-content">
+        <strong>Combinado de gente honesta:</strong> aqui a senha vai ficar em texto puro no
+        db.json — e isso é <strong>INACEITÁVEL num sistema real</strong> (qualquer um que abrir
+        o arquivo lê a senha de todo mundo). Estamos fazendo assim porque o objetivo de hoje é o
+        FLUXO das telas. Quando o backend Java chegar, o login vira uma chamada de verdade que
+        devolve um <strong>token</strong> (o crachá oficial, assinado pelo servidor) e a senha
+        vira um código embaralhado irreversível. As telas que você vai criar agora
+        <strong>ficam</strong> — só troca a cozinha.
+      </div></div>
+
+      <div class="exercise solo">
+        <div class="exercise-header"><span class="exercise-icon">🧑‍💻</span><div>
+          <div class="exercise-title">Passo 16 — a coleção usuarios (na mão)</div>
+          <div class="exercise-sub">Trinta segundos de db.json</div></div>
+        </div>
+        <p>Abra o <code>db.json</code> e acrescente a quarta coleção (vírgula depois de
+        <code>"produtos": [...]</code>!):</p>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">db.json — a coleção nova</span><span class="lang-badge json">JSON</span></div>
+<pre>"usuarios": [
+  { "id": 1, "nome": "Admin", "email": "admin@gestorpro.com", "senha": "123456" }
+]</pre>
+        </div>
+        <div class="tip"><span class="tip-icon">🧭</span><div class="tip-content">
+          O json-server nem pisca: salvou o arquivo, nasceu o endpoint. Teste
+          <code>localhost:3000/usuarios</code> no navegador. E lembra da arquitetura: coleção
+          nova = endpoint novo, sempre.
+        </div></div>
+      </div>
+
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">🤖</span><div>
+          <div class="exercise-title">Passo 17 — as telas de login e registro (você no comando)</div>
+          <div class="exercise-sub">Dois prompts — formulário controlado, você já viu esse filme</div></div>
+        </div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">prompt 10 — login</span><span class="lang-badge prompt">PROMPT</span></div>
+<pre>Seguindo o AGENTS.md e o padrão de formulário controlado de
+src/pages/ClienteNovo.jsx, crie a tela de login:
+
+- src/pages/Login.jsx (com Login.module.css no visual novo
+  do sistema): formulário com email e senha; ao enviar,
+  busque com axios:
+  GET /usuarios?email=EMAIL&amp;senha=SENHA
+- se a resposta trouxer 1 usuário: guarde-o no navegador com
+  localStorage.setItem("usuario", JSON.stringify(usuario))
+  e navegue para "/" com useNavigate
+- se vier vazia: mostre "E-mail ou senha inválidos"
+  (useState + porteiro &amp;&amp;), sem navegar
+- embaixo, um Link "Criar minha conta" para /registro
+- a rota /login no App.jsx
+
+Pronto quando: entrar com admin@gestorpro.com / 123456 cair
+no Dashboard, e senha errada mostrar a mensagem na tela.</pre>
+        </div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">prompt 11 — registro</span><span class="lang-badge prompt">PROMPT</span></div>
+<pre>Seguindo o AGENTS.md e usando src/pages/Login.jsx como
+modelo, crie o registro:
+
+- src/pages/Registro.jsx (mesmo visual do Login): campos
+  nome, email e senha; ao enviar, axios.post em /usuarios
+  SEM enviar id, e navegue para /login
+- um Link "Já tenho conta" para /login
+- a rota /registro no App.jsx
+
+Pronto quando: criar uma conta nova, ela aparecer no
+db.json e der pra entrar com ela na tela de login.</pre>
+        </div>
+        <div class="tip"><span class="tip-icon">👀</span><div class="tip-content">
+          <strong>Na revisão:</strong> o GET do login usa a URL com filtro
+          (<code>?email=...&amp;senha=...</code>) — o json-server devolve um ARRAY (vazio ou com
+          o usuário), então o porteiro certo é <code>res.data.length &gt; 0</code>. E o POST do
+          registro segue a regra de sempre: SEM id no corpo, quem carimba é o servidor.
+        </div></div>
+      </div>
+
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">🤖</span><div>
+          <div class="exercise-title">Passo 18 — fechando a porta (você no comando)</div>
+          <div class="exercise-sub">O porteiro ternário do Cap 5 — agora guardando o app INTEIRO</div></div>
+        </div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">prompt 12 — proteção + sair</span><span class="lang-badge prompt">PROMPT</span></div>
+<pre>Seguindo o AGENTS.md, feche a porta do sistema no App.jsx:
+
+- leia o usuário logado do localStorage:
+  const usuario = JSON.parse(localStorage.getItem("usuario"))
+- use um ternário no return: SEM usuario, renderize apenas
+  as rotas /login e /registro (e o curinga * mostrando o
+  Login); COM usuario, renderize a nav e todas as rotas
+  que já existem
+- na nav, mostre "Olá, {usuario.nome}" e um botão "Sair"
+  que faz localStorage.removeItem("usuario") e navega
+  para /login
+
+Pronto quando: deslogado, digitar /clientes na URL cair na
+tela de login; depois de entrar, tudo voltar ao normal; e
+o Sair derrubar o crachá na hora.</pre>
+        </div>
+        <div class="tip"><span class="tip-icon">💎</span><div class="tip-content">
+          <strong>Olha a elegância disso:</strong> a proteção inteira é o
+          <strong>ternário isto-ou-aquilo do Cap 5</strong> aplicado na maior escala possível —
+          o app INTEIRO é a coisa condicional. Sem usuario, as rotas do sistema nem EXISTEM
+          (por isso digitar /clientes na URL não fura a porta). Nenhuma ferramenta nova, só as
+          suas, bem usadas.
+        </div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ GITHUB ═══════════════ -->
+  <section class="step-section" id="github">
+    <div class="step-header">
+      <div class="step-number" style="background:linear-gradient(135deg,#8b93a7,#e8ecf4)">🐙</div>
+      <div>
+        <div class="step-title">GitHub: o projeto sai da sua máquina <span class="fase f3">fase 3</span></div>
+        <div class="step-sub">Backup, portfólio público — e o trampolim pro deploy</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p>Até hoje você versionou projeto do jeito artesanal: cópia de pasta. Profissional usa
+      <strong>git</strong>: um diário do projeto onde cada "foto" do código (um
+      <strong>commit</strong>) tem etiqueta, autor e data — dá pra voltar no tempo à vontade. E o
+      <strong>GitHub</strong> é a nuvem onde esse diário mora: backup automático,
+      <strong>portfólio público que recrutador visita</strong>, e — motivo imediato — é de lá
+      que a Vercel vai puxar seu código na próxima seção. Os comandos? O agente digita. Você
+      comanda e confere.</p>
+
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">🤖</span><div>
+          <div class="exercise-title">Passo 19 — gestorpro na branch main (você no comando)</div>
+          <div class="exercise-sub">Primeiro a parte no site, depois o prompt</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">🖱️ Antes do prompt, no navegador</div>
+        <p>1) Crie sua conta em <strong>github.com</strong> — capriche no nome de usuário, ele
+        vira seu endereço profissional. 2) Botão <strong>New repository</strong> → nome
+        <code>gestorpro</code> → <strong>Public</strong> → <strong>NÃO</strong> marque "Add a
+        README" (queremos o repositório vazio). 3) <strong>Create repository</strong> e copie a
+        URL que aparece (<code>https://github.com/SEU-USUARIO/gestorpro</code>).</p></div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">prompt 13 — subir pro GitHub</span><span class="lang-badge prompt">PROMPT</span></div>
+<pre>Este projeto ainda não está no git. Faça, nesta ordem:
+
+1. Inicialize um repositório git na pasta do gestorpro
+2. Confira que o .gitignore ignora node_modules e dist
+   (o Vite já cria um — confirme antes de seguir)
+3. Faça o primeiro commit com a mensagem
+   "GestorPRO — projeto final do frontend"
+4. Conecte ao repositório remoto
+   https://github.com/SEU-USUARIO/gestorpro
+   (troque pela MINHA URL) e envie para a branch main
+
+Pronto quando: a página do repositório no GitHub mostrar
+os arquivos do projeto — e SEM a pasta node_modules.</pre>
+        </div>
+        <div class="tip"><span class="tip-icon">🔑</span><div class="tip-content">
+          <strong>Na primeira vez tem burocracia — é normal:</strong> o git pede seu nome/email
+          (o agente configura se você mandar) e o push abre uma janela de login do GitHub no
+          navegador. Se algo travar, cole o erro inteiro no chat do agente — resolver erro de
+          ferramenta também é trabalho dele.
+        </div></div>
+        <div class="warning"><span class="warning-icon">🕵️</span><div class="warning-content">
+          <strong>Item ④ com nome e sobrenome:</strong> abra o repositório e procure
+          <code>node_modules</code>. Se ela subiu (milhares de arquivos!), reprove: mande o
+          agente corrigir o .gitignore, tirar a pasta do git e subir de novo.
+        </div></div>
+        <div class="concept"><div class="concept-title">🔁 Novo hábito da casa</div><p>Daqui pra
+        frente, <strong>toda feature aceita termina com commit + push</strong> — é uma frase no
+        chat: <em>"commite e envie com a mensagem: tela de login"</em>. Cada push é uma foto no
+        álbum… e daqui a pouco cada push vai fazer algo ainda melhor. 😉</p></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
+  <!-- ═══════════════ VERCEL ═══════════════ -->
+  <section class="step-section" id="vercel">
+    <div class="step-header">
+      <div class="step-number" style="background:linear-gradient(135deg,var(--react),#7ae3ff)">🚀</div>
+      <div>
+        <div class="step-title">Vercel: o GestorPRO no ar <span class="fase f3">fase 3</span></div>
+        <div class="step-sub">De localhost pra um link que abre no celular de qualquer pessoa</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p><code>localhost:5173</code> só existe dentro da sua máquina. Colocar o sistema na
+      internet tem nome: <strong>deploy</strong>. E a <strong>Vercel</strong> (grátis pra
+      projetos pessoais) faz o serviço completo: conecta no seu GitHub, monta o projeto e entrega
+      um endereço <code>https</code> público — e <strong>a cada push na main, republica
+      sozinha</strong>. Agora você entende o hábito do commit. 😏</p>
+
+      <p>Mas tem um detalhe de engenharia antes: seu código chama
+      <code>http://localhost:3000</code> em todo canto. No site publicado, "localhost" é a
+      máquina <strong>de quem abriu o site</strong> — a cozinha não vai estar lá! Precisamos de
+      duas coisas: o front descobrir o endereço certo sozinho, e uma API publicada pra ele
+      chamar.</p>
+
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">🤖</span><div>
+          <div class="exercise-title">Passo 20 — a central de API (você no comando)</div>
+          <div class="exercise-sub">Uma refatoração em 10 arquivos — trabalho de agente, revisão de engenheiro</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">🏷️ Ferramenta nova: variável de ambiente</div>
+        <p>É uma etiqueta de configuração que muda conforme ONDE o app roda, <strong>sem mudar o
+        código</strong>: no seu computador ela nem existe (e o app usa o localhost), na Vercel
+        ela aponta pra API publicada. No Vite, o código lê essas etiquetas em
+        <code>import.meta.env.VITE_ALGUMA_COISA</code>.</p></div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">prompt 14 — central de API</span><span class="lang-badge prompt">PROMPT</span></div>
+<pre>Seguindo o AGENTS.md, centralize o endereço da API:
+
+- crie src/api.js com exatamente isto:
+  import axios from "axios"
+  const api = axios.create({
+    baseURL: import.meta.env.VITE_API_URL || "http://localhost:3000"
+  })
+  export default api
+- em TODAS as páginas, troque o axios pelo api: no lugar de
+  axios.get("http://localhost:3000/clientes") fica
+  api.get("/clientes") — o mesmo para post, put e delete —
+  importando api de ../api.js em vez de importar axios
+- atualize a linha da API no AGENTS.md para: "toda chamada
+  HTTP usa o api de src/api.js (axios com baseURL
+  configurável) — nunca axios direto, nunca URL completa"
+
+Pronto quando: o sistema inteiro continuar funcionando no
+localhost exatamente como antes, sem nenhuma URL
+http://localhost:3000 escrita nas páginas.</pre>
+        </div>
+        <div class="tip"><span class="tip-icon">📜</span><div class="tip-content">
+          <strong>Reparou que o AGENTS.md mudou junto?</strong> Projeto evolui, regra evolui —
+          regra desatualizada é pior que regra nenhuma, porque o agente OBEDECE a ela. Manter o
+          arquivo de regras vivo é parte do trabalho de quem comanda. (E commit + push da
+          feature aceita, claro.)
+        </div></div>
+      </div>
+
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">🤖</span><div>
+          <div class="exercise-title">Passo 21 — a cozinha vai pra nuvem (você no comando)</div>
+          <div class="exercise-sub">Um mini-projeto embrulha o json-server pra rodar na Vercel</div></div>
+        </div>
+        <p>A Vercel não roda o seu <code>npm run api</code> ligado 24h — ela roda funçõezinhas
+        Node <strong>sob demanda</strong> (acorda, responde, dorme). O truque do mercado: um
+        projetinho separado que embrulha o json-server nesse formato. Separado de propósito,
+        aliás: <strong>a cozinha morar em outro prédio é exatamente a arquitetura</strong> que
+        você vai usar com o backend Java. Crie uma pasta <code>gestorpro-api</code> (FORA do
+        gestorpro), copie o seu <code>db.json</code> pra dentro dela e crie estes dois arquivos
+        na mão:</p>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">gestorpro-api/package.json</span><span class="lang-badge json">JSON</span></div>
+<pre>{
+  "name": "gestorpro-api",
+  "private": true,
+  "dependencies": {
+    "json-server": "0.17.4"
+  }
+}</pre>
+        </div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">gestorpro-api/api/server.js</span><span class="lang-badge js">JS</span></div>
+<pre>const jsonServer = require("json-server")
+const db = require("../db.json")
+
+const server = jsonServer.create()
+server.use(jsonServer.defaults())
+server.use(jsonServer.router(db))
+
+module.exports = server</pre>
+        </div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">gestorpro-api/vercel.json</span><span class="lang-badge json">JSON</span></div>
+<pre>{
+  "version": 2,
+  "routes": [
+    { "src": "/(.*)", "dest": "/api/server.js" }
+  ]
+}</pre>
+        </div>
+        <div class="tip"><span class="tip-icon">🤔</span><div class="tip-content">
+          Sim, a versão <code>0.17.4</code> do json-server é mais antiga que a sua — é a que
+          funciona nesse modo "sob demanda". Pro seu front, tanto faz: mesmos endpoints, mesmos
+          verbos, mesmo JSON. E o <code>vercel.json</code> é só uma placa de trânsito: "qualquer
+          endereço que chegar, entrega pro server.js".
+        </div></div>
+        <p>Agora o caminho que você já conhece: crie o repositório <code>gestorpro-api</code> no
+        GitHub (público, vazio, sem README — igual ao Passo 19) e mande o agente subir:</p>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">prompt 15 — subir a API</span><span class="lang-badge prompt">PROMPT</span></div>
+<pre>Nesta pasta gestorpro-api: inicialize git, crie um
+.gitignore ignorando node_modules, faça o commit "API de
+demonstração do GestorPRO" e envie para a branch main de
+https://github.com/SEU-USUARIO/gestorpro-api
+(troque pela MINHA URL).
+
+Pronto quando: o repositório mostrar db.json, package.json,
+vercel.json e a pasta api.</pre>
+        </div>
+        <div class="concept"><div class="concept-title">🖱️ E o deploy da API, no navegador</div>
+        <p>1) Entre em <strong>vercel.com</strong> e faça login <strong>com o GitHub</strong>
+        (um clique, sem senha nova). 2) <strong>Add New → Project</strong> → importe o
+        <code>gestorpro-api</code> → <strong>Deploy</strong>, sem configurar nada. 3) Quando
+        terminar, abra o endereço que ela te dá com <code>/produtos</code> no final — JSON na
+        tela = <strong>sua cozinha está na internet</strong>. Guarde essa URL!</p></div>
+        <div class="warning"><span class="warning-icon">🎪</span><div class="warning-content">
+          <strong>Banco de DEMONSTRAÇÃO, e está tudo bem:</strong> como o servidor acorda sob
+          demanda, ele sempre acorda com o db.json do repositório — cadastros feitos no site
+          publicado funcionam na hora, mas <strong>somem depois de um tempo</strong>. Pra
+          vitrine de portfólio, perfeito (ninguém entope seu banco de teste!). Banco que lembra
+          DE VERDADE precisa de… um banco de dados de verdade — capítulo um da metade backend.
+        </div></div>
+      </div>
+
+      <div class="exercise solo">
+        <div class="exercise-header"><span class="exercise-icon">🏆</span><div>
+          <div class="exercise-title">Passo 22 — o GestorPRO no ar (a cerimônia)</div>
+          <div class="exercise-sub">O clique que publica o semestre</div></div>
+        </div>
+        <div class="concept"><div class="concept-title">🖱️ No navegador, na Vercel</div>
+        <p>1) <strong>Add New → Project</strong> → importe o <code>gestorpro</code> (ela detecta
+        o Vite sozinha). 2) ANTES do Deploy, abra <strong>Environment Variables</strong> e crie:
+        nome <code>VITE_API_URL</code>, valor = a URL da sua API do Passo 21
+        (<code>https://gestorpro-api-....vercel.app</code>, <strong>sem barra no final</strong>).
+        3) <strong>Deploy</strong>. 4) Abra o link… e faça login com
+        <code>admin@gestorpro.com</code> / <code>123456</code>. 🎉</p></div>
+        <div class="try-first"><div class="try-first-icon">📱</div><div class="try-first-content">
+        <strong>A prova dos nove:</strong> abre o link NO CELULAR e manda no grupo da turma.
+        Sistema com login, CRUD triplo, dashboard e visual de gente grande — feito por você,
+        publicado por você. E lembra: cada push na main republica sozinho. Isso tem nome no
+        mercado: <em>deploy contínuo</em>.</div></div>
+        <div class="papel-missao"><span class="pm-selo">✏️ NO CADERNO · M10</span><span>Anote no
+        caderno os <b>dois links oficiais</b> do projeto — o repositório no GitHub e o GestorPRO
+        publicado. O demo day agora começa diferente: primeiro slide é o LINK. 🎤</span><a class="pm-link" href="caderno.html#m10" target="_blank" rel="noopener">📓 abrir no Caderno</a></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-connector"><div class="line"></div></div>
+
   <!-- ═══════════════ FORMATURA ═══════════════ -->
   <section class="step-section" id="resumo">
     <div class="step-header">
       <div class="step-number sn-mint">🎓</div>
       <div>
         <div class="step-title">Formatura do Frontend</div>
-        <div class="step-sub">Olha pra trás e mede o caminho — do &lt;h1&gt; ao sistema completo</div>
+        <div class="step-sub">Olha pra trás e mede o caminho — do &lt;h1&gt; ao sistema publicado</div>
       </div>
     </div>
 
@@ -2370,7 +2811,7 @@ mudança aparecer na listagem e no db.json como número
         <div class="j-step atual" data-motion-child>
           <span class="j-dot">🗂️</span>
           <span class="j-txt"><span class="j-caps">cap 10</span><span class="j-tit">GestorPRO</span>
-          <span class="j-sub">CRUD triplo + dashboard + AGENTS.md, na mão E com agente — <strong>sem soltar o volante</strong></span></span>
+          <span class="j-sub">CRUD triplo + dashboard + login + AGENTS.md, na mão E com agente — <strong>publicado na internet</strong>, sem soltar o volante</span></span>
         </div>
       </div>
 
@@ -2390,9 +2831,11 @@ mudança aparecer na listagem e no db.json como número
         <div class="tip-content">
           <strong>E agora?</strong> Agora vem a outra metade do mundo: na parte de
           <strong>backend</strong> do curso você vai construir a API de verdade — em Java — com
-          banco de dados, validações e login. E no gran finale, o GestorPRO desliga o json-server
-          e liga na SUA API: mesmos verbos, mesmo axios, cozinha nova. O seu front já está pronto
-          pra esse dia. 🚀
+          banco de dados que LEMBRA, validações e o login de verdade (senha criptografada,
+          token). E no gran finale, o GestorPRO desliga o json-server e liga na SUA API — e
+          graças ao <code>src/api.js</code>, isso é trocar <strong>uma variável de
+          ambiente</strong>: mesmos verbos, mesmas telas, cozinha nova. O seu front já está
+          pronto pra esse dia. 🚀
         </div>
       </div>
 

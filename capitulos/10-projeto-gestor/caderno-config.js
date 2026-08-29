@@ -302,7 +302,10 @@ const CADERNO_CONFIG = {
       titulo: '🎤 Retrospectiva & Demo Day',
       sub: 'sábado tem demo day: 2 minutos por aluno — prepare o SEU roteiro e feche o projeto como engenheiro',
       widgets: [
-        { tipo:'nota', html:'🎬 <b>Roteiro dos meus 2 minutos</b> — o que vou mostrar, em ordem (dica: dashboard → um cadastro ao vivo → o selo de estoque):' },
+        { tipo:'nota', html:'🔗 <b>Os dois links oficiais do projeto</b> — primeiro slide do demo day é o LINK:' },
+        { tipo:'texto', id:'repo', linhas:1, placeholder:'repositório: https://github.com/…/gestorpro' },
+        { tipo:'texto', id:'link', linhas:1, placeholder:'GestorPRO no ar: https://gestorpro-….vercel.app' },
+        { tipo:'nota', html:'🎬 <b>Roteiro dos meus 2 minutos</b> — o que vou mostrar, em ordem (dica: o link publicado → dashboard → um cadastro ao vivo → o selo de estoque):' },
         { tipo:'texto', id:'roteiro', linhas:3, placeholder:'1) … 2) … 3) …' },
         { tipo:'nota', html:'🔍 <b>O diff que vou explicar</b> — mostrar prova que o agente é rápido; EXPLICAR prova que o engenheiro é você. Qual diff você domina de olhos fechados, e por quê?' },
         { tipo:'texto', id:'diff', linhas:3, placeholder:'o diff de … porque …' },

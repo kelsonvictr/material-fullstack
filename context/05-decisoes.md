@@ -829,6 +829,47 @@ exigir que o aluno ESCREVA os prompts. Mudanças:
   atualizado com exemplos de anotação. Escrever prompts do zero fica pro Dashboard
   (Passo 14, que segue com a opção "na mão OU por prompt") e pro pós-curso.
 
+## 2026-08-29 (cont.) — Cap 10 ganha o Encontro C: polimento e lançamento (pedido do prof)
+
+*"queria após as telas ter a etapa de deixar o css bem melhor, um login e registro (mockado,
+depois conecta no Java Spring real), criar o repo no github e subir na main, e preparar pra
+subir na vercel, inclusive com o json-server."* — o capítulo passou de 2 pra **3 encontros**.
+Novo Encontro C (entre o BugZilla e a Formatura), todo em fase 3 (prompts prontos, você no
+comando), com 8 passos novos (15–22) e prompts 9–15:
+
+- **💅 Glow-up (`#glowup`, Passo 15, prompt 9)**: identidade visual especificada no prompt
+  (fundo claro, índigo/violeta, cards, badges); só CSS/estrutura visual, lógica intocada.
+  Beat didático: o Termo de Aceite vira **checklist de teste de regressão**.
+- **🔐 Login & Registro (`#login`, Passos 16–18, prompts 10–12)**: MOCK assumido — coleção
+  `usuarios` no db.json (na mão), senha em texto puro com **warning explícito** de que é
+  inaceitável em produção (o real vem com Java Spring: senha criptografada + token; as telas
+  ficam). Ferramenta nova: **localStorage** (concept "bolso do navegador"). Login = GET
+  `/usuarios?email=&senha=` (filtro do json-server, porteiro `res.data.length > 0`);
+  registro = POST sem id; proteção = **ternário no App.jsx** (sem usuario → só rotas
+  /login, /registro e curinga *) — zero hook novo, o porteiro do Cap 5 em escala máxima.
+- **🐙 GitHub (`#github`, Passo 19, prompt 13)**: primeiro contato da turma com git (versão
+  profissional da "cópia de pasta"). Parte manual no site (conta, repo `gestorpro` público
+  vazio) + prompt pro agente (init, .gitignore, commit, push na main). Tips: burocracia da
+  primeira vez (identidade git, login no push); warning do node_modules no item ④. Novo
+  hábito: feature aceita = commit + push.
+- **🚀 Vercel (`#vercel`, Passos 20–22, prompts 14–15)**: Passo 20 = **central de API**
+  (`src/api.js` com `axios.create` + `VITE_API_URL`; agente troca axios→api em todas as
+  páginas; **AGENTS.md atualizado no mesmo prompt** — beat "regra evolui junto"). Passo 21 =
+  json-server na Vercel via projeto separado `gestorpro-api` (arquivos dados na mão:
+  package.json com **json-server@0.17.4** — a v1 não roda no modo serverless —,
+  `api/server.js` com `require("../db.json")` **em memória** (evita EROFS no POST; padrão do
+  template kitloong/json-server-vercel), `vercel.json` com routes → server.js); warning
+  honesto: **banco de demonstração reseta** (acorda sempre com o db.json do repo) — banco
+  que lembra = metade backend. Passo 22 = import do front na Vercel + env `VITE_API_URL` +
+  cerimônia (abrir no celular, link no grupo; conceito deploy contínuo).
+
+Ajustes de coerência: divisor + grupo "Encontro C" na sidebar; hero cita o lançamento;
+Desafio pra Casa anuncia o Encontro C; Formatura ("do &lt;h1&gt; ao sistema publicado",
+jornada com "publicado na internet", gancho do backend agora cita trocar UMA env no api.js);
+caderno M10 ganhou campos dos **dois links oficiais** (repo + app no ar) e o roteiro do demo
+day abre com o link. NÃO testado com deploy real na Vercel — a receita é o template
+consagrado; se quebrar em aula, colar o log no agente faz parte da didática.
+
 ## Pendências reconhecidas
 - Planejar em detalhe os **Caps 6–9** (React: state → efeitos/dados → router → integração).
   Caps 4 e 5 já fixaram o tom, o setup Vite base e a Mini-loja como artefato contínuo do arco React.
