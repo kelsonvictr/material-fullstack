@@ -870,6 +870,29 @@ caderno M10 ganhou campos dos **dois links oficiais** (repo + app no ar) e o rot
 day abre com o link. NÃO testado com deploy real na Vercel — a receita é o template
 consagrado; se quebrar em aula, colar o log no agente faz parte da didática.
 
+## 2026-08-29 (cont. 2) — Prompt 9 do glow-up vira direção de arte (teste do prof)
+
+O prof rodou o Encontro C inteiro antes da aula: fluxo todo funcionou, mas o resultado do
+glow-up ficou *"bem feinho, muito cara de IA e amador"* — porque o prompt era vago
+("fundo claro, índigo/violeta, cantos arredondados, sombra suave" = a receita exata do
+template-padrão de IA). Correção com valor didático:
+
+- **Prompt 9 reescrito como direção de arte completa**: sidebar fixa escura `#0f172a` no
+  lugar da nav (referência Stripe/Linear), UM azul só (`#2563eb`), Inter via Google Fonts,
+  hexadecimais e medidas para tabelas/botões/forms/badges/dashboard, e uma seção
+  **PROIBIDO** (gradientes, roxo/violeta, sombras chamativas, cantos > 12px, emojis
+  gigantes, hover que escala). Aceite inclui "parecer produto de mercado, não template de IA".
+- **Novo concept "🎨 Design também é spec"**: "deixe bonito" devolve o gosto médio da
+  internet; designer entrega direção de arte com lista de proibições. Tip pós-prompt: item
+  ④ com faro pra cara-de-IA + como personalizar (trocar azul/fonte/fundo da sidebar,
+  manter a estrutura).
+- Prompt 10 (login) ajustado: especifica o card centralizado de 400px (o prompt 9 não
+  estiliza mais telas que ainda não existem).
+
+Lição registrada: **prompt de design vago é igual prompt de código vago — decisão delegada
+ao estagiário**, e o estagiário devolve a média. Vale citar em aula que foi um achado real
+de teste.
+
 ## Pendências reconhecidas
 - Planejar em detalhe os **Caps 6–9** (React: state → efeitos/dados → router → integração).
   Caps 4 e 5 já fixaram o tom, o setup Vite base e a Mini-loja como artefato contínuo do arco React.

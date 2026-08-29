@@ -2359,36 +2359,81 @@ mudança aparecer na listagem e no db.json como número
       mexer em vários arquivos de CSS ao mesmo tempo é repetição pura — você já fez esse drill
       no glow-up da Operação UAU do Cap 9.</p>
 
+      <div class="concept"><div class="concept-title">🎨 Design também é spec</div>
+      <p>Cuidado com a armadilha: peça <em>"deixe bonito e moderno"</em> e TODA IA devolve a
+      mesma coisa — roxo com gradiente, cartões flutuantes, cantos gigantes. É o <strong>gosto
+      médio da internet</strong>, e qualquer pessoa bate o olho e pensa "isso foi IA". Designer
+      de verdade não pede "bonito": entrega uma <strong>direção de arte</strong> — layout, cores
+      exatas em hexadecimal, medidas, e (tão importante quanto) uma lista do que é
+      <strong>proibido</strong>. Repare como o prompt abaixo decide TUDO. Sistema de gestão
+      profissional parece Stripe/Linear: sóbrio, denso, uma cor só de destaque.</p></div>
+
       <div class="exercise guided">
         <div class="exercise-header"><span class="exercise-icon">🤖</span><div>
           <div class="exercise-title">Passo 15 — o glow-up geral (você no comando)</div>
           <div class="exercise-sub">O maior diff do projeto até aqui — e o ritual segura ele</div></div>
         </div>
         <div class="code-block">
-          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">prompt 9 — glow-up</span><span class="lang-badge prompt">PROMPT</span></div>
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">prompt 9 — glow-up (direção de arte completa)</span><span class="lang-badge prompt">PROMPT</span></div>
 <pre>Leia o AGENTS.md antes de começar.
 
-Modernize o visual do GestorPRO inteiro, mexendo APENAS nos
-arquivos .module.css, no index.css e nas classes/estrutura
-visual do JSX das páginas. NÃO altere nenhuma lógica:
-useState, useEffect, axios e rotas ficam exatamente como
-estão.
+Redesenhe o visual do GestorPRO seguindo À RISCA a direção
+de arte abaixo. Pode mexer nos arquivos .module.css, no
+index.css e na estrutura visual do JSX (classes, divs,
+layout). NÃO altere nenhuma lógica: useState, useEffect,
+axios e rotas ficam exatamente como estão.
 
-Identidade a seguir:
-- fundo claro neutro, cartões brancos com cantos bem
-  arredondados e sombra suave
-- uma cor de destaque (índigo/violeta) na nav, nos links
-  e nos botões principais
-- tabelas com cabeçalho destacado, linhas com hover e
-  espaçamento generoso
-- formulários com labels, inputs grandes e botão primário
-- o selo "estoque baixo" como uma badge pill âmbar
-- os cards do Dashboard maiores, com o número gigante
+LAYOUT
+- Troque a nav do topo por uma sidebar fixa à esquerda
+  (240px), fundo #0f172a, com "GestorPRO" no topo e os
+  links na vertical; o link da página atual ganha fundo
+  rgba(255,255,255,0.08) e uma barrinha azul à esquerda
+- Conteúdo à direita: fundo #f6f7f9, largura máxima de
+  1100px, título da página no topo com o botão de ação
+  principal alinhado à direita
 
-Pronto quando: as 3 listagens, os 3 cadastros, as 3 edições,
-o excluir e o Dashboard continuarem funcionando iguais, com
-o visual novo e zero erro no terminal.</pre>
+CORES E TIPOGRAFIA
+- Fonte Inter (importe do Google Fonts no index.css);
+  texto #0f172a, textos de apoio #64748b
+- UM único azul de destaque, #2563eb — apenas em botões
+  primários, links e no item ativo da sidebar
+- Cartões brancos com borda 1px #e2e8f0, cantos de 8px
+  e sombra bem sutil
+
+COMPONENTES
+- Tabelas: cabeçalho em MAIÚSCULAS 12px cinza, células
+  14px, linhas separadas por borda 1px #eef1f5, hover
+  #f8fafc, colunas de número alinhadas à direita
+- Botões: primário azul sólido; Editar/Excluir pequenos
+  e discretos (fundo branco, borda fina), Excluir com
+  texto vermelho #dc2626
+- Formulários: card central de no máximo 480px, labels
+  de 13px acima dos campos, inputs de 40px de altura
+  com anel de foco azul
+- Selo "estoque baixo": badge pequena, fundo #fef3c7,
+  texto #92400e — discreta, sem gritar
+- Dashboard: 3 cards com o número em 32px e a label
+  pequena em maiúsculas; alerta de estoque no mesmo tom
+  da badge
+
+PROIBIDO (é sério)
+- gradientes e qualquer tom de roxo/violeta
+- sombras chamativas e cantos mais redondos que 12px
+- emojis gigantes como decoração
+- animações e hovers que aumentam/mexem os elementos
+
+Pronto quando: as 3 listagens, os 3 cadastros, as 3
+edições, o excluir e o Dashboard continuarem funcionando
+iguais, com zero erro no terminal — e o sistema parecer
+um produto de mercado, não um template de IA.</pre>
         </div>
+        <div class="tip"><span class="tip-icon">👀</span><div class="tip-content">
+          <strong>O item ④ agora tem faro pra "cara de IA":</strong> apareceu gradiente, roxo,
+          card que pula no hover? Está na lista PROIBIDO — reprove citando ela, sem dó.
+          E se você quiser uma cara SUA em vez desta: troque três decisões (o azul, a fonte e o
+          fundo da sidebar) e mantenha o resto do prompt intacto — direção de arte é isso,
+          identidade em cima de estrutura.
+        </div></div>
         <div class="warning"><span class="warning-icon">🧪</span><div class="warning-content">
           <strong>Este diff toca quase todos os arquivos — e é aqui que aluno desatento se
           perde.</strong> O item ① do ritual (rodou?) vira um <strong>teste de regressão</strong>:
@@ -2469,9 +2514,11 @@ o visual novo e zero erro no terminal.</pre>
 <pre>Seguindo o AGENTS.md e o padrão de formulário controlado de
 src/pages/ClienteNovo.jsx, crie a tela de login:
 
-- src/pages/Login.jsx (com Login.module.css no visual novo
-  do sistema): formulário com email e senha; ao enviar,
-  busque com axios:
+- src/pages/Login.jsx (com Login.module.css): a tela é um
+  único card centralizado de 400px, com "GestorPRO" em
+  cima, no mesmo estilo dos formulários do glow-up;
+  formulário com email e senha; ao enviar, busque com
+  axios:
   GET /usuarios?email=EMAIL&amp;senha=SENHA
 - se a resposta trouxer 1 usuário: guarde-o no navegador com
   localStorage.setItem("usuario", JSON.stringify(usuario))
