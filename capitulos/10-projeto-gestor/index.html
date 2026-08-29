@@ -283,7 +283,7 @@
     Clientes, fornecedores e produtos. Cadastrar, listar, editar e excluir. Rotas, formulários
     e um dashboard. Construído em três fases: <strong style="color:var(--react)">na mão</strong>
     (você), <strong style="color:var(--accent6)">junto</strong> (você + agente) e
-    <strong style="color:var(--accent7)">você comanda</strong> (você escreve os prompts).
+    <strong style="color:var(--accent7)">você comanda</strong> (você toca o ciclo inteiro sozinho/a).
     É o projeto que <strong>fecha o Frontend</strong> — e abre o seu portfólio.
   </p>
   <div class="hero-stack">
@@ -376,7 +376,7 @@
         <div class="e3 f3x" data-motion-child>
           <span class="e3-fase">Fase 3 · você comanda</span>
           <span class="e3-nome">📦 Produtos</span>
-          <span class="e3-desc">os prompts são <strong>seus</strong> — e a assinatura da revisão também. Sozinho/a no volante.</span>
+          <span class="e3-desc">prompts prontos de novo — mas sem telão e sem professor: você manda, <strong>revisa e assina sozinho/a</strong>. No volante.</span>
         </div>
       </div>
 
@@ -1925,114 +1925,140 @@ mudança aparecer na listagem e no db.json.</pre>
       <div class="step-number sn-mint">📦</div>
       <div>
         <div class="step-title">Produtos: VOCÊ comanda <span class="fase f3">fase 3</span></div>
-        <div class="step-sub">O cliente pediu, você especifica, o agente executa, você assina</div>
+        <div class="step-sub">Mesmo fluxo do Fornecedores — mas agora sem telão: você revisa e assina sozinho/a</div>
       </div>
     </div>
 
     <div class="card">
-      <p>Terceiro módulo, terceira fase da escada: agora <strong>os prompts são seus</strong>. O
-      material te dá o <em>pedido do cliente</em> (como chega na vida real: em português de
-      gente) e o critério de aceite — transformar isso em prompt-spec com os 4 ingredientes é o
-      SEU trabalho. Uma feature por vez, ritual em todas. 🚨 <strong>PARE</strong> e tente antes
-      de abrir qualquer olhinho!</p>
+      <p>Terceiro módulo, terceira fase da escada. O fluxo é <strong>exatamente o mesmo</strong>
+      do Fornecedores — prompt pronto, ritual dos 5 itens, assinatura — só que agora
+      <strong>sem professor conferindo e sem revisão no telão</strong>: você manda o prompt,
+      testa o critério de aceite, lê o diff comparando com o seu gabarito e assina sozinho/a.
+      Uma feature por vez, ritual em TODAS.</p>
 
-      <div class="papel-missao"><span class="pm-selo">✏️ NO CADERNO · M9</span><span>A
-      <b>Oficina de Prompts</b>: rascunhe cada um dos 3 prompts LÁ antes de mandar pro agente —
-      tem o checklist dos 4 ingredientes pra conferir. Prompt rascunhado e conferido sai melhor
-      que prompt digitado direto no chat, sempre.</span><a class="pm-link" href="caderno.html#m9" target="_blank" rel="noopener">📓 abrir no Caderno</a></div>
+      <div class="papel-missao"><span class="pm-selo">✏️ NO CADERNO · M9</span><span>O
+      <b>Radar de Prompts</b>: antes de mandar cada prompt abaixo, localize NELE os 4
+      ingredientes (contexto · tarefa · restrições · aceite) e marque o checklist no caderno.
+      Ler o prompt sabendo o que procurar é o que te prepara pra escrever os seus depois.</span><a class="pm-link" href="caderno.html#m9" target="_blank" rel="noopener">📓 abrir no Caderno</a></div>
 
-      <div class="exercise solo">
-        <div class="exercise-header"><span class="exercise-icon">🧑‍💻</span><div>
-          <div class="exercise-title">Passo 11 — pedido do cliente: a vitrine de produtos (sozinho/a)</div>
-          <div class="exercise-sub">Listagem com dois porteiros de negócio</div></div>
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">🤖</span><div>
+          <div class="exercise-title">Passo 11 — listagem de produtos (você no comando)</div>
+          <div class="exercise-sub">Tabela com preço em R$ e o selo de estoque baixo</div></div>
         </div>
-        <div class="drill-tags"><span class="drill-level lv2"><span class="stars">★★</span> médio</span><span class="drill-tag">seu prompt</span><span class="drill-tag">porteiros</span></div>
-        <div class="concept"><div class="concept-title">🗣️ O cliente pediu</div><p>"Quero ver
-        meus produtos numa tabela: nome, preço, estoque e categoria. O preço tem que aparecer
-        como dinheiro (R$ na frente). E o mais importante: quando o estoque estiver abaixo de 5,
-        quero um aviso ⚠️ bem visível na linha, porque é hora de comprar mais."</p></div>
-        <div class="concept"><div class="concept-title">✅ Critérios de aceite</div><p>Monitor
-        (estoque 4) e Mouse Gamer (estoque 2) com o selo "⚠️ estoque baixo"; os outros sem selo;
-        preços como "R$ 320". Nada fora do AGENTS.md.</p></div>
-        <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Escreva seu prompt primeiro!</strong> Os 4 ingredientes + qual arquivo é o modelo. Dica de spec: diga COM QUAL ferramenta quer o selo (o porteiro <code>&amp;&amp;</code> do Cap 5 com <code>estoque &lt; 5</code>) — senão o agente decide por você.</div></div>
-        <div class="toggler">
-          <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — prompt de referência + pontos de revisão</span><span class="toggler-arrow">▼</span></div>
-          <div class="toggler-body">
-            <div class="code-block">
-              <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">um prompt de referência (o seu pode ser melhor)</span><span class="lang-badge prompt">PROMPT</span></div>
-<pre>Seguindo o AGENTS.md e a estrutura de src/pages/Clientes.jsx,
-reescreva src/pages/Produtos.jsx: tabela com Nome, Preço,
-Estoque e Categoria, vindos da API.
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">prompt 5 — listagem</span><span class="lang-badge prompt">PROMPT</span></div>
+<pre>Leia o AGENTS.md antes de começar.
 
-- Preço exibido como "R$ " + preco
+Reescreva src/pages/Produtos.jsx (hoje é um placeholder
+"em obras") seguindo EXATAMENTE a estrutura de
+src/pages/Clientes.jsx: buscar os produtos da API com axios
+no useEffect, estados de carregando e erro, e uma tabela
+com as colunas Nome, Preço, Estoque e Categoria.
+
+- O preço deve aparecer como dinheiro: "R$ " + preco
 - Na coluna do estoque, use renderização condicional com &amp;&amp;:
   quando estoque &lt; 5, mostre também o selo "⚠️ estoque baixo"
   (estilizado no Produtos.module.css)
 
-Não mexa em outros arquivos.
+Não mexa em nenhum outro arquivo.
 
-Pronto quando: Monitor e Mouse Gamer mostrarem o selo e os
-demais não.</pre>
-            </div>
-            <div class="tip" style="margin-top:10px"><span class="tip-icon">👀</span><div class="tip-content">
-              <strong>Pontos de revisão deste diff:</strong> o selo veio com <code>&amp;&amp;</code>
-              (como pedido) ou com if/ternário por conta própria? O <code>estoque &lt; 5</code>
-              compara <strong>número com número</strong> (o estoque já é número no db.json — sem
-              aspas!)? O CSS é Module? Alguma coluna, filtro ou "melhoria" que ninguém pediu?
-            </div></div>
-          </div>
+Pronto quando: /produtos mostrar os 4 produtos do db.json,
+com Monitor 27 pol e Mouse Gamer exibindo o selo e os
+demais sem.</pre>
         </div>
+        <div class="tip"><span class="tip-icon">👀</span><div class="tip-content">
+          <strong>Pontos de revisão deste diff (item ③):</strong> o selo veio com
+          <code>&amp;&amp;</code> (como pedido) ou com if/ternário por conta própria? O
+          <code>estoque &lt; 5</code> compara <strong>número com número</strong> (o estoque já é
+          número no db.json — sem aspas!)? O CSS é Module? Alguma coluna, filtro ou "melhoria"
+          que ninguém pediu?
+        </div></div>
       </div>
 
-      <div class="exercise solo">
-        <div class="exercise-header"><span class="exercise-icon">🧑‍💻</span><div>
-          <div class="exercise-title">Passo 12 — pedido do cliente: cadastrar &amp; excluir (sozinho/a)</div>
-          <div class="exercise-sub">Atenção: preço e estoque são NÚMEROS</div></div>
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">🤖</span><div>
+          <div class="exercise-title">Passo 12 — cadastrar + excluir (você no comando)</div>
+          <div class="exercise-sub">Dois prompts — e atenção: preço e estoque são NÚMEROS</div></div>
         </div>
-        <div class="drill-tags"><span class="drill-level lv2"><span class="stars">★★</span> médio</span><span class="drill-tag">Number()</span><span class="drill-tag">2 prompts</span></div>
-        <div class="concept"><div class="concept-title">🗣️ O cliente pediu</div><p>"Preciso
-        cadastrar produto novo (nome, preço, estoque, categoria) e excluir os descontinuados —
-        com confirmação, pelo amor, que semana passada apaguei uma linha sem querer no Excel."</p></div>
-        <div class="concept"><div class="concept-title">✅ Critérios de aceite</div><p>Cadastro em
-        <code>/produtos/novo</code> voltando pra listagem; excluir com confirmação e some sem F5.
-        <strong>E o detalhe de ouro:</strong> no db.json, preço e estoque devem ser salvos como
-        <strong>números</strong> (sem aspas!) — senão o porteiro <code>estoque &lt; 5</code> e o
-        painel do Dashboard fazem contas erradas.</p></div>
-        <div class="try-first"><div class="try-first-icon">🚨</div><div class="try-first-content"><strong>Lembra do Painel de Props do Cap 4?</strong> Tudo que sai de um input é TEXTO ("320" ≠ 320). Seu prompt precisa mandar converter — você conhece a ferramenta desde o Cap 2: <code>Number(preco)</code>.</div></div>
-        <div class="toggler">
-          <div class="toggler-header" onclick="toggleSection(this)"><span>👀 Só clique aqui DEPOIS de tentar — o trecho que importa</span><span class="toggler-arrow">▼</span></div>
-          <div class="toggler-body">
-            <div class="code-block">
-              <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">o coração do ProdutoNovo.jsx (pra conferir o diff)</span><span class="lang-badge jsx">JSX</span></div>
+        <div class="tip"><span class="tip-icon">💰</span><div class="tip-content"><strong>O
+        detalhe de ouro deste passo:</strong> tudo que sai de um input é TEXTO ("320" ≠ 320).
+        Por isso o prompt de cadastro manda converter com <code>Number()</code> — sem isso, o
+        porteiro <code>estoque &lt; 5</code> do passo 11 e o painel do Dashboard fazem contas
+        erradas. Repare que essa exigência está ESCRITA no prompt: spec boa não deixa o
+        estagiário decidir sozinho.</div></div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">prompt 6 — cadastro</span><span class="lang-badge prompt">PROMPT</span></div>
+<pre>Seguindo o AGENTS.md e usando src/pages/ClienteNovo.jsx como
+modelo, crie a tela de cadastro de produto:
+
+- src/pages/ProdutoNovo.jsx com formulário controlado
+  (campos: nome, preco, estoque, categoria), axios.post SEM
+  enviar id, e useNavigate de volta para /produtos
+- preco e estoque convertidos com Number() antes de enviar —
+  no db.json eles devem ficar SEM aspas
+- a rota /produtos/novo no App.jsx
+- o botão/Link "+ Novo produto" na página Produtos
+
+Pronto quando: cadastrar um produto novo e ele aparecer na
+listagem e no db.json com id criado pelo servidor e preco e
+estoque como números (sem aspas).</pre>
+        </div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">prompt 7 — excluir</span><span class="lang-badge prompt">PROMPT</span></div>
+<pre>Seguindo o AGENTS.md e o padrão da função excluir de
+src/pages/Clientes.jsx, adicione o excluir na página
+Produtos: coluna "Ações" com botão que pede confirmação
+com window.confirm, chama axios.delete com o id na URL e
+atualiza o estado com .filter().
+
+Pronto quando: excluir um produto e ele sumir da tela
+NA HORA (sem F5) e do db.json.</pre>
+        </div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">o coração do ProdutoNovo.jsx (pra conferir o diff)</span><span class="lang-badge jsx">JSX</span></div>
 <pre><span class="var">axios</span>.<span class="fn">post</span>(<span class="st">"http://localhost:3000/produtos"</span>, <span class="punc">{</span>
   <span class="var">nome</span><span class="punc">:</span> <span class="var">nome</span>,
   <span class="var">preco</span><span class="punc">:</span> <span class="fn">Number</span>(<span class="var">preco</span>),      <span class="cm">// "320" (texto do input) vira 320 (número)</span>
   <span class="var">estoque</span><span class="punc">:</span> <span class="fn">Number</span>(<span class="var">estoque</span>),
   <span class="var">categoria</span><span class="punc">:</span> <span class="var">categoria</span>
 <span class="punc">}</span>)</pre>
-            </div>
-            <div class="tip" style="margin-top:10px"><span class="tip-icon">👀</span><div class="tip-content">
-              Se o diff veio SEM o <code>Number()</code>, reprove citando o critério de aceite —
-              e teste a consequência de propósito: cadastre com estoque "3" (texto) e veja o selo
-              do passo 11 falhar. Erro visto com os olhos vale por três explicações.
-            </div></div>
-          </div>
         </div>
+        <div class="warning"><span class="warning-icon">🕵️</span><div class="warning-content">
+          <strong>Ponto de atenção do item ④:</strong> se o diff veio SEM o <code>Number()</code>,
+          reprove citando o critério de aceite — e teste a consequência de propósito: cadastre
+          com estoque "3" (texto) e veja o selo do passo 11 falhar. Erro visto com os olhos vale
+          por três explicações.
+        </div></div>
       </div>
 
-      <div class="exercise solo">
-        <div class="exercise-header"><span class="exercise-icon">🧑‍💻</span><div>
-          <div class="exercise-title">Passo 13 — pedido do cliente: editar (sozinho/a)</div>
-          <div class="exercise-sub">O último PUT — agora sem ajuda nenhuma</div></div>
+      <div class="exercise guided">
+        <div class="exercise-header"><span class="exercise-icon">🤖</span><div>
+          <div class="exercise-title">Passo 13 — editar (você no comando)</div>
+          <div class="exercise-sub">O último PUT — ciclo completo, assinatura sua</div></div>
         </div>
-        <div class="drill-tags"><span class="drill-level lv3"><span class="stars">★★★</span> desafio</span><span class="drill-tag">PUT</span><span class="drill-tag">ciclo completo</span></div>
-        <div class="concept"><div class="concept-title">🗣️ O cliente pediu</div><p>"Os preços
-        mudam toda semana — preciso editar qualquer produto."</p></div>
-        <div class="concept"><div class="concept-title">✅ Critérios de aceite</div><p>Rota
-        <code>/produtos/:id/editar</code>, formulário pré-enchido, PUT com id na URL, números
-        convertidos, volta pra listagem. Revisão assinada por você — <strong>sem olhinho neste
-        passo</strong>: seu gabarito é a ClienteEditar.jsx + o diff dos Fornecedores que você
-        revisou no telão. Confia no processo. 💪</p></div>
+        <div class="code-block">
+          <div class="code-header"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="filename">prompt 8 — editar</span><span class="lang-badge prompt">PROMPT</span></div>
+<pre>Seguindo o AGENTS.md e usando src/pages/ClienteEditar.jsx
+como modelo, crie a edição de produto:
+
+- src/pages/ProdutoEditar.jsx: useParams pega o id,
+  axios.get pré-enche o formulário controlado, e o salvar
+  usa axios.put com o id na URL (com preco e estoque
+  convertidos com Number()), voltando com useNavigate
+- a rota /produtos/:id/editar no App.jsx
+- o botão/Link "✏️ Editar" em cada linha da tabela
+
+Pronto quando: editar o preço do Teclado Mecânico e a
+mudança aparecer na listagem e no db.json como número
+(sem aspas).</pre>
+        </div>
+        <div class="tip"><span class="tip-icon">👀</span><div class="tip-content">
+          <strong>Na revisão, seu gabarito é duplo:</strong> a sua <code>ClienteEditar.jsx</code>
+          e o diff dos Fornecedores que a turma leu no telão (Passo 10). useParams pegando o id?
+          GET pré-enchendo os estados? <strong>PUT com o id na URL</strong> (ficha certa!)?
+          <code>Number()</code> nos numéricos? Se bater, assina com orgulho — ninguém conferiu
+          por você. 💪</div></div>
       </div>
 
       <div class="papel-missao"><span class="pm-selo">✏️ NO CADERNO · M7</span><span>As

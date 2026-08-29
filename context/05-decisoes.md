@@ -808,6 +808,27 @@ a regra "se o aluno digita, tem bloco". Correção:
   são LUGARES (têm URL), excluir é AÇÃO (acontece na lista) — antecipando o Link×button da
   coluna Ações.
 
+## 2026-08-29 — Cap 10: fase 3 (Produtos) com prompts prontos (pedido do prof)
+
+*"não gostei muito [da seção Produtos], queria mais direto os prompts mesmo igual os outros
+(Fornecedores e Clientes) para os alunos apenas seguirem o fluxo."* — a fase 3 deixou de
+exigir que o aluno ESCREVA os prompts. Mudanças:
+
+- **Passos 11–13** reescritos no formato do Fornecedores: `exercise guided` (🤖), prompts
+  prontos e visíveis (**prompts 5–8**, continuando a numeração 1–4 do Fornecedores), sem
+  "pedido do cliente", sem try-first, sem togglers/olhinhos. Passo 13 ganhou o prompt de
+  editar que antes nem existia. Os tips de revisão (pontos do diff, Number(), gabarito
+  duplo) foram mantidos — o ritual ①–⑤ e a assinatura continuam obrigatórios.
+- **Novo diferencial da fase 3** (pra escada não perder o degrau): não é mais "os prompts
+  são seus", é **"sem telão e sem professor conferindo"** — o aluno manda, testa o aceite,
+  revisa contra o gabarito e assina sozinho. Ajustado no hero, na `.escada3`, no step-sub
+  e nos dois mapas de engenharia.
+- **M9 do caderno** virou **"Radar de Prompts"**: em vez de rascunhar, o aluno LOCALIZA os
+  4 ingredientes em cada prompt dado antes de mandar (checklists "achei o CONTEXTO…");
+  campos de texto viraram anotações/adaptações. Gabarito (`caderno-preenchido.html`)
+  atualizado com exemplos de anotação. Escrever prompts do zero fica pro Dashboard
+  (Passo 14, que segue com a opção "na mão OU por prompt") e pro pós-curso.
+
 ## Pendências reconhecidas
 - Planejar em detalhe os **Caps 6–9** (React: state → efeitos/dados → router → integração).
   Caps 4 e 5 já fixaram o tom, o setup Vite base e a Mini-loja como artefato contínuo do arco React.

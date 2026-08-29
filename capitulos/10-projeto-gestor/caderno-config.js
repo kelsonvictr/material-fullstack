@@ -196,7 +196,7 @@ const CADERNO_CONFIG = {
         ]},
 
         /* ····· 📦 PRODUTOS ····· */
-        { tipo:'nota', html:'━━━━━ 📦 <b>FICHA 3 · PRODUTOS</b> — <span style="color:var(--post);font-weight:800">FASE 3 · VOCÊ COMANDA</span> (os prompts são seus) · preencha ao fechar o Passo 13 ━━━━━' },
+        { tipo:'nota', html:'━━━━━ 📦 <b>FICHA 3 · PRODUTOS</b> — <span style="color:var(--post);font-weight:800">FASE 3 · VOCÊ COMANDA</span> (revisão e assinatura só suas) · preencha ao fechar o Passo 13 ━━━━━' },
         { tipo:'blanks', id:'prod', linhas:[
           'endpoint: <code>localhost:3000/[[end|9|mono]]</code> &nbsp;·&nbsp; campos: { "id", "[[p1|5|mono]]", "[[p2|6|mono]]", "[[p3|8|mono]]", "[[p4|10|mono]]" }',
           'rotas: listar <code>/[[r1|9|mono]]</code> &nbsp;·&nbsp; cadastrar <code>/produtos/[[r2|5|mono]]</code> &nbsp;·&nbsp; editar <code>/produtos/[[r3|4|mono]]/editar</code>',
@@ -257,42 +257,42 @@ const CADERNO_CONFIG = {
       ]
     },
 
-    /* ── M9 · OFICINA DE PROMPTS ── */
+    /* ── M9 · RADAR DE PROMPTS ── */
     {
       id: 'm9', selo: 'M9',
-      titulo: '📝 Oficina de Prompts (Produtos)',
-      sub: 'rascunhe AQUI cada prompt dos Passos 11–13 ANTES de mandar pro agente — e confira os 4 ingredientes',
+      titulo: '📝 Radar de Prompts (Produtos)',
+      sub: 'antes de mandar cada prompt dos Passos 11–13, localize NELE os 4 ingredientes — e anote o que você adaptaria',
       widgets: [
-        { tipo:'nota', html:'Os 4 ingredientes de um prompt-spec (Cap 9): <b>CONTEXTO</b> (qual arquivo é o modelo) · <b>TAREFA</b> (específica, uma por vez) · <b>RESTRIÇÕES</b> (o AGENTS.md!) · <b>CRITÉRIO DE ACEITE</b> ("pronto quando…"). Escreva, confira os 4, e SÓ ENTÃO mande.' },
+        { tipo:'nota', html:'Os 4 ingredientes de um prompt-spec (Cap 9): <b>CONTEXTO</b> (qual arquivo é o modelo) · <b>TAREFA</b> (específica, uma por vez) · <b>RESTRIÇÕES</b> (o AGENTS.md!) · <b>CRITÉRIO DE ACEITE</b> ("pronto quando…"). Leia o prompt do material, localize os 4, e SÓ ENTÃO mande.' },
 
-        { tipo:'nota', html:'━━━ 📦 <b>PROMPT 1 · a vitrine</b> (Passo 11) — o cliente pediu: tabela com preço "R$" e selo ⚠️ quando o estoque estiver baixo ━━━' },
-        { tipo:'texto', id:'p1', linhas:4, placeholder:'escreva seu prompt aqui antes de mandar…' },
+        { tipo:'nota', html:'━━━ 📦 <b>PROMPT 5 · listagem</b> (Passo 11) — tabela com preço "R$" e selo ⚠️ quando o estoque estiver baixo ━━━' },
+        { tipo:'texto', id:'p1', linhas:4, placeholder:'anote aqui o que você mudaria/adaptou no prompt (campos, textos, critérios)…' },
         { tipo:'checklist', id:'p1ck', itens:[
-          { id:'ctx', html:'tem CONTEXTO (citei o arquivo-modelo: Clientes.jsx)' },
-          { id:'tar', html:'tem TAREFA específica (tabela + R$ + selo com &amp;&amp;)' },
-          { id:'res', html:'tem RESTRIÇÕES (segue o AGENTS.md · não mexa em outros arquivos)' },
-          { id:'ace', html:'tem ACEITE ("pronto quando: Monitor e Mouse com selo, os demais sem")' }
+          { id:'ctx', html:'achei o CONTEXTO (o arquivo-modelo: Clientes.jsx)' },
+          { id:'tar', html:'achei a TAREFA específica (tabela + R$ + selo com &amp;&amp;)' },
+          { id:'res', html:'achei as RESTRIÇÕES (segue o AGENTS.md · não mexa em outros arquivos)' },
+          { id:'ace', html:'achei o ACEITE ("pronto quando: Monitor e Mouse com selo, os demais sem")' }
         ]},
 
-        { tipo:'nota', html:'━━━ 📦 <b>PROMPT 2 · cadastrar &amp; excluir</b> (Passo 12) — atenção: preco e estoque são NÚMEROS ━━━' },
-        { tipo:'texto', id:'p2', linhas:4, placeholder:'seu prompt…' },
+        { tipo:'nota', html:'━━━ 📦 <b>PROMPTS 6 e 7 · cadastrar &amp; excluir</b> (Passo 12) — atenção: preco e estoque são NÚMEROS ━━━' },
+        { tipo:'texto', id:'p2', linhas:4, placeholder:'suas anotações/adaptações…' },
         { tipo:'checklist', id:'p2ck', itens:[
-          { id:'ctx', html:'tem CONTEXTO (modelos: ClienteNovo.jsx e a função excluir)' },
-          { id:'tar', html:'tem TAREFA (cadastro + excluir com confirm)' },
-          { id:'num', html:'pedi a conversão com Number() — o detalhe de ouro' },
-          { id:'ace', html:'tem ACEITE (números SEM aspas no db.json)' }
+          { id:'ctx', html:'achei o CONTEXTO (modelos: ClienteNovo.jsx e a função excluir)' },
+          { id:'tar', html:'achei a TAREFA (cadastro + excluir com confirm)' },
+          { id:'num', html:'achei a conversão com Number() — o detalhe de ouro' },
+          { id:'ace', html:'achei o ACEITE (números SEM aspas no db.json)' }
         ]},
 
-        { tipo:'nota', html:'━━━ 📦 <b>PROMPT 3 · editar</b> (Passo 13) — o último PUT, sem olhinho ━━━' },
-        { tipo:'texto', id:'p3', linhas:4, placeholder:'seu prompt…' },
+        { tipo:'nota', html:'━━━ 📦 <b>PROMPT 8 · editar</b> (Passo 13) — o último PUT, revisão só sua ━━━' },
+        { tipo:'texto', id:'p3', linhas:4, placeholder:'suas anotações/adaptações…' },
         { tipo:'checklist', id:'p3ck', itens:[
-          { id:'ctx', html:'tem CONTEXTO (modelo: ClienteEditar.jsx)' },
-          { id:'tar', html:'tem TAREFA (useParams + GET pré-enche + PUT com id na URL)' },
-          { id:'res', html:'tem RESTRIÇÕES (AGENTS.md · Number() nos numéricos)' },
-          { id:'ace', html:'tem ACEITE (editar preço e ver na listagem e no db.json)' }
+          { id:'ctx', html:'achei o CONTEXTO (modelo: ClienteEditar.jsx)' },
+          { id:'tar', html:'achei a TAREFA (useParams + GET pré-enche + PUT com id na URL)' },
+          { id:'res', html:'achei as RESTRIÇÕES (AGENTS.md · Number() nos numéricos)' },
+          { id:'ace', html:'achei o ACEITE (editar preço e ver na listagem e no db.json)' }
         ]},
 
-        { tipo:'nota', html:'💎 <b>Regra da oficina:</b> prompt sem os 4 ingredientes = decisão delegada ao estagiário. Buraco no pedido, surpresa no diff.' }
+        { tipo:'nota', html:'💎 <b>Regra do radar:</b> prompt sem os 4 ingredientes = decisão delegada ao estagiário. Buraco no pedido, surpresa no diff. Quando VOCÊ for escrever os seus (Dashboard e além), é esse checklist que vale.' }
       ]
     },
 

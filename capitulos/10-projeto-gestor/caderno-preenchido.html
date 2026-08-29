@@ -121,10 +121,10 @@
       'm8.conserto.b4':'reprovar citando a regra: "refaça seguindo o AGENTS.md"',
       'm8.conserto.b5':'subir o json-server de novo no Terminal 2 + F5',
       'm8.macete.aba':'Network', 'm8.macete.id':'id', 'm8.macete.aspas':'aspas', 'm8.macete.st':'404',
-      /* M9 — prompts de referência (o do aluno pode ser melhor!) */
-      'm9.p1.txt':'Seguindo o AGENTS.md e a estrutura de src/pages/Clientes.jsx, reescreva src/pages/Produtos.jsx: tabela com Nome, Preço ("R$ " + preco), Estoque e Categoria vindos da API. Na coluna do estoque, renderização condicional com && : quando estoque < 5, mostre o selo "⚠️ estoque baixo" (Produtos.module.css). Não mexa em outros arquivos. Pronto quando: Monitor e Mouse Gamer com selo, os demais sem.',
-      'm9.p2.txt':'Seguindo o AGENTS.md e usando src/pages/ClienteNovo.jsx como modelo, crie ProdutoNovo.jsx (nome, preco, estoque, categoria) com axios.post SEM id e preco/estoque convertidos com Number(), + a rota /produtos/novo e o Link "+ Novo produto". Depois, seguindo a função excluir de Clientes.jsx, adicione o excluir com window.confirm e .filter(). Pronto quando: cadastrar e excluir funcionando, números SEM aspas no db.json.',
-      'm9.p3.txt':'Seguindo o AGENTS.md e usando src/pages/ClienteEditar.jsx como modelo, crie ProdutoEditar.jsx: useParams pega o id, axios.get pré-enche o formulário, salvar usa axios.put com o id na URL e Number() nos numéricos, voltando com useNavigate. + a rota /produtos/:id/editar e o Link "✏️ Editar" na tabela. Pronto quando: editar o preço do Teclado e a mudança aparecer na listagem e no db.json.',
+      /* M9 — exemplos de anotação (o do aluno é pessoal) */
+      'm9.p1.txt':'CONTEXTO: Clientes.jsx como modelo · TAREFA: tabela + "R$ " + selo com && quando estoque < 5 · RESTRIÇÃO: "não mexa em nenhum outro arquivo" · ACEITE: Monitor e Mouse Gamer com selo. Adaptei: nada — mandei como estava.',
+      'm9.p2.txt':'Prompt 6: modelo ClienteNovo.jsx, Number() em preco/estoque EXIGIDO no texto (o detalhe de ouro), aceite = números sem aspas no db.json. Prompt 7: função excluir de Clientes.jsx como padrão, window.confirm + .filter(), aceite = some sem F5.',
+      'm9.p3.txt':'CONTEXTO: ClienteEditar.jsx · TAREFA: useParams + GET pré-enche + PUT com id na URL + Number() · RESTRIÇÃO: AGENTS.md · ACEITE: editar o preço do Teclado e ver na listagem e no db.json. Revisei comparando com o diff dos Fornecedores do telão.',
       /* M10 — demo day (modelos; retro é pessoal) */
       'm10.roteiro.txt':'1) Dashboard com os totais e o alerta de estoque · 2) cadastro de um produto AO VIVO (aparece na lista e no db.json) · 3) o selo ⚠️ acendendo com estoque 2.',
       'm10.diff.txt':'O diff do ProdutoEditar: sei explicar o useParams pegando o id, o GET pré-enchendo os estados e o PUT com id na URL — é o Cap 6 + 7 + 8 na mesma tela.',
