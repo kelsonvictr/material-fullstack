@@ -1,0 +1,50 @@
+{
+  "0-0": [
+    {
+      "role": "LIA",
+      "text": "Quero ver “Bora aprender Java!” na tela. Como peço isso?"
+    }
+  ],
+  "0-1": [
+    {
+      "role": "BETO",
+      "text": "Copiei a linha… opa, deixei o ponto e vírgula para trás!"
+    }
+  ],
+  "0-2": [
+    {
+      "role": "LLM",
+      "text": "É um ajuste na escrita, não um monstro! Recoloque o ponto e vírgula que encerra esta instrução."
+    }
+  ],
+  "0-3": [
+    {
+      "role": "BETO",
+      "text": "Executei! As aspas delimitam o texto no código; não aparecem na mensagem."
+    }
+  ],
+  "1-0": [
+    {
+      "role": "LIA",
+      "text": "Chegaram doze teclados. Precisamos guardar a quantidade."
+    }
+  ],
+  "1-1": [
+    {
+      "role": "BETO",
+      "text": "Se eu colocar aspas, fica a mesma coisa?"
+    }
+  ],
+  "1-2": [
+    {
+      "role": "LLM",
+      "text": "Parece igual para nós, mas \"12\" é texto. O tipo verifica o valor, não sua aparência."
+    }
+  ],
+  "1-3": [
+    {
+      "role": "BETO",
+      "text": "Para contar o estoque, uso o número sem aspas."
+    }
+  ]
+}

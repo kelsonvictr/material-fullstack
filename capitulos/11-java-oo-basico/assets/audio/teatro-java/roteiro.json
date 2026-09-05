@@ -1,0 +1,57 @@
+{
+  "0-0": [
+    {"role": "LIA", "text": "Beto, precisamos cadastrar um teclado e um mouse. Como o Java sabe quais dados formam um produto?"},
+    {"role": "BETO", "text": "Posso criar algumas variáveis?"}
+  ],
+  "0-1": [
+    {"role": "LLM", "text": "Primeiro definimos o molde. A classe Produto declara que todo produto possui nome, preço e estoque."},
+    {"role": "BETO", "text": "Então a classe é como uma ficha em branco."}
+  ],
+  "0-2": [
+    {"role": "BETO", "text": "Agora uso new e chamo o construtor para criar o teclado."},
+    {"role": "LLM", "text": "Exato. New cria um objeto na memória. O construtor recebe os valores iniciais dessa nova ficha."}
+  ],
+  "0-3": [
+    {"role": "LIA", "text": "E para cadastrar o mouse?"},
+    {"role": "BETO", "text": "Uso o mesmo molde, mas crio outra ficha com new."},
+    {"role": "LLM", "text": "Essa é a regra: uma classe é o molde. Cada new cria um objeto independente."}
+  ],
+  "1-0": [
+    {"role": "LIA", "text": "Alguém tentou mudar o preço do teclado para menos cinquenta."},
+    {"role": "BETO", "text": "Se o campo estiver aberto, esse valor inválido entra no objeto."}
+  ],
+  "1-1": [
+    {"role": "LIA", "text": "Quem decide se o novo preço pode entrar?"},
+    {"role": "BETO", "text": "O setter vira a portaria do preço."},
+    {"role": "LLM", "text": "Private fecha o acesso direto. O método público verifica a regra antes de alterar o estado."}
+  ],
+  "1-2": [
+    {"role": "LIA", "text": "Teste menos cinquenta pela porta certa."},
+    {"role": "BETO", "text": "A portaria recusou. O preço continua trezentos e vinte."},
+    {"role": "LLM", "text": "A tentativa aconteceu, mas o objeto permaneceu válido. O estado anterior foi preservado."}
+  ],
+  "1-3": [
+    {"role": "LIA", "text": "E o preço trezentos e cinquenta?"},
+    {"role": "BETO", "text": "Esse passa na regra e atualiza o objeto."},
+    {"role": "LLM", "text": "Campos guardam o estado. Métodos controlam como esse estado é lido e alterado."}
+  ],
+  "2-0": [
+    {"role": "LIA", "text": "Já temos produtos. Onde ficam as operações de cadastrar, buscar e remover?"},
+    {"role": "BETO", "text": "Se eu colocar tudo no Main, ele vira uma bagunça."}
+  ],
+  "2-1": [
+    {"role": "LIA", "text": "Cadastre o teclado e o mouse."},
+    {"role": "BETO", "text": "O Produto Service gera os identificadores e guarda os objetos na lista."},
+    {"role": "LLM", "text": "List de Produto é uma coleção que aceita objetos do tipo Produto."}
+  ],
+  "2-2": [
+    {"role": "LIA", "text": "Agora busque o produto de identificador dois."},
+    {"role": "BETO", "text": "O método percorre a lista e devolve o mouse."},
+    {"role": "LLM", "text": "Quem usa o Service pede o verbo. O passo a passo da busca fica escondido dentro do método."}
+  ],
+  "2-3": [
+    {"role": "LIA", "text": "E se o identificador não existir?"},
+    {"role": "BETO", "text": "Hoje eu confiro se o resultado é nulo antes de chamar outro método."},
+    {"role": "LLM", "text": "O Service concentra as operações. Quem chama trata o resultado possível. No Spring, vamos evoluir esse caso."}
+  ]
+}

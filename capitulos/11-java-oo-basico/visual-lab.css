@@ -1,0 +1,144 @@
+/* Cenografia local, isolada do capítulo. SVG nítido no projetor e em zoom. */
+.vl-launch { width:100%; display:flex; align-items:center; gap:22px; text-align:left; margin:20px 0 28px; padding:24px; border:1px solid #b99155; border-radius:22px; color:#e9eff9; cursor:pointer; background:radial-gradient(ellipse at 8% 80%,#efb05430,transparent 42%),linear-gradient(120deg,#202639,#181724); box-shadow:inset 0 1px #fff1,0 12px 24px #0002; font:inherit; }
+.vl-launch:hover { border-color:#ffe0a1; background:radial-gradient(ellipse at 8% 80%,#efb05440,transparent 42%),linear-gradient(120deg,#283047,#211d30); }
+.vl-launch:focus-visible { outline:3px solid #8ce3d4; outline-offset:4px; }
+.vl-launch-art { position:relative; flex:0 0 95px; height:124px; border-bottom:5px solid #b28743; border-radius:50%; background:radial-gradient(ellipse,#d0b0ff30,transparent 72%); }
+.vl-launch-art img { display:block; width:76px; height:110px; object-fit:contain; margin:auto; filter:drop-shadow(0 7px 7px #0008); }
+.vl-launch-art > span { position:absolute; right:-8px; bottom:6px; font-size:35px; }
+.vl-launch > span:nth-child(2) { flex:1; }
+.vl-launch small { color:#d1b080; font-size:.64rem; letter-spacing:.14em; font-weight:900; }
+.vl-launch strong { display:block; font:700 2rem 'Caveat',cursive; margin:5px 0; color:#ffdea2; }
+.vl-launch span span:not(.vl-launch-art span) { display:block; font-size:.85rem; line-height:1.6; }
+.vl-launch b { display:block; margin-top:14px; color:#98e5d2; font-size:.8rem; }
+.vl-expand { font-size:38px; color:#cab6dd; }
+body.vl-modal-open { overflow:hidden; }
+.vl-dialog { padding:0; border:1px solid #867052; border-radius:22px; width:min(1400px,98vw); max-width:98vw; max-height:96dvh; color:#e9eff9; background:#111623; box-shadow:0 25px 100px #000a; }
+.vl-dialog::backdrop { background:#060912e8; backdrop-filter:blur(8px); }
+.vl-shell { display:flex; flex-direction:column; max-height:96dvh; }
+.vl-dialog { margin:auto; overflow:hidden; width:min(1400px,calc(100vw - 28px)); max-width:calc(100vw - 28px); }
+.vl-header,.vl-tabs,.vl-controls { flex-shrink:0; }
+.vl-body { flex:1; }
+@media (min-width:901px) and (min-height:760px) {
+  .vl-header { padding-top:10px; padding-bottom:8px; }
+  .vl-tabs { padding-bottom:8px; }
+  .vl-dialog .vl-stage svg { max-height:35vh; }
+  .vl-caption p { font-size:.9rem; }
+}
+.vl-header { display:flex; align-items:center; justify-content:space-between; gap:20px; padding:17px 26px 12px; background:radial-gradient(ellipse at top left,#b5823224,transparent 65%); }
+.vl-kicker { color:#bda77d; font-size:.65rem; font-weight:900; letter-spacing:.16em; }
+.vl-header h2 { font:700 2rem 'Caveat',cursive; margin:3px 0 0; color:#ffe0a6; }
+.vl-dialog button { min-height:42px; font:800 .82rem 'Nunito',sans-serif; border:1px solid #58667f; border-radius:9px; padding:8px 14px; background:#202c40; color:#edf5ff; cursor:pointer; }
+.vl-dialog button:hover:not(:disabled) { border-color:#e9c78e; background:#32425c; }
+.vl-dialog button:focus-visible,.vl-dialog summary:focus-visible,.vl-stage:focus-visible { outline:3px solid #8be2d0; outline-offset:-3px; }
+.vl-dialog button:disabled { opacity:.35; cursor:default; }
+.vl-dialog .vl-close { font-size:21px; min-width:44px; }
+.vl-tabs { display:flex; gap:8px; padding:0 26px 14px; border-bottom:1px solid #313b51; }
+.vl-tabs { overflow-x:auto; }
+.vl-tabs button { flex-shrink:0; white-space:nowrap; }
+.vl-route { stroke:#93efdc; stroke-width:4; stroke-linecap:round; filter:drop-shadow(0 0 5px #78e4c966); }
+.vl-route.vx-purple { stroke:#c4a2ff; }
+.vx-eyebrow { fill:#c9b3f2; font:900 18px 'Nunito',sans-serif; letter-spacing:2px; }
+.vx-number { fill:#aaf6da; font:800 38px 'JetBrains Mono',monospace; }
+.vl-practice { padding:18px 22px; margin:-8px 0 28px; background:#152b2b; border:1px solid #52796a; border-radius:16px; }
+.vl-practice > strong { color:#b1edd8; }
+.vl-practice p { line-height:1.7; }
+.vl-practice summary { cursor:pointer; color:#dbb9ff; padding:10px 0; }
+.vl-practice pre { padding:14px; white-space:pre-wrap; overflow-wrap:anywhere; background:#10131e; color:#ffd397; font:.85rem/1.7 'JetBrains Mono',monospace; font-variant-ligatures:none; font-feature-settings:"liga" 0,"clig" 0,"calt" 0; }
+.vl-tabs button[aria-pressed="true"] { background:#d2a15e; border-color:#f6d79e; color:#141a24; }
+.vl-body { overflow:auto; min-height:0; overscroll-behavior:contain; }
+.vl-step-heading { padding:16px 26px 0; }
+.vl-label { color:#86dacb; font-size:.69rem; font-weight:900; letter-spacing:.12em; }
+.vl-step-heading h3 { margin:4px 0 0; font-size:1.22rem; color:#f3efe4; }
+.vl-manual-hint { display:none; }
+.vl-stage { overflow-x:auto; background:radial-gradient(ellipse at 50% 55%,#22304780,transparent 65%); }
+.vl-stage svg { display:block; width:100%; min-width:850px; max-height:47vh; }
+.vl-svg-title { fill:#f4e8d5; font:800 21px 'Nunito',sans-serif; }
+.vl-svg-small { fill:#a1b2c9; font:700 13px 'Nunito',sans-serif; letter-spacing:.35px; }
+.vl-mono { fill:#becae0; font:15px 'JetBrains Mono',monospace; }
+.vl-value { fill:#9feada; font:700 22px 'JetBrains Mono',monospace; }
+.vl-big { fill:#a3ede0; font:800 29px 'Nunito',sans-serif; }
+.vl-dark { fill:#171c28; font:800 20px 'Nunito',sans-serif; }
+.vl-floor-label { fill:#b3a48e; font:700 16px 'Nunito',sans-serif; }
+.vl-panel { fill:url(#vl-surface); stroke:#556983; stroke-width:1.4; }
+.vl-blueprint-box { fill:#182d44; stroke:#77a8d0; stroke-width:1.5; stroke-dasharray:5 4; }
+.vl-object-shell { fill:#302b32; stroke:#ddb36b; stroke-width:2; }
+.vl-field { fill:#101b29; stroke:#4d5c74; }
+.vl-reference-box { fill:#153733; stroke:#70bbad; stroke-width:1.5; }
+.vl-packet { fill:url(#vl-gold); stroke:#ffe3a3; stroke-width:2; }
+.vl-gate { fill:#376754; stroke:#91d9a5; stroke-width:2; }
+.vl-gate-rejected .vl-gate { fill:#963e50; stroke:#ffa2ae; }
+.vl-reject { fill:#953d4b; stroke:#fcb4bb; stroke-width:2; }
+.vl-link { stroke:#7be3d7; stroke-width:3; stroke-linecap:round; }
+.vl-link.vl-faint { stroke-opacity:.6; stroke-width:2; }
+.vl-gear { fill:#364661; stroke:#90a9cf; stroke-width:5; }
+.vl-console-box { fill:#0b2925; stroke:#59a78e; stroke-width:1.5; }
+.vl-scan { fill:#e8cb7a0d; stroke:#ffe0a1; stroke-width:3; }
+.vl-duke-image { filter:drop-shadow(0 4px 5px #bdceff44); }
+.vl-dialog pre,.vl-dialog svg text { font-variant-ligatures:none; font-feature-settings:"liga" 0,"clig" 0,"calt" 0; }
+.vl-explanation { display:grid; grid-template-columns:1fr 1fr; gap:16px; padding:4px 26px 16px; }
+.vl-caption { padding:16px 18px; border-radius:14px; background:#202736; border-left:4px solid #d9b575; }
+.vl-caption b { font-size:.65rem; color:#d6b789; letter-spacing:.1em; }
+.vl-caption p { margin:8px 0; font-size:1rem; line-height:1.6; }
+.vl-rule { color:#9bddce; font-size:.84rem; line-height:1.5; }
+.vl-code { border:1px solid #414f69; border-radius:12px; background:#10131e; align-self:start; overflow:hidden; }
+.vl-code summary { padding:14px; cursor:pointer; font-weight:800; font-size:.85rem; color:#d0bfec; }
+.vl-code pre { padding:0 16px 16px; margin:0; white-space:pre-wrap; overflow-wrap:anywhere; font: .8rem/1.6 'JetBrains Mono',monospace; color:#ffd397; }
+.vl-comment { color:#8c9cb5; }
+.vl-limit { margin:0; padding:0 26px 18px; color:#8fa0b9; font-size:.72rem; line-height:1.5; }
+.vl-question { padding:16px 26px; margin:0 26px 20px; border:1px solid #516b64; border-radius:12px; background:#182b2b; }
+.vl-question h4 { margin:0 0 10px; }
+.vl-question > div { display:flex; gap:10px; flex-wrap:wrap; }
+.vl-question > p { color:#ace0c8; }
+.vl-controls { padding:10px 26px 12px; border-top:1px solid #415069; background:#182131; box-shadow:0 -8px 22px #0002; }
+.vl-timeline { display:flex; gap:8px; margin-bottom:8px; overflow-x:auto; }
+.vl-timeline button { min-height:29px; height:29px; padding:1px 9px; flex:1; border-radius:5px; color:#b3c3d9; }
+.vl-timeline button[aria-current="step"] { color:#15242a; background:#9ee0cd; border-color:#c7f6e3; }
+.vl-buttons { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+.vl-dialog .vl-play { color:#181b22; background:#efc37b; border-color:#ffe0a1; min-width:125px; }
+.vl-dialog .vl-play:hover:not(:disabled) { color:#181b22; background:#ffdc9f; }
+.vl-count { margin-left:auto; color:#bfc9d8; font-size:.8rem; }
+.vl-status { color:#a0b3cd; font-size:.72rem; margin:7px 0 0; }
+@media (max-width:900px) {
+  .vl-stage svg { max-height:none; }
+  .vl-explanation { grid-template-columns:1fr; }
+  .vl-manual-hint { display:block; color:#a8b3c6; font-size:.7rem; margin:6px 0; }
+}
+@media (max-width:600px) {
+  .vl-launch { padding:16px; gap:14px; }
+  .vl-launch-art { flex-basis:58px; height:90px; }
+  .vl-launch-art img { width:54px; height:78px; }
+  .vl-launch strong { font-size:1.6rem; }
+  .vl-expand { display:none; }
+  .vl-dialog { border-radius:12px; }
+  .vl-header,.vl-step-heading { padding:12px 14px; }
+  .vl-header h2 { font-size:1.5rem; }
+  .vl-tabs { padding:0 14px 10px; }
+  .vl-tabs button { flex:1; padding:7px; font-size:.75rem; }
+  .vl-explanation { padding:8px 14px; }
+  .vl-controls { padding:9px 12px; }
+  .vl-buttons { gap:5px; }
+  .vl-dialog button { padding:8px; font-size:.74rem; }
+  .vl-dialog .vl-play { min-width:95px; }
+  .vl-status { font-size:.65rem; }
+  .vl-limit { padding:10px 14px; }
+  .vl-question { margin:8px 14px; padding:14px; }
+  .vl-caption p { font-size:.9rem; }
+}
+@media (prefers-reduced-motion:reduce) { .vl-dialog *, .vl-launch * { scroll-behavior:auto!important; } }
+@media (min-width:901px) {
+  .vl-header { padding:9px 24px 7px; }
+  .vl-header h2 { font-size:1.7rem; }
+  .vl-tabs { padding-bottom:8px; }
+  .vl-step-heading { padding-top:9px; }
+  .vl-body { display:grid; grid-template-columns:minmax(0,1fr) 300px; grid-auto-rows:max-content; align-content:start; }
+  .vl-step-heading,.vl-limit,.vl-question { grid-column:1 / -1; }
+  .vl-stage { align-self:start; min-width:0; aspect-ratio:1200 / 490; overflow:visible; }
+  .vl-dialog .vl-stage svg { max-height:none; min-width:0; height:100%; }
+  .vl-explanation { display:flex; flex-direction:column; gap:10px; padding:12px 14px 9px 0; }
+  .vl-caption { padding:9px 13px; }
+  .vl-caption p { font-size:.89rem; line-height:1.45; margin:5px 0; }
+  .vl-rule { font-size:.76rem; }
+  .vl-limit { padding-bottom:9px; }
+}
+@media print { .vl-launch,.vl-dialog { display:none!important; } }
+.vl-dialog .vl-timeline button[aria-current="step"]:hover { color:#15242a; background:#b7f2df; }

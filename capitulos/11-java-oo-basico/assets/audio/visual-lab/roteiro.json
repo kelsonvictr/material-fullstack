@@ -1,0 +1,188 @@
+{
+  "0-0": [
+    {
+      "role": "LLM",
+      "text": "Esta é a classe Produto: o molde. Ela descreve campos e comportamentos. Ainda não criamos o nosso fone."
+    }
+  ],
+  "0-1": [
+    {
+      "role": "LLM",
+      "text": "Ao avaliar new Produto, o Java cria uma nova instância. Antes da inicialização pelo construtor, estes campos têm valores padrão. O carrinho é só a nossa metáfora."
+    }
+  ],
+  "0-2": [
+    {
+      "role": "LLM",
+      "text": "O construtor recebe o nome Fone, o preço oitenta e o estoque dois. Ele inicializa os campos deste objeto. Aqui, this.nome indica o campo, e nome é o parâmetro recebido."
+    }
+  ],
+  "0-3": [
+    {
+      "role": "LLM",
+      "text": "A criação terminou. A variável fone guarda uma referência para este objeto. A setinha aponta para ele: o objeto não fica inteiro dentro da variável."
+    }
+  ],
+  "0-4": [
+    {
+      "role": "LLM",
+      "text": "Duke tenta alterar o preço diretamente pelo Main. O campo é privado: esse acesso não compila. O vidro representa uma regra da linguagem, não uma proteção contra números negativos."
+    }
+  ],
+  "0-5": [
+    {
+      "role": "LLM",
+      "text": "Agora Duke usa a porta pública: setPreco. A chamada pode compilar, mas o método ainda precisa conferir o valor. A porta permite entrar; o código da validação decide se o preço pode mudar."
+    }
+  ],
+  "0-6": [
+    {
+      "role": "LLM",
+      "text": "Chamamos getPreco. O método lê o preço e devolve oitenta. Repare: o valor continua no objeto. Ler não é retirar nem alterar."
+    }
+  ],
+  "0-7": [
+    {
+      "role": "LLM",
+      "text": "Tentamos colocar menos dez no preço. A condição detecta o negativo e retorna antes da atribuição. O pedido volta, mas o preço continua oitenta."
+    }
+  ],
+  "0-8": [
+    {
+      "role": "LLM",
+      "text": "Agora chegam noventa. O número passa na regra e substitui o preço antigo. O setter altera este objeto; ele não constrói outro."
+    }
+  ],
+  "0-9": [
+    {
+      "role": "LLM",
+      "text": "Métodos não se resumem a getters e setters. Neste exemplo extra, valorEmEstoque multiplica preço por estoque e devolve cento e oitenta. Os campos continuam iguais."
+    }
+  ],
+  "1-0": [
+    {
+      "role": "LLM",
+      "text": "Escrevemos no arquivo Main ponto java, mas esquecemos o ponto e vírgula. O compilador encontra o problema. Esta versão não segue para execução."
+    }
+  ],
+  "1-1": [
+    {
+      "role": "LLM",
+      "text": "O ponto e vírgula voltou. O compilador pode conferir e traduzir este código. No IntelliJ, o botão de executar normalmente também dispara a compilação necessária."
+    }
+  ],
+  "1-2": [
+    {
+      "role": "LLM",
+      "text": "O resultado é bytecode no arquivo Main ponto class. Bytecode são instruções para a JVM, a máquina virtual Java. Não é o texto que escrevemos no editor."
+    }
+  ],
+  "1-3": [
+    {
+      "role": "LLM",
+      "text": "A máquina virtual executa o programa a partir do main. Agora o println acontece e a mensagem chega ao console. Escrever, compilar e executar são momentos diferentes."
+    }
+  ],
+  "2-0": [
+    {
+      "role": "LLM",
+      "text": "Dois comandos new criaram dois objetos independentes. teclado aponta para A e mouse aponta para B. A lista do Service ainda está vazia."
+    }
+  ],
+  "2-1": [
+    {
+      "role": "LLM",
+      "text": "Cadastrar atribui os ids um e dois aos produtos e adiciona suas referências à lista. Os objetos não foram duplicados. Acompanhe cada seta até seu destino."
+    }
+  ],
+  "2-2": [
+    {
+      "role": "LLM",
+      "text": "A busca compara os ids. Um não serve; dois corresponde ao mouse. A referência devolvida aponta para o mesmo objeto B, não para uma cópia."
+    }
+  ],
+  "2-3": [
+    {
+      "role": "LLM",
+      "text": "Alteramos o estoque usando encontrado. Ao ler por mouse, também vemos oito: as duas referências chegam ao mesmo objeto. O teclado continua com duas unidades."
+    }
+  ],
+  "2-4": [
+    {
+      "role": "LLM",
+      "text": "Removemos o id um. A lista agora só referencia o mouse, mas teclado ainda aponta para A. Remover um cadastro da lista não desfaz as outras referências que já existiam."
+    }
+  ],
+  "3-0": [
+    {
+      "role": "LLM",
+      "text": "Bem-vindos ao hotel de objetos! Dois comandos new criaram dois fones iguais por fora. Mas cada um tem seu próprio estado. Mesmo nome, mesmo preço, quartos diferentes."
+    }
+  ],
+  "3-1": [
+    {
+      "role": "LLM",
+      "text": "Duke segue o crachá primeiro e entrega cinco unidades ao objeto A. O estoque de B continua dois. Produtos independentes não sincronizam seus campos por terem o mesmo nome."
+    }
+  ],
+  "3-2": [
+    {
+      "role": "LLM",
+      "text": "Criamos apelido recebendo a referência de primeiro. Duke conecta outro crachá ao mesmo quarto A. Conte os quartos: continuam dois. Aqui não apareceu nenhum new."
+    }
+  ],
+  "3-3": [
+    {
+      "role": "LLM",
+      "text": "O pacote oito está endereçado por apelido. Antes de eu entregar: ao ler o estoque por primeiro, veremos cinco ou oito? Siga os caminhos. Professor, essa aposta é da turma!"
+    }
+  ],
+  "3-4": [
+    {
+      "role": "LLM",
+      "text": "Entrega feita! Oito fica no objeto A. Ler por primeiro ou por apelido encontra esse mesmo oito. Não atualizamos dois fones: alteramos um objeto acessível por dois nomes."
+    }
+  ],
+  "3-5": [
+    {
+      "role": "LLM",
+      "text": "Agora apelido recebe a referência de outro. Duke reconecta o crachá ao quarto B. Nenhum objeto se mudou: A continua com oito, B continua com dois. Só o caminho mudou."
+    }
+  ],
+  "4-0": [
+    {
+      "role": "LLM",
+      "text": "Tem encomenda! Chamamos setNome no objeto indicado por fone. Headset é o argumento: o valor enviado nesta chamada. Duke leva esse valor até a entrada do método."
+    }
+  ],
+  "4-1": [
+    {
+      "role": "LLM",
+      "text": "A bandeja nome é o parâmetro declarado no método. Ela recebe Headset. Repare no campo do objeto: ainda está Fone. Receber o argumento não é automaticamente atribuir ao campo."
+    }
+  ],
+  "4-2": [
+    {
+      "role": "LLM",
+      "text": "Agora a atribuição acontece. À direita, nome é o parâmetro. À esquerda, this ponto nome é o campo deste objeto. Duke entrega Headset ao campo. O método é void: termina sem devolver um valor."
+    }
+  ],
+  "4-3": [
+    {
+      "role": "LLM",
+      "text": "Nova encomenda: subtotal recebe três no parâmetro quantidade. O preço é oitenta e o estoque continua dois. O cálculo usa oitenta vezes três. Ao guardar o retorno em total, já aparece algo no console?"
+    }
+  ],
+  "4-4": [
+    {
+      "role": "LLM",
+      "text": "O resultado duzentos e quarenta volta para quem chamou e fica em total. O console continua sem saída. Return devolveu um valor; não imprimiu e não retirou nada dos campos."
+    }
+  ],
+  "4-5": [
+    {
+      "role": "LLM",
+      "text": "Agora sim: chamamos println com total. Duzentos e quarenta aparece no console. As três tarefas ficaram separadas: o método calculou, a variável guardou e println imprimiu."
+    }
+  ]
+}

@@ -21,7 +21,7 @@ do backend** que o aluno já construiu (`../backend-fullstack` / `../projetos-fu
 | 8 | `capitulos/08-react-router/` | **Navegação** | React Router DOM, SPA com várias páginas |
 | 9 | `capitulos/09-ia-agentes/` | **IA & Agentes** | Como LLMs/agentes funcionam, panorama (Claude Code/Codex/Antigravity), prompt=spec, ritual de revisão |
 | 10 | `capitulos/10-projeto-gestor/` | **Projeto: GestorPRO** | Sistema de clientes/fornecedores/produtos: CRUD (axios post/put/delete), AGENTS.md, escada "na mão → junto → você comanda" — fecha o front |
-| 11 | `capitulos/11-java-oo-basico/` | **Java & OO: a base antes do Spring** | A ponte pro backend (1 manhã): compilar/JVM, JDK 21 + IntelliJ, tipos, métodos, classe/objeto, construtor/this, private/getters/setters, ArrayList/for-each, ProdutoService em memória, quadro-ponte Java puro → Spring |
+| 11 | `capitulos/11-java-oo-basico/` | **Java & OO direto ao ponto** | Um projeto em 4h10: JDK 21 pelo IntelliJ, Main, Produto, classe/objeto, construtor/this, encapsulamento, List, ProdutoService, teatro didático e ponte para Spring |
 
 > **Mudança de mapa (2026-08-14):** o antigo "Cap 9 — Integração real (JWT/Spring/deploy)"
 > **saiu do frontend** e migra para a metade backend (quando a turma construir a API).
