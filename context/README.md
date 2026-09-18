@@ -23,6 +23,7 @@ A ideia (Spec-Driven Development) é simples: **nunca perder o contexto** — qu
 | [11-plano-cap-11-java.md](11-plano-cap-11-java.md) | Spec do Cap 11 (Java & OO direto ao ponto) — uma manhã, um projeto e teatro didático |
 | [11a-levantamento-backend.md](11a-levantamento-backend.md) | O que o material de backend assume vs ensina de Java (base do Cap 11) |
 | [11b-catalogo-erros-javac.md](11b-catalogo-erros-javac.md) | Mensagens REAIS do javac/JVM 21 (25 erros + 14 saídas de runtime) para citar verbatim |
+| [12-plano-cap-12-spring.md](12-plano-cap-12-spring.md) | Plano e implementação do Cap 12: Initializr, Docker/PostgreSQL, SQL, IntelliJ/JDK 21 e CRUD de Fornecedor; checkpoints e validação |
 
 ## Regra de ouro
 

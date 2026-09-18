@@ -1,7 +1,8 @@
-# 04 — Mapa de conteúdo (Frontend)
+# 04 — Mapa de conteúdo (Fullstack)
 
-Arco completo (~9–10 capítulos), modular. O front parte do zero e **culmina consumindo a API
-do backend** que o aluno já construiu (`../backend-fullstack` / `../projetos-fullstack/final`).
+Arco modular: frontend do zero até o GestorPRO no Cap 10, Java básico no Cap 11 e início
+do Spring no Cap 12. A turma constrói o backend depois do frontend; a conexão
+com a API real é uma etapa posterior. Os materiais antigos de backend servem de referência.
 
 > Os slides antigos (5 aulas) são referência solta, NÃO roteiro. Modernizamos:
 > sai Bootstrap/Node-na-marra → entra Vite + CSS Modules. Conteúdo refatorado e atualizado.
@@ -22,6 +23,11 @@ do backend** que o aluno já construiu (`../backend-fullstack` / `../projetos-fu
 | 9 | `capitulos/09-ia-agentes/` | **IA & Agentes** | Como LLMs/agentes funcionam, panorama (Claude Code/Codex/Antigravity), prompt=spec, ritual de revisão |
 | 10 | `capitulos/10-projeto-gestor/` | **Projeto: GestorPRO** | Sistema de clientes/fornecedores/produtos: CRUD (axios post/put/delete), AGENTS.md, escada "na mão → junto → você comanda" — fecha o front |
 | 11 | `capitulos/11-java-oo-basico/` | **Java & OO direto ao ponto** | Um projeto em 4h10: JDK 21 pelo IntelliJ, Main, Produto, classe/objeto, construtor/this, encapsulamento, List, ProdutoService, teatro didático e ponte para Spring |
+| 12 | `capitulos/12-spring-primeira-api/` | **Spring: nossa primeira API** | Framework, Initializr, Docker Desktop, containers/volumes, PostgreSQL, SQL, IntelliJ/JDK 21 e cinco endpoints de Fornecedor sem DTO; três simulações e caderno livre |
+
+**Cap 12 implementado localmente:** especificação e evidências em
+[12-plano-cap-12-spring.md](12-plano-cap-12-spring.md). Produto é a próxima entidade proposta
+para introduzir DTO gradualmente.
 
 > **Mudança de mapa (2026-08-14):** o antigo "Cap 9 — Integração real (JWT/Spring/deploy)"
 > **saiu do frontend** e migra para a metade backend (quando a turma construir a API).
