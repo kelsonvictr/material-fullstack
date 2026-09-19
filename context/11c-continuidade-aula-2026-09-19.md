@@ -313,3 +313,11 @@ Arquivos de referência: `capitulos/11-java-oo-basico/index.html`, `pratica-flux
 `context/12-plano-cap-12-spring.md`. Este registro acrescenta evidência da aula real ao
 plano original. Após a discussão do roteiro, o construtor do material local foi simplificado
 para atribuições diretas com `this`; exercícios e oficina foram alinhados a essa decisão.
+
+
+## Apoio rápido para condução
+
+`capitulos/11-java-oo-basico/professor.txt` reúne orientações diretas e soluções,
+ligadas aos marcadores discretos [01]–[26] do capítulo (incluindo atividades).
+Não há link público para o TXT. Ao alterar pontos ou exercícios, manter a
+numeração do HTML, de `pratica-fluxo.js` e do roteiro sincronizada.

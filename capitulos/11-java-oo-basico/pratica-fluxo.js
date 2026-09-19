@@ -133,6 +133,8 @@
     wrap.append(head, pre); return wrap;
   }
   const textNode = (tag, text, className) => { const el = document.createElement(tag); el.textContent = text; if (className) el.className = className; return el; };
+  // Pontos fixos do capítulo; independentes da numeração das atividades.
+  const lessonPoints = ['05', '06', '07', '08', '12', '13', '15', '16', '19', '20', '22', '23'];
   let number = 0;
   blocks.forEach(block => {
     const host = document.querySelector(block.target); if (!host) return;
@@ -142,6 +144,10 @@
       const article = document.createElement('article'); article.className = `practice-task ${ex.guided ? 'guided' : 'solo'}`;
       article.id = `atividade-${++number}`;
       article.append(textNode('span', `${ex.guided ? '🤝 COM O PROFESSOR' : '✍️ AGORA SOZINHO'} · ${ex.minutes} min`, 'practice-tag'), textNode('h4', `${number}. ${ex.title}`), textNode('p', ex.where, 'practice-where'));
+      const point = lessonPoints[number - 1];
+      const marker = textNode('span', `[${point}]`, 'lesson-point');
+      marker.setAttribute('aria-label', `Ponto ${point}`);
+      article.querySelector('h4').append(marker);
       const list = document.createElement('ol'); ex.task.forEach(task => list.append(textNode('li', task))); article.append(list);
       article.append(textNode('p', 'Resultado para conferir — preveja antes de executar:', 'practice-label'), textNode('pre', ex.output, 'practice-output'));
       const hint = document.createElement('details'); hint.className = 'practice-reveal'; hint.append(textNode('summary', '💡 Uma dica, sem abrir a solução'), textNode('p', ex.hint));

@@ -442,3 +442,19 @@ html { scroll-padding-bottom: 110px; }
 @media (prefers-reduced-motion: reduce) {
   .jt *, .jt *::before, .jt *::after { animation: none !important; transition: none !important; }
 }
+
+/* Referências discretas para acompanhar os pontos da aula. */
+.lesson-point {
+  display: inline-block;
+  margin-left: .5rem;
+  color: #9292aa;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: .02em;
+  vertical-align: middle;
+  white-space: nowrap;
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0, "clig" 0, "calt" 0;
+}
