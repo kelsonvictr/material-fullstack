@@ -101,6 +101,10 @@ fluxo principal.
 - `Long id` para antecipar a entidade futura.
 - `buscarPorId` devolve `null` nesta primeira aula; `Optional` e exceções entram depois.
 - Getters, setters e `toString` podem ser gerados por `Code > Generate` para economizar tempo.
+- Simplificação aprovada em 18/09/2026: o construtor usa `this.nome = nome`,
+  `this.preco = preco` e `this.estoque = estoque`, sem chamar setters. Primeiro ensinar
+  atribuição dos dados iniciais; depois validar alterações nos setters. Os exemplos de
+  criação usam valores válidos; o construtor desta versão não valida preço ou estoque.
 
 ## Evidência de aprendizagem
 

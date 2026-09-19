@@ -77,7 +77,7 @@
           hint: 'Zero não é negativo. Compare estoque < 0 com estoque <= 0.',
           code: 'Produto caneta = new Produto("Caneta", 2.0, 6);\ncaneta.setEstoque(-1);\nSystem.out.println(caneta.getEstoque());\ncaneta.setEstoque(0);\nSystem.out.println(caneta.getEstoque());',
           output: 'Estoque inválido\n6\n0', why: 'A primeira tentativa é recusada e mantém 6. A segunda representa um produto esgotado: zero é permitido.',
-          check: 'Se o preço inicial fosse negativo no construtor, ele não manteria 80.0: o campo começa em 0.0. Explique por que esse caso é diferente do exercício guiado.' }
+          check: 'Explique por que setEstoque(-1) mantém 6, mas setEstoque(0) muda o estoque para zero. Qual condição decide isso?' }
       ] },
     { target: '#service > .card', title: 'Parada 5 · Quem organiza o cadastro?',
       theory: 'Produto guarda o estado de um item. ProdutoService organiza uma lista de produtos. Cada new ProdutoService() começa uma lista vazia e um contador em 1. buscarPorId devolve Produto ou null; remover devolve true ou false.',
