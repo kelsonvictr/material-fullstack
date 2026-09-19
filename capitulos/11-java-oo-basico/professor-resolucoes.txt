@@ -1,0 +1,523 @@
+CAP 11 | RESOLUÇÕES E CONSULTA
+========================
+Para conduzir a aula, use professor.txt. Consulte aqui o mesmo [NN].
+Os pontos seguem a ordem da página; os números das atividades são outros.
+CONDUZA = ação; CONFIRA = evidência antes de avançar; CÓDIGO = correção.
+Trechos de atividade substituem o corpo do main; métodos extras entram
+na classe indicada, fora de outros métodos. Não acumule os exemplos.
+
+RETOMADA DA TURMA (aula de 19/09)
+- Já chegaram ao new de quatro argumentos e ao setNome. Comece no [09].
+- Preserve Maven, org.example e src/main/java/org/example se já usados.
+  Nos arquivos completos abaixo, troque somente package br.com.gestorpro
+  pelo pacote existente. Maven constrói o projeto; pom.xml o configura.
+- Antes do [18], mantenha o construtor anterior com id:
+  public Produto(Long id, String nome, double preco, int estoque) {
+      this.id = id;
+      this.nome = nome;
+      this.preco = preco;
+      this.estoque = estoque;
+  }
+  Nas chamadas de três argumentos de [09] a [16], acrescente o id
+  (1L, 2L etc.) antes do nome. O desafio de retomada já inclui 10L.
+  No [18], migre conscientemente para três argumentos e id pelo Service.
+- Ritmo: 0–20 retomada [09]; 20–45 referências [11] e toString [09];
+  45–70 regras [15–16]; 70–105 lista do [18]; 105–115 intervalo [17];
+  115–170 Service [18]; 170–210 busca/alteração/remoção [18–20];
+  210–230 desafio do [21]; 230–240 fechamento [24–26].
+- [01–08]: revisão sob demanda. [22–23]: tarefa ou ampliação.
+- Som somente no notebook do professor. Escolha a oficina que resolve
+  a dúvida; pause antes da resposta e peça uma previsão, inclusive remota.
+
+[01] JAVA SEM MEDO
+----------------------------------------------------------------
+CONDUZA: pergunte “Quem recebe e confere os dados do cadastro?”.
+Ligue a resposta ao backend. Leia println e nomeie aspas, parênteses e ;.
+Use “O ponto e vírgula desaparecido” para prever e corrigir o erro.
+CONFIRA: sintaxe = regras de escrita; compilar confere/traduz; executar roda.
+Na retomada, passe direto ao [09].
+
+[02] UMA MANHÃ, UMA ENTREGA
+----------------------------------------------------------------
+CONDUZA: anuncie três arquivos: Produto guarda estado; ProdutoService
+organiza o cadastro; Main chama e imprime. Peça prever -> executar -> explicar.
+CONFIRA: todos continuam no mesmo projeto. Solução só depois da tentativa.
+Na retomada, use os tempos do início deste TXT, não o cronograma da página.
+
+[03] PROJETO E JDK
+----------------------------------------------------------------
+CONDUZA: para projeto novo, siga o assistente da página e confira JDK 21.
+Na turma atual, reabra o Maven existente; não recrie nem troque o pacote.
+Crie Main no pacote do projeto; mantenha nomes de classe/arquivo iguais.
+CONFIRA: o botão executar aparece e a mensagem do [04] chega ao console.
+
+[04] MAIN, TIPOS, IF E FOR
+----------------------------------------------------------------
+CONDUZA: escreva a estrutura abaixo; execute. Não cobre memorização de static.
+  package br.com.gestorpro;
+  public class Main {
+      public static void main(String[] args) {
+          System.out.println("GestorPRO iniciado!");
+      }
+  }
+SAÍDA: GestorPRO iniciado!
+Depois de [05–06], explique String, int, double e boolean nos exemplos da
+página; trace o if com estoque 3 e as três voltas do for. Use [07–08].
+QUIZ: int estoque = 12; é a alternativa válida (sem aspas).
+
+[05] ATIVIDADE 1 | Uma mensagem que é sua
+----------------------------------------------------------------
+CONDUZA: Escreva com a turma. Retire um ;, leia o erro e recoloque.
+CONFIRA: o aluno aponta as chaves da classe e do main.
+CÓDIGO (Main.java completo):
+  package br.com.gestorpro;
+
+  public class Main {
+      public static void main(String[] args) {
+          System.out.println("Meu primeiro programa Java");
+          System.out.println("Programa AI");
+      }
+  }
+SAÍDA: Meu primeiro programa Java | Programa AI
+
+[06] ATIVIDADE 2 | Seu crachá no console
+----------------------------------------------------------------
+CONDUZA: Dê 6 min sem solução. Peça nome próprio e uma quarta mensagem.
+CONFIRA: mudou textos sem desmontar a estrutura.
+CÓDIGO (dentro do main):
+  System.out.println("Aluno: Ana");
+  System.out.println("Turma: Fullstack");
+  System.out.println("Meta: aprender Java");
+SAÍDA: Aluno: Ana | Turma: Fullstack | Meta: aprender Java
+
+[07] ATIVIDADE 3 | O alerta de reposição
+----------------------------------------------------------------
+CONDUZA: Leia o problema antes do if; calcule 15 * 3 no quadro.
+CONFIRA: estoque 5 não gera alerta; estoque 0 gera total 0.0 e alerta.
+CÓDIGO (dentro do main):
+  String nome = "Caderno";
+  double preco = 15.0;
+  int estoque = 3;
+  double total = preco * estoque;
+  System.out.println("Valor em estoque: " + total);
+  if (estoque < 5) {
+      System.out.println("Repor " + nome);
+  }
+SAÍDA: Com estoque 3: | Valor em estoque: 45.0 | Repor Caderno |  | Com estoque 5: |
+  Valor em estoque: 75.0
+
+[08] ATIVIDADE 4 | Etiquetas sem copiar e colar
+----------------------------------------------------------------
+CONDUZA: Dê 10 min. Trace início, condição, corpo e incremento.
+CONFIRA: quantidade 1 imprime uma vez; 0 não imprime; < perderia a última.
+CÓDIGO (dentro do main):
+  int quantidade = 4;
+  for (int i = 1; i <= quantidade; i++) {
+      System.out.println("Etiqueta " + i);
+  }
+SAÍDA: Com quantidade 4: | Etiqueta 1 | Etiqueta 2 | Etiqueta 3 | Etiqueta 4 |  |
+  Com quantidade 1: apenas Etiqueta 1. | Com quantidade 0: nenhuma linha.
+
+[09] PRODUTO | CLASSE, CONSTRUTOR E ESTADO
+----------------------------------------------------------------
+CONDUZA: use molde/ficha. Escreva campos, construtor, getters e setters.
+Gere toString; ele devolve texto e println imprime. @Override substitui
+uma implementação herdada. Produto@... não é endereço físico da RAM.
+RETOMADA: dê 7 min para criar Teclado, ler, renomear e ler novamente:
+  Produto teclado = new Produto(10L, "Teclado", 120.0, 2);
+  System.out.println(teclado.getNome());
+  teclado.setNome("Teclado USB");
+  System.out.println(teclado.getNome());
+SAÍDA: Teclado | Teclado USB. Apenas um objeto Produto criado.
+CONFIRA: setter altera o objeto existente; getter devolve, não imprime.
+CORREÇÃO Produto.java (versão de três argumentos mostrada no HTML;
+na retomada, mantenha quatro até [18]). Introduza os if em [15–16]:
+  package br.com.gestorpro;
+
+  public class Produto {
+      private Long id;
+      private String nome;
+      private double preco;
+      private int estoque;
+
+      public Produto(String nome, double preco, int estoque) {
+          this.nome = nome;
+          this.preco = preco;
+          this.estoque = estoque;
+      }
+
+      public Long getId() { return id; }
+      public void setId(Long id) { this.id = id; }
+      public String getNome() { return nome; }
+      public void setNome(String nome) { this.nome = nome; }
+      public double getPreco() { return preco; }
+      public void setPreco(double preco) {
+          if (preco < 0) {
+              System.out.println("Preço inválido");
+              return;
+          }
+          this.preco = preco;
+      }
+      public int getEstoque() { return estoque; }
+      public void setEstoque(int estoque) {
+          if (estoque < 0) {
+              System.out.println("Estoque inválido");
+              return;
+          }
+          this.estoque = estoque;
+      }
+      @Override
+      public String toString() {
+          return "#" + id + " " + nome + " - R$ " + preco
+                  + " (estoque: " + estoque + ")";
+      }
+  }
+
+[10] MÉTODOS | O QUE ENTRA E O QUE VOLTA
+----------------------------------------------------------------
+CONDUZA: abra “A central de encomendas”. Pause antes de revelar a saída.
+Aponte argumento 3, parâmetro quantidade, campo preco e retorno.
+MÉTODO EXTRA em Produto (se usar a prática da oficina):
+  public double subtotal(int quantidade) {
+      return preco * quantidade;
+  }
+NO MAIN (acrescente id na retomada):
+  Produto fone = new Produto("Fone", 80.0, 2);
+  fone.setNome("Headset");
+  double total = fone.subtotal(3);
+  System.out.println(total);
+  double outroTotal = fone.subtotal(4);
+  System.out.println(outroTotal);
+  System.out.println(fone.getEstoque());
+SAÍDA: 240.0 | 320.0 | 2.
+CONFIRA: calcular não baixa estoque; guardar retorno não imprime.
+this identifica este objeto. void não devolve valor, mas admite return;.
+
+[11] REFERÊNCIAS | O NOME NÃO É O OBJETO
+----------------------------------------------------------------
+CONDUZA: abra “O crachá e o morador”. Pergunte quem muda antes de avançar.
+CORREÇÃO DA PRÁTICA (main; acrescente ids na retomada):
+  Produto primeiro = new Produto("Fone", 80.0, 2);
+  Produto outro = new Produto("Fone", 80.0, 2);
+  Produto apelido = primeiro;
+  apelido.setEstoque(8);
+  System.out.println(primeiro.getEstoque());
+  System.out.println(outro.getEstoque());
+  apelido = outro;
+  apelido.setEstoque(9);
+  System.out.println(primeiro.getEstoque());
+  System.out.println(outro.getEstoque());
+SAÍDA: 8 | 2 | 8 | 9.
+CONFIRA: dois new = dois objetos; atribuir referência não cria cópia.
+Se faltar tempo, pare antes de apelido = outro.
+
+[12] ATIVIDADE 5 | Duas fichas na mesma bancada
+----------------------------------------------------------------
+CONDUZA: Crie os dois produtos e peça que apontem cada new.
+CONFIRA: mesma classe, dois objetos com dados próprios.
+CÓDIGO (dentro do main):
+  Produto teclado = new Produto("Teclado", 100.0, 2);
+  Produto mouse = new Produto("Mouse", 50.0, 6);
+  System.out.println(teclado.getNome() + ": " + teclado.getEstoque());
+  System.out.println(mouse.getNome() + ": " + mouse.getEstoque());
+SAÍDA: Teclado: 2 | Mouse: 6
+
+[13] ATIVIDADE 6 | Só o monitor recebeu unidades
+----------------------------------------------------------------
+CONDUZA: Dê 9 min. Peça a previsão dos dois estoques antes de executar.
+CONFIRA: só monitor recebe a alteração; cabo permanece com 8.
+CÓDIGO (dentro do main):
+  Produto monitor = new Produto("Monitor", 800.0, 1);
+  Produto cabo = new Produto("Cabo", 20.0, 8);
+  monitor.setEstoque(4);
+  System.out.println(monitor.getEstoque());
+  System.out.println(cabo.getEstoque());
+SAÍDA: 4 | 8
+
+[14] OFICINA DE OBJETOS
+----------------------------------------------------------------
+CONDUZA: escolha a cena para a dúvida atual; não reproduza todas por rotina.
+1: quantos objetos nasceram? 2: negativo muda o preço? 3: quem organiza?
+GABARITO: dois objetos; negativo preserva o valor; Service organiza a lista.
+QUIZ: dois objetos criados com new têm estados independentes (2ª opção).
+CONFIRA: peça uma explicação antes de seguir para a prática [15–16].
+
+[15] ATIVIDADE 7 | Um preço recusado e um aceito
+----------------------------------------------------------------
+CONDUZA: Mostre o setter gerado aceitando negativo; depois escreva o if do [09].
+Recrie com 80.0 e execute abaixo. Tente fone.preco = 1.0; remova o erro.
+CONFIRA: private impede acesso direto; o if recusa a alteração negativa.
+O construtor atribui diretamente: comece com dados válidos.
+CÓDIGO (dentro do main):
+  Produto fone = new Produto("Fone", 80.0, 2);
+  fone.setPreco(-10.0);
+  System.out.println(fone.getPreco());
+  fone.setPreco(90.0);
+  System.out.println(fone.getPreco());
+SAÍDA: Preço inválido | 80.0 | 90.0
+
+[16] ATIVIDADE 8 | Zero também é um estoque válido
+----------------------------------------------------------------
+CONDUZA: Dê 8 min. Peça ao aluno para adaptar a validação ao estoque.
+CONFIRA: -1 mantém 6; 0 é aceito. A condição é < 0, não <= 0.
+CÓDIGO (dentro do main):
+  Produto caneta = new Produto("Caneta", 2.0, 6);
+  caneta.setEstoque(-1);
+  System.out.println(caneta.getEstoque());
+  caneta.setEstoque(0);
+  System.out.println(caneta.getEstoque());
+SAÍDA: Estoque inválido | 6 | 0
+
+[17] INTERVALO
+----------------------------------------------------------------
+CONDUZA: salve e reserve 10 min. Na retomada, faça primeiro a lista do [18].
+CONFIRA: todos localizam Produto, objeto e main ao voltar.
+
+[18] LISTA -> SERVICE -> CRUD
+----------------------------------------------------------------
+CONDUZA EM INCREMENTOS. Execute entre eles; evite colar a classe toda.
+1. Antes do Service, pergunte “Como listar cem produtos sem cem prints?”.
+   No Main, importe java.util.List e java.util.ArrayList (depois de package).
+   Use o construtor de quatro argumentos ainda na retomada:
+  List<Produto> produtos = new ArrayList<>();
+  produtos.add(new Produto(1L, "Teclado", 100.0, 2));
+  produtos.add(new Produto(2L, "Mouse", 50.0, 6));
+  System.out.println(produtos.size());
+  for (Produto produto : produtos) {
+      System.out.println(produto.getId() + " " + produto.getNome()
+              + " " + produto.getEstoque());
+  }
+   SAÍDA: 2 | 1 Teclado 2 | 2 Mouse 6.
+   Se já usa três argumentos, remova 1L/2L do new e atribua os ids por
+   setId antes de imprimir (a geração automática virá no passo 3).
+2. Mova a lista para ProdutoService; implemente cadastrar (add + return)
+   e listar. No Main, um único new ProdutoService(); cadastre e percorra.
+   List<Produto> = coleção de Produto; ArrayList = implementação escolhida.
+   final impede trocar a referência da lista, não adicionar/remover itens.
+3. Mostre o risco de id manual repetido. Remova o parâmetro id e this.id
+   do construtor de Produto; preserve campo/getter/setter. Ajuste TODOS
+   os new para três argumentos. O id fica null até cadastrar.
+   Adicione proximoId = 1. Escreva setId(proximoId); proximoId++; primeiro.
+   Depois compacte em setId(proximoId++), como no HTML. Confira ids 1 e 2.
+4. Escreva buscarPorId: percorra, compare valores Long com equals;
+   devolva o encontrado, ou null após o laço. Teste 2L e 99L.
+5. Altere pelo resultado da busca (exemplo abaixo). Liste para comprovar.
+6. Escreva remover. Teste o mesmo id duas vezes: true, depois false.
+   Use “O depósito de referências” para visualizar busca e remoção.
+CORREÇÃO ProdutoService.java:
+  package br.com.gestorpro;
+
+  import java.util.ArrayList;
+  import java.util.List;
+
+  public class ProdutoService {
+      private final List<Produto> produtos = new ArrayList<>();
+      private long proximoId = 1;
+
+      public Produto cadastrar(Produto produto) {
+          produto.setId(proximoId++);
+          produtos.add(produto);
+          return produto;
+      }
+
+      public List<Produto> listar() {
+          return produtos;
+      }
+
+      public Produto buscarPorId(Long id) {
+          for (Produto produto : produtos) {
+              if (produto.getId().equals(id)) {
+                  return produto;
+              }
+          }
+          return null;
+      }
+
+      public boolean remover(Long id) {
+          Produto produto = buscarPorId(id);
+          if (produto == null) {
+              return false;
+          }
+          return produtos.remove(produto);
+      }
+  }
+ALTERAÇÃO (main, depois de cadastrar dois produtos):
+  Produto encontrado = service.buscarPorId(2L);
+  if (encontrado != null) {
+      encontrado.setNome("Mouse USB");
+  }
+  for (Produto produto : service.listar()) {
+      System.out.println(produto.getNome());
+  }
+CONFIRA: busca devolve referência ao mesmo objeto; não precisa cadastrar
+novamente. Remover tira da lista; outra referência pode manter o objeto.
+LIMITES: lista exposta por listar; cadastre cada objeto novo uma vez.
+Outro Service tem lista/contador próprios. Sem construtor declarado,
+esta classe recebe construtor padrão sem argumentos.
+
+[19] ATIVIDADE 9 | Cadastrar, encontrar e remover
+----------------------------------------------------------------
+CONDUZA: Faça uma operação por vez. Use um Service novo para obter ids 1 e 2.
+CONFIRA: remover 1L outra vez retorna false. L indica literal long.
+CÓDIGO (dentro do main):
+  ProdutoService service = new ProdutoService();
+  service.cadastrar(new Produto("Livro", 30.0, 2));
+  service.cadastrar(new Produto("Lápis", 3.0, 10));
+  Produto encontrado = service.buscarPorId(2L);
+  if (encontrado != null) {
+      System.out.println(encontrado.getNome());
+  }
+  System.out.println(service.remover(1L));
+  for (Produto produto : service.listar()) {
+      System.out.println(produto.getNome());
+  }
+SAÍDA: Lápis | true | Lápis
+
+[20] ATIVIDADE 10 | O produto que não existe
+----------------------------------------------------------------
+CONDUZA: Dê 10 min. Antes de abrir solução, peça como representar ausência.
+CONFIRA: consultar 99L devolve null; remover 99L devolve false.
+Nunca encadeie getNome() numa busca que pode retornar null.
+CÓDIGO (dentro do main):
+  ProdutoService service = new ProdutoService();
+  service.cadastrar(new Produto("Pasta", 12.0, 3));
+  service.cadastrar(new Produto("Régua", 4.0, 5));
+  Produto encontrado = service.buscarPorId(99L);
+  if (encontrado == null) {
+      System.out.println("Produto não encontrado");
+  }
+  System.out.println(service.remover(99L));
+  for (Produto produto : service.listar()) {
+      System.out.println(produto.getNome());
+  }
+SAÍDA: Produto não encontrado | false | Pasta | Régua
+
+[21] INTEGRAÇÃO E DESAFIO DE SAÍDA
+----------------------------------------------------------------
+CONDUZA: confira os cinco checkpoints da página, respeitando o pacote real.
+CORREÇÃO Main.java (Produto e Service conforme [09] e [18]):
+  package br.com.gestorpro;
+
+  public class Main {
+      public static void main(String[] args) {
+          ProdutoService service = new ProdutoService();
+          Produto teclado = new Produto("Teclado Mecânico", 320.0, 12);
+          Produto mouse = new Produto("Mouse Gamer", 89.0, 5);
+          service.cadastrar(teclado);
+          service.cadastrar(mouse);
+
+          System.out.println("=== PRODUTOS ===");
+          for (Produto produto : service.listar()) {
+              System.out.println(produto);
+          }
+
+          Produto encontrado = service.buscarPorId(2L);
+          if (encontrado != null) {
+              System.out.println("Encontrado: " + encontrado.getNome());
+          }
+          boolean removeu = service.remover(1L);
+          System.out.println("Removeu #1? " + removeu);
+          System.out.println("Restaram: " + service.listar().size());
+      }
+  }
+SAÍDA: dois produtos (#1 Teclado Mecânico, #2 Mouse Gamer);
+Encontrado: Mouse Gamer | Removeu #1? true | Restaram: 1.
+RETOMADA: dê 8 min sem solução para a extensão da atividade 10:
+Pasta/Régua; renomear 2L; buscar 99L; remover 1L duas vezes; listar.
+CORREÇÃO (substitui corpo do main):
+  ProdutoService service = new ProdutoService();
+  service.cadastrar(new Produto("Pasta", 12.0, 3));
+  service.cadastrar(new Produto("Régua", 4.0, 5));
+  Produto regua = service.buscarPorId(2L);
+  if (regua != null) {
+      regua.setNome("Régua escolar");
+  }
+  if (service.buscarPorId(99L) == null) {
+      System.out.println("Produto não encontrado");
+  }
+  System.out.println(service.remover(1L));
+  System.out.println(service.remover(1L));
+  for (Produto produto : service.listar()) {
+      System.out.println(produto.getNome());
+  }
+SAÍDA: Produto não encontrado | true | false | Régua escolar.
+CONFIRA: aluno explica por que setNome alterou o item da lista.
+No teste extra, crie com 80.0 e tente setPreco(-10.0): mantém 80.0.
+Se lista/busca ainda estiverem frágeis, retome isso antes de Spring.
+
+[22] ATIVIDADE 11 | Quantos produtos ainda têm estoque?
+----------------------------------------------------------------
+CONDUZA: Tarefa/ampliação: conte produtos, não unidades.
+CONFIRA: estoques 2, 0 e 5 dão 2; lista vazia dá 0. Return após o laço.
+MÉTODO EXTRA EM ProdutoService:
+  public int contarComEstoque() {
+      int quantidade = 0;
+      for (Produto produto : produtos) {
+          if (produto.getEstoque() > 0) {
+              quantidade++;
+          }
+      }
+      return quantidade;
+  }
+CÓDIGO (dentro do main):
+  ProdutoService service = new ProdutoService();
+  service.cadastrar(new Produto("Livro", 30.0, 2));
+  service.cadastrar(new Produto("Pasta", 12.0, 0));
+  service.cadastrar(new Produto("Régua", 4.0, 5));
+  System.out.println(service.contarComEstoque());
+SAÍDA: 2
+
+[23] ATIVIDADE 12 | Recebemos uma reposição!
+----------------------------------------------------------------
+CONDUZA: Tarefa/ampliação: valide quantidade; busque; valide existência; altere.
+CONFIRA: repor -2 também retorna false e mantém estoque 5.
+MÉTODO EXTRA EM ProdutoService:
+  public boolean repor(Long id, int quantidade) {
+      if (quantidade <= 0) {
+          return false;
+      }
+      Produto produto = buscarPorId(id);
+      if (produto == null) {
+          return false;
+      }
+      produto.setEstoque(produto.getEstoque() + quantidade);
+      return true;
+  }
+CÓDIGO (dentro do main):
+  ProdutoService service = new ProdutoService();
+  Produto livro = new Produto("Livro", 30.0, 2);
+  service.cadastrar(livro);
+  System.out.println(service.repor(1L, 3));
+  System.out.println(livro.getEstoque());
+  System.out.println(service.repor(1L, 0));
+  System.out.println(service.repor(99L, 3));
+  System.out.println(livro.getEstoque());
+SAÍDA: true | 5 | false | false | 5
+
+[24] PONTE PARA SPRING
+----------------------------------------------------------------
+CONDUZA: reinicie a execução. A lista nasceu vazia; dados reaparecem porque
+Main cadastra novamente, não porque foram persistidos.
+Mostre: Controller recebe HTTP -> Service -> Repository -> PostgreSQL.
+Produto/Model representa dados. Spring conecta as peças da aplicação.
+O Cap 12 real começa com Fornecedor (id, nome, cnpj, categoria, telefone).
+A prévia com Produto transfere o padrão; não renomeie a classe da turma.
+CONFIRA: memória temporária não é persistência. Só abra Cap 12 se houver
+base; reserve Docker, banco e construção da API para o próximo encontro.
+
+[25] QUIZ FINAL
+----------------------------------------------------------------
+CONDUZA: peça voto e justificativa antes de revelar; permita nova tentativa.
+GABARITO: 1 -> primeira (classe/molde, objeto/instância).
+          2 -> segunda (acesso por métodos públicos).
+          3 -> terceira (ProdutoService organiza operações).
+CONFIRA: private sozinho não valida preço; a regra foi escrita no setter.
+
+[26] FECHAMENTO
+----------------------------------------------------------------
+CONDUZA: peça exportação do caderno e três frases: criar x alterar;
+objeto x lista; retornar x imprimir. Peça o projeto funcionando na próxima.
+TAREFA: refazer cadastro sem copiar; tentar [22–23] e só depois conferir.
+CONFIRA: cada aluno consegue criar/cadastrar, buscar e tratar ausência.
+Se não conseguiu, marque o ponto exato deste roteiro para a retomada.
+

@@ -317,7 +317,9 @@ para atribuições diretas com `this`; exercícios e oficina foram alinhados a e
 
 ## Apoio rápido para condução
 
-`capitulos/11-java-oo-basico/professor.txt` reúne orientações diretas e soluções,
-ligadas aos marcadores discretos [01]–[26] do capítulo (incluindo atividades).
-Não há link público para o TXT. Ao alterar pontos ou exercícios, manter a
-numeração do HTML, de `pratica-fluxo.js` e do roteiro sincronizada.
+`capitulos/11-java-oo-basico/professor.txt` é a cola rápida: poucas linhas por
+ponto, ação e resultado esperado. Resoluções completas e explicações ficam em
+`professor-resolucoes.txt`, na mesma pasta, com os mesmos pontos [01]–[26].
+Os marcadores do capítulo incluem as atividades. Não há links públicos para
+os TXTs. Ao alterar pontos ou exercícios, manter a numeração do HTML,
+de `pratica-fluxo.js` e dos dois roteiros sincronizada.
