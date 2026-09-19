@@ -1,0 +1,1332 @@
+{
+  "capitulo": "Cap 11 · Java",
+  "voltar": "../index.html#apresentacoes",
+  "topicos": {
+    "ambiente": {
+      "nome": "Projeto Java",
+      "href": "../index.html#projeto",
+      "definicao": "IntelliJ é a IDE; JDK 21 fornece as ferramentas Java. Pacotes organizam as classes.",
+      "exemplo": "gestorpro-java, pacote br.com.gestorpro, arquivos Main, Produto e ProdutoService.",
+      "erro_plausivel": "Confundir a IDE com a linguagem ou mudar o pacote de um único arquivo.",
+      "evidencia": "SDK 21 configurada e as três classes compilando juntas.",
+      "limite": "O HTML usa build IntelliJ; quem começou em Maven/org.example mantém seu projeto, com classes em src/main/java/org/example. Maven constrói o projeto e gerencia dependências; pom.xml descreve suas configurações.",
+      "apoio": "IntelliJ é a IDE; JDK 21 fornece as ferramentas Java. Pacotes organizam as classes. Exemplo: gestorpro-java, pacote br.com.gestorpro, arquivos Main, Produto e ProdutoService. Confira: SDK 21 configurada e as três classes compilando juntas. Atenção: Confundir a IDE com a linguagem ou mudar o pacote de um único arquivo. Limite: O HTML usa build IntelliJ; quem começou em Maven/org.example mantém seu projeto, com classes em src/main/java/org/example. Maven constrói o projeto e gerencia dependências; pom.xml descreve suas configurações."
+    },
+    "execucao": {
+      "nome": "Da escrita ao console",
+      "href": "../index.html#java",
+      "definicao": "Sintaxe define a escrita. O compilador traduz fonte .java em bytecode .class; a JVM executa a partir de main.",
+      "exemplo": "println com texto entre aspas, parênteses e ponto e vírgula.",
+      "erro_plausivel": "Achar que corrigir ou compilar já imprime a mensagem.",
+      "evidencia": "Depois de executar, o console mostra as linhas na ordem das chamadas.",
+      "limite": "public permite acesso; static dispensa instância de Main; void não devolve valor. main chama outros métodos: a execução não fica restrita às linhas escritas nele.",
+      "apoio": "Sintaxe define a escrita. O compilador traduz fonte .java em bytecode .class; a JVM executa a partir de main. Exemplo: println com texto entre aspas, parênteses e ponto e vírgula. Confira: Depois de executar, o console mostra as linhas na ordem das chamadas. Atenção: Achar que corrigir ou compilar já imprime a mensagem. Limite: public permite acesso; static dispensa instância de Main; void não devolve valor. main chama outros métodos: a execução não fica restrita às linhas escritas nele."
+    },
+    "tipos": {
+      "nome": "Tipos e valores",
+      "href": "../index.html#java",
+      "definicao": "O tipo declarado limita os valores aceitos; a conferência ocorre antes de executar.",
+      "exemplo": "String nome; double preco; int estoque; boolean removeu; Long id.",
+      "erro_plausivel": "Usar texto entre aspas em uma variável int.",
+      "evidencia": "12 é inteiro; \"12\" é texto. preco * estoque calcula, e + com String concatena.",
+      "limite": "double simplifica a aula; dinheiro real pede tratamento adequado, como BigDecimal na evolução. Long permite null antes do cadastro; o contador long começa em 1.",
+      "apoio": "O tipo declarado limita os valores aceitos; a conferência ocorre antes de executar. Exemplo: String nome; double preco; int estoque; boolean removeu; Long id. Confira: 12 é inteiro; \"12\" é texto. preco * estoque calcula, e + com String concatena. Atenção: Usar texto entre aspas em uma variável int. Limite: double simplifica a aula; dinheiro real pede tratamento adequado, como BigDecimal na evolução. Long permite null antes do cadastro; o contador long começa em 1."
+    },
+    "condicao": {
+      "nome": "Decisão e limite",
+      "href": "../index.html#atividade-3",
+      "definicao": "if executa seu bloco quando a expressão booleana é verdadeira.",
+      "exemplo": "Caderno: preço 15.0 e estoque 3 produzem 45.0 e o alerta de reposição.",
+      "erro_plausivel": "Trocar menor que por menor ou igual sem perceber a mudança da regra.",
+      "evidencia": "Com estoque 5, total 75.0 e nenhum alerta: 5 < 5 é falso.",
+      "limite": "O alerta só imprime: ele não repõe unidades.",
+      "apoio": "if executa seu bloco quando a expressão booleana é verdadeira. Exemplo: Caderno: preço 15.0 e estoque 3 produzem 45.0 e o alerta de reposição. Confira: Com estoque 5, total 75.0 e nenhum alerta: 5 < 5 é falso. Atenção: Trocar menor que por menor ou igual sem perceber a mudança da regra. Limite: O alerta só imprime: ele não repõe unidades."
+    },
+    "repeticao": {
+      "nome": "Repetição com contador",
+      "href": "../index.html#atividade-4",
+      "definicao": "for reúne início, condição e atualização para repetir um bloco.",
+      "exemplo": "Etiquetas de 1 até quantidade, com i <= quantidade e i++.",
+      "erro_plausivel": "Usar i < quantidade e perder a última etiqueta.",
+      "evidencia": "Quantidade 4 imprime 1, 2, 3, 4; quantidade 0 não imprime.",
+      "limite": "A condição é testada antes de cada volta. i++ aumenta i em um após o corpo.",
+      "apoio": "for reúne início, condição e atualização para repetir um bloco. Exemplo: Etiquetas de 1 até quantidade, com i <= quantidade e i++. Confira: Quantidade 4 imprime 1, 2, 3, 4; quantidade 0 não imprime. Atenção: Usar i < quantidade e perder a última etiqueta. Limite: A condição é testada antes de cada volta. i++ aumenta i em um após o corpo."
+    },
+    "objetos": {
+      "nome": "Classe e instâncias",
+      "href": "../index.html#oo",
+      "definicao": "Classe define campos e métodos; cada new cria uma instância com estado próprio.",
+      "exemplo": "Monitor (800.0, 1) e Cabo (20.0, 8); mudar estoque do monitor para 4.",
+      "erro_plausivel": "Achar que objetos do mesmo molde compartilham automaticamente o estado.",
+      "evidencia": "Getters mostram 4 e 8, respectivamente.",
+      "limite": "Até objetos com campos iguais podem ser instâncias diferentes. Getter e setter não criam Produto novo.",
+      "apoio": "Classe define campos e métodos; cada new cria uma instância com estado próprio. Exemplo: Monitor (800.0, 1) e Cabo (20.0, 8); mudar estoque do monitor para 4. Confira: Getters mostram 4 e 8, respectivamente. Atenção: Achar que objetos do mesmo molde compartilham automaticamente o estado. Limite: Até objetos com campos iguais podem ser instâncias diferentes. Getter e setter não criam Produto novo."
+    },
+    "construtor": {
+      "nome": "Construtor e this",
+      "href": "../index.html#oo",
+      "definicao": "O construtor inicializa o objeto; tem o nome da classe e não declara retorno, nem void. this indica o objeto atual.",
+      "exemplo": "Produto(\"Fone\", 80.0, 2) recebe nome, preço e estoque; this.preco = preco guarda o parâmetro no campo.",
+      "erro_plausivel": "Achar que this valida ou que o construtor chama automaticamente os setters.",
+      "evidencia": "Neste modelo, id fica null até cadastrar e os outros campos recebem diretamente os argumentos.",
+      "limite": "O construtor do HTML não valida negativos. Se o projeto anterior usa id e quatro argumentos, a migração para três deve remover o parâmetro id e ajustar as chamadas quando o Service assumir os ids.",
+      "apoio": "O construtor inicializa o objeto; tem o nome da classe e não declara retorno, nem void. this indica o objeto atual. Exemplo: Produto(\"Fone\", 80.0, 2) recebe nome, preço e estoque; this.preco = preco guarda o parâmetro no campo. Confira: Neste modelo, id fica null até cadastrar e os outros campos recebem diretamente os argumentos. Atenção: Achar que this valida ou que o construtor chama automaticamente os setters. Limite: O construtor do HTML não valida negativos. Se o projeto anterior usa id e quatro argumentos, a migração para três deve remover o parâmetro id e ajustar as chamadas quando o Service assumir os ids."
+    },
+    "metodos": {
+      "nome": "Entrada e retorno",
+      "href": "../index.html#vl-method-intro",
+      "definicao": "Argumento é o valor enviado; parâmetro o recebe. return entrega o resultado; println imprime. Métodos também podem calcular.",
+      "exemplo": "No método extra subtotal(int quantidade), preço 80.0 vezes 3 devolve 240.0; vezes 4 devolve 320.0.",
+      "erro_plausivel": "Confundir quantidade pedida com estoque ou retorno com impressão.",
+      "evidencia": "Guardar o resultado não imprime; estoque continua 2. valorEmEstoque, outro extra, calcula preço vezes estoque: 90.0 × 2 = 180.0.",
+      "limite": "subtotal e valorEmEstoque são ampliações da oficina, ausentes do Produto base. Não vendem, não reservam e não verificam disponibilidade. void admite return; sem valor para encerrar.",
+      "apoio": "Argumento é o valor enviado; parâmetro o recebe. return entrega o resultado; println imprime. Métodos também podem calcular. Exemplo: No método extra subtotal(int quantidade), preço 80.0 vezes 3 devolve 240.0; vezes 4 devolve 320.0. Confira: Guardar o resultado não imprime; estoque continua 2. valorEmEstoque, outro extra, calcula preço vezes estoque: 90.0 × 2 = 180.0. Atenção: Confundir quantidade pedida com estoque ou retorno com impressão. Limite: subtotal e valorEmEstoque são ampliações da oficina, ausentes do Produto base. Não vendem, não reservam e não verificam disponibilidade. void admite return; sem valor para encerrar."
+    },
+    "referencias": {
+      "nome": "Referências compartilhadas",
+      "href": "../index.html#vl-reference-intro",
+      "definicao": "A variável de objeto guarda referência. Uma atribuição pode copiar esse caminho sem criar um objeto.",
+      "exemplo": "primeiro e outro são dois Fones; apelido = primeiro compartilha A; depois apelido = outro aponta para B.",
+      "erro_plausivel": "Achar que cada variável contém uma cópia completa do Produto.",
+      "evidencia": "Após estoque 8 por apelido, primeiro lê 8 e outro 2; reatribuir apelido não muda esses campos.",
+      "limite": "Depois de reatribuir, setEstoque(9) por apelido altera B: primeiro 8, outro 9. A e B no desenho não são endereços físicos.",
+      "apoio": "A variável de objeto guarda referência. Uma atribuição pode copiar esse caminho sem criar um objeto. Exemplo: primeiro e outro são dois Fones; apelido = primeiro compartilha A; depois apelido = outro aponta para B. Confira: Após estoque 8 por apelido, primeiro lê 8 e outro 2; reatribuir apelido não muda esses campos. Atenção: Achar que cada variável contém uma cópia completa do Produto. Limite: Depois de reatribuir, setEstoque(9) por apelido altera B: primeiro 8, outro 9. A e B no desenho não são endereços físicos."
+    },
+    "protecao": {
+      "nome": "Acesso e validação",
+      "href": "../index.html#atividade-7",
+      "definicao": "private restringe acesso direto; public permite usar métodos; o if escrito no setter aplica a regra do valor.",
+      "exemplo": "Fone com 80.0 recusa -10.0 e aceita 90.0; Caneta com 6 recusa -1 e aceita 0.",
+      "erro_plausivel": "Supor que um setter gerado pela IDE já valida, ou que private impede negativos no construtor.",
+      "evidencia": "Preço inválido, 80.0, 90.0; estoque inválido, 6, 0. Acesso direto ao campo privado pelo Main não compila.",
+      "limite": "Validação aqui só está nos setters de preço e estoque; nome/id e construção não têm a mesma regra. Rejeitar antes de atribuir preserva o estado anterior.",
+      "apoio": "private restringe acesso direto; public permite usar métodos; o if escrito no setter aplica a regra do valor. Exemplo: Fone com 80.0 recusa -10.0 e aceita 90.0; Caneta com 6 recusa -1 e aceita 0. Confira: Preço inválido, 80.0, 90.0; estoque inválido, 6, 0. Acesso direto ao campo privado pelo Main não compila. Atenção: Supor que um setter gerado pela IDE já valida, ou que private impede negativos no construtor. Limite: Validação aqui só está nos setters de preço e estoque; nome/id e construção não têm a mesma regra. Rejeitar antes de atribuir preserva o estado anterior."
+    },
+    "texto": {
+      "nome": "Representação textual",
+      "href": "../index.html#oo",
+      "definicao": "toString devolve uma descrição textual; println é quem a exibe.",
+      "exemplo": "Produto cadastrado: #1 Teclado Mecânico - R$ 320.0 (estoque: 12).",
+      "erro_plausivel": "Achar que imprimir Produto salva o cadastro ou revela endereço físico da memória.",
+      "evidencia": "O texto personalizado mostra campos do objeto atual; @Override marca a substituição do método herdado.",
+      "limite": "Texto não é persistência. A representação padrão com @ e hash não é um endereço físico para inspecionar.",
+      "apoio": "toString devolve uma descrição textual; println é quem a exibe. Exemplo: Produto cadastrado: #1 Teclado Mecânico - R$ 320.0 (estoque: 12). Confira: O texto personalizado mostra campos do objeto atual; @Override marca a substituição do método herdado. Atenção: Achar que imprimir Produto salva o cadastro ou revela endereço físico da memória. Limite: Texto não é persistência. A representação padrão com @ e hash não é um endereço físico para inspecionar."
+    },
+    "papeis": {
+      "nome": "Responsabilidades",
+      "href": "../index.html#service",
+      "definicao": "Produto cuida do estado de um item; ProdutoService organiza o cadastro; Main cria, chama e mostra resultados.",
+      "exemplo": "Main cria um Service e pede cadastrar, listar, buscar e remover.",
+      "erro_plausivel": "Concentrar todas as operações no construtor de Produto ou achar que Service já exige Spring.",
+      "evidencia": "As três classes funcionam como Java comum, sem anotações Spring.",
+      "limite": "Sem construtor declarado nesta classe simples, ProdutoService recebe construtor padrão sem argumentos. Cada new ProdutoService tem lista e contador próprios.",
+      "apoio": "Produto cuida do estado de um item; ProdutoService organiza o cadastro; Main cria, chama e mostra resultados. Exemplo: Main cria um Service e pede cadastrar, listar, buscar e remover. Confira: As três classes funcionam como Java comum, sem anotações Spring. Atenção: Concentrar todas as operações no construtor de Produto ou achar que Service já exige Spring. Limite: Sem construtor declarado nesta classe simples, ProdutoService recebe construtor padrão sem argumentos. Cada new ProdutoService tem lista e contador próprios."
+    },
+    "lista": {
+      "nome": "Coleção em memória",
+      "href": "../index.html#service",
+      "definicao": "List<Produto> define o tipo da lista; ArrayList é a implementação escolhida. Os elementos são referências a Produto.",
+      "exemplo": "for-each recebe uma referência da lista a cada volta.",
+      "erro_plausivel": "Interpretar final como coleção imutável ou listar como cópia.",
+      "evidencia": "Adicionar e remover alteram o tamanho; ler a referência permite alcançar o mesmo objeto.",
+      "limite": "final impede substituir a referência do campo, não modificar a lista. listar devolve a própria lista, que o chamador pode modificar; não há proteção completa.",
+      "apoio": "List<Produto> define o tipo da lista; ArrayList é a implementação escolhida. Os elementos são referências a Produto. Exemplo: for-each recebe uma referência da lista a cada volta. Confira: Adicionar e remover alteram o tamanho; ler a referência permite alcançar o mesmo objeto. Atenção: Interpretar final como coleção imutável ou listar como cópia. Limite: final impede substituir a referência do campo, não modificar a lista. listar devolve a própria lista, que o chamador pode modificar; não há proteção completa."
+    },
+    "cadastro": {
+      "nome": "Cadastro e identidade",
+      "href": "../index.html#service",
+      "definicao": "cadastrar atribui id, adiciona a referência e devolve o Produto.",
+      "exemplo": "proximoId começa em 1; setId(proximoId++) usa o atual e só então incrementa.",
+      "erro_plausivel": "Confundir id com posição, achar que new Produto já cadastra ou cadastrar o mesmo objeto duas vezes.",
+      "evidencia": "Livro e Lápis, cadastrados nessa ordem em Service novo, recebem ids 1 e 2.",
+      "limite": "O contador é local a cada Service. Cadastrar não bloqueia recadastro do mesmo objeto: usamos cada objeto novo uma vez.",
+      "apoio": "cadastrar atribui id, adiciona a referência e devolve o Produto. Exemplo: proximoId começa em 1; setId(proximoId++) usa o atual e só então incrementa. Confira: Livro e Lápis, cadastrados nessa ordem em Service novo, recebem ids 1 e 2. Atenção: Confundir id com posição, achar que new Produto já cadastra ou cadastrar o mesmo objeto duas vezes. Limite: O contador é local a cada Service. Cadastrar não bloqueia recadastro do mesmo objeto: usamos cada objeto novo uma vez."
+    },
+    "busca": {
+      "nome": "Busca e ausência",
+      "href": "../index.html#atividade-10",
+      "definicao": "buscarPorId percorre com for-each e compara valores Long com equals; retorna referência ou null.",
+      "exemplo": "Buscar 2L encontra o segundo cadastrado; buscar 99L não encontra.",
+      "erro_plausivel": "Chamar getNome diretamente no resultado de uma busca sem conferir ausência.",
+      "evidencia": "Pasta e Régua continuam na lista; buscar 99L dá null e remover 99L dá false.",
+      "limite": "O L indica literal long. == null verifica ausência; para estes Long, equals compara valor. null não é Produto e não equivale a false; usar método nele causa NullPointerException.",
+      "apoio": "buscarPorId percorre com for-each e compara valores Long com equals; retorna referência ou null. Exemplo: Buscar 2L encontra o segundo cadastrado; buscar 99L não encontra. Confira: Pasta e Régua continuam na lista; buscar 99L dá null e remover 99L dá false. Atenção: Chamar getNome diretamente no resultado de uma busca sem conferir ausência. Limite: O L indica literal long. == null verifica ausência; para estes Long, equals compara valor. null não é Produto e não equivale a false; usar método nele causa NullPointerException."
+    },
+    "alteracao": {
+      "nome": "Atualização pelo objeto",
+      "href": "../index.html#service",
+      "definicao": "A referência devolvida pela busca alcança o mesmo objeto armazenado na lista.",
+      "exemplo": "Na oficina: Teclado (100.0, 2), Mouse (50.0, 5), ids 1 e 2; encontrado.setEstoque(8) após conferir null.",
+      "erro_plausivel": "Criar cópia ou recadastrar para que a mudança apareça na lista.",
+      "evidencia": "mouse.getEstoque() passa a 8; teclado continua com 2.",
+      "limite": "O U do CRUD acontece pelo setter após a busca. O Service base não declara atualizar; CRUD significa criar, consultar, atualizar e excluir.",
+      "apoio": "A referência devolvida pela busca alcança o mesmo objeto armazenado na lista. Exemplo: Na oficina: Teclado (100.0, 2), Mouse (50.0, 5), ids 1 e 2; encontrado.setEstoque(8) após conferir null. Confira: mouse.getEstoque() passa a 8; teclado continua com 2. Atenção: Criar cópia ou recadastrar para que a mudança apareça na lista. Limite: O U do CRUD acontece pelo setter após a busca. O Service base não declara atualizar; CRUD significa criar, consultar, atualizar e excluir."
+    },
+    "remocao": {
+      "nome": "Remover e observar",
+      "href": "../index.html#atividade-9",
+      "definicao": "remover busca, retorna false na ausência ou remove a referência da lista.",
+      "exemplo": "Livro e Lápis: remover 1L devolve true, e a listagem mantém apenas Lápis.",
+      "erro_plausivel": "Supor que remover destrói todas as referências ou reinicia os ids.",
+      "evidencia": "Repetir remover 1L devolve false; no Main final resta Mouse Gamer, tamanho 1.",
+      "limite": "Se outra variável ainda referencia o objeto retirado, ele continua acessível. Não há exclusão em banco nesta aula.",
+      "apoio": "remover busca, retorna false na ausência ou remove a referência da lista. Exemplo: Livro e Lápis: remover 1L devolve true, e a listagem mantém apenas Lápis. Confira: Repetir remover 1L devolve false; no Main final resta Mouse Gamer, tamanho 1. Atenção: Supor que remover destrói todas as referências ou reinicia os ids. Limite: Se outra variável ainda referencia o objeto retirado, ele continua acessível. Não há exclusão em banco nesta aula."
+    },
+    "contagem": {
+      "nome": "Ampliação: contar itens",
+      "href": "../index.html#atividade-11",
+      "definicao": "contarComEstoque usa contador iniciado em zero, for-each e condição estoque > 0.",
+      "exemplo": "Livro com 2, Pasta com 0, Régua com 5.",
+      "erro_plausivel": "Somar unidades ou devolver o contador dentro do laço.",
+      "evidencia": "Resultado 2, não 7; lista vazia resulta em 0.",
+      "limite": "Método acrescentado na atividade 11, não no Service base. return após o laço permite examinar todos os itens.",
+      "apoio": "contarComEstoque usa contador iniciado em zero, for-each e condição estoque > 0. Exemplo: Livro com 2, Pasta com 0, Régua com 5. Confira: Resultado 2, não 7; lista vazia resulta em 0. Atenção: Somar unidades ou devolver o contador dentro do laço. Limite: Método acrescentado na atividade 11, não no Service base. return após o laço permite examinar todos os itens."
+    },
+    "reposicao": {
+      "nome": "Ampliação: repor unidades",
+      "href": "../index.html#atividade-12",
+      "definicao": "repor organiza validação da quantidade, busca e mudança de estoque pelo setter.",
+      "exemplo": "Livro com 2; repor(1L, 3) devolve true e estoque vira 5.",
+      "erro_plausivel": "Confundir estoque zero permitido com uma reposição de zero aceita.",
+      "evidencia": "Repor 0, -2 ou id 99 dá false e não altera estoque 5.",
+      "limite": "Método da atividade 12. Quantidade deve ser > 0; produto precisa existir. Usamos números pequenos; estouro de int não é tratado.",
+      "apoio": "repor organiza validação da quantidade, busca e mudança de estoque pelo setter. Exemplo: Livro com 2; repor(1L, 3) devolve true e estoque vira 5. Confira: Repor 0, -2 ou id 99 dá false e não altera estoque 5. Atenção: Confundir estoque zero permitido com uma reposição de zero aceita. Limite: Método da atividade 12. Quantidade deve ser > 0; produto precisa existir. Usamos números pequenos; estouro de int não é tratado."
+    },
+    "ponte": {
+      "nome": "Limites e próximo capítulo",
+      "href": "../index.html#spring",
+      "definicao": "Memória dura nesta execução; persistência permite recuperar dados depois. Spring ajuda a configurar e conectar objetos.",
+      "exemplo": "Futuro fluxo: Controller recebe HTTP, Service organiza regras, Repository acessa PostgreSQL.",
+      "erro_plausivel": "Achar que a lista é banco ou que @Entity/@Service já estão implementados neste projeto.",
+      "evidencia": "Reiniciar recria a lista; dados só reaparecem se o Main cadastrá-los novamente.",
+      "limite": "É uma prévia. No Cap 12 o caso inicial é Fornecedor (id, nome, cnpj, categoria, telefone), sem DTO ou relacionamentos. Transferimos os conceitos de Produto, sem renomear o caso automaticamente.",
+      "apoio": "Memória dura nesta execução; persistência permite recuperar dados depois. Spring ajuda a configurar e conectar objetos. Exemplo: Futuro fluxo: Controller recebe HTTP, Service organiza regras, Repository acessa PostgreSQL. Confira: Reiniciar recria a lista; dados só reaparecem se o Main cadastrá-los novamente. Atenção: Achar que a lista é banco ou que @Entity/@Service já estão implementados neste projeto. Limite: É uma prévia. No Cap 12 o caso inicial é Fornecedor (id, nome, cnpj, categoria, telefone), sem DTO ou relacionamentos. Transferimos os conceitos de Produto, sem renomear o caso automaticamente."
+    }
+  },
+  "grupos": [
+    {
+      "titulo": "O cadastro sob investigação",
+      "papel": "Investigadores",
+      "tema": "investigacao",
+      "subtitulo": "Reconstituam causas e provas",
+      "destaque": "Caso 11",
+      "abertura": "O programa compila, mas isso prova que o cadastro está certo? Investiguem cada resultado e os limites da solução.",
+      "slides": [
+        {
+          "topicos": [
+            "ambiente"
+          ],
+          "titulo": "Em qual projeto estamos?",
+          "ideia": "A investigação começa pelas ferramentas e pelos arquivos.",
+          "pontos": [
+            "IntelliJ é a IDE; a JDK 21 fornece as ferramentas Java.",
+            "Main, Produto e ProdutoService pertencem ao mesmo pacote.",
+            "HTML: br.com.gestorpro. Quem começou em org.example mantém esse pacote."
+          ],
+          "pergunta": "O que conferir quando o botão de executar não aparece?"
+        },
+        {
+          "topicos": [
+            "execucao"
+          ],
+          "titulo": "A mensagem desaparecida",
+          "ideia": "Uma linha no editor ainda não é uma ação executada.",
+          "pontos": [
+            "Aspas delimitam texto; parênteses recebem o argumento; ; encerra a instrução.",
+            "Compilador: .java vira .class. JVM: executa o bytecode a partir de main.",
+            "public dá acesso; static dispensa criar Main; void não devolve valor."
+          ],
+          "pergunta": "Por que recolocar o ; ainda não prova que a mensagem foi impressa?"
+        },
+        {
+          "topicos": [
+            "tipos"
+          ],
+          "titulo": "Doze ou “doze”?",
+          "ideia": "O compilador verifica o tipo, não a aparência do valor.",
+          "pontos": [
+            "int aceita 12; o texto \"12\" pertence a String.",
+            "double representa o preço; boolean representa true ou false; Long é o id.",
+            "* multiplica; + com String junta texto. double é simplificação para dinheiro."
+          ],
+          "pergunta": "Qual erro seria detectado antes de executar uma conta de estoque?"
+        },
+        {
+          "topicos": [
+            "condicao"
+          ],
+          "titulo": "O alerta sumiu com cinco",
+          "ideia": "A prova está na fronteira da condição.",
+          "pontos": [
+            "Caderno: 15.0 × 3 = 45.0; estoque menor que 5 gera alerta.",
+            "Com 5 unidades: total 75.0, e 5 < 5 é falso.",
+            "O if decide imprimir; o aviso não adiciona unidades."
+          ],
+          "pergunta": "Com estoque zero, qual total aparece e haverá alerta?"
+        },
+        {
+          "topicos": [
+            "repeticao"
+          ],
+          "titulo": "A etiqueta que faltou",
+          "ideia": "O limite do for determina a última repetição.",
+          "pontos": [
+            "Começar em 1, repetir enquanto i <= quantidade, incrementar i.",
+            "Quantidade 4 gera etiquetas 1, 2, 3 e 4.",
+            "Quantidade 0 não entra no laço; trocar <= por < perde a última."
+          ],
+          "pergunta": "Por que quatro println separados não expressam a mesma regra geral?"
+        },
+        {
+          "topicos": [
+            "objetos"
+          ],
+          "titulo": "Dois produtos, dois estados",
+          "ideia": "A classe é o molde; os objetos são instâncias concretas.",
+          "pontos": [
+            "Monitor nasce com estoque 1; Cabo nasce com 8.",
+            "Dois new criam dois objetos, mesmo que usem a mesma classe.",
+            "Mudar o monitor para 4 preserva o cabo em 8."
+          ],
+          "pergunta": "Que observação comprova que o setter não criou outro produto?"
+        },
+        {
+          "topicos": [
+            "construtor"
+          ],
+          "titulo": "Quem colocou os valores lá?",
+          "ideia": "O construtor inicializa o objeto criado com new.",
+          "pontos": [
+            "Fone recebe \"Fone\", 80.0 e 2, nessa ordem.",
+            "this.preco é o campo; preco é o parâmetro recebido.",
+            "Não há retorno nem void no construtor. Ele atribui direto; id começa null."
+          ],
+          "pergunta": "Por que a validação do setter não protege essa construção automaticamente?"
+        },
+        {
+          "topicos": [
+            "referencias"
+          ],
+          "titulo": "Dois crachás, um morador",
+          "ideia": "Copiar a referência não duplica o objeto.",
+          "pontos": [
+            "Dois new criam A e B. apelido = primeiro faz dois nomes alcançarem A.",
+            "Estoque 8 por apelido: primeiro lê 8 e outro continua 2.",
+            "apelido = outro só muda o destino; depois estoque 9 por apelido altera B."
+          ],
+          "pergunta": "Quantos objetos existem depois de criar e reatribuir apelido?"
+        },
+        {
+          "topicos": [
+            "metodos"
+          ],
+          "titulo": "O resultado não chegou ao console",
+          "ideia": "Retornar entrega a quem chamou; imprimir é outra ação.",
+          "pontos": [
+            "Em subtotal(3), 3 é argumento e quantidade é parâmetro.",
+            "Preço 80.0 produz retorno 240.0; estoque permanece 2.",
+            "O extra só calcula. println exibe; um método void pode encerrar com return sem valor."
+          ],
+          "pergunta": "Se subtotal receber 4, o que muda e o que permanece igual?"
+        },
+        {
+          "topicos": [
+            "protecao"
+          ],
+          "titulo": "Duas barreiras diferentes",
+          "ideia": "private controla acesso; o if do setter controla o valor.",
+          "pontos": [
+            "Acesso direto a preco pelo Main não compila; o método público é acessível.",
+            "Preço 80.0: -10.0 é recusado; 90.0 é aceito.",
+            "Estoque 6: -1 mantém 6; 0 é aceito. O construtor continua sem validar."
+          ],
+          "pergunta": "Qual prova separa erro de acesso de uma tentativa inválida durante a execução?"
+        },
+        {
+          "topicos": [
+            "texto"
+          ],
+          "titulo": "O depoimento do objeto",
+          "ideia": "toString devolve uma descrição; println a mostra.",
+          "pontos": [
+            "A descrição do Teclado Mecânico informa id 1, preço 320.0 e estoque 12.",
+            "@Override marca a substituição do método herdado.",
+            "Texto no console não salva dados nem revela endereço físico da memória."
+          ],
+          "pergunta": "O que uma impressão antes e depois de um setter pode comprovar?"
+        },
+        {
+          "topicos": [
+            "papeis"
+          ],
+          "titulo": "Quem responde pelo cadastro?",
+          "ideia": "Cada classe tem uma responsabilidade observável.",
+          "pontos": [
+            "Produto guarda o estado de um item e oferece seus métodos.",
+            "ProdutoService organiza operações; Main chama e apresenta resultados.",
+            "É Java comum. Outro new ProdutoService teria lista vazia e contador próprio."
+          ],
+          "pergunta": "Por que procurar no segundo Service não encontra os cadastros do primeiro?"
+        },
+        {
+          "topicos": [
+            "lista"
+          ],
+          "titulo": "O que há no depósito?",
+          "ideia": "A lista reúne referências aos produtos.",
+          "pontos": [
+            "List<Produto> é o tipo; ArrayList é a implementação escolhida.",
+            "for-each alcança um item por volta; final não impede add ou remove.",
+            "listar devolve a própria lista, não uma cópia protegida."
+          ],
+          "pergunta": "Que alteração um chamador poderia fazer ao receber essa lista?"
+        },
+        {
+          "topicos": [
+            "cadastro"
+          ],
+          "titulo": "A origem dos números",
+          "ideia": "O id é atribuído no cadastro, não no new Produto.",
+          "pontos": [
+            "O contador começa em 1: Livro recebe 1, Lápis recebe 2.",
+            "proximoId++ usa o valor atual e depois o incrementa.",
+            "cadastrar adiciona a referência e a devolve; não bloqueia cadastrar o mesmo objeto de novo."
+          ],
+          "pergunta": "Por que id e posição na lista não são a mesma informação?"
+        },
+        {
+          "topicos": [
+            "busca"
+          ],
+          "titulo": "O produto 99 não existe",
+          "ideia": "A busca precisa representar também a ausência.",
+          "pontos": [
+            "for-each percorre; equals compara os valores dos ids Long.",
+            "2L identifica o segundo cadastro; 99L retorna null.",
+            "Conferir != null antes do getter evita chamar método na ausência."
+          ],
+          "pergunta": "Por que null na busca e false na remoção não são produtos?"
+        },
+        {
+          "topicos": [
+            "alteracao"
+          ],
+          "titulo": "O mouse mudou sem recadastro",
+          "ideia": "A busca devolve referência ao mesmo objeto.",
+          "pontos": [
+            "Oficina: Teclado tem 2 unidades; Mouse tem 5 e id 2.",
+            "Após buscar 2L e conferir null, o setter muda o encontrado para 8.",
+            "mouse também lê 8; teclado continua 2. Esse é o U do CRUD."
+          ],
+          "pergunta": "Qual seria o problema de cadastrar o encontrado outra vez?"
+        },
+        {
+          "topicos": [
+            "remocao"
+          ],
+          "titulo": "Saiu da lista. E agora?",
+          "ideia": "Remover o cadastro tira uma referência da coleção.",
+          "pontos": [
+            "Livro e Lápis: remover 1L dá true e deixa apenas Lápis.",
+            "Uma segunda tentativa no id 1 dá false.",
+            "Uma variável ainda pode alcançar o Livro retirado; nenhum banco foi alterado."
+          ],
+          "pergunta": "Por que diminuir a lista não significa apagar todas as referências?"
+        },
+        {
+          "topicos": [
+            "contagem"
+          ],
+          "titulo": "Dois produtos ou sete unidades?",
+          "ideia": "A atividade 11 conta itens que passam na condição.",
+          "pontos": [
+            "Estoques 2, 0 e 5: dois produtos têm estoque positivo.",
+            "Contador começa em 0 e cresce uma vez por item aprovado.",
+            "return fica depois do laço; a lista vazia devolve 0."
+          ],
+          "pergunta": "Que mudança na conta produziria 7 e por que responderia outra pergunta?"
+        },
+        {
+          "topicos": [
+            "reposicao"
+          ],
+          "titulo": "A reposição precisa de provas",
+          "ideia": "A atividade 12 valida o pedido antes de alterar o estoque.",
+          "pontos": [
+            "Livro com 2: repor 3 retorna true e deixa 5 unidades.",
+            "Quantidade 0 ou -2 retorna false; id 99 também.",
+            "O Service busca e coordena; o setter altera. Estouro de int fica fora do exemplo."
+          ],
+          "pergunta": "Por que estoque zero é permitido, mas reposição zero é recusada?"
+        },
+        {
+          "topicos": [
+            "ponte"
+          ],
+          "titulo": "O desaparecimento ao reiniciar",
+          "ideia": "A lista guarda dados apenas durante esta execução.",
+          "pontos": [
+            "Reabrir e cadastrar de novo não demonstra persistência.",
+            "Futuro: Controller recebe HTTP; Service organiza; Repository acessa PostgreSQL.",
+            "Spring conecta as peças. Cap 12 usa Fornecedor; aqui ainda não existe API ou banco."
+          ],
+          "pergunta": "Qual experiência mostraria a diferença entre memória e persistência?"
+        }
+      ],
+      "fecho": {
+        "titulo": "Apresentem o laudo",
+        "ideia": "Liguem uma causa a uma prova e delimitem a conclusão.",
+        "pontos": [
+          "Reconstruam criação, cadastro, busca, alteração e remoção de um produto.",
+          "Mostrem uma saída prevista e uma entrada que muda essa saída.",
+          "Cada integrante explica uma parte; os colegas propõem um contraexemplo."
+        ],
+        "pergunta": "O que este programa já garante e qual garantia ainda falta?",
+        "apoio": "Retomem também tipos, execução e as ampliações. O exemplo precisa sustentar a regra; uma metáfora sozinha não é prova."
+      }
+    },
+    {
+      "titulo": "A viagem de um produto",
+      "papel": "Guias do percurso",
+      "tema": "percurso",
+      "subtitulo": "Do arquivo ao cadastro em memória",
+      "destaque": "1 → 2",
+      "abertura": "Acompanhem os dados em cada etapa: quem recebe, o que muda e o que volta. Antes de avançar, prevejam o próximo estado.",
+      "slides": [
+        {
+          "topicos": [
+            "ambiente"
+          ],
+          "titulo": "Preparem a bancada",
+          "ideia": "Precisamos de ferramentas e classes no lugar certo.",
+          "pontos": [
+            "No IntelliJ, a IDE, configurem as ferramentas da JDK 21.",
+            "O projeto reúne Main, Produto e ProdutoService no mesmo pacote.",
+            "O HTML usa br.com.gestorpro; mantenham org.example se já começaram assim."
+          ],
+          "pergunta": "Por onde começar a conferência se as classes não compilam juntas?"
+        },
+        {
+          "topicos": [
+            "execucao"
+          ],
+          "titulo": "Façam a mensagem viajar",
+          "ideia": "O caminho vai da escrita até a execução.",
+          "pontos": [
+            "Fonte .java: aspas, parênteses, chaves e ; seguem a sintaxe.",
+            "Compilador produz bytecode .class; a JVM o executa a partir de main.",
+            "Em main, public permite acesso, static dispensa instância e void não retorna valor."
+          ],
+          "pergunta": "Em qual etapa println realmente escreve no console?"
+        },
+        {
+          "topicos": [
+            "tipos"
+          ],
+          "titulo": "Separem os valores",
+          "ideia": "Antes de calcular, cada variável recebe um tipo compatível.",
+          "pontos": [
+            "Nome usa String, preço double, estoque int; boolean guarda true ou false.",
+            "Id usa Long. Número 12 e texto \"12\" não são intercambiáveis.",
+            "* multiplica; + pode concatenar. double mantém a aula simples, com limite para dinheiro real."
+          ],
+          "pergunta": "Como o tipo ajuda a descobrir um problema antes de executar?"
+        },
+        {
+          "topicos": [
+            "condicao"
+          ],
+          "titulo": "Passem pelo desvio",
+          "ideia": "A condição escolhe se o alerta será executado.",
+          "pontos": [
+            "Caderno custa 15.0: com estoque 3, o cálculo retorna 45.0.",
+            "Como 3 < 5, aparece o aviso de reposição.",
+            "Com estoque 5, total 75.0 sem aviso. O alerta não muda o estoque."
+          ],
+          "pergunta": "Qual caminho seria seguido com zero unidades?"
+        },
+        {
+          "topicos": [
+            "repeticao"
+          ],
+          "titulo": "Percorram as etiquetas",
+          "ideia": "Uma volta do for imprime uma etiqueta.",
+          "pontos": [
+            "O contador começa em 1; a condição é i <= quantidade.",
+            "Com quantidade 4, imprime 1 até 4; i++ avança uma posição.",
+            "Com 0, a primeira condição já é falsa e nada é impresso."
+          ],
+          "pergunta": "O que muda no percurso se trocarmos <= por <?"
+        },
+        {
+          "topicos": [
+            "objetos"
+          ],
+          "titulo": "Do molde à bancada",
+          "ideia": "Cada new acrescenta uma instância independente.",
+          "pontos": [
+            "A classe Produto descreve os campos e os métodos.",
+            "Monitor começa com 1 unidade; Cabo começa com 8.",
+            "setEstoque(4) no monitor produz 4 e 8, sem criar outro Produto."
+          ],
+          "pergunta": "Como demonstrar que usar a mesma classe não une os dois estoques?"
+        },
+        {
+          "topicos": [
+            "construtor"
+          ],
+          "titulo": "Entreguem os dados iniciais",
+          "ideia": "O construtor recebe os argumentos e inicializa o objeto.",
+          "pontos": [
+            "Fone recebe nome \"Fone\", preço 80.0 e estoque 2.",
+            "Em this.nome = nome, o campo recebe o parâmetro do construtor.",
+            "Construtor não declara retorno. Aqui atribui direto; id fica null até o cadastro."
+          ],
+          "pergunta": "O que precisaria mudar para impedir negativo também na criação?"
+        },
+        {
+          "topicos": [
+            "metodos"
+          ],
+          "titulo": "Sigam a ida e a volta",
+          "ideia": "Uma chamada pode calcular sem alterar ou imprimir.",
+          "pontos": [
+            "No extra subtotal(3), argumento 3 chega ao parâmetro quantidade.",
+            "Preço 80.0 gera 240.0 de retorno; estoque continua 2.",
+            "println mostra o resultado depois. void não devolve valor, mas admite return sem valor."
+          ],
+          "pergunta": "Ao chamar subtotal(4), o que chega de volta e o que não muda?"
+        },
+        {
+          "topicos": [
+            "protecao"
+          ],
+          "titulo": "Passem pela porta correta",
+          "ideia": "O método público controla a alteração dos campos privados.",
+          "pontos": [
+            "Acesso direto a preco pelo Main falha na compilação.",
+            "Setter com if: Fone recusa -10.0, mantém 80.0, depois aceita 90.0.",
+            "Caneta com 6 recusa -1 e aceita 0. O construtor não passa por essa regra."
+          ],
+          "pergunta": "Quem recusa o negativo: private ou o código dentro do setter?"
+        },
+        {
+          "topicos": [
+            "referencias"
+          ],
+          "titulo": "Sigam os dois caminhos",
+          "ideia": "Um novo nome pode alcançar um objeto já existente.",
+          "pontos": [
+            "Dois new de Fone criam A e B; apelido = primeiro também chega a A.",
+            "Estoque 8 por apelido aparece em primeiro; outro continua 2.",
+            "apelido = outro muda o caminho; estoque 9 agora muda B e preserva A em 8."
+          ],
+          "pergunta": "Qual etapa mudou só uma referência e qual mudou o estado?"
+        },
+        {
+          "topicos": [
+            "papeis"
+          ],
+          "titulo": "Entreguem o pedido ao gerente",
+          "ideia": "Main pede; Service organiza; Produto cuida do item.",
+          "pontos": [
+            "O Produto mantém seus campos e comportamentos.",
+            "Main cria um ProdutoService comum, sem precisar de Spring.",
+            "Um segundo Service começa outra lista e outro contador."
+          ],
+          "pergunta": "Qual objeto precisa receber todos os pedidos do mesmo cadastro?"
+        },
+        {
+          "topicos": [
+            "lista"
+          ],
+          "titulo": "Entrem no depósito",
+          "ideia": "As posições da lista guardam referências a Produto.",
+          "pontos": [
+            "List<Produto> define o tipo; ArrayList implementa a coleção.",
+            "for-each percorre os itens. final fixa a referência da lista, não seu conteúdo.",
+            "listar devolve a própria coleção; o chamador também consegue modificá-la."
+          ],
+          "pergunta": "Ao percorrer a lista, estamos criando novos produtos?"
+        },
+        {
+          "topicos": [
+            "cadastro"
+          ],
+          "titulo": "Recebam os ids",
+          "ideia": "O cadastro atribui uma identificação antes de registrar a referência.",
+          "pontos": [
+            "Em Service novo, Livro recebe 1 e Lápis recebe 2.",
+            "proximoId++ usa o atual e incrementa; add inclui, return devolve o produto.",
+            "O id não é a posição. Cadastrar o mesmo objeto outra vez não é bloqueado."
+          ],
+          "pergunta": "Em que ponto o id deixa de ser null?"
+        },
+        {
+          "topicos": [
+            "texto"
+          ],
+          "titulo": "Mostrem o comprovante",
+          "ideia": "A descrição textual permite observar o estado atual.",
+          "pontos": [
+            "toString devolve o texto; println exibe essa descrição.",
+            "No Main final: #1 Teclado Mecânico, preço 320.0, estoque 12.",
+            "@Override substitui o método herdado; o texto não salva nem revela endereço físico."
+          ],
+          "pergunta": "Por que observar o console ajuda, mas não comprova persistência?"
+        },
+        {
+          "topicos": [
+            "busca"
+          ],
+          "titulo": "Procurem o destino",
+          "ideia": "A busca entrega uma referência ou sinaliza ausência.",
+          "pontos": [
+            "for-each percorre e equals compara o valor dos ids Long.",
+            "Com Livro e Lápis, 2L encontra Lápis; 99L retorna null.",
+            "Guardem o resultado e confiram != null antes de usar um getter."
+          ],
+          "pergunta": "Por que false na remoção e null na busca têm significados diferentes?"
+        },
+        {
+          "topicos": [
+            "alteracao"
+          ],
+          "titulo": "Atualizem o mesmo item",
+          "ideia": "A referência encontrada leva ao objeto já listado.",
+          "pontos": [
+            "Oficina: Teclado tem 2 unidades e Mouse tem 5; Mouse recebeu id 2.",
+            "Buscar 2L, conferir null e chamar setEstoque(8) altera o Mouse.",
+            "A variável mouse também lê 8; teclado lê 2. Esse é o U do CRUD, sem recadastro."
+          ],
+          "pergunta": "Onde está a evidência de que a busca não devolveu uma cópia?"
+        },
+        {
+          "topicos": [
+            "remocao"
+          ],
+          "titulo": "Retirem uma ligação",
+          "ideia": "A coleção perde o item; outras referências podem continuar.",
+          "pontos": [
+            "Com Livro e Lápis, remover 1L retorna true e deixa Lápis.",
+            "Remover o mesmo id novamente retorna false.",
+            "Uma variável que ainda alcance Livro pode lê-lo; não houve exclusão em banco."
+          ],
+          "pergunta": "O que acontece com o tamanho da lista e com o objeto acessível pelo Main?"
+        },
+        {
+          "topicos": [
+            "contagem"
+          ],
+          "titulo": "Confiram o saldo de itens",
+          "ideia": "A atividade 11 percorre a lista para contar produtos disponíveis.",
+          "pontos": [
+            "Estoques 2, 0 e 5: dois itens passam em estoque > 0.",
+            "Contador começa em 0 e aumenta uma vez por produto aprovado.",
+            "return depois do laço entrega 2; lista vazia entrega 0."
+          ],
+          "pergunta": "Por que devolver dentro do laço interromperia a conferência?"
+        },
+        {
+          "topicos": [
+            "reposicao"
+          ],
+          "titulo": "Recebam mais unidades",
+          "ideia": "A atividade 12 acrescenta uma operação ao Service.",
+          "pontos": [
+            "Quantidade positiva e produto existente liberam a reposição.",
+            "Livro: 2 + 3 = 5, com retorno true. O setter aplica a alteração.",
+            "Quantidade 0, -2 ou id 99: false sem alterar. Estouro de int fica fora desta prática."
+          ],
+          "pergunta": "Como o mesmo estoque zero pode ser válido e uma reposição zero ser inválida?"
+        },
+        {
+          "topicos": [
+            "ponte"
+          ],
+          "titulo": "Encerrem a execução",
+          "ideia": "O fim do programa delimita a duração desse cadastro.",
+          "pontos": [
+            "A lista é recriada ao rodar de novo; repetir cadastros não é persistir.",
+            "Na etapa futura: Controller recebe HTTP, Service organiza, Repository acessa PostgreSQL.",
+            "Spring ajuda a conectar objetos; Cap 12 inicia com Fornecedor. Aqui é Java em memória."
+          ],
+          "pergunta": "Quais responsabilidades permanecem quando o pedido passar a vir da web?"
+        }
+      ],
+      "fecho": {
+        "titulo": "Guiem um colega sem pular etapas",
+        "ideia": "Reconstruam o percurso e expliquem cada mudança observável.",
+        "pontos": [
+          "Cada integrante conduz uma etapa e passa o resultado ao próximo.",
+          "Antes de revelar a saída, peçam aos colegas uma previsão.",
+          "Terminem com uma entrada ausente ou inválida e expliquem o limite."
+        ],
+        "pergunta": "Se o id procurado fosse 99, em qual etapa o percurso mudaria?",
+        "apoio": "Usem as mesmas regras do capítulo, sem transformar a metáfora do depósito em endereços físicos. Os métodos extras precisam ser adicionados antes da demonstração."
+      }
+    },
+    {
+      "titulo": "As escolhas do cadastro",
+      "papel": "Conselho de decisões",
+      "tema": "conselho",
+      "subtitulo": "Justifiquem benefícios e limites",
+      "destaque": "Por quê?",
+      "abertura": "Defendam as escolhas do projeto diante da turma. Toda justificativa precisa de um exemplo e de uma condição em que ela deixa de bastar.",
+      "slides": [
+        {
+          "topicos": [
+            "papeis"
+          ],
+          "titulo": "Separar para entender",
+          "ideia": "Três classes tornam as responsabilidades explícitas.",
+          "pontos": [
+            "Produto cuida de um item; ProdutoService organiza o cadastro.",
+            "Main cria objetos, chama operações e mostra resultados.",
+            "Service é Java comum; outra instância teria lista e contador próprios."
+          ],
+          "pergunta": "O que se torna mais difícil de explicar se tudo ficar no Main?"
+        },
+        {
+          "topicos": [
+            "ambiente"
+          ],
+          "titulo": "Uma base reproduzível",
+          "ideia": "Conferir o ambiente evita atribuir ao código um problema de configuração.",
+          "pontos": [
+            "IntelliJ é a IDE; JDK 21 fornece compilação e execução.",
+            "Main, Produto e ProdutoService devem concordar no pacote.",
+            "O HTML usa br.com.gestorpro; quem iniciou em org.example conserva essa estrutura."
+          ],
+          "pergunta": "Por que não trocar de projeto e pacote no meio da revisão?"
+        },
+        {
+          "topicos": [
+            "execucao"
+          ],
+          "titulo": "Separar conferir de executar",
+          "ideia": "Compilar é necessário, mas não comprova a regra de negócio.",
+          "pontos": [
+            "Sintaxe usa aspas, parênteses, chaves e ; nas posições corretas.",
+            ".java é compilado em bytecode .class; a JVM executa a partir de main.",
+            "public dá acesso, static dispensa criar Main, void não retorna; println só age na execução."
+          ],
+          "pergunta": "Qual programa pode compilar e ainda mostrar um resultado errado?"
+        },
+        {
+          "topicos": [
+            "tipos"
+          ],
+          "titulo": "Declarar o que cada dado aceita",
+          "ideia": "Os tipos ajudam a detectar incompatibilidades cedo.",
+          "pontos": [
+            "String nome, double preco, int estoque, Long id e boolean para resultados.",
+            "int aceita 12, não \"12\". * calcula; + com String concatena.",
+            "double simplifica a primeira aula; para dinheiro real, a evolução exige mais cuidado."
+          ],
+          "pergunta": "Que benefício temos ao rejeitar um texto no estoque antes de executar?"
+        },
+        {
+          "topicos": [
+            "objetos"
+          ],
+          "titulo": "Reutilizar o molde",
+          "ideia": "A classe padroniza a estrutura sem unir estados independentes.",
+          "pontos": [
+            "Cada new cria uma instância com seus campos e métodos disponíveis.",
+            "Monitor com 1 e Cabo com 8 podem ser alterados separadamente.",
+            "Setter no monitor para 4 deixa o cabo em 8 e não cria outro produto."
+          ],
+          "pergunta": "Por que dois objetos com os mesmos valores ainda podem ser distintos?"
+        },
+        {
+          "topicos": [
+            "construtor"
+          ],
+          "titulo": "Exigir dados na entrada",
+          "ideia": "O construtor deixa explícito como um Produto começa.",
+          "pontos": [
+            "Nome, preço e estoque entram nos três parâmetros do modelo atual.",
+            "this.preco = preco diferencia campo e parâmetro; não declara retorno nem void.",
+            "Campos recebem diretamente os valores; id é null. A criação não valida negativos."
+          ],
+          "pergunta": "Que custo assumimos ao simplificar o construtor desta forma?"
+        },
+        {
+          "topicos": [
+            "protecao"
+          ],
+          "titulo": "Controlar a alteração",
+          "ideia": "Encapsulamento cria um lugar para aplicar a regra.",
+          "pontos": [
+            "private impede acesso direto pelo Main; métodos public oferecem acesso permitido.",
+            "Fone 80.0 recusa -10.0 e aceita 90.0; Caneta 6 recusa -1 e aceita 0.",
+            "O if do setter valida; a IDE não inventa a regra, e o construtor não a reaproveita."
+          ],
+          "pergunta": "Por que tornar um campo privado não garante sozinho um estado válido?"
+        },
+        {
+          "topicos": [
+            "condicao"
+          ],
+          "titulo": "Escolher a fronteira",
+          "ideia": "Uma regra precisa dizer exatamente quando seu efeito acontece.",
+          "pontos": [
+            "O alerta do Caderno usa estoque menor que 5.",
+            "Preço 15.0: estoque 3 gera 45.0 e alerta; estoque 5 gera 75.0 sem alerta.",
+            "O if só decide mostrar a mensagem, não repõe o produto."
+          ],
+          "pergunta": "Que requisito justificaria trocar < por <=?"
+        },
+        {
+          "topicos": [
+            "repeticao"
+          ],
+          "titulo": "Repetir pela regra",
+          "ideia": "Um laço adapta a quantidade de saídas à entrada.",
+          "pontos": [
+            "Etiquetas: começar em 1, continuar com i <= quantidade, avançar com i++.",
+            "Quantidade 4 produz quatro linhas; 0 produz nenhuma.",
+            "A condição vem antes do corpo; i < quantidade excluiria a última etiqueta."
+          ],
+          "pergunta": "Por que um limite explícito é melhor que copiar a mesma instrução várias vezes?"
+        },
+        {
+          "topicos": [
+            "metodos"
+          ],
+          "titulo": "Devolver para permitir uso",
+          "ideia": "Um cálculo pode servir a quem chama sem depender do console.",
+          "pontos": [
+            "No extra subtotal(3), o argumento chega ao parâmetro quantidade.",
+            "Com preço 80.0, retorna 240.0; com 4, retorna 320.0; estoque permanece 2.",
+            "println imprime depois. void não devolve valor e pode usar return sem valor para encerrar."
+          ],
+          "pergunta": "Por que esse subtotal ainda não representa uma venda com baixa de estoque?"
+        },
+        {
+          "topicos": [
+            "referencias"
+          ],
+          "titulo": "Compartilhar com consciência",
+          "ideia": "Referências compartilhadas permitem observar o mesmo objeto.",
+          "pontos": [
+            "Dois new criam A e B; apelido = primeiro compartilha A.",
+            "Alterar para 8 por apelido faz primeiro ler 8; outro continua 2.",
+            "Reatribuir apelido = outro não muda campos; depois alterar para 9 muda B, não A."
+          ],
+          "pergunta": "Que surpresa ocorre se alguém acreditar que atribuir criou uma cópia?"
+        },
+        {
+          "topicos": [
+            "texto"
+          ],
+          "titulo": "Tornar o estado legível",
+          "ideia": "Uma descrição ajuda a conferir o resultado da execução.",
+          "pontos": [
+            "toString retorna texto; println o apresenta.",
+            "Teclado Mecânico aparece com id 1, preço 320.0 e estoque 12.",
+            "@Override substitui o método herdado; a impressão não persiste nem revela endereço físico."
+          ],
+          "pergunta": "Qual informação do texto comprovaria uma alteração bem-sucedida?"
+        },
+        {
+          "topicos": [
+            "lista"
+          ],
+          "titulo": "Escolher uma coleção simples",
+          "ideia": "A lista atende ao cadastro desta primeira experiência.",
+          "pontos": [
+            "List<Produto> define o tipo; ArrayList implementa; for-each percorre referências.",
+            "final impede trocar a referência do campo, mas permite alterar itens da lista.",
+            "listar expõe a própria coleção: simples de usar, porém o chamador pode modificá-la."
+          ],
+          "pergunta": "Qual proteção deixamos de oferecer ao devolver a própria lista?"
+        },
+        {
+          "topicos": [
+            "cadastro"
+          ],
+          "titulo": "Centralizar a geração de ids",
+          "ideia": "O Service assume uma tarefa que antes poderia ficar no Main.",
+          "pontos": [
+            "Em Service novo, Livro e Lápis recebem 1 e 2 pela ordem de cadastro.",
+            "proximoId++ usa o atual e incrementa; cadastrar adiciona e retorna a referência.",
+            "Id não é posição; contador é local, e recadastro do mesmo objeto não é impedido."
+          ],
+          "pergunta": "Por que essa sequência ainda não é uma garantia global de identificação?"
+        },
+        {
+          "topicos": [
+            "busca"
+          ],
+          "titulo": "Representar o caso ausente",
+          "ideia": "O contrato de busca precisa prever que o id não exista.",
+          "pontos": [
+            "for-each procura; equals compara valores Long; 2L usa um literal long.",
+            "A busca devolve o produto ou null; o chamador confere != null antes do getter.",
+            "No caso Pasta e Régua, 99L dá null; remover 99L dá false sem retirar nenhum item."
+          ],
+          "pergunta": "Que obrigação esse retorno impõe a todo chamador da busca?"
+        },
+        {
+          "topicos": [
+            "alteracao"
+          ],
+          "titulo": "Reaproveitar a referência",
+          "ideia": "O objeto encontrado já é o que a lista alcança.",
+          "pontos": [
+            "Oficina: Teclado com 2 unidades e Mouse com 5; Mouse é id 2.",
+            "Buscar 2L, conferir null e alterar para 8 também muda a leitura por mouse.",
+            "Teclado continua 2. O U do CRUD ocorre pelo setter; não existe atualizar no Service base."
+          ],
+          "pergunta": "Por que adicionar o produto novamente não é necessário para atualizá-lo?"
+        },
+        {
+          "topicos": [
+            "remocao"
+          ],
+          "titulo": "Informar se algo aconteceu",
+          "ideia": "O boolean devolvido permite avaliar a tentativa.",
+          "pontos": [
+            "Livro e Lápis: remover 1L retorna true, restando Lápis.",
+            "Repetir o pedido retorna false, pois o id já não está na lista.",
+            "A remoção tira a referência da coleção; o Main pode ainda alcançar o objeto retirado."
+          ],
+          "pergunta": "Que conclusão seria exagerada ao receber true nessa remoção?"
+        },
+        {
+          "topicos": [
+            "contagem"
+          ],
+          "titulo": "Contar a coisa certa",
+          "ideia": "A atividade 11 responde quantos produtos têm unidades.",
+          "pontos": [
+            "Com estoques 2, 0 e 5, o resultado é 2; não somamos 7 unidades.",
+            "Contador inicia em zero e cresce quando estoque > 0.",
+            "O retorno fica após o laço; uma lista vazia retorna 0."
+          ],
+          "pergunta": "Por que nomear claramente o método ajuda a definir sua evidência de acerto?"
+        },
+        {
+          "topicos": [
+            "reposicao"
+          ],
+          "titulo": "Validar o pedido completo",
+          "ideia": "A atividade 12 precisa de quantidade válida e produto existente.",
+          "pontos": [
+            "Quantidade <= 0 ou id ausente: false antes de alterar.",
+            "Livro com 2 recebe 3, fica com 5 e retorna true; o Service usa o setter.",
+            "Estoque zero é válido, reposição zero não. Usamos números pequenos, sem tratar estouro de int."
+          ],
+          "pergunta": "Por que validar só o setter não resolve todo o caso de reposição?"
+        },
+        {
+          "topicos": [
+            "ponte"
+          ],
+          "titulo": "Reconhecer o fim do recorte",
+          "ideia": "Simplificar ajuda a aprender, mas não entrega persistência.",
+          "pontos": [
+            "Reiniciar recria a lista; cadastrar os mesmos dados outra vez não é recuperá-los.",
+            "Futuro: HTTP no Controller, regras no Service, Repository e PostgreSQL para dados.",
+            "Spring conecta objetos; Cap 12 começa com Fornecedor. API e banco ainda são próximos passos."
+          ],
+          "pergunta": "Que necessidade concreta justifica avançar além da lista em memória?"
+        }
+      ],
+      "fecho": {
+        "titulo": "Defendam a decisão e seu limite",
+        "ideia": "Escolham uma regra e sustentem por que ela funciona neste contexto.",
+        "pontos": [
+          "Cada integrante justifica uma escolha usando um resultado observável.",
+          "Mostrem uma alternativa pertinente e o que ela mudaria.",
+          "Aceitem um contraexemplo dos colegas e delimitem a garantia do projeto."
+        ],
+        "pergunta": "Qual simplificação vocês manteriam para aprender e qual precisaria evoluir primeiro?",
+        "apoio": "Não exijam tecnologias fora do capítulo. Usem como limites a construção sem validação, a lista exposta, o contador local e a falta de persistência."
+      }
+    },
+    {
+      "titulo": "Parece certo. Será?",
+      "papel": "Clínica de revisão",
+      "tema": "clinica",
+      "subtitulo": "Corrijam a ideia e demonstrem a regra",
+      "destaque": "Será?",
+      "abertura": "Examinem afirmações plausíveis sobre Java. A correção está em cada slide: expliquem-na com evidências, sem decorar frases ou encenar erros.",
+      "slides": [
+        {
+          "topicos": [
+            "execucao"
+          ],
+          "titulo": "“Compilou, então imprimiu.”",
+          "ideia": "Correção: compilar e executar são etapas diferentes.",
+          "pontos": [
+            "Aspas, parênteses e ; fazem parte da sintaxe da instrução.",
+            "O compilador gera .class a partir de .java; a JVM executa a partir de main.",
+            "public permite acesso; static dispensa instância; void não retorna. println precisa executar."
+          ],
+          "pergunta": "Que evidência demonstra que a linha chegou de fato ao console?"
+        },
+        {
+          "topicos": [
+            "ambiente"
+          ],
+          "titulo": "“IntelliJ é o Java.”",
+          "ideia": "Correção: a IDE usa as ferramentas da JDK.",
+          "pontos": [
+            "O projeto está configurado com JDK 21.",
+            "Main, Produto e ProdutoService precisam usar o pacote escolhido.",
+            "HTML: br.com.gestorpro. Projeto já iniciado em org.example pode continuar nele."
+          ],
+          "pergunta": "Por que mudar só o package de uma classe pode atrapalhar a montagem?"
+        },
+        {
+          "topicos": [
+            "tipos"
+          ],
+          "titulo": "“Com aspas dá no mesmo.”",
+          "ideia": "Correção: 12 e \"12\" têm tipos diferentes.",
+          "pontos": [
+            "int guarda inteiro; String guarda texto; boolean aceita true ou false.",
+            "double representa o preço; Long o id. * multiplica e + com String concatena.",
+            "O compilador rejeita texto em int. double simplifica a aula, com limites para dinheiro real."
+          ],
+          "pergunta": "Qual mensagem no código seria texto e qual valor serviria para contar?"
+        },
+        {
+          "topicos": [
+            "condicao"
+          ],
+          "titulo": "“Com cinco ainda repõe.”",
+          "ideia": "Correção: o alerta usa menor que 5, sem incluir o 5.",
+          "pontos": [
+            "Caderno a 15.0 com estoque 3: total 45.0 e alerta.",
+            "Com estoque 5: total 75.0 e nenhuma mensagem de reposição.",
+            "O if só imprime o aviso; nenhuma quantidade é acrescentada."
+          ],
+          "pergunta": "Qual mudança na condição incluiria exatamente a fronteira 5?"
+        },
+        {
+          "topicos": [
+            "repeticao"
+          ],
+          "titulo": "“O for sempre roda uma vez.”",
+          "ideia": "Correção: a condição pode ser falsa logo na entrada.",
+          "pontos": [
+            "Para etiquetas, i começa em 1 e avança com i++.",
+            "i <= quantidade inclui a última: com 4, imprime 1, 2, 3 e 4.",
+            "Com quantidade 0, não imprime; usar < no lugar de <= perde a última etiqueta."
+          ],
+          "pergunta": "Como prever a saída sem executar o programa?"
+        },
+        {
+          "topicos": [
+            "objetos"
+          ],
+          "titulo": "“Mesmo molde, mesmo estoque.”",
+          "ideia": "Correção: cada new cria uma instância independente.",
+          "pontos": [
+            "A classe descreve campos e métodos; o objeto guarda seu estado.",
+            "Monitor tem 1 unidade; Cabo tem 8.",
+            "Alterar o monitor para 4 mantém o cabo com 8; o setter não cria outro Produto."
+          ],
+          "pergunta": "Se os nomes dos produtos fossem iguais, a conclusão mudaria?"
+        },
+        {
+          "topicos": [
+            "referencias"
+          ],
+          "titulo": "“Outra variável é uma cópia.”",
+          "ideia": "Correção: atribuir uma referência pode compartilhar o objeto.",
+          "pontos": [
+            "Dois new criam A e B; apelido = primeiro também alcança A.",
+            "Estoque 8 por apelido aparece em primeiro; B continua com 2.",
+            "apelido = outro só redireciona. Depois, estoque 9 por apelido muda B; A fica 8."
+          ],
+          "pergunta": "Qual instrução cria objeto e qual apenas troca um caminho?"
+        },
+        {
+          "topicos": [
+            "construtor"
+          ],
+          "titulo": "“O construtor usa o setter.”",
+          "ideia": "Correção: este construtor faz atribuições diretas.",
+          "pontos": [
+            "Produto recebe nome, preço e estoque; id começa null.",
+            "this.preco identifica o campo; preco é o parâmetro atribuído a ele.",
+            "Construtor tem o nome da classe e não declara retorno, nem void; aqui não valida negativos."
+          ],
+          "pergunta": "Que teste revelaria a diferença entre criar com negativo e alterar pelo setter?"
+        },
+        {
+          "topicos": [
+            "protecao"
+          ],
+          "titulo": "“private rejeita negativos.”",
+          "ideia": "Correção: private controla acesso; o if valida o número.",
+          "pontos": [
+            "Pelo Main, acesso direto a preco não compila. O setter public é uma entrada permitida.",
+            "Fone com 80.0 recusa -10.0 e aceita 90.0; a regra precisa ser escrita.",
+            "Caneta com 6 recusa -1 e aceita 0. Isso não protege o construtor sem validação."
+          ],
+          "pergunta": "Por que um setter apenas gerado na IDE pode aceitar o valor inválido?"
+        },
+        {
+          "topicos": [
+            "metodos"
+          ],
+          "titulo": "“return escreve na tela.”",
+          "ideia": "Correção: return devolve; println imprime.",
+          "pontos": [
+            "No extra subtotal(3), 3 é argumento e quantidade é parâmetro.",
+            "Com preço 80.0, volta 240.0; com 4, volta 320.0. Estoque fica 2.",
+            "Guardar o retorno não imprime. void admite return sem valor; calcular não é vender."
+          ],
+          "pergunta": "Que instrução falta para mostrar o subtotal já guardado?"
+        },
+        {
+          "topicos": [
+            "texto"
+          ],
+          "titulo": "“Produto@… é o endereço.”",
+          "ideia": "Correção: a representação padrão não expõe endereço físico.",
+          "pontos": [
+            "Nosso toString devolve uma descrição personalizada; println exibe.",
+            "Teclado Mecânico pode mostrar id 1, preço 320.0 e estoque 12.",
+            "@Override substitui o método herdado. Imprimir não salva nem cadastra o objeto."
+          ],
+          "pergunta": "Por que um texto legível ajuda a revisar, mas não serve como banco?"
+        },
+        {
+          "topicos": [
+            "papeis"
+          ],
+          "titulo": "“Service só existe com Spring.”",
+          "ideia": "Correção: ProdutoService já funciona como classe Java comum.",
+          "pontos": [
+            "Produto cuida do item; Service reúne operações do cadastro.",
+            "Main cria, chama e mostra os resultados.",
+            "Um novo Service tem outra lista e contador; não consulta a instância anterior."
+          ],
+          "pergunta": "Em qual classe vocês procurariam a regra de remover um cadastro?"
+        },
+        {
+          "topicos": [
+            "lista"
+          ],
+          "titulo": "“final congela a lista.”",
+          "ideia": "Correção: final fixa a referência do campo, não os elementos.",
+          "pontos": [
+            "List<Produto> define o tipo; ArrayList implementa a lista de referências.",
+            "add e remove continuam possíveis; for-each percorre um item por volta.",
+            "listar devolve a própria coleção, permitindo modificações por quem a recebe."
+          ],
+          "pergunta": "Por que uma lista final ainda pode mudar de tamanho?"
+        },
+        {
+          "topicos": [
+            "cadastro"
+          ],
+          "titulo": "“new já dá um id.”",
+          "ideia": "Correção: neste modelo, o Service atribui o id ao cadastrar.",
+          "pontos": [
+            "Em Service novo, Livro e Lápis recebem ids 1 e 2.",
+            "proximoId++ usa o atual e incrementa; add inclui a referência, return a devolve.",
+            "Id não é posição; o contador é local e o mesmo objeto pode ser recadastrado por engano."
+          ],
+          "pergunta": "O que um Produto criado, mas ainda não cadastrado, tem no campo id?"
+        },
+        {
+          "topicos": [
+            "busca"
+          ],
+          "titulo": "“Toda busca entrega Produto.”",
+          "ideia": "Correção: o contrato também permite retornar null.",
+          "pontos": [
+            "O for-each procura; equals compara valores Long; 2L usa literal long.",
+            "Em Pasta e Régua, buscar 99L dá null e remover 99L dá false.",
+            "Conferir != null antes do getter evita NullPointerException; null não é false."
+          ],
+          "pergunta": "Por que o programa não deve chamar getNome logo após qualquer busca?"
+        },
+        {
+          "topicos": [
+            "alteracao"
+          ],
+          "titulo": "“Buscar devolve uma cópia.”",
+          "ideia": "Correção: a busca alcança o mesmo objeto da lista.",
+          "pontos": [
+            "Oficina: Teclado com 2 unidades, Mouse com 5 e id 2.",
+            "Após buscar 2L e conferir null, o setter do encontrado muda para 8.",
+            "mouse também lê 8, teclado lê 2. É o U do CRUD; não precisa recadastrar."
+          ],
+          "pergunta": "Que resultado seria diferente se realmente fosse uma cópia independente?"
+        },
+        {
+          "topicos": [
+            "remocao"
+          ],
+          "titulo": "“Remover apaga o objeto.”",
+          "ideia": "Correção: sai a referência mantida na lista.",
+          "pontos": [
+            "Livro e Lápis: remover 1L dá true e deixa só Lápis.",
+            "Repetir remover 1L dá false: já não há esse cadastro na coleção.",
+            "Se Main ainda referencia Livro, pode usá-lo; nenhum banco foi alterado."
+          ],
+          "pergunta": "O que true prova nessa operação e o que ele não prova?"
+        },
+        {
+          "topicos": [
+            "contagem"
+          ],
+          "titulo": "“Estoques 2, 0 e 5 dão 7.”",
+          "ideia": "Correção: a atividade 11 conta produtos, não unidades.",
+          "pontos": [
+            "Estoque > 0 seleciona dois dos três produtos: resultado 2.",
+            "O contador parte de 0 e cresce uma vez por item aprovado.",
+            "return depois do laço permite contar todos; lista vazia devolve 0."
+          ],
+          "pergunta": "Que outra pergunta seria respondida pela soma 7?"
+        },
+        {
+          "topicos": [
+            "reposicao"
+          ],
+          "titulo": "“Zero é sempre permitido.”",
+          "ideia": "Correção: estoque zero e reposição zero têm regras diferentes.",
+          "pontos": [
+            "Na atividade 12, quantidade <= 0 ou id ausente retorna false.",
+            "Livro com 2 recebe 3: estoque 5 e true, pela alteração via setter.",
+            "Pedidos 0, -2 e id 99 não mudam o estado. Estouro de int fica fora do exercício."
+          ],
+          "pergunta": "Qual validação pertence ao pedido e qual pertence ao estado do Produto?"
+        },
+        {
+          "topicos": [
+            "ponte"
+          ],
+          "titulo": "“Rodou de novo, então salvou.”",
+          "ideia": "Correção: o Main pode ter cadastrado tudo novamente.",
+          "pontos": [
+            "A lista é recriada em cada execução; isso não é persistência.",
+            "Futuro: Controller recebe HTTP, Service organiza, Repository acessa PostgreSQL.",
+            "Spring conecta objetos; Cap 12 usa Fornecedor. A API e o banco ainda não existem aqui."
+          ],
+          "pergunta": "Como separar repetição do cadastro de recuperação de dados persistidos?"
+        }
+      ],
+      "fecho": {
+        "titulo": "Corrijam com uma demonstração",
+        "ideia": "A correção precisa explicar a causa e prever o resultado.",
+        "pontos": [
+          "Cada integrante escolhe uma confusão e apresenta a regra correta.",
+          "Usem dados do capítulo para mostrar o que acontece antes e depois.",
+          "Peçam um contraexemplo à turma e expliquem o limite da resposta."
+        ],
+        "pergunta": "Qual confusão faria um programa compilar, mas ainda produzir uma conclusão errada?",
+        "apoio": "Não é preciso fingir um erro durante a apresentação. Comparem hipóteses, prevejam e mostrem a evidência. Incluam ausência, entradas inválidas e memória temporária."
+      }
+    }
+  ]
+}
