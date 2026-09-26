@@ -274,4 +274,35 @@
     $('#req-next').addEventListener('click', () => { if (t < reqTasks.length - 1) { t++; show(); } });
     show();
   }
+  /* ---------- LAB da seringa (seção 09 · injeção de dependência) ----------
+     Avanço manual; a transição do êmbolo é CSS e some com prefers-reduced-motion. */
+  const diLab = $('#di-lab');
+  if (diLab) {
+    const states = [
+      { dose: '🗄️ FornecedorRepository', target: '⚙️ FornecedorService', slot: '', done: false,
+        cap: 'O FornecedorService declarou no construtor que precisa de um FornecedorRepository. Ele não usa new: só pede.' },
+      { dose: '🗄️ FornecedorRepository', target: '⚙️ FornecedorService', slot: 'repository ✓', done: true,
+        cap: 'O Spring aplicou: criou o Repository e o entregou pelo construtor. Isso é injeção de dependência. Por baixo, é como new FornecedorService(repository), só que quem chama é o Spring.' },
+      { dose: '⚙️ FornecedorService', target: '🎮 FornecedorController', slot: '', done: false,
+        cap: 'Agora o Controller precisa do Service. Mesmo padrão: um campo private final e o construtor gerado pelo @RequiredArgsConstructor.' },
+      { dose: '⚙️ FornecedorService', target: '🎮 FornecedorController', slot: 'service ✓', done: true,
+        cap: 'Corrente montada: o Controller recebe o pedido HTTP e chama o Service, que usa o Repository. Nenhuma dessas classes criou a outra com new.' }
+    ];
+    let i = 0;
+    const paint = () => {
+      const st = states[i];
+      diLab.dataset.injected = String(st.done);
+      $('[data-di-dose]', diLab).textContent = st.dose;
+      $('[data-di-target]', diLab).textContent = st.target;
+      $('[data-di-slot]', diLab).textContent = st.slot || '…';
+      $('[data-di-caption]', diLab).textContent = st.cap;
+      $('[data-di-step]', diLab).textContent = `${i + 1} / ${states.length}`;
+      $('[data-di-prev]', diLab).disabled = i === 0;
+      $('[data-di-next]', diLab).disabled = i === states.length - 1;
+    };
+    $('[data-di-prev]', diLab).addEventListener('click', () => { if (i > 0) { i--; paint(); } });
+    $('[data-di-next]', diLab).addEventListener('click', () => { if (i < states.length - 1) { i++; paint(); } });
+    $('[data-di-reset]', diLab).addEventListener('click', () => { i = 0; paint(); });
+    paint();
+  }
 })();

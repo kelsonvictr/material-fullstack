@@ -353,3 +353,22 @@ macOS, em containers e pastas temporárias independentes do projeto do aluno.
 - Revalidação após a mudança: cinco checkpoints compilados em Java 21 com Lombok;
   integração com PostgreSQL e cenários de persistência aprovados. A revisão no navegador
   confirmou novamente as três simulações, sete quizzes, teclado, caderno e tela de 390 px.
+
+## Revisão do professor — CRUD simplificado na primeira volta (2026-09-26)
+
+Decisão: **nesta primeira volta não há exemplo real de 400 nem de 404**; eles entram na prática nos
+próximos capítulos. O código dos 5 checkpoints (e do ZIP final) ficou:
+
+- `cadastrar` = `repository.save(fornecedor)` — sem `validarNome` e sem `setId(null)`.
+- `listar`, `buscar`, `atualizar` com `@ResponseStatus(HttpStatus.OK)` explícito (didática: todo
+  endpoint mostra o status no código, como o 201 do POST).
+- `buscar` devolve `Optional<Fornecedor>` no Service e no Controller, sem `if`.
+- `atualizar` = `fornecedor.setId(id)` + `save` (o ID vem da URL); `excluir` = `deleteById(id)`.
+
+Comportamento REAL verificado (Boot 4.1.1 + Postgres 17), e avisado ao aluno no capítulo:
+nome ""/espaços é gravado (201); JSON sem `nome` → 500 (coluna NOT NULL); `id` de registro
+existente no POST **sobrescreve** o cadastro (merge); `id` inexistente no POST/PUT → 500
+(StaleObjectState); GET de ID ausente → **200 com `null`**; DELETE de ID ausente → 204.
+Essas três “dívidas” (validação/400, 404, id no POST → DTO) estão listadas no `#fechamento` como
+gancho dos próximos capítulos. LAB 03 (bastidores) passou a ter os casos POST/GET lista/DELETE.
+`validate-cap12.py --integration` e `validate-cap12-browser.mjs` atualizados e passando.

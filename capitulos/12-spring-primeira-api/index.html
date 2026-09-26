@@ -81,12 +81,12 @@
 <p>Não precisa decorar dezenas de códigos. Olhe o <strong>primeiro dígito</strong>:</p>
 <div class="status-families"><div class="f2"><b>2xx</b><span>Deu certo.</span></div><div class="f3"><b>3xx</b><span>Mudou de lugar: vá para outro endereço.</span></div><div class="f4"><b>4xx</b><span>O <strong>pedido</strong> tem um problema: corrija e tente de novo.</span></div><div class="f5"><b>5xx</b><span>O <strong>servidor</strong> falhou ao atender.</span></div></div>
 <p>A família 1xx existe, mas é rara no dia a dia. A pergunta que resolve quase tudo: <strong>quem precisa agir, quem pediu ou o servidor?</strong></p>
-<h3>Os seis códigos deste capítulo</h3>
-<div class="table-scroll"><table><caption>Você vai ver todos eles na sua API hoje</caption><thead><tr><th>Código</th><th>Nome</th><th>Quando aparece</th></tr></thead><tbody><tr><td><span class="s-tag s2">200</span></td><td>OK</td><td>Consulta ou atualização bem-sucedida. Uma lista vazia <code>[]</code> também é 200.</td></tr><tr><td><span class="s-tag s2">201</span></td><td>Created</td><td>Algo novo foi criado (POST). O corpo traz o registro com o id gerado.</td></tr><tr><td><span class="s-tag s2">204</span></td><td>No Content</td><td>Deu certo e não há nada para devolver no corpo (DELETE).</td></tr><tr><td><span class="s-tag s4">400</span></td><td>Bad Request</td><td>O pedido veio com dados inválidos, por exemplo um nome vazio.</td></tr><tr><td><span class="s-tag s4">404</span></td><td>Not Found</td><td>O recurso pedido não existe, por exemplo o fornecedor de id 999.</td></tr><tr><td><span class="s-tag s5">500</span></td><td>Internal Server Error</td><td>Um erro inesperado no servidor: uma falha que o código não tratou.</td></tr></tbody></table></div>
+<h3>Os seis códigos mais comuns</h3>
+<div class="table-scroll"><table><caption>Hoje a sua API usa 200, 201 e 204; os de erro você vai implementar nos próximos capítulos</caption><thead><tr><th>Código</th><th>Nome</th><th>Quando aparece</th></tr></thead><tbody><tr><td><span class="s-tag s2">200</span></td><td>OK</td><td>Consulta ou atualização bem-sucedida. Uma lista vazia <code>[]</code> também é 200.</td></tr><tr><td><span class="s-tag s2">201</span></td><td>Created</td><td>Algo novo foi criado (POST). O corpo traz o registro com o id gerado.</td></tr><tr><td><span class="s-tag s2">204</span></td><td>No Content</td><td>Deu certo e não há nada para devolver no corpo (DELETE).</td></tr><tr><td><span class="s-tag s4">400</span></td><td>Bad Request</td><td>O pedido veio com dados inválidos, por exemplo um nome vazio.</td></tr><tr><td><span class="s-tag s4">404</span></td><td>Not Found</td><td>O recurso pedido não existe, por exemplo o fornecedor de id 999.</td></tr><tr><td><span class="s-tag s5">500</span></td><td>Internal Server Error</td><td>Um erro inesperado no servidor: uma falha que o código não tratou.</td></tr></tbody></table></div>
 <details class="answer"><summary>🗂️ Existem por aí (não vamos implementar agora)</summary><div><ul><li><strong>301 / 302</strong>: o endereço mudou; o navegador segue para o novo.</li><li><strong>304</strong>: “não mudou”; use a cópia que você já tem. Aparece na aba Network.</li><li><strong>401 Unauthorized</strong>: você não se identificou (falta login).</li><li><strong>403 Forbidden</strong>: você se identificou, mas não tem permissão.</li><li><strong>409 Conflict</strong>: conflito com o estado atual, como uma inscrição com e-mail já cadastrado.</li></ul><p>401 e 403 voltam quando o GestorPRO ganhar login de verdade.</p></div></details>
 <div class="warning"><strong>404 não quer dizer “servidor desligado”.</strong> Para responder 404, o servidor precisou estar ligado e entender o pedido. Quando nada responde naquele endereço, o erro é outro: “conexão recusada”. Você vai ver essa diferença na seção 08.</div>
 <div class="fluxo-player" data-only="5,6" data-src="../../assets/video/jornada-http.mp4" data-poster="../../assets/video/jornada-http.png"><video src="../../assets/video/jornada-http.mp4" poster="../../assets/video/jornada-http.png" preload="none" muted playsinline controls aria-label="Filme, fluxos 5 e 6: a resposta e o caminho do erro"></video></div>
-<p>No fluxo 6, repare na ordem: a API recusou o e-mail vazio <strong>antes</strong> de falar com o banco. Pedido errado não vira linha no banco. É exatamente o que a sua API vai fazer com um fornecedor sem nome.</p>
+<p>No fluxo 6, repare na ordem: a API recusou o e-mail vazio <strong>antes</strong> de falar com o banco. Pedido errado não vira linha no banco. Nos próximos capítulos, a sua API vai fazer o mesmo com um fornecedor sem nome.</p>
 <div class="lab status-lab" id="status-lab"><div class="lab-heading"><span>LAB H1 · QUAL STATUS VOLTA?</span><h3>Seja a API por um minuto</h3><p>Leia a situação e escolha o status que a API deve responder. Errar faz parte: o feedback explica o motivo.</p></div><p class="status-q" id="status-q" aria-live="polite"></p><div class="status-options" id="status-options"></div><p class="lab-caption" id="status-feedback" role="status" aria-live="polite">Escolha um código.</p><div class="lab-controls"><button type="button" id="status-next">Próxima situação →</button><span id="status-count"></span><button type="button" id="status-reset">Recomeçar</button></div></div>
 <p class="transfer">Status diz <em>como</em> terminou. Falta organizar <em>o que</em> pedimos: os métodos e a forma das URLs.</p>
 </div></section><div class="section-connector"><div class="line"></div></div>
@@ -97,16 +97,24 @@
 <p><strong>CRUD</strong> é a sigla para as quatro operações básicas de um cadastro: Create, Read, Update, Delete (criar, ler, atualizar, excluir). Na seção de SQL, essa tabela vai ganhar uma terceira coluna.</p>
 <div class="tip"><strong>E o PATCH?</strong> É outro método de atualização: altera só uma parte do registro. Existe e é comum, mas neste capítulo o PUT envia todos os campos editáveis.</div>
 <h3>REST: um jeito combinado de organizar a API</h3>
-<p><strong>REST</strong> (Representational State Transfer) é um estilo de organizar APIs HTTP. Não é uma biblioteca nem um programa: é um conjunto de combinados.</p>
+<p><strong>REST</strong> (Representational State Transfer, “transferência de estado representacional”) é um <strong>estilo de arquitetura</strong>: um padrão de como sistemas devem conversar pela web. Não é uma biblioteca nem um programa que se instala: é um conjunto de princípios, de combinados. Esses princípios não dependem do HTTP, mas o HTTP é o caminho mais comum para aplicá-los, e é o nosso.</p>
 <figure class="meme-wrap" style="max-width:420px"><img src="../../assets/memes/meme-rest-api-fita.png" width="412" height="418" loading="lazy" alt="Meme: dois garotos ao lado de duas bicicletas diferentes, uma roxa e uma verde, presas uma na outra com fita adesiva. Legendas: o garoto da bicicleta roxa é o back-end developer, o da verde é o front-end developer, a bicicleta roxa é o back-end, a verde é o front-end e a fita que une as duas é a REST API."><figcaption class="meme-caption">A API é a fita. O REST é o tipo de fita que segura as duas bicicletas juntas.</figcaption></figure>
 <div class="analogy"><h3>🩹 A fita e o tipo da fita</h3><p>No meme, o back-end e o front-end são duas bicicletas diferentes, feitas por pessoas diferentes. O que prende uma na outra é a fita adesiva. A <strong>API</strong> é essa fita: a ligação que permite ao frontend e ao backend andarem juntos. O <strong>REST</strong> é o <em>tipo</em> da fita: um jeito combinado de fazer essa ligação que segura bem, porque os dois lados sabem onde puxar (a URL), como puxar (o método) e como saber se aguentou (o status).</p><p>Onde a analogia para: no meme, a fita é uma gambiarra. Uma API de verdade é planejada com cuidado, como um contrato entre as duas equipes. E existem outros “tipos de fita” além do REST, como o GraphQL. O REST é o mais comum e é o que vamos usar.</p></div>
 <p>O que faz essa fita segurar bem são os combinados. Os que importam hoje:</p>
-<ol><li><strong>A URL é um substantivo</strong>: aponta para um <em>recurso</em>, a “coisa” do sistema, no plural. <code>/fornecedores</code> é a coleção; <code>/fornecedores/7</code> é um fornecedor específico.</li><li><strong>O método é o verbo</strong>: a ação fica no GET, POST, PUT ou DELETE, não no nome da URL.</li><li><strong>JSON no corpo, status na resposta</strong>: os dados vão e voltam em JSON, e o resultado é dito pelo código.</li><li><strong>Cada pedido chega completo</strong>: o servidor não “lembra da conversa” anterior. Tudo o que ele precisa vai na própria requisição.</li></ol>
+<ol><li><strong>A URL é um substantivo</strong>: aponta para um <em>recurso</em>, a “coisa” do sistema, no plural. <code>/fornecedores</code> é a coleção; <code>/fornecedores/7</code> é um fornecedor específico.</li><li><strong>O método é o verbo</strong>: a ação fica no GET, POST, PUT ou DELETE, não no nome da URL.</li><li><strong>Os dados viajam como uma representação, e o status diz o resultado</strong>: o REST não exige um formato, mas na prática quase sempre é JSON, e é o que vamos usar.</li><li><strong>Cada pedido chega completo</strong>: o servidor não “lembra da conversa” anterior. Tudo o que ele precisa vai na própria requisição. Isso é sobre a <em>conversa</em>, não sobre os dados: os fornecedores continuam guardados no banco.</li></ol>
 <div class="rest-compare"><div class="bad"><b>✖ Verbo na URL</b><code>POST /cadastrarFornecedor</code><code>GET /deletarFornecedor?id=7</code><code>POST /fornecedores/atualizar/7</code></div><div class="good"><b>✔ Substantivo + método</b><code>POST /fornecedores</code><code>DELETE /fornecedores/7</code><code>PUT /fornecedores/7</code></div></div>
+<h3>REST × RESTful: o padrão e quem segue o padrão</h3>
+<p>As duas palavras aparecem juntas em vagas e documentações, mas não são a mesma coisa:</p>
+<div class="rest-vs"><div><b>REST</b><span>O <strong>padrão</strong>, a arquitetura: um conjunto de princípios que diz como uma API deve se comportar. É uma ideia, descrita pelo pesquisador Roy Fielding em 2000.</span></div><div><b>RESTful</b><span>Uma <strong>API</strong> que implementa os princípios do REST. Em inglês, <em>-ful</em> quer dizer “cheio de”: uma API <em>RESTful</em> é uma API “cheia de REST”. Escreve-se com um <strong>l</strong> só.</span></div></div>
+<p>Voltando ao meme: o REST é a <strong>especificação do tipo de fita</strong>, dizendo como ela deve ser para segurar bem. Uma API RESTful é a <strong>fita fabricada seguindo essa especificação</strong>, presa de verdade entre as duas bicicletas.</p>
+<p>Os combinados que você acabou de ver são a parte do dia a dia. Oficialmente, o REST tem seis princípios, e você já viu quase todos no filme:</p>
+<div class="table-scroll"><table><caption>Os princípios do REST</caption><thead><tr><th>Princípio</th><th>O que quer dizer</th><th>Onde você já viu</th></tr></thead><tbody><tr><td>Cliente-servidor</td><td>Quem mostra as telas e quem guarda regras e dados são partes separadas.</td><td>Fluxos 2 e 3: o front no navegador, as regras no servidor.</td></tr><tr><td>Sem estado</td><td>Cada requisição chega completa; o servidor não lembra da conversa anterior. “Sem estado” não é “sem dados”: o banco continua guardando tudo.</td><td>Combinado 4, acima.</td></tr><tr><td>Cache</td><td>A resposta informa se pode ser guardada e reaproveitada.</td><td>O status 304 na aba Network: “use a cópia que você já tem”.</td></tr><tr><td>Interface uniforme</td><td>Todo recurso é tratado do mesmo jeito. No HTTP, isso vira: a URL identifica, o método diz a ação e o status diz o resultado.</td><td>Combinados 1, 2 e 3 e o lab abaixo.</td></tr><tr><td>Sistema em camadas</td><td>O cliente conversa com uma camada e não precisa saber o que existe atrás dela.</td><td>Fluxo 4: o front fala com a API e nunca vê o banco.</td></tr><tr><td>Código sob demanda <small>(opcional)</small></td><td>O servidor pode enviar código para o cliente executar.</td><td>Fluxo 2: o servidor web entregou o JavaScript.</td></tr></tbody></table></div>
+<div class="tip"><strong>Na vida real, “RESTful” costuma ser usado com folga.</strong> Um detalhe avançado da interface uniforme, respostas que trazem links para as próximas ações (chamado <strong>HATEOAS</strong>), fica de fora da maioria das APIs, e a nossa também não vai tê-lo nesta primeira versão. Os outros princípios, ela segue. Em entrevista, a resposta segura é: <em>“REST é o estilo de arquitetura; RESTful é a API que segue os princípios dele.”</em></div>
+<div class="decision" data-explanation="REST é o padrão, a arquitetura. RESTful é o adjetivo para a API que implementa esses princípios. Não é uma versão nova, nem uma biblioteca."><h4>🧠 Qual frase está correta?</h4><div class="choices"><button type="button" data-choice="false" aria-pressed="false">RESTful é a versão nova e melhorada do REST.</button><button type="button" data-choice="true" aria-pressed="false">REST é o estilo de arquitetura; uma API RESTful é a que implementa os princípios do REST.</button><button type="button" data-choice="false" aria-pressed="false">REST é uma biblioteca que instalamos no projeto para a API funcionar.</button></div><p class="feedback" role="status" aria-live="polite">Escolha uma resposta. Você pode tentar novamente.</p></div>
 <div class="lab req-lab" id="req-lab"><div class="lab-heading"><span>LAB H2 · MONTE A REQUISIÇÃO</span><h3>Qual endpoint atende o pedido?</h3><p>Escolha o método e o caminho. A simulação responde como a API que você vai construir. Nenhum servidor real é chamado.</p></div><p class="req-task" id="req-task" aria-live="polite"></p><div class="field-row"><label>Método<select id="req-method"><option value="GET">GET</option><option value="POST">POST</option><option value="PUT">PUT</option><option value="DELETE">DELETE</option></select></label><label>Caminho<select id="req-path"><option value="/fornecedores">/fornecedores</option><option value="/fornecedores/7">/fornecedores/7</option><option value="/cadastrarFornecedor">/cadastrarFornecedor</option></select></label></div><p class="req-preview mono" id="req-preview"></p><p class="lab-caption" id="req-feedback" role="status" aria-live="polite">Monte o pedido e envie.</p><div class="lab-controls"><button type="button" id="req-send">Enviar na simulação</button><button type="button" id="req-next">Próximo pedido →</button><span id="req-count"></span></div></div>
 <h3>O contrato que você vai construir hoje</h3>
 <p>Estes são os cinco endpoints da sua primeira API, na ordem em que vamos construí-los. Guarde esta tabela: cada linha vira uma seção do Encontro B.</p>
-<div class="table-scroll"><table><caption>API de fornecedores do GestorPRO</caption><thead><tr><th>Endpoint</th><th>Intenção</th><th>Sucesso</th><th>Erro ensinado</th></tr></thead><tbody><tr><td><code>POST /fornecedores</code></td><td>Cadastrar</td><td>201 + fornecedor com id</td><td>400 · nome vazio</td></tr><tr><td><code>GET /fornecedores</code></td><td>Listar todos</td><td>200 + lista</td><td>Lista vazia é 200</td></tr><tr><td><code>GET /fornecedores/{id}</code></td><td>Buscar um</td><td>200 + fornecedor</td><td>404 · não existe</td></tr><tr><td><code>PUT /fornecedores/{id}</code></td><td>Atualizar</td><td>200 + fornecedor</td><td>404 · não existe</td></tr><tr><td><code>DELETE /fornecedores/{id}</code></td><td>Excluir</td><td>204 · sem corpo</td><td>404 · não existe</td></tr></tbody></table></div>
+<div class="table-scroll"><table><caption>API de fornecedores do GestorPRO</caption><thead><tr><th>Endpoint</th><th>Intenção</th><th>Sucesso</th></tr></thead><tbody><tr><td><code>POST /fornecedores</code></td><td>Cadastrar</td><td>201 + fornecedor com id</td></tr><tr><td><code>GET /fornecedores</code></td><td>Listar todos</td><td>200 + lista</td></tr><tr><td><code>GET /fornecedores/{id}</code></td><td>Buscar um</td><td>200 + fornecedor</td></tr><tr><td><code>PUT /fornecedores/{id}</code></td><td>Atualizar</td><td>200 + fornecedor</td></tr><tr><td><code>DELETE /fornecedores/{id}</code></td><td>Excluir</td><td>204 · sem corpo</td></tr></tbody></table></div>
 <p><code>{id}</code> é um lugar reservado: na requisição real ele vira um número, como <code>/fornecedores/7</code>.</p>
 <div class="checkpoint">✓ Fim da Parte 0. Você consegue contar o caminho do clique ao banco e de volta, dizer o que vai numa requisição e ler um status.</div>
 <p class="transfer">No filme, a caixa “API” era uma caixa fechada. Agora vamos abri-la e construir uma de verdade. Para não fabricar tudo do zero, vamos usar um framework.</p>
@@ -114,12 +122,12 @@
 <div class="analogy"><h3>🔧 Montar a oficina ou começar a trabalhar?</h3><p>Imagine fabricar cada ferramenta antes de consertar uma bicicleta. Uma oficina equipada já oferece a bancada, ferramentas e uma organização de trabalho. Você ainda precisa descobrir o defeito e fazer o conserto.</p></div>
 <p>Um <strong>framework</strong> oferece uma estrutura reutilizável para construir aplicações. Ele estabelece pontos em que nosso código entra e cuida de tarefas comuns. Uma <strong>biblioteca</strong> costuma ser chamada por nosso programa; um framework também coordena a execução e chama nosso código. Essa é uma diferença de uso, não uma fronteira absoluta.</p>
 <div class="three-cards"><article><h3>☕ Java</h3><p>A linguagem em que escrevemos classes, métodos e regras.</p></article><article><h3>🌱 Spring</h3><p>Framework que conecta componentes e oferece recursos para construir aplicações.</p></article><article><h3>🚀 Spring Boot</h3><p>Facilita a configuração e inicialização de aplicações Spring, inclusive com servidor web embutido.</p></article></div>
-<p>Ao receber um pedido HTTP de cadastro, o Spring pode converter o JSON em um objeto e chamar nosso método. Mas <strong>“o nome do fornecedor não pode estar vazio”</strong> é uma regra que vamos escrever. O framework não descobre as necessidades do GestorPRO sozinho.</p>
+<p>Ao receber um pedido HTTP de cadastro, o Spring pode converter o JSON em um objeto e chamar nosso método. Mas <strong>“o nome do fornecedor não pode estar vazio”</strong> é uma regra que <em>nós</em> escrevemos, não o Spring. O framework não descobre as necessidades do GestorPRO sozinho.</p>
 <div class="mini-stage"><span>1 · Chega um POST</span><span>2 · Spring encontra o método</span><span>3 · Nosso código decide</span><span>4 · Spring entrega a resposta</span></div>
 <div class="decision" data-explanation="O Spring consegue chamar nosso método, mas o método precisa implementar a regra que o sistema exige."><h4>🧠 O framework já sabe quais fornecedores podemos cadastrar?</h4><div class="choices"><button type="button" data-choice="false" aria-pressed="false">Sim. Gerar o projeto já cria as regras do GestorPRO.</button><button type="button" data-choice="true" aria-pressed="false">Não. Ele fornece infraestrutura; nós escrevemos as regras do cadastro.</button></div><p class="feedback" role="status" aria-live="polite">Escolha uma resposta. Você pode tentar novamente.</p></div><p class="transfer">Agora vamos pedir uma oficina vazia ao Initializr. As regras entram depois.</p></div></section><div class="section-connector"><div class="line"></div></div><section class="step-section" id="initializr"><div class="step-header"><div class="step-number sn-green">02</div><div><h2 class="step-title">Spring Initializr: o ponto de partida</h2><p class="step-sub">Cada escolha do site tem uma função.</p></div></div><div class="card">
 <p>Abra <a href="https://start.spring.io/" target="_blank" rel="noopener">start.spring.io ↗</a>. O <strong>Spring Initializr</strong> gera a estrutura inicial e configura as dependências. Ele não gera o cadastro de fornecedores.</p>
 <div class="setup-sheet"><div class="sheet-title">🌱 Spring Initializr <small>Guia de preenchimento · não é o site real</small></div><dl><dt>Project</dt><dd>Maven</dd><dt>Language</dt><dd>Java</dd><dt>Spring Boot</dt><dd>4.1.1 · versão usada neste capítulo</dd><dt>Group</dt><dd>br.com.gestorpro</dd><dt>Artifact / Name</dt><dd>api / Api</dd><dt>Package name</dt><dd>br.com.gestorpro.api</dd><dt>Packaging</dt><dd>Jar</dd><dt>Java</dt><dd>21</dd></dl></div>
-<p><strong>Maven</strong> organiza a construção do projeto e baixa bibliotecas chamadas <strong>dependências</strong>. O arquivo <code>pom.xml</code> guarda essa configuração. <strong>Group</strong> identifica a organização; <strong>Artifact</strong>, o projeto. <strong>Package</strong> organiza nossas classes. <strong>JAR</strong> é o formato em que empacotaremos a aplicação Java.</p>
+<div class="concept maven-box"><strong>📦 Maven: o “npm” do Java</strong><p>No front, você usou o <code>npm</code>: o <code>package.json</code> listava as bibliotecas do projeto e o <code>npm install</code> baixava tudo. No Java, quem faz esse papel é o <strong>Maven</strong>, uma ferramenta de <em>build</em> (construção de projetos). Ele cuida de três coisas:</p><ol><li><strong>Baixar as dependências</strong>: as bibliotecas que o projeto usa (Spring, driver do PostgreSQL, Lombok…) vêm de um repositório público na internet, o Maven Central.</li><li><strong>Compilar e empacotar</strong>: transformar o código em um arquivo <code>.jar</code> pronto para executar.</li><li><strong>Padronizar a estrutura</strong>: todo projeto Maven tem <code>src/main/java</code> e <code>src/main/resources</code>. Quem abre um projeto Maven já sabe onde está cada coisa.</li></ol><p>A configuração fica no <code>pom.xml</code> (<em>Project Object Model</em>, “modelo do projeto”): é o <code>package.json</code> do Java, escrito em XML. No Cap 11, você escolheu Maven ao criar o projeto; agora sabe para que ele serve. Existe uma alternativa parecida, o Gradle, mas vamos usar Maven.</p></div><p><strong>Group</strong> identifica a organização; <strong>Artifact</strong>, o projeto. <strong>Package</strong> organiza nossas classes. <strong>JAR</strong> é o formato em que empacotaremos a aplicação Java.</p>
 <h3>Em Add Dependencies, procure e adicione</h3>
 <div class="three-cards dependency-grid"><article><h4>Spring Web</h4><p>Receber pedidos HTTP e responder pela web.</p></article><article><h4>Spring Data JPA</h4><p>Acessar dados usando repositories.</p></article><article><h4>PostgreSQL Driver</h4><p>Permitir a comunicação Java ↔ PostgreSQL.</p></article><article><h4>Lombok</h4><p>Gerar construtores, getters e setters na compilação, reduzindo código repetitivo.</p></article></div>
 <p>Selecione <strong>Generate</strong>, baixe o ZIP e extraia a pasta. Confira que existe um <code>pom.xml</code> dentro dela. Vamos abri-la no IntelliJ depois da experiência com SQL.</p>
@@ -235,20 +243,25 @@ spring.jpa.show-sql=true</code></pre></div>
 <p><strong>MVC</strong> significa <em>Model–View–Controller</em>. É uma separação entre dados/regras, apresentação e controle de entrada. Não é outro nome para as quatro pastas acima. No nosso sistema, React faz a apresentação; esta API usa <code>@RestController</code> e devolve dados em JSON, em vez de renderizar uma página HTML.</p>
 <p><strong>Vamos construir na direção contrária:</strong> Model → Repository → Service → Controller. Primeiro precisamos dos dados, depois de quem os acessa, de quem organiza a operação e de quem a oferece pela web.</p>
 <h3>Quem conecta esses objetos?</h3>
-<p>No Cap 11, você usava <code>new</code>. Agora o Spring cria e gerencia os componentes identificados por anotações, como <code>@Service</code> e <code>@RestController</code>. Quando uma classe precisa de outra, o Spring fornece essa dependência: isso é <strong>injeção de dependência</strong>.</p>
+<p>No Cap 11, você usava <code>new</code>. Agora o Spring cria e gerencia os componentes identificados por anotações, como <code>@Service</code> e <code>@RestController</code>. Quando uma classe precisa de outra, o Spring fornece essa dependência: isso é <strong>injeção de dependência</strong>.</p><div class="analogy di-analogy"><h3>💉 A seringa do Spring</h3><p>Pense numa seringa. O <strong>conteúdo</strong> é a dependência: um objeto pronto, como o <code>FornecedorRepository</code>. Quem aperta o êmbolo é o <strong>Spring</strong>. E a agulha entra num ponto combinado: o <strong>construtor</strong> da classe que precisa daquele objeto.</p><p>A classe não fabrica o que precisa com <code>new</code>. Ela só declara “preciso de um Repository” e o Spring aplica. Onde a analogia para: não existe nada mágico nem forçado. Por baixo, o Spring apenas chama o construtor passando o objeto como argumento, como você fazia no Cap 11 com <code>new</code>.</p></div><p class="di-legend">💉 Nos códigos deste capítulo, a seringa marca as linhas da injeção de dependência. <strong>Ela não faz parte do código: não digite.</strong></p>
 <h3>Primeiro, o construtor que você já conhece</h3><p>Para funcionar, o Service precisa de um Repository. Vamos declarar essa necessidade no construtor. Observe o mecanismo; os arquivos completos serão escritos no próximo bloco.</p><div class="code-block"><div class="code-header"><span class="filename">Exemplo conceitual · construtor escrito à mão</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar Exemplo conceitual · construtor escrito à mão">Copiar</button></div><pre data-constructor="explicit"><code><span class="attr">@Service</span>
 <span class="kw">public</span> <span class="kw">class</span> <span class="tp">FornecedorService</span> {
     <span class="kw">private</span> <span class="kw">final</span> <span class="tp">FornecedorRepository</span> repository;
 
-    <span class="kw">public</span> <span class="tp">FornecedorService</span>(<span class="tp">FornecedorRepository</span> repository) {
+    <span class="kw">public</span> <span class="tp">FornecedorService</span>(<span class="di-hl"><span class="tp">FornecedorRepository</span> repository</span>) {
         <span class="kw">this</span>.repository = repository;
     }
 }</code></pre></div><p>O parâmetro recebe o Repository e <code>this.repository = repository</code> guarda essa referência no campo do objeto. <code>final</code> indica que esse campo só recebe sua referência uma vez; isso não torna o objeto Repository imutável. O Spring localiza a dependência e chama esse construtor para criar o Service.</p><p><strong>Quando existe um único construtor, o Spring o utiliza sem precisar de <code>@Autowired</code>.</strong> A dependência já chega na criação do objeto, em vez de ser preenchida depois em um campo.</p><h3>Agora, o mesmo construtor gerado pelo Lombok</h3><div class="code-block"><div class="code-header"><span class="filename">Exemplo conceitual · mesma dependência, menos escrita</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar Exemplo conceitual · mesma dependência, menos escrita">Copiar</button></div><pre data-constructor="lombok"><code><span class="attr">@Service</span>
-<span class="attr">@RequiredArgsConstructor</span>
+<span class="di-hl"><span class="attr">@RequiredArgsConstructor</span></span>
 <span class="kw">public</span> <span class="kw">class</span> <span class="tp">FornecedorService</span> {
-    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">FornecedorRepository</span> repository;
+    <span class="di-hl"><span class="kw">private</span> <span class="kw">final</span> <span class="tp">FornecedorRepository</span> repository;</span>
 }</code></pre></div><p><code>@RequiredArgsConstructor</code> gera um construtor para os campos <code>final</code> que ainda não receberam valor. Neste exemplo, ele gera justamente o construtor acima. Não mantenha o construtor explícito junto com a anotação: são duas formas de produzir a mesma assinatura.</p><div class="tip"><strong>Lombok gera o construtor; Spring fornece a dependência.</strong> No Controller, o mesmo padrão será usado com <code>private final FornecedorService service;</code>. Não criamos o Service manualmente dentro do Controller.</div>
-<div class="responsibility decision" data-explanation="O Service concentra a regra do cadastro. O Controller traduz a conversa HTTP; o Repository cuida do acesso aos dados."><h4>🧠 Onde deve ficar a regra “nome não pode estar vazio”?</h4><div class="choices"><button type="button" data-choice="false" aria-pressed="false">🗄️ Repository</button><button type="button" data-choice="true" aria-pressed="false">⚙️ Service</button><button type="button" data-choice="false" aria-pressed="false">🎮 Só no botão React</button></div><p class="feedback" role="status">Escolha a responsabilidade. Você pode tentar novamente.</p></div>
+<div class="lab di-lab" id="di-lab"><div class="lab-heading"><span>LAB · SIMULAÇÃO</span><h3>💉 Aplique a injeção</h3><p>Avance um passo por vez. A seringa representa o Spring; nada é executado no seu computador.</p></div>
+<div class="di-stage"><div class="syringe"><span class="syr-label syr-who" aria-hidden="true">🌱 Spring aperta</span><span class="syr-label syr-what">conteúdo: <b data-di-dose></b></span><div class="syr-body" aria-hidden="true"><div class="syr-glass"><span class="syr-dose"></span></div><div class="syr-plunger"><span class="syr-thumb"></span><span class="syr-rod"></span><span class="syr-stopper"></span></div></div><span class="syr-hub" aria-hidden="true"></span><span class="syr-needle" aria-hidden="true"></span></div>
+<div class="di-target"><small>QUEM PRECISA</small><strong data-di-target></strong><code class="di-slot mono">construtor( <span data-di-slot></span> )</code></div></div>
+<p class="lab-caption" data-di-caption role="status" aria-live="polite"></p><div class="lab-controls"><button type="button" data-di-prev>← Voltar</button><span data-di-step></span><button type="button" data-di-next>Próximo →</button><button type="button" data-di-reset>Recomeçar</button></div></div>
+<div class="decision" data-explanation="Declaramos a necessidade com um campo final e deixamos o Lombok gerar o construtor; o Spring aplica o Service. Criar com new faria o Controller fabricar o Service sozinho, e o Service ainda precisaria de um Repository."><h4>🧠 O Controller precisa do Service. O que escrevemos no Controller?</h4><div class="choices"><button type="button" data-choice="false" aria-pressed="false">private FornecedorService service = new FornecedorService();</button><button type="button" data-choice="true" aria-pressed="false">private final FornecedorService service; e a anotação @RequiredArgsConstructor na classe.</button><button type="button" data-choice="false" aria-pressed="false">Nada: o Spring descobre sozinho do que o Controller precisa.</button></div><p class="feedback" role="status" aria-live="polite">Escolha uma resposta. Você pode tentar novamente.</p></div>
+<div class="responsibility decision" data-explanation="O Service concentra a regra do cadastro. O Controller traduz a conversa HTTP; o Repository cuida do acesso aos dados."><h4>🧠 Nos próximos capítulos, vamos criar a regra “nome não pode estar vazio”. Onde ela deve ficar?</h4><div class="choices"><button type="button" data-choice="false" aria-pressed="false">🗄️ Repository</button><button type="button" data-choice="true" aria-pressed="false">⚙️ Service</button><button type="button" data-choice="false" aria-pressed="false">🎮 Só no botão React</button></div><p class="feedback" role="status">Escolha a responsabilidade. Você pode tentar novamente.</p></div>
 <h3>Nosso pacote principal</h3><p>Dentro de <code>br.com.gestorpro.api</code>, crie os pacotes abaixo com <strong>New → Package</strong>. Deixe a classe principal no pacote pai: o Spring procurará componentes a partir dele.</p>
 <div class="code-block"><div class="code-header"><span class="filename">src/main/java · pacotes e arquivos</span><span class="lang-badge">Estrutura</span><button type="button" class="copy-code" aria-label="Copiar src/main/java · pacotes e arquivos">Copiar</button></div><pre ><code>br.com.gestorpro.api
 ├── <span class="tp">ApiApplication</span>.java
@@ -288,8 +301,8 @@ spring.jpa.show-sql=true</code></pre></div>
     <span class="kw">private</span> <span class="tp">String</span> categoria;
     <span class="kw">private</span> <span class="tp">String</span> telefone;
 }</code></pre></div>
-<div class="table-scroll"><table><caption>As anotações, uma por vez</caption><thead><tr><th>Anotação</th><th>O que informa</th></tr></thead><tbody><tr><td><code>@Entity</code></td><td>Esta classe é uma entidade persistente: seus objetos podem ser mapeados para registros.</td></tr><tr><td><code>@Table(name = "fornecedores")</code></td><td>Nome explícito da tabela que a entidade utiliza.</td></tr><tr><td><code>@Id</code></td><td>Campo que identifica cada registro.</td></tr><tr><td><code>@GeneratedValue(...IDENTITY)</code></td><td>O banco gera o ID na inserção. Por isso usamos Long, que aceita null antes de salvar.</td></tr><tr><td><code>@Column(nullable = false)</code></td><td>Mapeia o nome como uma coluna que não aceita null. Texto vazio será tratado no Service.</td></tr></tbody></table></div>
-<h3>Três anotações, três tarefas conhecidas</h3><div class="three-cards"><article><h4>@Getter</h4><p>Gera métodos de leitura, como <code>getNome()</code> e <code>getId()</code>.</p></article><article><h4>@Setter</h4><p>Gera métodos de alteração, como <code>setNome(nome)</code> e <code>setTelefone(telefone)</code>.</p></article><article><h4>@NoArgsConstructor</h4><p>Gera o construtor público sem argumentos exigido pelo JPA.</p></article></div><p>Os campos continuam privados. Os métodos existem no código compilado, mesmo que você não veja seu corpo no arquivo Java. Lombok não acrescenta a regra de nome obrigatório: ela continua sendo responsabilidade do Service.</p><details class="answer"><summary>👀 O que essas anotações substituem?</summary><div><p>Para o campo nome, os métodos gerados equivalem aos que você escreveu no Cap 11. O construtor também tem uma forma familiar. Este trecho serve para comparar; não precisa ser colado na entidade anotada.</p><div class="code-block"><div class="code-header"><span class="filename">Equivalência · métodos de nome e construtor sem argumentos</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar Equivalência · métodos de nome e construtor sem argumentos">Copiar</button></div><pre ><code><span class="kw">public</span> <span class="tp">Fornecedor</span>() {
+<div class="table-scroll"><table><caption>As anotações, uma por vez</caption><thead><tr><th>Anotação</th><th>O que informa</th></tr></thead><tbody><tr><td><code>@Entity</code></td><td>Esta classe é uma entidade persistente: seus objetos podem ser mapeados para registros.</td></tr><tr><td><code>@Table(name = "fornecedores")</code></td><td>Nome explícito da tabela que a entidade utiliza.</td></tr><tr><td><code>@Id</code></td><td>Campo que identifica cada registro.</td></tr><tr><td><code>@GeneratedValue(...IDENTITY)</code></td><td>O banco gera o ID na inserção. Por isso usamos Long, que aceita null antes de salvar.</td></tr><tr><td><code>@Column(nullable = false)</code></td><td>Mapeia o nome como uma coluna que não aceita null: o próprio banco recusa um fornecedor sem nome.</td></tr></tbody></table></div>
+<h3>Três anotações, três tarefas conhecidas</h3><div class="three-cards"><article><h4>@Getter</h4><p>Gera métodos de leitura, como <code>getNome()</code> e <code>getId()</code>.</p></article><article><h4>@Setter</h4><p>Gera métodos de alteração, como <code>setNome(nome)</code> e <code>setTelefone(telefone)</code>.</p></article><article><h4>@NoArgsConstructor</h4><p>Gera o construtor público sem argumentos exigido pelo JPA.</p></article></div><p>Os campos continuam privados. Os métodos existem no código compilado, mesmo que você não veja seu corpo no arquivo Java. Lombok não cria regras de negócio. Regras como “o nome não pode ficar em branco” são responsabilidade do Service e vão aparecer nos próximos capítulos.</p><details class="answer"><summary>👀 O que essas anotações substituem?</summary><div><p>Para o campo nome, os métodos gerados equivalem aos que você escreveu no Cap 11. O construtor também tem uma forma familiar. Este trecho serve para comparar; não precisa ser colado na entidade anotada.</p><div class="code-block"><div class="code-header"><span class="filename">Equivalência · métodos de nome e construtor sem argumentos</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar Equivalência · métodos de nome e construtor sem argumentos">Copiar</button></div><pre ><code><span class="kw">public</span> <span class="tp">Fornecedor</span>() {
 }
 
 <span class="kw">public</span> <span class="tp">String</span> getNome() {
@@ -310,37 +323,25 @@ spring.jpa.show-sql=true</code></pre></div>
 <span class="kw">public</span> <span class="kw">interface</span> <span class="tp">FornecedorRepository</span> <span class="kw">extends</span> <span class="tp">JpaRepository</span>&lt;<span class="tp">Fornecedor</span>, <span class="tp">Long</span>&gt; {
 }</code></pre></div>
 <p>Leia <code>JpaRepository&lt;Fornecedor, Long&gt;</code> como “um repository de <strong>Fornecedor</strong>, cujo ID é <strong>Long</strong>”. Os tipos entre <code>&lt; &gt;</code> são parâmetros de tipo, chamados <em>generics</em>. Não são uma comparação matemática. O método <code>save</code> já faz parte desse contrato: não precisamos escrever o INSERT manualmente aqui.</p>
-<h3>Passo 3 · Service: conferir e cadastrar</h3><p>Crie <code>FornecedorService</code> em <code>service</code>. A primeira regra será simples: nome não pode estar ausente nem vazio.</p>
+<h3>Passo 3 · Service: cadastrar</h3><p>Crie <code>FornecedorService</code> em <code>service</code>. Nesta primeira volta, ele é simples de propósito: recebe o fornecedor e pede ao Repository que o salve. As regras de negócio entram nos próximos capítulos.</p>
 <div class="code-block"><div class="code-header"><span class="filename">service/FornecedorService.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar service/FornecedorService.java">Copiar</button></div><pre data-stage="1" data-file="service/FornecedorService.java"><code><span class="kw">package</span> br.com.gestorpro.api.service;
 
 <span class="kw">import</span> br.com.gestorpro.api.model.<span class="tp">Fornecedor</span>;
 <span class="kw">import</span> br.com.gestorpro.api.repository.<span class="tp">FornecedorRepository</span>;
 <span class="kw">import</span> lombok.<span class="tp">RequiredArgsConstructor</span>;
-<span class="kw">import</span> org.springframework.http.<span class="tp">HttpStatus</span>;
 <span class="kw">import</span> org.springframework.stereotype.<span class="tp">Service</span>;
-<span class="kw">import</span> org.springframework.web.server.<span class="tp">ResponseStatusException</span>;
 
 <span class="attr">@Service</span>
-<span class="attr">@RequiredArgsConstructor</span>
+<span class="di-hl"><span class="attr">@RequiredArgsConstructor</span></span>
 <span class="kw">public</span> <span class="kw">class</span> <span class="tp">FornecedorService</span> {
-    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">FornecedorRepository</span> repository;
+    <span class="di-hl"><span class="kw">private</span> <span class="kw">final</span> <span class="tp">FornecedorRepository</span> repository;</span>
 
     <span class="kw">public</span> <span class="tp">Fornecedor</span> cadastrar(<span class="tp">Fornecedor</span> fornecedor) {
-        validarNome(fornecedor);
-        fornecedor.setId(<span class="kw">null</span>);
         <span class="kw">return</span> repository.save(fornecedor);
     }
-
-    <span class="kw">private</span> <span class="kw">void</span> validarNome(<span class="tp">Fornecedor</span> fornecedor) {
-        <span class="kw">if</span> (fornecedor.getNome() == <span class="kw">null</span> || fornecedor.getNome().isBlank()) {
-            <span class="kw">throw</span> <span class="kw">new</span> <span class="tp">ResponseStatusException</span>(<span class="tp">HttpStatus</span>.<span class="tp">BAD_REQUEST</span>, <span class="st">&quot;Informe o nome&quot;</span>);
-        }
-    }
 }</code></pre></div>
-<p><code>@Service</code> permite ao Spring descobrir esse componente. <code>@RequiredArgsConstructor</code> gera o construtor que recebe o <code>repository</code>, declarado <code>final</code>. O Spring entrega essa dependência ao criar o Service. <code>validarNome</code> é um método auxiliar privado: será reutilizado na atualização.</p>
-<p><code>isBlank()</code> reconhece texto vazio ou composto apenas por espaços. O operador <code>||</code> significa “ou” e interrompe a avaliação quando a primeira condição já é verdadeira; assim não chamamos um método em <code>null</code>.</p>
-<div class="concept"><strong>Como interromper um cadastro inválido?</strong><p><code>throw</code> lança uma exceção e interrompe o fluxo normal do método. <code>ResponseStatusException</code> comunica ao Spring uma falha HTTP. <code>BAD_REQUEST</code> representa <strong>400</strong>: o pedido precisa ser corrigido. Essa é uma solução pequena para a aula; não estamos criando um sistema completo de tratamento de erros.</p></div>
-<p><code>setId(null)</code> garante que o cadastro seja novo, mesmo se alguém enviar um ID no JSON. Depois, <code>save</code> salva e devolve a entidade com o ID gerado. O <code>return</code> leva esse objeto de volta para quem chamou o método.</p>
+<p><code>@Service</code> permite ao Spring descobrir esse componente. <code>@RequiredArgsConstructor</code> gera o construtor que recebe o <code>repository</code>, declarado <code>final</code>. O Spring entrega essa dependência ao criar o Service.</p>
+<p><code>save</code> grava o fornecedor e devolve o mesmo objeto, agora com o ID. Não precisamos informar o ID: o <code>@GeneratedValue</code> do Model faz o banco gerar esse número. O <code>return</code> leva o objeto salvo de volta para quem chamou o método.</p>
 <h3>Passo 4 · Controller: abrir a porta HTTP</h3><p>Crie <code>FornecedorController</code> no pacote <code>controller</code>:</p>
 <div class="code-block"><div class="code-header"><span class="filename">controller/FornecedorController.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar controller/FornecedorController.java">Copiar</button></div><pre data-stage="1" data-file="controller/FornecedorController.java"><code><span class="kw">package</span> br.com.gestorpro.api.controller;
 
@@ -356,9 +357,9 @@ spring.jpa.show-sql=true</code></pre></div>
 
 <span class="attr">@RestController</span>
 <span class="attr">@RequestMapping</span>(<span class="st">&quot;/fornecedores&quot;</span>)
-<span class="attr">@RequiredArgsConstructor</span>
+<span class="di-hl"><span class="attr">@RequiredArgsConstructor</span></span>
 <span class="kw">public</span> <span class="kw">class</span> <span class="tp">FornecedorController</span> {
-    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">FornecedorService</span> service;
+    <span class="di-hl"><span class="kw">private</span> <span class="kw">final</span> <span class="tp">FornecedorService</span> service;</span>
 
     <span class="attr">@PostMapping</span>
     <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">CREATED</span>)
@@ -378,19 +379,19 @@ spring.jpa.show-sql=true</code></pre></div>
 <p><strong>Resultado esperado:</strong> status <code>201</code> e JSON com os campos enviados mais um <code>id</code>. Anote esse ID. No console Java, observe o SQL produzido; no psql, confira a tabela real:</p>
 <div class="code-block"><div class="code-header"><span class="filename">psql · o efeito da requisição</span><span class="lang-badge">SQL</span><button type="button" class="copy-code" aria-label="Copiar psql · o efeito da requisição">Copiar</button></div><pre ><code><span class="kw">SELECT</span> id, nome, telefone <span class="kw">FROM</span> fornecedores <span class="kw">ORDER</span> <span class="kw">BY</span> id;</code></pre></div>
 <div class="warning"><strong>Agora a tabela é fornecedores, sem _treino.</strong> Ela nasce a partir da entidade com a configuração de laboratório. Não procure o registro da API na tabela do exercício SQL.</div>
-<div class="exercise solo"><h3>✍️ Recusar sem gravar</h3><p>Envie outro POST com nome composto só por espaços. Compare o status e conte se uma nova linha apareceu no banco.</p><details class="answer"><summary>💡 Uma dica</summary><div>Troque somente o valor de nome. A falha deve ocorrer antes de repository.save.</div></details><div class="try-first">🚨 PARE! Tente primeiro. Compare o resultado, não só o código.</div><details class="answer"><summary>👀 Só depois de tentar — conferir solução</summary><div><div class="code-block"><div class="code-header"><span class="filename">Body · entrada inválida</span><span class="lang-badge">JSON</span><button type="button" class="copy-code" aria-label="Copiar Body · entrada inválida">Copiar</button></div><pre ><code>{ <span class="st">&quot;nome&quot;</span>: <span class="st">&quot;   &quot;</span>, <span class="st">&quot;categoria&quot;</span>: <span class="st">&quot;Papelaria&quot;</span> }</code></pre></div><p>Esperado: <strong>400</strong> e nenhuma nova linha. O texto detalhado da exceção pode não aparecer no JSON de erro padrão; o critério é o status e a ausência de inserção.</p></div></details></div><div class="checkpoint">✓ Você atravessou Model, Repository, Service e Controller. Primeiro endpoint completo!</div></div></section><div class="section-connector"><div class="line"></div></div><section class="step-section" id="listar"><div class="step-header"><div class="step-number sn-green">11</div><div><h2 class="step-title">R · Listar fornecedores</h2><p class="step-sub">A segunda operação reaproveita toda a estrutura.</p></div></div><div class="card">
+<div class="warning"><strong>Não envie <code>id</code> no JSON do POST.</strong> Quem gera o ID é o banco. Se o JSON trouxer o ID de um fornecedor que já existe, o <code>save</code> entende que é uma atualização e <strong>sobrescreve</strong> aquele cadastro. Nos próximos capítulos, vamos proteger a API contra isso.</div>
+<div class="exercise solo"><h3>✍️ Mais um cadastro, outro ID</h3><p>Cadastre a Papelaria Nordeste, categoria Papelaria, telefone (83) 3333-4000. Compare o ID devolvido com o do primeiro cadastro e confira a tabela no psql.</p><details class="answer"><summary>💡 Uma dica</summary><div>Reaproveite a requisição do Insomnia e troque só os valores. Não coloque <code>id</code> no JSON.</div></details><div class="try-first">🚨 PARE! Tente primeiro. Compare o resultado, não só o código.</div><details class="answer"><summary>👀 Só depois de tentar — conferir solução</summary><div><p>Esperado: <strong>201</strong> e um ID diferente do primeiro, gerado pelo banco. No psql, <code>SELECT * FROM fornecedores ORDER BY id;</code> mostra duas linhas.</p></div></details></div><div class="checkpoint">✓ Você atravessou Model, Repository, Service e Controller. Primeiro endpoint completo!</div></div></section><div class="section-connector"><div class="line"></div></div><section class="step-section" id="listar"><div class="step-header"><div class="step-number sn-green">11</div><div><h2 class="step-title">R · Listar fornecedores</h2><p class="step-sub">A segunda operação reaproveita toda a estrutura.</p></div></div><div class="card">
 <div class="endpoint"><span>GET</span><code>http://localhost:8080/fornecedores</code><b>200 OK</b></div>
 <p><code>findAll()</code> busca todos os registros. O resultado é uma <code>List&lt;Fornecedor&gt;</code>, como a lista do Cap 11, mas agora preenchida com dados vindos do banco. Não precisamos criar uma lista estática no Service.</p>
 <p>O novo método <code>listar</code> no Service devolve o resultado do repository. No Controller, <code>@GetMapping</code> atende GET no caminho base, sem precisar de um corpo JSON.</p>
+<p><code>@ResponseStatus(HttpStatus.OK)</code> marca o sucesso como <strong>200</strong>. O Spring já responde 200 quando não dizemos nada, mas vamos deixar o status escrito em todos os endpoints, como fizemos com o 201 do POST: quem lê o código vê na hora o que a API responde.</p>
 <p><strong>Como editar:</strong> substitua o conteúdo dos dois arquivos abaixo. Eles incluem os métodos anteriores e os imports novos. Model e Repository continuam iguais.</p><div class="code-block"><div class="code-header"><span class="filename">service/FornecedorService.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar service/FornecedorService.java">Copiar</button></div><pre data-stage="2" data-file="service/FornecedorService.java"><code><span class="kw">package</span> br.com.gestorpro.api.service;
 
 <span class="kw">import</span> java.util.<span class="tp">List</span>;
 <span class="kw">import</span> br.com.gestorpro.api.model.<span class="tp">Fornecedor</span>;
 <span class="kw">import</span> br.com.gestorpro.api.repository.<span class="tp">FornecedorRepository</span>;
 <span class="kw">import</span> lombok.<span class="tp">RequiredArgsConstructor</span>;
-<span class="kw">import</span> org.springframework.http.<span class="tp">HttpStatus</span>;
 <span class="kw">import</span> org.springframework.stereotype.<span class="tp">Service</span>;
-<span class="kw">import</span> org.springframework.web.server.<span class="tp">ResponseStatusException</span>;
 
 <span class="attr">@Service</span>
 <span class="attr">@RequiredArgsConstructor</span>
@@ -398,15 +399,7 @@ spring.jpa.show-sql=true</code></pre></div>
     <span class="kw">private</span> <span class="kw">final</span> <span class="tp">FornecedorRepository</span> repository;
 
     <span class="kw">public</span> <span class="tp">Fornecedor</span> cadastrar(<span class="tp">Fornecedor</span> fornecedor) {
-        validarNome(fornecedor);
-        fornecedor.setId(<span class="kw">null</span>);
         <span class="kw">return</span> repository.save(fornecedor);
-    }
-
-    <span class="kw">private</span> <span class="kw">void</span> validarNome(<span class="tp">Fornecedor</span> fornecedor) {
-        <span class="kw">if</span> (fornecedor.getNome() == <span class="kw">null</span> || fornecedor.getNome().isBlank()) {
-            <span class="kw">throw</span> <span class="kw">new</span> <span class="tp">ResponseStatusException</span>(<span class="tp">HttpStatus</span>.<span class="tp">BAD_REQUEST</span>, <span class="st">&quot;Informe o nome&quot;</span>);
-        }
     }
 
     <span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">Fornecedor</span>&gt; listar() {
@@ -415,11 +408,11 @@ spring.jpa.show-sql=true</code></pre></div>
 }</code></pre></div><div class="code-block"><div class="code-header"><span class="filename">controller/FornecedorController.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar controller/FornecedorController.java">Copiar</button></div><pre data-stage="2" data-file="controller/FornecedorController.java"><code><span class="kw">package</span> br.com.gestorpro.api.controller;
 
 <span class="kw">import</span> java.util.<span class="tp">List</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">GetMapping</span>;
 <span class="kw">import</span> br.com.gestorpro.api.model.<span class="tp">Fornecedor</span>;
 <span class="kw">import</span> br.com.gestorpro.api.service.<span class="tp">FornecedorService</span>;
 <span class="kw">import</span> lombok.<span class="tp">RequiredArgsConstructor</span>;
 <span class="kw">import</span> org.springframework.http.<span class="tp">HttpStatus</span>;
+<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">GetMapping</span>;
 <span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">PostMapping</span>;
 <span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">RequestBody</span>;
 <span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">RequestMapping</span>;
@@ -439,6 +432,7 @@ spring.jpa.show-sql=true</code></pre></div>
     }
 
     <span class="attr">@GetMapping</span>
+    <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">OK</span>)
     <span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">Fornecedor</span>&gt; listar() {
         <span class="kw">return</span> service.listar();
     }
@@ -446,21 +440,19 @@ spring.jpa.show-sql=true</code></pre></div>
 <p>Reinicie a API e crie no Insomnia uma requisição GET para a URL acima. Você também pode abrir essa URL no navegador. Deve receber <strong>200</strong> e uma lista JSON com colchetes <code>[...]</code>.</p>
 <div class="tip"><strong>Lista vazia é sucesso.</strong> Quando não há fornecedores, a resposta é <code>[]</code> com 200. A consulta funcionou e encontrou zero registros; não é um erro 404.</div>
 <div class="exercise solo"><h3>✍️ O cadastro sobrevive ao Java?</h3><p>Com pelo menos um fornecedor cadastrado, pare a API na IDE, execute-a novamente e repita o GET.</p><details class="answer"><summary>💡 Uma dica</summary><div>Reinicie somente a aplicação Java. O PostgreSQL e seu volume continuam com os registros.</div></details><div class="try-first">🚨 PARE! Tente primeiro. Compare o resultado, não só o código.</div><details class="answer"><summary>👀 Só depois de tentar — conferir solução</summary><div><p>O mesmo registro e o mesmo ID devem reaparecer. A API consulta o PostgreSQL; ela não depende da lista em memória de uma execução anterior.</p></div></details></div><div class="checkpoint">✓ Você tem POST e GET. Cadastrou, reiniciou o Java e consultou o mesmo registro.</div></div></section><div class="section-connector"><div class="line"></div></div><section class="step-section" id="buscar"><div class="step-header"><div class="step-number sn-green">12</div><div><h2 class="step-title">R · Buscar pelo ID</h2><p class="step-sub">Uma lista vazia e um cadastro inexistente são situações diferentes.</p></div></div><div class="card">
-<div class="endpoint"><span>GET</span><code>http://localhost:8080/fornecedores/1</code><b>200 ou 404</b></div>
+<div class="endpoint"><span>GET</span><code>http://localhost:8080/fornecedores/1</code><b>200 OK</b></div>
 <p>Use o ID retornado pelo seu POST no lugar de <code>1</code>. <code>/{id}</code> é uma parte variável da rota; <code>@PathVariable</code> leva o valor da URL ao parâmetro Java <code>Long id</code>.</p>
 <h3>Optional: pode haver um resultado ou não</h3>
-<p><code>findById(id)</code> não promete encontrar o cadastro. Ele devolve um <code>Optional&lt;Fornecedor&gt;</code>: um resultado que pode conter um fornecedor ou estar vazio. Primeiro verificamos <code>isEmpty()</code>. Só depois de confirmar que há um valor usamos <code>get()</code>.</p>
-<p>Se não existir, lançamos a exceção com <code>NOT_FOUND</code>, status <strong>404</strong>. O método para nesse ponto. Não precisamos de lambda nem de uma classe de exceção própria.</p>
+<p><code>findById(id)</code> não promete encontrar o cadastro. Ele devolve um <code>Optional&lt;Fornecedor&gt;</code>: uma “caixinha” que pode conter um fornecedor ou estar vazia. Nesta primeira volta, o Service e o Controller devolvem essa caixinha do jeito que ela vem. O Spring abre a caixinha e transforma o fornecedor em JSON.</p>
+<div class="tip"><strong>E se o ID não existir?</strong> Por enquanto, a resposta é <strong>200</strong> com o corpo <code>null</code>: a caixinha veio vazia. O mais correto seria responder <strong>404</strong>. Vamos fazer isso nos próximos capítulos, junto com o tratamento de erros.</div>
 <p><strong>Como editar:</strong> substitua o conteúdo dos dois arquivos abaixo. Eles incluem os métodos anteriores e os imports novos. Model e Repository continuam iguais.</p><div class="code-block"><div class="code-header"><span class="filename">service/FornecedorService.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar service/FornecedorService.java">Copiar</button></div><pre data-stage="3" data-file="service/FornecedorService.java"><code><span class="kw">package</span> br.com.gestorpro.api.service;
 
-<span class="kw">import</span> java.util.<span class="tp">Optional</span>;
 <span class="kw">import</span> java.util.<span class="tp">List</span>;
+<span class="kw">import</span> java.util.<span class="tp">Optional</span>;
 <span class="kw">import</span> br.com.gestorpro.api.model.<span class="tp">Fornecedor</span>;
 <span class="kw">import</span> br.com.gestorpro.api.repository.<span class="tp">FornecedorRepository</span>;
 <span class="kw">import</span> lombok.<span class="tp">RequiredArgsConstructor</span>;
-<span class="kw">import</span> org.springframework.http.<span class="tp">HttpStatus</span>;
 <span class="kw">import</span> org.springframework.stereotype.<span class="tp">Service</span>;
-<span class="kw">import</span> org.springframework.web.server.<span class="tp">ResponseStatusException</span>;
 
 <span class="attr">@Service</span>
 <span class="attr">@RequiredArgsConstructor</span>
@@ -468,37 +460,26 @@ spring.jpa.show-sql=true</code></pre></div>
     <span class="kw">private</span> <span class="kw">final</span> <span class="tp">FornecedorRepository</span> repository;
 
     <span class="kw">public</span> <span class="tp">Fornecedor</span> cadastrar(<span class="tp">Fornecedor</span> fornecedor) {
-        validarNome(fornecedor);
-        fornecedor.setId(<span class="kw">null</span>);
         <span class="kw">return</span> repository.save(fornecedor);
-    }
-
-    <span class="kw">private</span> <span class="kw">void</span> validarNome(<span class="tp">Fornecedor</span> fornecedor) {
-        <span class="kw">if</span> (fornecedor.getNome() == <span class="kw">null</span> || fornecedor.getNome().isBlank()) {
-            <span class="kw">throw</span> <span class="kw">new</span> <span class="tp">ResponseStatusException</span>(<span class="tp">HttpStatus</span>.<span class="tp">BAD_REQUEST</span>, <span class="st">&quot;Informe o nome&quot;</span>);
-        }
     }
 
     <span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">Fornecedor</span>&gt; listar() {
         <span class="kw">return</span> repository.findAll();
     }
 
-    <span class="kw">public</span> <span class="tp">Fornecedor</span> buscar(<span class="tp">Long</span> id) {
-        <span class="tp">Optional</span>&lt;<span class="tp">Fornecedor</span>&gt; resultado = repository.findById(id);
-        <span class="kw">if</span> (resultado.isEmpty()) {
-            <span class="kw">throw</span> <span class="kw">new</span> <span class="tp">ResponseStatusException</span>(<span class="tp">HttpStatus</span>.<span class="tp">NOT_FOUND</span>, <span class="st">&quot;Fornecedor não encontrado&quot;</span>);
-        }
-        <span class="kw">return</span> resultado.get();
+    <span class="kw">public</span> <span class="tp">Optional</span>&lt;<span class="tp">Fornecedor</span>&gt; buscar(<span class="tp">Long</span> id) {
+        <span class="kw">return</span> repository.findById(id);
     }
 }</code></pre></div><div class="code-block"><div class="code-header"><span class="filename">controller/FornecedorController.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar controller/FornecedorController.java">Copiar</button></div><pre data-stage="3" data-file="controller/FornecedorController.java"><code><span class="kw">package</span> br.com.gestorpro.api.controller;
 
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">PathVariable</span>;
 <span class="kw">import</span> java.util.<span class="tp">List</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">GetMapping</span>;
+<span class="kw">import</span> java.util.<span class="tp">Optional</span>;
 <span class="kw">import</span> br.com.gestorpro.api.model.<span class="tp">Fornecedor</span>;
 <span class="kw">import</span> br.com.gestorpro.api.service.<span class="tp">FornecedorService</span>;
 <span class="kw">import</span> lombok.<span class="tp">RequiredArgsConstructor</span>;
 <span class="kw">import</span> org.springframework.http.<span class="tp">HttpStatus</span>;
+<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">GetMapping</span>;
+<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">PathVariable</span>;
 <span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">PostMapping</span>;
 <span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">RequestBody</span>;
 <span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">RequestMapping</span>;
@@ -518,30 +499,30 @@ spring.jpa.show-sql=true</code></pre></div>
     }
 
     <span class="attr">@GetMapping</span>
+    <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">OK</span>)
     <span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">Fornecedor</span>&gt; listar() {
         <span class="kw">return</span> service.listar();
     }
 
     <span class="attr">@GetMapping</span>(<span class="st">&quot;/{id}&quot;</span>)
-    <span class="kw">public</span> <span class="tp">Fornecedor</span> buscar(<span class="attr">@PathVariable</span> <span class="tp">Long</span> id) {
+    <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">OK</span>)
+    <span class="kw">public</span> <span class="tp">Optional</span>&lt;<span class="tp">Fornecedor</span>&gt; buscar(<span class="attr">@PathVariable</span> <span class="tp">Long</span> id) {
         <span class="kw">return</span> service.buscar(id);
     }
 }</code></pre></div>
-<p>Reinicie a API. Faça GET do ID cadastrado: <strong>200</strong> e um objeto JSON, sem os colchetes da lista. Depois faça GET de um ID que você confirmou não existir: <strong>404</strong>.</p>
-<div class="decision" data-explanation="Listar uma coleção vazia é válido. O 404 que ensinamos é para procurar um registro específico que não existe."><h4>🧠 GET /fornecedores devolveu []. Qual foi o resultado?</h4><div class="choices"><button type="button" data-choice="true" aria-pressed="false">200: a consulta funcionou e não há registros.</button><button type="button" data-choice="false" aria-pressed="false">404: toda ausência de dados usa esse status.</button></div><p class="feedback" role="status" aria-live="polite">Escolha uma resposta. Você pode tentar novamente.</p></div><div class="exercise solo"><h3>✍️ A rota é um endereço, não um corpo</h3><p>Busque um fornecedor pelo ID no Insomnia sem enviar JSON. Depois use um ID inexistente.</p><details class="answer"><summary>💡 Uma dica</summary><div>Troque o último segmento da URL. O GET por ID não lê @RequestBody.</div></details><div class="try-first">🚨 PARE! Tente primeiro. Compare o resultado, não só o código.</div><details class="answer"><summary>👀 Só depois de tentar — conferir solução</summary><div><p>O ID conhecido retorna 200 e um objeto. O ID ausente retorna 404. Se aparecer 400 com um ID como <code>abc</code>, a entrada nem conseguiu ser convertida para Long.</p></div></details></div><div class="checkpoint">✓ Você diferenciou lista vazia, registro encontrado e registro ausente.</div></div></section><div class="section-connector"><div class="line"></div></div><section class="step-section" id="atualizar"><div class="step-header"><div class="step-number sn-green">13</div><div><h2 class="step-title">U · Atualizar o cadastro existente</h2><p class="step-sub">Muda o telefone. O ID continua o mesmo.</p></div></div><div class="card">
-<div class="endpoint"><span>PUT</span><code>http://localhost:8080/fornecedores/1</code><b>200 ou 404</b></div>
-<p>Nosso PUT recebe todos os campos editáveis. A primeira ação é buscar o registro da URL. Se não existir, a operação para com 404. Se existir, conferimos o nome, copiamos os campos para esse objeto e o salvamos.</p>
-<p><strong>Por que não salvar o JSON diretamente?</strong> Porque atualizar exige localizar o cadastro correto. O ID da URL define qual registro será alterado; um ID enviado no corpo não troca essa identidade.</p>
+<p>Reinicie a API. Faça GET do ID cadastrado: <strong>200</strong> e um objeto JSON, sem os colchetes da lista. Depois faça GET de um ID que não existe: por enquanto, você verá <strong>200</strong> e <code>null</code>.</p>
+<div class="decision" data-explanation="Listar uma coleção vazia é válido. O 404 serve para quando se procura um registro específico que não existe, e vamos implementá-lo nos próximos capítulos."><h4>🧠 GET /fornecedores devolveu []. Qual foi o resultado?</h4><div class="choices"><button type="button" data-choice="true" aria-pressed="false">200: a consulta funcionou e não há registros.</button><button type="button" data-choice="false" aria-pressed="false">404: toda ausência de dados usa esse status.</button></div><p class="feedback" role="status" aria-live="polite">Escolha uma resposta. Você pode tentar novamente.</p></div><div class="exercise solo"><h3>✍️ A rota é um endereço, não um corpo</h3><p>Busque um fornecedor pelo ID no Insomnia sem enviar JSON. Depois use um ID inexistente.</p><details class="answer"><summary>💡 Uma dica</summary><div>Troque o último segmento da URL. O GET por ID não lê @RequestBody.</div></details><div class="try-first">🚨 PARE! Tente primeiro. Compare o resultado, não só o código.</div><details class="answer"><summary>👀 Só depois de tentar — conferir solução</summary><div><p>O ID conhecido retorna 200 e um objeto JSON. O ID ausente retorna, por enquanto, 200 e <code>null</code>. Em nenhum dos dois casos precisamos de corpo na requisição: o ID viaja na URL.</p></div></details></div><div class="checkpoint">✓ Você buscou um fornecedor pelo ID e sabe o que acontece, por enquanto, com um ID que não existe.</div></div></section><div class="section-connector"><div class="line"></div></div><section class="step-section" id="atualizar"><div class="step-header"><div class="step-number sn-green">13</div><div><h2 class="step-title">U · Atualizar o cadastro existente</h2><p class="step-sub">Muda o telefone. O ID continua o mesmo.</p></div></div><div class="card">
+<div class="endpoint"><span>PUT</span><code>http://localhost:8080/fornecedores/1</code><b>200 OK</b></div>
+<p>Nosso PUT recebe todos os campos editáveis no corpo e o ID na URL. O Service coloca esse ID no objeto com <code>setId(id)</code> e chama <code>save</code>. Como já existe um fornecedor com esse ID, o <code>save</code> <strong>atualiza</strong> a linha em vez de criar outra.</p>
+<p><strong>Por que <code>setId</code> aqui, se no POST não precisou?</strong> No POST, o banco gera um ID novo. No PUT, o ID já existe e vem da URL: é ele que diz qual linha vai mudar.</p>
 <p><strong>Como editar:</strong> substitua o conteúdo dos dois arquivos abaixo. Eles incluem os métodos anteriores e os imports novos. Model e Repository continuam iguais.</p><div class="code-block"><div class="code-header"><span class="filename">service/FornecedorService.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar service/FornecedorService.java">Copiar</button></div><pre data-stage="4" data-file="service/FornecedorService.java"><code><span class="kw">package</span> br.com.gestorpro.api.service;
 
-<span class="kw">import</span> java.util.<span class="tp">Optional</span>;
 <span class="kw">import</span> java.util.<span class="tp">List</span>;
+<span class="kw">import</span> java.util.<span class="tp">Optional</span>;
 <span class="kw">import</span> br.com.gestorpro.api.model.<span class="tp">Fornecedor</span>;
 <span class="kw">import</span> br.com.gestorpro.api.repository.<span class="tp">FornecedorRepository</span>;
 <span class="kw">import</span> lombok.<span class="tp">RequiredArgsConstructor</span>;
-<span class="kw">import</span> org.springframework.http.<span class="tp">HttpStatus</span>;
 <span class="kw">import</span> org.springframework.stereotype.<span class="tp">Service</span>;
-<span class="kw">import</span> org.springframework.web.server.<span class="tp">ResponseStatusException</span>;
 
 <span class="attr">@Service</span>
 <span class="attr">@RequiredArgsConstructor</span>
@@ -549,49 +530,33 @@ spring.jpa.show-sql=true</code></pre></div>
     <span class="kw">private</span> <span class="kw">final</span> <span class="tp">FornecedorRepository</span> repository;
 
     <span class="kw">public</span> <span class="tp">Fornecedor</span> cadastrar(<span class="tp">Fornecedor</span> fornecedor) {
-        validarNome(fornecedor);
-        fornecedor.setId(<span class="kw">null</span>);
         <span class="kw">return</span> repository.save(fornecedor);
-    }
-
-    <span class="kw">private</span> <span class="kw">void</span> validarNome(<span class="tp">Fornecedor</span> fornecedor) {
-        <span class="kw">if</span> (fornecedor.getNome() == <span class="kw">null</span> || fornecedor.getNome().isBlank()) {
-            <span class="kw">throw</span> <span class="kw">new</span> <span class="tp">ResponseStatusException</span>(<span class="tp">HttpStatus</span>.<span class="tp">BAD_REQUEST</span>, <span class="st">&quot;Informe o nome&quot;</span>);
-        }
     }
 
     <span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">Fornecedor</span>&gt; listar() {
         <span class="kw">return</span> repository.findAll();
     }
 
-    <span class="kw">public</span> <span class="tp">Fornecedor</span> buscar(<span class="tp">Long</span> id) {
-        <span class="tp">Optional</span>&lt;<span class="tp">Fornecedor</span>&gt; resultado = repository.findById(id);
-        <span class="kw">if</span> (resultado.isEmpty()) {
-            <span class="kw">throw</span> <span class="kw">new</span> <span class="tp">ResponseStatusException</span>(<span class="tp">HttpStatus</span>.<span class="tp">NOT_FOUND</span>, <span class="st">&quot;Fornecedor não encontrado&quot;</span>);
-        }
-        <span class="kw">return</span> resultado.get();
+    <span class="kw">public</span> <span class="tp">Optional</span>&lt;<span class="tp">Fornecedor</span>&gt; buscar(<span class="tp">Long</span> id) {
+        <span class="kw">return</span> repository.findById(id);
     }
 
-    <span class="kw">public</span> <span class="tp">Fornecedor</span> atualizar(<span class="tp">Long</span> id, <span class="tp">Fornecedor</span> dados) {
-        <span class="tp">Fornecedor</span> existente = buscar(id);
-        validarNome(dados);
-        existente.setNome(dados.getNome());
-        existente.setCnpj(dados.getCnpj());
-        existente.setCategoria(dados.getCategoria());
-        existente.setTelefone(dados.getTelefone());
-        <span class="kw">return</span> repository.save(existente);
+    <span class="kw">public</span> <span class="tp">Fornecedor</span> atualizar(<span class="tp">Long</span> id, <span class="tp">Fornecedor</span> fornecedor) {
+        fornecedor.setId(id);
+        <span class="kw">return</span> repository.save(fornecedor);
     }
 }</code></pre></div><div class="code-block"><div class="code-header"><span class="filename">controller/FornecedorController.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar controller/FornecedorController.java">Copiar</button></div><pre data-stage="4" data-file="controller/FornecedorController.java"><code><span class="kw">package</span> br.com.gestorpro.api.controller;
 
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">PutMapping</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">PathVariable</span>;
 <span class="kw">import</span> java.util.<span class="tp">List</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">GetMapping</span>;
+<span class="kw">import</span> java.util.<span class="tp">Optional</span>;
 <span class="kw">import</span> br.com.gestorpro.api.model.<span class="tp">Fornecedor</span>;
 <span class="kw">import</span> br.com.gestorpro.api.service.<span class="tp">FornecedorService</span>;
 <span class="kw">import</span> lombok.<span class="tp">RequiredArgsConstructor</span>;
 <span class="kw">import</span> org.springframework.http.<span class="tp">HttpStatus</span>;
+<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">GetMapping</span>;
+<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">PathVariable</span>;
 <span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">PostMapping</span>;
+<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">PutMapping</span>;
 <span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">RequestBody</span>;
 <span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">RequestMapping</span>;
 <span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">ResponseStatus</span>;
@@ -610,18 +575,21 @@ spring.jpa.show-sql=true</code></pre></div>
     }
 
     <span class="attr">@GetMapping</span>
+    <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">OK</span>)
     <span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">Fornecedor</span>&gt; listar() {
         <span class="kw">return</span> service.listar();
     }
 
     <span class="attr">@GetMapping</span>(<span class="st">&quot;/{id}&quot;</span>)
-    <span class="kw">public</span> <span class="tp">Fornecedor</span> buscar(<span class="attr">@PathVariable</span> <span class="tp">Long</span> id) {
+    <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">OK</span>)
+    <span class="kw">public</span> <span class="tp">Optional</span>&lt;<span class="tp">Fornecedor</span>&gt; buscar(<span class="attr">@PathVariable</span> <span class="tp">Long</span> id) {
         <span class="kw">return</span> service.buscar(id);
     }
 
     <span class="attr">@PutMapping</span>(<span class="st">&quot;/{id}&quot;</span>)
-    <span class="kw">public</span> <span class="tp">Fornecedor</span> atualizar(<span class="attr">@PathVariable</span> <span class="tp">Long</span> id, <span class="attr">@RequestBody</span> <span class="tp">Fornecedor</span> dados) {
-        <span class="kw">return</span> service.atualizar(id, dados);
+    <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">OK</span>)
+    <span class="kw">public</span> <span class="tp">Fornecedor</span> atualizar(<span class="attr">@PathVariable</span> <span class="tp">Long</span> id, <span class="attr">@RequestBody</span> <span class="tp">Fornecedor</span> fornecedor) {
+        <span class="kw">return</span> service.atualizar(id, fornecedor);
     }
 }</code></pre></div><div class="code-block"><div class="code-header"><span class="filename">Body · envie todos os campos editáveis</span><span class="lang-badge">JSON</span><button type="button" class="copy-code" aria-label="Copiar Body · envie todos os campos editáveis">Copiar</button></div><pre data-payload="update"><code>{
   <span class="st">&quot;nome&quot;</span>: <span class="st">&quot;TechDistrib&quot;</span>,
@@ -632,19 +600,18 @@ spring.jpa.show-sql=true</code></pre></div>
 <p>Reinicie a API, envie o PUT usando o ID anotado e depois faça GET desse ID. Espere <strong>200</strong>, o mesmo ID e o telefone novo. Confira também no psql:</p>
 <div class="code-block"><div class="code-header"><span class="filename">psql · substitua 1 pelo seu ID</span><span class="lang-badge">SQL</span><button type="button" class="copy-code" aria-label="Copiar psql · substitua 1 pelo seu ID">Copiar</button></div><pre ><code><span class="kw">SELECT</span> id, nome, telefone <span class="kw">FROM</span> fornecedores <span class="kw">WHERE</span> id = <span class="num">1</span>;</code></pre></div>
 <div class="warning"><strong>PUT deste capítulo não é atualização parcial.</strong> Envie os quatro campos editáveis. Omitir um campo opcional o transforma em null quando copiamos os dados. Uma atualização parcial teria outro contrato, que não precisamos implementar agora.</div>
-<div class="exercise solo"><h3>✍️ Atualizar sem criar outro</h3><p>Envie um PUT com nome vazio ao ID existente. Depois envie um PUT válido para um ID inexistente.</p><details class="answer"><summary>💡 Uma dica</summary><div>No primeiro caso, a regra barra o salvamento. No segundo, buscar(id) interrompe a operação antes da cópia.</div></details><div class="try-first">🚨 PARE! Tente primeiro. Compare o resultado, não só o código.</div><details class="answer"><summary>👀 Só depois de tentar — conferir solução</summary><div><p>Nome vazio: <strong>400</strong> e dados anteriores preservados. ID inexistente: <strong>404</strong> e nenhuma nova linha criada. Compare GET e SELECT antes e depois.</p></div></details></div><div class="checkpoint">✓ O telefone mudou na mesma linha. A quantidade de registros não aumentou.</div></div></section><div class="section-connector"><div class="line"></div></div><section class="step-section" id="excluir"><div class="step-header"><div class="step-number sn-green">14</div><div><h2 class="step-title">D · Excluir com um alvo definido</h2><p class="step-sub">O fim do CRUD também precisa de uma verificação.</p></div></div><div class="card">
+<div class="tip"><strong>Use um ID que existe.</strong> Com um ID que não está no banco, a API responde, por enquanto, um erro <strong>500</strong>. O tratamento de erros vem nos próximos capítulos.</div>
+<div class="exercise solo"><h3>✍️ Atualizar sem criar outro</h3><p>Conte as linhas da tabela, envie um PUT alterando a categoria do fornecedor e conte de novo.</p><details class="answer"><summary>💡 Uma dica</summary><div>Use <code>SELECT COUNT(*) FROM fornecedores;</code> no psql antes e depois. No PUT, mande os quatro campos editáveis.</div></details><div class="try-first">🚨 PARE! Tente primeiro. Compare o resultado, não só o código.</div><details class="answer"><summary>👀 Só depois de tentar — conferir solução</summary><div><p>O PUT responde <strong>200</strong> com o mesmo ID e a categoria nova. A contagem não muda: o <code>save</code> alterou a linha existente, não criou outra.</p></div></details></div><div class="checkpoint">✓ O telefone mudou na mesma linha. A quantidade de registros não aumentou.</div></div></section><div class="section-connector"><div class="line"></div></div><section class="step-section" id="excluir"><div class="step-header"><div class="step-number sn-green">14</div><div><h2 class="step-title">D · Excluir com um alvo definido</h2><p class="step-sub">O último verbo do CRUD.</p></div></div><div class="card">
 <div class="endpoint"><span>DELETE</span><code>http://localhost:8080/fornecedores/1</code><b>204 No Content</b></div>
-<p>O Service busca o registro e pede a remoção ao Repository. Em caso de sucesso, o Controller devolve <strong>204</strong>: a operação foi concluída e não há corpo de resposta. Por isso os métodos usam <code>void</code>.</p>
+<p>O Service pede ao Repository que remova o fornecedor pelo ID, com <code>deleteById</code>. Em caso de sucesso, o Controller devolve <strong>204</strong>: a operação foi concluída e não há corpo de resposta. Por isso os métodos usam <code>void</code>.</p>
 <p><strong>Como editar:</strong> substitua o conteúdo dos dois arquivos abaixo. Eles incluem os métodos anteriores e os imports novos. Model e Repository continuam iguais.</p><div class="code-block"><div class="code-header"><span class="filename">service/FornecedorService.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar service/FornecedorService.java">Copiar</button></div><pre data-stage="5" data-file="service/FornecedorService.java"><code><span class="kw">package</span> br.com.gestorpro.api.service;
 
-<span class="kw">import</span> java.util.<span class="tp">Optional</span>;
 <span class="kw">import</span> java.util.<span class="tp">List</span>;
+<span class="kw">import</span> java.util.<span class="tp">Optional</span>;
 <span class="kw">import</span> br.com.gestorpro.api.model.<span class="tp">Fornecedor</span>;
 <span class="kw">import</span> br.com.gestorpro.api.repository.<span class="tp">FornecedorRepository</span>;
 <span class="kw">import</span> lombok.<span class="tp">RequiredArgsConstructor</span>;
-<span class="kw">import</span> org.springframework.http.<span class="tp">HttpStatus</span>;
 <span class="kw">import</span> org.springframework.stereotype.<span class="tp">Service</span>;
-<span class="kw">import</span> org.springframework.web.server.<span class="tp">ResponseStatusException</span>;
 
 <span class="attr">@Service</span>
 <span class="attr">@RequiredArgsConstructor</span>
@@ -652,55 +619,38 @@ spring.jpa.show-sql=true</code></pre></div>
     <span class="kw">private</span> <span class="kw">final</span> <span class="tp">FornecedorRepository</span> repository;
 
     <span class="kw">public</span> <span class="tp">Fornecedor</span> cadastrar(<span class="tp">Fornecedor</span> fornecedor) {
-        validarNome(fornecedor);
-        fornecedor.setId(<span class="kw">null</span>);
         <span class="kw">return</span> repository.save(fornecedor);
-    }
-
-    <span class="kw">private</span> <span class="kw">void</span> validarNome(<span class="tp">Fornecedor</span> fornecedor) {
-        <span class="kw">if</span> (fornecedor.getNome() == <span class="kw">null</span> || fornecedor.getNome().isBlank()) {
-            <span class="kw">throw</span> <span class="kw">new</span> <span class="tp">ResponseStatusException</span>(<span class="tp">HttpStatus</span>.<span class="tp">BAD_REQUEST</span>, <span class="st">&quot;Informe o nome&quot;</span>);
-        }
     }
 
     <span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">Fornecedor</span>&gt; listar() {
         <span class="kw">return</span> repository.findAll();
     }
 
-    <span class="kw">public</span> <span class="tp">Fornecedor</span> buscar(<span class="tp">Long</span> id) {
-        <span class="tp">Optional</span>&lt;<span class="tp">Fornecedor</span>&gt; resultado = repository.findById(id);
-        <span class="kw">if</span> (resultado.isEmpty()) {
-            <span class="kw">throw</span> <span class="kw">new</span> <span class="tp">ResponseStatusException</span>(<span class="tp">HttpStatus</span>.<span class="tp">NOT_FOUND</span>, <span class="st">&quot;Fornecedor não encontrado&quot;</span>);
-        }
-        <span class="kw">return</span> resultado.get();
+    <span class="kw">public</span> <span class="tp">Optional</span>&lt;<span class="tp">Fornecedor</span>&gt; buscar(<span class="tp">Long</span> id) {
+        <span class="kw">return</span> repository.findById(id);
     }
 
-    <span class="kw">public</span> <span class="tp">Fornecedor</span> atualizar(<span class="tp">Long</span> id, <span class="tp">Fornecedor</span> dados) {
-        <span class="tp">Fornecedor</span> existente = buscar(id);
-        validarNome(dados);
-        existente.setNome(dados.getNome());
-        existente.setCnpj(dados.getCnpj());
-        existente.setCategoria(dados.getCategoria());
-        existente.setTelefone(dados.getTelefone());
-        <span class="kw">return</span> repository.save(existente);
+    <span class="kw">public</span> <span class="tp">Fornecedor</span> atualizar(<span class="tp">Long</span> id, <span class="tp">Fornecedor</span> fornecedor) {
+        fornecedor.setId(id);
+        <span class="kw">return</span> repository.save(fornecedor);
     }
 
     <span class="kw">public</span> <span class="kw">void</span> excluir(<span class="tp">Long</span> id) {
-        <span class="tp">Fornecedor</span> existente = buscar(id);
-        repository.delete(existente);
+        repository.deleteById(id);
     }
 }</code></pre></div><div class="code-block"><div class="code-header"><span class="filename">controller/FornecedorController.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar controller/FornecedorController.java">Copiar</button></div><pre data-stage="5" data-file="controller/FornecedorController.java"><code><span class="kw">package</span> br.com.gestorpro.api.controller;
 
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">DeleteMapping</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">PutMapping</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">PathVariable</span>;
 <span class="kw">import</span> java.util.<span class="tp">List</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">GetMapping</span>;
+<span class="kw">import</span> java.util.<span class="tp">Optional</span>;
 <span class="kw">import</span> br.com.gestorpro.api.model.<span class="tp">Fornecedor</span>;
 <span class="kw">import</span> br.com.gestorpro.api.service.<span class="tp">FornecedorService</span>;
 <span class="kw">import</span> lombok.<span class="tp">RequiredArgsConstructor</span>;
 <span class="kw">import</span> org.springframework.http.<span class="tp">HttpStatus</span>;
+<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">DeleteMapping</span>;
+<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">GetMapping</span>;
+<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">PathVariable</span>;
 <span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">PostMapping</span>;
+<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">PutMapping</span>;
 <span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">RequestBody</span>;
 <span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">RequestMapping</span>;
 <span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">ResponseStatus</span>;
@@ -719,18 +669,21 @@ spring.jpa.show-sql=true</code></pre></div>
     }
 
     <span class="attr">@GetMapping</span>
+    <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">OK</span>)
     <span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">Fornecedor</span>&gt; listar() {
         <span class="kw">return</span> service.listar();
     }
 
     <span class="attr">@GetMapping</span>(<span class="st">&quot;/{id}&quot;</span>)
-    <span class="kw">public</span> <span class="tp">Fornecedor</span> buscar(<span class="attr">@PathVariable</span> <span class="tp">Long</span> id) {
+    <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">OK</span>)
+    <span class="kw">public</span> <span class="tp">Optional</span>&lt;<span class="tp">Fornecedor</span>&gt; buscar(<span class="attr">@PathVariable</span> <span class="tp">Long</span> id) {
         <span class="kw">return</span> service.buscar(id);
     }
 
     <span class="attr">@PutMapping</span>(<span class="st">&quot;/{id}&quot;</span>)
-    <span class="kw">public</span> <span class="tp">Fornecedor</span> atualizar(<span class="attr">@PathVariable</span> <span class="tp">Long</span> id, <span class="attr">@RequestBody</span> <span class="tp">Fornecedor</span> dados) {
-        <span class="kw">return</span> service.atualizar(id, dados);
+    <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">OK</span>)
+    <span class="kw">public</span> <span class="tp">Fornecedor</span> atualizar(<span class="attr">@PathVariable</span> <span class="tp">Long</span> id, <span class="attr">@RequestBody</span> <span class="tp">Fornecedor</span> fornecedor) {
+        <span class="kw">return</span> service.atualizar(id, fornecedor);
     }
 
     <span class="attr">@DeleteMapping</span>(<span class="st">&quot;/{id}&quot;</span>)
@@ -739,25 +692,25 @@ spring.jpa.show-sql=true</code></pre></div>
         service.excluir(id);
     }
 }</code></pre></div>
-<p>Reinicie a API e envie DELETE para o ID que você quer remover, sem corpo JSON. Depois faça GET do mesmo ID: agora deve retornar <strong>404</strong>. Liste todos para confirmar que os outros fornecedores continuam lá.</p>
-<div class="tip"><strong>DELETE repetido:</strong> neste contrato, a primeira exclusão retorna 204 e a segunda, 404, porque procuramos um registro que já não existe. O estado final continua sendo “registro ausente”.</div>
-<div class="exercise solo"><h3>✍️ Fechar o ciclo sem apagar o colega</h3><p>Cadastre dois fornecedores de teste. Exclua apenas um e confirme que o outro ainda pode ser consultado.</p><details class="answer"><summary>💡 Uma dica</summary><div>Anote separadamente os IDs retornados pelos dois POSTs. A URL do DELETE precisa usar apenas um deles.</div></details><div class="try-first">🚨 PARE! Tente primeiro. Compare o resultado, não só o código.</div><details class="answer"><summary>👀 Só depois de tentar — conferir solução</summary><div><p>Primeiro POST: 201. Segundo POST: 201. DELETE do primeiro: 204. GET do primeiro: 404. GET do segundo: 200. No SQL, só a linha escolhida foi removida.</p></div></details></div><div class="checkpoint">✓ Cinco endpoints completos. Você consegue explicar o pedido e comprovar o efeito no banco.</div></div></section><div class="section-connector"><div class="line"></div></div><section class="step-section" id="viagem"><div class="step-header"><div class="step-number sn-green">15</div><div><h2 class="step-title">Abra os bastidores de uma requisição</h2><p class="step-sub">O mesmo cadastro, visto por todas as camadas.</p></div></div><div class="card"><p>No filme da Parte 0, a API era uma caixa fechada: o POST entrava, o SQL saía para o banco e a resposta voltava. Agora você construiu essa caixa. Vamos dar um <strong>zoom</strong> nela e ver quem trabalha lá dentro.</p>
-<div class="lab" id="request-lab"><div class="lab-heading"><span>LAB 03 · SIMULAÇÃO</span><h3>Quem está trabalhando agora?</h3><p>Escolha um caso e avance. As fichas representam etapas do fluxo; nenhum servidor real é chamado.</p></div><label class="case-label">Caso<select id="request-case"><option value="valid">POST com nome válido</option><option value="invalid">POST com nome em branco</option><option value="missing">GET de ID inexistente</option></select></label><div class="request-track"><div data-layer="client">🌐 Cliente</div><div data-layer="controller">🎮 Controller</div><div data-layer="service">⚙️ Service</div><div data-layer="repository">🗄️ Repository</div><div data-layer="database">🐘 Banco</div></div><div class="request-state"><article><small>O QUE ESTÁ ACONTECENDO</small><h4 id="request-title"></h4><p id="request-description"></p></article><article><small>REGISTROS / RESPOSTA</small><strong id="request-records"></strong><p id="request-response"></p></article></div><p class="lab-caption" id="request-caption" role="status" aria-live="polite"></p><div class="lab-controls"><button type="button" id="request-prev">← Voltar</button><span id="request-step"></span><button type="button" id="request-next">Próximo →</button><button type="button" id="request-reset">Reiniciar caso</button></div></div>
-<div class="decision" data-explanation="validarNome lança a exceção antes de repository.save. A resposta é 400 e o cadastro não chega a ser gravado."><h4>🧠 O nome foi recusado pelo Service. Qual efeito esperamos no banco?</h4><div class="choices"><button type="button" data-choice="false" aria-pressed="false">Um registro incompleto foi inserido e depois corrigido.</button><button type="button" data-choice="true" aria-pressed="false">Nenhuma inserção: o fluxo parou antes de save.</button></div><p class="feedback" role="status" aria-live="polite">Escolha uma resposta. Você pode tentar novamente.</p></div><p class="transfer">Agora refaça um POST no Insomnia e acompanhe o SQL real no console. A simulação explica o mecanismo; o teste confirma o programa que você escreveu.</p></div></section><div class="section-connector"><div class="line"></div></div><section class="step-section" id="missao"><div class="step-header"><div class="step-number sn-green">16</div><div><h2 class="step-title">Sua vez: provar que funciona</h2><p class="step-sub">Um roteiro de evidências, não uma corrida para copiar.</p></div></div><div class="card">
-<div class="table-scroll"><table><caption>Contrato final da nossa API</caption><thead><tr><th>Operação</th><th>Caminho</th><th>Sucesso</th><th>Caso de falha ensinado</th></tr></thead><tbody><tr><td>POST</td><td>/fornecedores</td><td>201 + objeto</td><td>400 · nome vazio</td></tr><tr><td>GET</td><td>/fornecedores</td><td>200 + lista</td><td>Lista vazia não é falha</td></tr><tr><td>GET</td><td>/fornecedores/{id}</td><td>200 + objeto</td><td>404 · ausente</td></tr><tr><td>PUT</td><td>/fornecedores/{id}</td><td>200 + objeto</td><td>400 · nome vazio; 404 · ausente</td></tr><tr><td>DELETE</td><td>/fornecedores/{id}</td><td>204 · sem corpo</td><td>404 · ausente</td></tr></tbody></table></div>
+<p>Reinicie a API e envie DELETE para o ID que você quer remover, sem corpo JSON. Depois faça GET do mesmo ID: por enquanto, você verá <strong>200</strong> e <code>null</code>, porque o registro não existe mais. Liste todos para confirmar que os outros fornecedores continuam lá.</p>
+<div class="tip"><strong>DELETE repetido:</strong> excluir de novo um ID que já não existe também responde 204. O <code>deleteById</code> não reclama da ausência, e o estado final é o mesmo: registro ausente.</div>
+<div class="exercise solo"><h3>✍️ Fechar o ciclo sem apagar o colega</h3><p>Cadastre dois fornecedores de teste. Exclua apenas um e confirme que o outro ainda pode ser consultado.</p><details class="answer"><summary>💡 Uma dica</summary><div>Anote separadamente os IDs retornados pelos dois POSTs. A URL do DELETE precisa usar apenas um deles.</div></details><div class="try-first">🚨 PARE! Tente primeiro. Compare o resultado, não só o código.</div><details class="answer"><summary>👀 Só depois de tentar — conferir solução</summary><div><p>Primeiro POST: 201. Segundo POST: 201. DELETE do primeiro: 204. GET do primeiro: 200 com <code>null</code>. GET do segundo: 200 com o objeto. No SQL, só a linha escolhida foi removida.</p></div></details></div><div class="checkpoint">✓ Cinco endpoints completos. Você consegue explicar o pedido e comprovar o efeito no banco.</div></div></section><div class="section-connector"><div class="line"></div></div><section class="step-section" id="viagem"><div class="step-header"><div class="step-number sn-green">15</div><div><h2 class="step-title">Abra os bastidores de uma requisição</h2><p class="step-sub">O mesmo cadastro, visto por todas as camadas.</p></div></div><div class="card"><p>No filme da Parte 0, a API era uma caixa fechada: o POST entrava, o SQL saía para o banco e a resposta voltava. Agora você construiu essa caixa. Vamos dar um <strong>zoom</strong> nela e ver quem trabalha lá dentro.</p>
+<div class="lab" id="request-lab"><div class="lab-heading"><span>LAB 03 · SIMULAÇÃO</span><h3>Quem está trabalhando agora?</h3><p>Escolha um caso e avance. As fichas representam etapas do fluxo; nenhum servidor real é chamado.</p></div><label class="case-label">Caso<select id="request-case"><option value="valid">POST · cadastrar um fornecedor</option><option value="list">GET · listar os fornecedores</option><option value="remove">DELETE · excluir pelo ID</option></select></label><div class="request-track"><div data-layer="client">🌐 Cliente</div><div data-layer="controller">🎮 Controller</div><div data-layer="service">⚙️ Service</div><div data-layer="repository">🗄️ Repository</div><div data-layer="database">🐘 Banco</div></div><div class="request-state"><article><small>O QUE ESTÁ ACONTECENDO</small><h4 id="request-title"></h4><p id="request-description"></p></article><article><small>REGISTROS / RESPOSTA</small><strong id="request-records"></strong><p id="request-response"></p></article></div><p class="lab-caption" id="request-caption" role="status" aria-live="polite"></p><div class="lab-controls"><button type="button" id="request-prev">← Voltar</button><span id="request-step"></span><button type="button" id="request-next">Próximo →</button><button type="button" id="request-reset">Reiniciar caso</button></div></div>
+<div class="decision" data-explanation="204 No Content quer dizer: deu certo e não há nada para devolver no corpo. Por isso o método do Controller é void."><h4>🧠 O DELETE terminou com 204. O que vem no corpo da resposta?</h4><div class="choices"><button type="button" data-choice="false" aria-pressed="false">O fornecedor excluído, em JSON, para confirmar.</button><button type="button" data-choice="true" aria-pressed="false">Nada: 204 é sucesso sem conteúdo.</button><button type="button" data-choice="false" aria-pressed="false">Uma mensagem de erro, porque o registro sumiu.</button></div><p class="feedback" role="status" aria-live="polite">Escolha uma resposta. Você pode tentar novamente.</p></div><section class="step-section" id="missao"><div class="step-header"><div class="step-number sn-green">16</div><div><h2 class="step-title">Sua vez: provar que funciona</h2><p class="step-sub">Um roteiro de evidências, não uma corrida para copiar.</p></div></div><div class="card">
+<div class="table-scroll"><table><caption>Contrato final da nossa API</caption><thead><tr><th>Operação</th><th>Caminho</th><th>Sucesso</th></tr></thead><tbody><tr><td>POST</td><td>/fornecedores</td><td>201 + objeto</td></tr><tr><td>GET</td><td>/fornecedores</td><td>200 + lista</td></tr><tr><td>GET</td><td>/fornecedores/{id}</td><td>200 + objeto</td></tr><tr><td>PUT</td><td>/fornecedores/{id}</td><td>200 + objeto</td></tr><tr><td>DELETE</td><td>/fornecedores/{id}</td><td>204 · sem corpo</td></tr></tbody></table></div>
 <div class="exercise guided"><h3>👨‍🏫 Com o professor · o banco também pode reiniciar</h3><p>Cadastre um fornecedor e anote seu ID. Pare a API, saia do psql com <code>\q</code> e execute os comandos abaixo no terminal do computador:</p>
 <div class="code-block"><div class="code-header"><span class="filename">Terminal · preservando o volume</span><span class="lang-badge">Terminal</span><button type="button" class="copy-code" aria-label="Copiar Terminal · preservando o volume">Copiar</button></div><pre ><code>docker stop gestorpro-postgres
 docker start gestorpro-postgres
 docker exec gestorpro-postgres pg_isready -<span class="kw">U</span> gestorpro -d gestorpro</code></pre></div>
 <p>Espere o banco aceitar conexões. Inicie a API e consulte o ID anotado. O registro deve continuar existindo: parar e iniciar não apagou os dados.</p></div>
-<div class="exercise solo"><h3>✍️ Missão final · Fornecedor do começo ao fim</h3><p>Cadastre Editora Farol; liste; busque pelo ID; altere o telefone; reinicie a API; confira a persistência; exclua; confirme 404. Depois tente um cadastro sem nome. Registre os status e desenhe o caminho do pedido no seu caderno.</p><details class="answer"><summary>💡 Uma dica</summary><div>No POST, omita o ID. No PUT, envie todos os campos editáveis. Use sempre o ID devolvido pelo seu cadastro. Para ver a evidência, compare a resposta HTTP com um SELECT.</div></details><div class="try-first">🚨 PARE! Tente primeiro. Compare o resultado, não só o código.</div><details class="answer"><summary>👀 Só depois de tentar — conferir solução</summary><div><ol><li>POST válido → 201 e ID gerado.</li><li>GET da coleção → 200 e lista contendo esse ID.</li><li>GET do ID → 200 e objeto da Editora Farol.</li><li>PUT com telefone novo → 200, mesmo ID.</li><li>Reiniciar Java e GET → 200, telefone novo preservado.</li><li>DELETE → 204 e corpo vazio.</li><li>GET desse ID → 404.</li><li>POST sem nome → 400 e nenhuma inserção.</li></ol></div></details></div>
+<div class="exercise solo"><h3>✍️ Missão final · Fornecedor do começo ao fim</h3><p>Cadastre Editora Farol; liste; busque pelo ID; altere o telefone; reinicie a API; confira a persistência; exclua; confirme que ele sumiu da lista. Registre os status e desenhe o caminho do pedido no seu caderno.</p><details class="answer"><summary>💡 Uma dica</summary><div>No POST, omita o ID. No PUT, envie todos os campos editáveis. Use sempre o ID devolvido pelo seu cadastro. Para ver a evidência, compare a resposta HTTP com um SELECT.</div></details><div class="try-first">🚨 PARE! Tente primeiro. Compare o resultado, não só o código.</div><details class="answer"><summary>👀 Só depois de tentar — conferir solução</summary><div><ol><li>POST válido → 201 e ID gerado.</li><li>GET da coleção → 200 e lista contendo esse ID.</li><li>GET do ID → 200 e objeto da Editora Farol.</li><li>PUT com telefone novo → 200, mesmo ID.</li><li>Reiniciar Java e GET → 200, telefone novo preservado.</li><li>DELETE → 204 e corpo vazio.</li><li>GET da coleção → 200, e a Editora Farol não aparece mais. (GET desse ID → 200 com <code>null</code>, por enquanto.)</li></ol></div></details></div>
 <h3>Para casa · explique o erro, não só a correção</h3><p>Escolha uma falha que você encontrou: Docker parado, senha divergente, rota errada ou JDK diferente. Anote o sintoma, qual parte do sistema falhou e como você confirmou a correção. Não precisa criar outra entidade ainda.</p>
 <div class="download-box"><h3>👀 Material de conferência</h3><p>Use depois de construir. O projeto completo tem o código final da mesma entidade e as configurações locais desta aula.</p><a class="action" href="./apoio/api-completa.zip" download>Baixar API completa ↧</a><a class="action secondary" href="./apoio/api-inicial.zip" download>Projeto inicial ↧</a><a class="action secondary" href="./caderno.html" target="_blank" rel="noopener">Abrir meu caderno ↗</a><p>Extraia, abra a pasta que contém pom.xml, selecione JDK 21 e mantenha o PostgreSQL pronto. A API completa usa a mesma porta e o mesmo banco; execute uma cópia por vez.</p></div>
 </div></section><div class="section-connector"><div class="line"></div></div><section class="step-section" id="fechamento"><div class="step-header"><div class="step-number sn-green">17</div><div><h2 class="step-title">Você já construiu o caminho inteiro</h2><p class="step-sub">Agora sabemos por que cada peça existe.</p></div></div><div class="card">
-<div class="finish-banner"><span>🌱 DO JAVA À API</span><h3>Um pedido entra.<br>Uma regra decide.<br>Um registro fica.</h3><p>O framework organiza a infraestrutura. Você programa o comportamento.</p></div>
+<div class="finish-banner"><span>🌱 DO JAVA À API</span><h3>Um pedido entra.<br>As camadas trabalham.<br>Um registro fica.</h3><p>O framework organiza a infraestrutura. Você programa o comportamento.</p></div>
 <p>O <strong>Controller</strong> recebe a conversa HTTP. O <strong>Service</strong> organiza a operação. O <strong>Repository</strong> acessa o banco. O <strong>Model</strong> representa os dados. O <strong>PostgreSQL</strong> persiste os registros, executando no nosso container.</p>
 <div class="decision" data-explanation="O Model não chama o Repository: ele representa os dados. O pedido passa pelo Controller, Service e Repository para chegar ao banco."><h4>🧠 Qual sequência representa o acesso ao banco nesta API?</h4><div class="choices"><button type="button" data-choice="true" aria-pressed="false">Controller → Service → Repository → PostgreSQL.</button><button type="button" data-choice="false" aria-pressed="false">Controller → Model → PostgreSQL → Service.</button><button type="button" data-choice="false" aria-pressed="false">React → PostgreSQL, sem passar pela API.</button></div><p class="feedback" role="status" aria-live="polite">Escolha uma resposta. Você pode tentar novamente.</p></div>
-<h3>A próxima pergunta: precisamos expor tudo?</h3><p>Hoje o JSON recebido e devolvido usa a própria entidade. Isso ajudou a enxergar o fluxo. Mas e se o banco guardar um campo que não deve entrar na resposta? E se o formato pedido pela tela for diferente do formato persistido?</p>
+<h3>O que ficou para os próximos capítulos</h3><p>Nesta primeira volta, fizemos o caminho mais curto de propósito. Ficaram três pendências, que você viu acontecer:</p><ul><li><strong>Nome em branco é aceito</strong>, e um fornecedor sem nome termina em erro 500: falta <strong>validação</strong>, com resposta 400.</li><li><strong>ID inexistente responde 200 com <code>null</code></strong>: falta devolver <strong>404</strong>.</li><li><strong>Um <code>id</code> no JSON do POST sobrescreve um cadastro</strong>: falta separar o que a API recebe do que ela guarda.</li></ul><h3>A próxima pergunta: precisamos expor tudo?</h3><p>Hoje o JSON recebido e devolvido usa a própria entidade. Isso ajudou a enxergar o fluxo. Mas e se o banco guardar um campo que não deve entrar na resposta? E se o formato pedido pela tela for diferente do formato persistido?</p>
 <p>Na próxima entidade, <strong>Produto</strong>, entraremos em <strong>DTO — Data Transfer Object</strong>, objeto de transferência de dados: uma estrutura que descreve quais dados entram e saem da API. A evolução terá um motivo concreto. Mapper, validações e relacionamentos entrarão conforme forem necessários.</p>
 <div class="warning">Nesta etapa, o GestorPRO React ainda usa seu backend anterior. A integração com a API, CORS e autenticação serão construídos depois. Não basta trocar a URL e esperar que login e todas as entidades já existam.</div>
 <div class="chapter-route"><a class="action secondary" href="../11-java-oo-basico/">← Cap 11 · Java básico</a><a class="action" href="../../index.html">Voltar ao mapa do curso →</a></div>

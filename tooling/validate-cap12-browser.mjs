@@ -28,7 +28,7 @@ await page.locator('#sql-operation').selectOption('delete');await page.locator('
 await page.locator('#sql-reset').click();await page.locator('#sql-operation').selectOption('delete');await page.locator('#sql-run').click();assert.match(await page.locator('#sql-rows').innerText(),/Papelaria/);assert.doesNotMatch(await page.locator('#sql-rows').innerText(),/TechDistrib/);
 await page.locator('#sql-run').click();assert.match(await page.locator('#sql-feedback').innerText(),/0 linha/);
 await page.locator('#sql-reset').click();await page.locator('#sql-run').click();assert.match(await page.locator('#sql-feedback').innerText(),/1 linha.*consulta não alterou/);
-for(const [scenario,count,status] of [['valid','1 registro','201'],['invalid','0 registro','400'],['missing','0 registro','404']]){
+for(const [scenario,count,status] of [['valid','1 registro','201'],['list','1 registro','200'],['remove','0 registro','204']]){
  await page.locator('#request-case').selectOption(scenario);
  while(await page.locator('#request-next').isEnabled())await page.locator('#request-next').click();
  assert.match(await page.locator('#request-records').innerText(),new RegExp(count));assert.match(await page.locator('#request-response').innerText(),new RegExp(status));

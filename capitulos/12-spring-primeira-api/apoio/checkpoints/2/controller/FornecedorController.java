@@ -1,11 +1,11 @@
 package br.com.gestorpro.api.controller;
 
 import java.util.List;
-import org.springframework.web.bind.annotation.GetMapping;
 import br.com.gestorpro.api.model.Fornecedor;
 import br.com.gestorpro.api.service.FornecedorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +25,7 @@ public class FornecedorController {
     }
 
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     public List<Fornecedor> listar() {
         return service.listar();
     }

@@ -114,18 +114,14 @@ def main():
             status,created=http(apiport,'POST',data=payload);assert status==201 and created['id']>0
             id=created['id']
             assert http(apiport,'GET',f'/{id}')==(200,created)
-            for invalid in ('', '   ', None):
-                assert http(apiport,'POST',data={**payload,'nome':invalid})[0]==400
-            status,second=http(apiport,'POST',data={**payload,'id':id,'nome':'Papelaria Nordeste'})
+            status,second=http(apiport,'POST',data={**payload,'nome':'Papelaria Nordeste'})
             assert status==201 and second['id']!=id
             updated={**payload,'id':second['id'],'telefone':'(83) 3333-2000'}
             status,changed=http(apiport,'PUT',f'/{id}',updated);assert status==200 and changed['id']==id and changed['telefone']==updated['telefone']
             assert http(apiport,'GET',f"/{second['id']}")[1]['nome']=='Papelaria Nordeste'
-            assert http(apiport,'PUT',f'/{id}',{**payload,'nome':''})[0]==400
             assert http(apiport,'GET',f'/{id}')[1]['telefone']==updated['telefone']
-            for method in ('GET','PUT','DELETE'):
-                assert http(apiport,method,'/999999',payload if method=='PUT' else None)[0]==404
-            assert http(apiport,'GET','/abc')[0]==400
+            # Primeira volta do capítulo: sem 404 ainda; ID ausente devolve 200 com null (Optional vazio).
+            assert http(apiport,'GET','/999999')==(200,None)
             assert sql('SELECT COUNT(*) FROM fornecedores;')=='2'
             assert sql(f'SELECT telefone FROM fornecedores WHERE id={id};')==updated['telefone']
             stop_app(proc);proc=None;proc=start_app()
@@ -137,11 +133,11 @@ def main():
             assert sql('SELECT COUNT(*) FROM fornecedores;')=='2'
             proc=start_app()
             assert http(apiport,'DELETE',f'/{id}')==(204,None)
-            assert http(apiport,'GET',f'/{id}')[0]==404
-            assert http(apiport,'DELETE',f'/{id}')[0]==404
+            assert http(apiport,'GET',f'/{id}')==(200,None)
+            assert http(apiport,'DELETE',f'/{id}')==(204,None)
             assert len(http(apiport,'GET')[1])==1
             assert sql('SELECT COUNT(*) FROM fornecedores;')=='1'
-            print('Integração: 5 endpoints, 400/404, IDs, PUT sem duplicação, DELETE 204, SQL real e persistência após reiniciar Java, parar/iniciar e recriar container com mesmo volume.',flush=True)
+            print('Integração: 5 endpoints, ID ausente = 200 null (primeira volta), IDs, PUT sem duplicação, DELETE 204, SQL real e persistência após reiniciar Java, parar/iniciar e recriar container com mesmo volume.',flush=True)
         finally:
             if proc and proc.poll() is None:stop_app(proc)
             subprocess.run(['docker','rm','-f',name],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)

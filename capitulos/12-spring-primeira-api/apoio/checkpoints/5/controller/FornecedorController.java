@@ -1,15 +1,16 @@
 package br.com.gestorpro.api.controller;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import java.util.List;
-import org.springframework.web.bind.annotation.GetMapping;
+import java.util.Optional;
 import br.com.gestorpro.api.model.Fornecedor;
 import br.com.gestorpro.api.service.FornecedorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -28,18 +29,21 @@ public class FornecedorController {
     }
 
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     public List<Fornecedor> listar() {
         return service.listar();
     }
 
     @GetMapping("/{id}")
-    public Fornecedor buscar(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.OK)
+    public Optional<Fornecedor> buscar(@PathVariable Long id) {
         return service.buscar(id);
     }
 
     @PutMapping("/{id}")
-    public Fornecedor atualizar(@PathVariable Long id, @RequestBody Fornecedor dados) {
-        return service.atualizar(id, dados);
+    @ResponseStatus(HttpStatus.OK)
+    public Fornecedor atualizar(@PathVariable Long id, @RequestBody Fornecedor fornecedor) {
+        return service.atualizar(id, fornecedor);
     }
 
     @DeleteMapping("/{id}")

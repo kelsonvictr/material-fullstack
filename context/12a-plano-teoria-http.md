@@ -98,3 +98,32 @@ como tarefa antes da aula** (box no `#mapa` e no `#instalacao`); a aula só conf
 - Verificado: snapshots do filme revisados por fluxo; Chrome headless desktop 1440 e 390 px sem
   overflow horizontal nem erro de console; pausa no fim do fluxo; labs certo/errado;
   `validate-cap12.py` e `validate-cap12-browser.mjs` continuam passando.
+
+## Complementos pedidos pelo professor — 2026-09-26
+
+- **Meme da fita** (`assets/memes/meme-rest-api-fita.png`) na H6: API é a fita; REST é o tipo de
+  fita que segura bem as duas bikes. Box “onde a analogia para” (gambiarra × contrato; GraphQL).
+- **REST × RESTful** (ênfase do prof nas aulas): REST = o padrão/arquitetura (Roy Fielding, 2000);
+  RESTful = a API que implementa os princípios. Tabela dos 6 princípios ligada aos fluxos do filme
+  (cliente-servidor, sem estado, cache/304, interface uniforme, camadas, código sob demanda) + quiz.
+  Grafia no material: **RESTful** (um “l”). Nuance honesta registrada: HATEOAS fica de fora da
+  maioria das APIs, inclusive da nossa nesta versão.
+
+## Seringa da injeção de dependência e box do Maven — 2026-09-26
+
+- **💉 Seringa (seção 09 `#camadas`)**, pedido do prof: box “A seringa do Spring” (conteúdo = a
+  dependência, êmbolo = Spring, agulha = construtor; onde a analogia para: por baixo é só o Spring
+  chamando o construtor). Legenda avisando que o 💉 nos códigos NÃO é para digitar.
+  Marca `.di-hl` (fundo rosa + `::after " 💉"`) nas linhas da injeção: parâmetro do construtor
+  explícito, `@RequiredArgsConstructor` + campo `private final` do exemplo Lombok e da 1ª versão de
+  Service e Controller em `#post`. Por ser pseudo-elemento, o 💉 não entra no botão Copiar nem no
+  validador. LAB “💉 Aplique a injeção” (4 estados, avanço manual: Repository→Service,
+  Service→Controller; êmbolo é uma peça só que desliza com CSS) + quiz “o que escrevemos no Controller?”.
+- **Maven (seção 02 `#initializr`)**: box “📦 Maven: o npm do Java” (package.json ↔ pom.xml; baixa
+  dependências do Maven Central, compila/empacota .jar, padroniza a estrutura; POM = Project Object
+  Model; liga ao Cap 11 que já escolheu Maven; Gradle só citado).
+- **CRUD simplificado (2026-09-26)**: sem 400/404 reais na primeira volta — ver entrada no fim de `12-plano-cap-12-spring.md`. Na Parte 0, 400/404 continuam só como conceito (tabela de status, lab “Qual status volta?”, fluxo 6 do filme).
+- **Precisão da teoria REST (2026-09-26)**, aprovado pelo prof: JSON não é regra do REST (combinado
+  3 fala em “representação, quase sempre JSON”); REST não depende do HTTP (definição + linha
+  “interface uniforme”: “no HTTP, isso vira URL/método/status”); “sem estado” é sobre a conversa,
+  não sobre os dados (combinado 4 + linha da tabela).
