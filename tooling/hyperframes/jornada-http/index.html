@@ -1,0 +1,660 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      /*
+        Jornada HTTP — Cap 12 (Parte 0). Filme MUDO em 6 fluxos, controlado pelo professor.
+        Fronteiras dos fluxos (s): 0 · 18 · 40 · 61 · 97 · 118 · 140
+        (espelhadas em data-fluxos no player do capítulo). Ritmo lento de propósito:
+        uma coisa se mexe por vez, pacotes viajam ~2 s e cada fluxo termina num quadro de repouso.
+      */
+      :root {
+        --bg: #0a0a12;
+        --surface: #12121e;
+        --surface2: #1a1a2e;
+        --surface3: #222240;
+        --code-bg: #0d0d1a;
+        --text: #eef0f8;
+        --dim: #8892b0;
+        --line: #2c2c4a;
+        --accent: #6c63ff;
+        --red: #ff6b6b;
+        --teal: #4ecdc4;
+        --blue: #45b7d1;
+        --amber: #f7b731;
+        --get: #61dafb;
+        --green: #46d39a;
+        --orange: #ff9f43;
+      }
+      /* Ligaduras OFF (regra do material) */
+      pre, code, .mono {
+        font-variant-ligatures: none;
+        font-feature-settings: "liga" 0, "clig" 0, "calt" 0;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        width: 1920px; height: 1080px; overflow: hidden;
+        background: var(--bg);
+        font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        color: var(--text);
+      }
+      .mono { font-family: "JetBrains Mono", ui-monospace, "Menlo", monospace; }
+      .abs { position: absolute; }
+
+      #bg {
+        position: absolute; inset: 0;
+        background:
+          radial-gradient(1200px 760px at 50% 30%, #15152c 0%, rgba(21,21,44,0) 65%),
+          linear-gradient(180deg, #0b0b16 0%, #0a0a12 100%);
+      }
+      #grid {
+        position: absolute; inset: 0;
+        background-image:
+          linear-gradient(rgba(44,44,74,0.45) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(44,44,74,0.45) 1px, transparent 1px);
+        background-size: 48px 48px; opacity: 0.45;
+        mask-image: radial-gradient(1400px 900px at 50% 45%, #000 50%, transparent 100%);
+        -webkit-mask-image: radial-gradient(1400px 900px at 50% 45%, #000 50%, transparent 100%);
+      }
+      #stage { position: absolute; inset: 0; }
+
+      /* ===== cabeçalho do fluxo ===== */
+      .hdr { position: absolute; left: 60px; top: 30px; }
+      .hdr .k { font-size: 21px; font-weight: 800; letter-spacing: 3px; color: var(--amber); }
+      .hdr .t { font-size: 42px; font-weight: 900; margin-top: 4px; }
+      #dots { position: absolute; right: 60px; top: 52px; display: flex; gap: 14px; align-items: center; }
+      #dots .d { width: 20px; height: 20px; border-radius: 50%; background: #2a2a48; border: 2px solid var(--line); }
+      #dots .lb { font-size: 19px; color: var(--dim); font-weight: 700; margin-right: 8px; }
+
+      /* ===== legenda ===== */
+      .cap { position: absolute; left: 160px; width: 1600px; top: 900px; min-height: 130px;
+        display: flex; align-items: center; justify-content: center; text-align: center;
+        font-size: 37px; line-height: 1.35; font-weight: 600; color: var(--text);
+        background: rgba(18,18,30,0.92); border: 2px solid var(--line); border-radius: 22px;
+        padding: 18px 44px; }
+      .cap b { color: var(--amber); font-weight: 800; }
+      .tg { display: inline-block; font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 0.86em; font-weight: 800; padding: 1px 12px; border-radius: 8px; color: #0a0a12;
+        font-variant-ligatures: none; }
+      .tg.get { background: var(--get); } .tg.post { background: var(--green); }
+      .tg.s2 { background: var(--green); } .tg.s4 { background: var(--orange); }
+      .tg.sql { background: var(--amber); }
+
+      /* ===== navegador da Maria ===== */
+      #browser { position: absolute; left: 60px; top: 150px; width: 530px; height: 620px;
+        background: var(--surface); border: 2px solid var(--line); border-radius: 18px; overflow: hidden; }
+      #browser .bar { height: 54px; background: var(--surface2); display: flex; align-items: center;
+        gap: 9px; padding: 0 16px; border-bottom: 2px solid var(--line); }
+      #browser .bar .d { width: 13px; height: 13px; border-radius: 50%; background: var(--line); }
+      #browser .bar .d.r { background: var(--red); } #browser .bar .d.a { background: var(--amber); }
+      #browser .bar .d.g { background: var(--green); }
+      #browser .bar .url { margin-left: 8px; flex: 1; font-size: 17px; color: var(--text);
+        background: var(--code-bg); border-radius: 8px; padding: 6px 12px; white-space: nowrap; overflow: hidden; }
+      #browser .bar .url .lock { color: var(--green); }
+      #url-typed { display: inline-block; }
+      .vp { position: absolute; left: 0; right: 0; top: 54px; bottom: 0; }
+      #pg-blank { display: flex; align-items: center; justify-content: center; color: var(--dim);
+        font-size: 24px; font-weight: 700; }
+      /* só HTML: cara de página sem CSS */
+      #pg-raw { background: #ffffff; color: #000; font-family: "Times New Roman", Times, serif; padding: 22px 26px; }
+      #pg-raw h1 { font-size: 34px; margin-bottom: 8px; }
+      #pg-raw p { font-size: 20px; margin-bottom: 14px; }
+      #pg-raw .f { font-size: 19px; margin-bottom: 10px; }
+      #pg-raw .f span { display: inline-block; width: 220px; height: 26px; border: 1px solid #767676; vertical-align: middle; }
+      #pg-raw .b { display: inline-block; font-family: Arial, sans-serif; font-size: 16px; padding: 3px 10px;
+        border: 1px solid #767676; background: #efefef; border-radius: 3px; }
+      /* com CSS: o site de verdade */
+      #pg-site { background: #0f1020; padding: 0; }
+      #pg-site .nav { height: 58px; display: flex; align-items: center; justify-content: space-between;
+        padding: 0 24px; border-bottom: 1px solid #25264a; }
+      #pg-site .logo { font-size: 24px; font-weight: 900; }
+      #pg-site .logo em { font-style: normal; color: var(--accent); }
+      #pg-site .nav small { color: var(--dim); font-size: 15px; font-weight: 700; }
+      #pg-site .hero { margin: 20px 24px 0; padding: 16px 20px; border-radius: 14px;
+        background: linear-gradient(135deg, rgba(108,99,255,0.22), rgba(78,205,196,0.12));
+        border: 1px solid rgba(108,99,255,0.45); }
+      #pg-site .hero h2 { font-size: 27px; font-weight: 900; }
+      #pg-site .hero p { font-size: 17px; color: var(--teal); font-weight: 700; margin-top: 4px; }
+      #pg-site .form { margin: 18px 24px 0; }
+      #pg-site .lbl { font-size: 15px; color: var(--dim); font-weight: 700; margin: 10px 0 5px; }
+      .inp { position: relative; height: 46px; border-radius: 10px; background: #171833;
+        border: 2px solid #2d2e58; padding: 0 14px; display: flex; align-items: center;
+        font-size: 19px; font-weight: 600; }
+      .inp .v { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); white-space: nowrap; }
+      #em-ring { position: absolute; inset: -6px; border: 3px dashed var(--orange); border-radius: 13px; }
+      #btn { margin-top: 18px; height: 52px; border-radius: 12px; background: var(--accent);
+        display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800; }
+      #pg-err { position: absolute; left: 24px; top: 412px; font-size: 17px; font-weight: 800; color: var(--orange); }
+      #pg-ok { position: absolute; left: 24px; right: 24px; top: 150px; height: 250px; border-radius: 16px;
+        background: #10281f; border: 2px solid var(--green); display: flex; flex-direction: column;
+        align-items: center; justify-content: center; gap: 8px; text-align: center; }
+      #pg-ok .big { font-size: 30px; font-weight: 900; color: var(--green); }
+      #pg-ok .sm { font-size: 20px; font-weight: 700; }
+      #pg-ok .n { font-size: 18px; color: var(--dim); }
+      #build { position: absolute; left: 0; right: 0; bottom: 14px; display: flex; justify-content: center; gap: 10px; }
+      #build .c { display: flex; align-items: center; gap: 7px; font-size: 16px; font-weight: 800;
+        padding: 6px 12px; border-radius: 999px; background: rgba(13,13,26,0.92); border: 2px solid var(--line); color: var(--dim); }
+      #build .c img { width: 22px; height: 22px; }
+      #lbl-pc { position: absolute; left: 60px; top: 786px; width: 530px; text-align: center;
+        font-size: 23px; font-weight: 800; color: var(--dim); }
+      #ring { position: absolute; left: 44px; top: 134px; width: 562px; height: 652px; border-radius: 26px;
+        border: 4px solid var(--get); box-shadow: 0 0 40px rgba(97,218,251,0.35); }
+      #aqui { position: absolute; left: 612px; top: 170px; padding: 12px 20px; border-radius: 14px;
+        background: rgba(97,218,251,0.14); border: 2px solid var(--get); color: var(--get);
+        font-size: 27px; font-weight: 900; white-space: nowrap; }
+
+      /* ===== URL e DNS (fluxo 1) ===== */
+      #urlcard { position: absolute; left: 660px; top: 180px; width: 1200px; padding: 26px 30px;
+        background: var(--surface2); border: 2px solid var(--line); border-radius: 22px; }
+      #urlcard .ttl { font-size: 22px; font-weight: 800; color: var(--dim); letter-spacing: 2px; margin-bottom: 14px; }
+      #urlcard .row { display: flex; }
+      #urlcard .part { display: flex; flex-direction: column; }
+      #urlcard .part .tx { font-size: 44px; font-weight: 700; padding: 4px 6px; border-radius: 10px; }
+      #urlcard .p1 .tx { color: var(--blue); } #urlcard .p2 .tx { color: var(--amber); } #urlcard .p3 .tx { color: var(--teal); }
+      #urlcard .part .lb { margin-top: 12px; font-size: 20px; font-weight: 700; color: var(--text);
+        border-top: 4px solid currentColor; padding-top: 8px; }
+      #urlcard .p1 .lb { border-color: var(--blue); } #urlcard .p2 .lb { border-color: var(--amber); }
+      #urlcard .p3 .lb { border-color: var(--teal); }
+      #urlcard .part .lb small { display: block; color: var(--dim); font-size: 17px; font-weight: 600; margin-top: 2px; }
+      #dns { position: absolute; left: 780px; top: 500px; width: 960px; padding: 24px 30px;
+        background: var(--surface2); border: 2px solid var(--line); border-radius: 22px; }
+      #dns .ttl { font-size: 26px; font-weight: 900; }
+      #dns .ttl small { font-size: 19px; color: var(--dim); font-weight: 700; margin-left: 8px; }
+      #dns .row { display: flex; align-items: center; gap: 22px; margin-top: 20px; }
+      #dns .chip { font-size: 34px; font-weight: 700; padding: 10px 20px; border-radius: 12px;
+        background: var(--code-bg); border: 2px solid var(--line); }
+      #dns .nm { color: var(--amber); } #dns .ip { color: var(--green); }
+      #dns-arrow { width: 170px; height: 6px; background: var(--dim); border-radius: 3px; position: relative; transform-origin: 0 50%; }
+      #dns-arrow::after { content: ""; position: absolute; right: -4px; top: -9px; border-left: 16px solid var(--dim);
+        border-top: 12px solid transparent; border-bottom: 12px solid transparent; }
+      #dns .ex { font-size: 18px; color: var(--dim); font-weight: 700; }
+
+      /* ===== servidor web ===== */
+      #websrv { position: absolute; left: 1000px; top: 150px; width: 330px; height: 250px;
+        background: var(--surface2); border: 2px solid var(--line); border-radius: 18px; padding: 16px 20px; }
+      .box-hd { font-size: 24px; font-weight: 900; }
+      .box-sub { font-size: 17px; color: var(--dim); font-weight: 700; margin-top: 2px; }
+      #websrv .files { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; }
+      #websrv .fl { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 700;
+        padding: 6px 10px; border-radius: 9px; background: var(--code-bg); border: 2px solid var(--line); }
+      #websrv .fl img { width: 24px; height: 24px; }
+
+      /* fios */
+      .wire { position: absolute; height: 3px; opacity: 0.5;
+        background: repeating-linear-gradient(90deg, var(--dim) 0 12px, transparent 12px 24px); }
+      #wire1 { left: 590px; top: 274px; width: 410px; }
+      #wire2 { left: 590px; top: 598px; width: 410px; }
+      #wire3 { left: 1330px; top: 598px; width: 250px; }
+
+      /* ===== API ===== */
+      #api { position: absolute; left: 1000px; top: 470px; width: 330px; height: 350px; }
+      #api-frame { position: absolute; inset: 0; background: var(--surface2); border: 2px solid var(--accent);
+        border-radius: 18px; box-shadow: 0 0 34px rgba(108,99,255,0.22); }
+      #api-hd { position: absolute; left: 20px; top: 14px; right: 16px; }
+      #api-ep { position: absolute; left: 16px; right: 16px; top: 86px; height: 44px; border-radius: 10px;
+        background: var(--code-bg); border: 2px solid var(--line); display: flex; align-items: center; gap: 10px;
+        padding: 0 10px; font-size: 18px; font-weight: 700; }
+      #rules { position: absolute; left: 16px; right: 16px; top: 146px; height: 190px; border-radius: 14px;
+        background: #15152a; border: 2px dashed rgba(247,183,49,0.7); padding: 12px 14px; }
+      #rules .rt { font-size: 19px; font-weight: 900; color: var(--amber); margin-bottom: 8px; }
+      #rules .r { position: relative; font-size: 18px; font-weight: 700; padding: 6px 10px 6px 36px;
+        border-radius: 8px; margin-bottom: 5px; }
+      #rules .r .ok, #rules .r .no { position: absolute; left: 8px; top: 5px; font-weight: 900; }
+      #rules .r .ok { color: var(--green); } #rules .r .no { color: var(--orange); }
+      #rules .r .bgno { position: absolute; inset: 0; border-radius: 8px; background: rgba(255,159,67,0.18);
+        border: 2px solid var(--orange); }
+      #think { position: absolute; left: 1060px; top: 405px; padding: 8px 16px; border-radius: 14px;
+        background: var(--surface3); border: 2px solid var(--line); font-size: 22px; font-weight: 800; white-space: nowrap; }
+
+      /* ===== banco em container ===== */
+      #db { position: absolute; left: 1580px; top: 470px; width: 280px; height: 350px; }
+      #db-frame { position: absolute; inset: 0; border: 3px dashed var(--blue); border-radius: 18px;
+        background: rgba(69,183,209,0.07); }
+      #db .dk { position: absolute; left: 14px; top: 10px; display: flex; align-items: center; gap: 8px;
+        font-size: 17px; font-weight: 800; color: var(--blue); }
+      #db .dk img { width: 34px; height: 34px; }
+      #db .pg { position: absolute; left: 16px; right: 16px; top: 56px; bottom: 16px; border-radius: 14px;
+        background: var(--surface2); border: 2px solid var(--line); padding: 12px 12px; }
+      #db .pg .h { display: flex; align-items: center; gap: 10px; font-size: 21px; font-weight: 900; }
+      #db .pg .h img { width: 36px; height: 36px; }
+      #db .pg .port { font-size: 15px; color: var(--dim); font-weight: 700; margin: 4px 0 8px; }
+      #db .tb { border-radius: 8px; overflow: hidden; border: 2px solid var(--line); font-size: 16px; }
+      #db .tb .th { background: var(--code-bg); color: var(--dim); padding: 5px 9px; font-weight: 800; }
+      #db .tb .tr { position: relative; padding: 6px 9px; border-top: 1px solid var(--line); font-weight: 700; }
+      #db .tb .tr span { color: var(--amber); margin-right: 8px; }
+      #row42 { background: rgba(70,211,154,0.16); }
+      #db-off { position: absolute; left: 1560px; top: 832px; width: 320px; text-align: center;
+        font-size: 20px; font-weight: 800; color: var(--dim); }
+
+      /* ===== pacotes (centralizados em left via xPercent) ===== */
+      .pk { position: absolute; height: 52px; padding: 0 16px; border-radius: 999px; display: flex;
+        align-items: center; gap: 10px; white-space: nowrap; font-size: 21px; font-weight: 800;
+        background: #101022; border: 3px solid var(--text); box-shadow: 0 8px 26px rgba(0,0,0,0.5); }
+      .pk .who { position: absolute; left: 50%; top: -26px; transform: translateX(-50%); font-size: 14px;
+        letter-spacing: 2px; color: var(--dim); font-weight: 900; }
+      .pk.resp { border-color: var(--green); } .pk.resp4 { border-color: var(--orange); }
+      .pk.sqlp { border-color: var(--amber); }
+      .pk .ic { width: 24px; height: 24px; }
+
+      /* ===== F3: bolha, F12 ===== */
+      #bubble { position: absolute; left: 612px; top: 360px; width: 360px; padding: 16px 20px; border-radius: 18px;
+        background: var(--surface3); border: 2px solid var(--get); font-size: 22px; font-weight: 700; line-height: 1.35; }
+      #bubble b { color: var(--get); }
+      #f12 { position: absolute; left: 612px; top: 690px; padding: 8px 16px; border-radius: 12px;
+        background: var(--surface3); border: 2px solid var(--line); font-size: 21px; font-weight: 800; white-space: nowrap; }
+      #f12-arrow { position: absolute; left: 700px; top: 660px; width: 230px; height: 0; border-top: 4px dashed var(--dim);
+        transform-origin: 0 50%; }
+      #f12-x { position: absolute; left: 922px; top: 628px; font-size: 44px; font-weight: 900; color: var(--orange); }
+
+      /* ===== cartões de anatomia ===== */
+      #dim { position: absolute; inset: 0; background: rgba(6,6,12,0.78); }
+      .anat { position: absolute; left: 330px; top: 170px; width: 1260px; padding: 30px 36px;
+        background: var(--surface2); border: 3px solid var(--text); border-radius: 26px; }
+      .anat.resp { border-color: var(--green); }
+      .anat .at { font-size: 24px; font-weight: 900; letter-spacing: 3px; color: var(--dim); margin-bottom: 18px; }
+      .anat .ar { position: relative; display: flex; align-items: flex-start; gap: 24px; padding: 13px 16px;
+        border-radius: 14px; margin-bottom: 10px; background: var(--code-bg); border: 2px solid var(--line); }
+      .anat .ar .k { width: 250px; flex: none; font-size: 22px; font-weight: 800; color: var(--dim); padding-top: 4px; }
+      .anat .ar .v { font-size: 29px; font-weight: 700; }
+      .anat .ar .v small { display: block; font-family: "Inter", system-ui, sans-serif; font-size: 19px; color: var(--dim);
+        font-weight: 600; margin-top: 4px; }
+      .anat pre { font-size: 25px; line-height: 1.4; }
+      .j-k { color: var(--get); } .j-s { color: var(--amber); } .j-n { color: var(--green); }
+      #ep-label { position: absolute; right: 36px; top: 24px; padding: 6px 16px; border-radius: 10px;
+        background: rgba(247,183,49,0.14); border: 2px solid var(--amber); font-size: 22px; font-weight: 900; color: var(--amber); }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="140"
+      data-width="1920" data-height="1080">
+
+      <div id="bg" class="clip" data-start="0" data-duration="140" data-track-index="0"></div>
+      <div id="grid" class="clip" data-start="0" data-duration="140" data-track-index="1"></div>
+
+      <div id="stage" class="clip" data-start="0" data-duration="140" data-track-index="2">
+
+        <!-- cabeçalhos dos 6 fluxos -->
+        <div class="hdr h1"><div class="k">FLUXO 1 DE 6</div><div class="t">Um endereço vira um destino</div></div>
+        <div class="hdr h2"><div class="k">FLUXO 2 DE 6</div><div class="t">O navegador pede a página</div></div>
+        <div class="hdr h3"><div class="k">FLUXO 3 DE 6</div><div class="t">O frontend só mostra telas</div></div>
+        <div class="hdr h4"><div class="k">FLUXO 4 DE 6</div><div class="t">A requisição vai até a API… e a API vai ao banco</div></div>
+        <div class="hdr h5"><div class="k">FLUXO 5 DE 6</div><div class="t">Toda requisição vira resposta</div></div>
+        <div class="hdr h6"><div class="k">FLUXO 6 DE 6</div><div class="t">Quando o pedido vem errado</div></div>
+        <div id="dots"><span class="lb">fluxo</span>
+          <span class="d d1"></span><span class="d d2"></span><span class="d d3"></span>
+          <span class="d d4"></span><span class="d d5"></span><span class="d d6"></span></div>
+
+        <!-- fios -->
+        <div id="wire1" class="wire"></div>
+        <div id="wire2" class="wire"></div>
+        <div id="wire3" class="wire"></div>
+
+        <!-- navegador da Maria -->
+        <div id="browser">
+          <div class="bar"><span class="d r"></span><span class="d a"></span><span class="d g"></span>
+            <span class="url mono"><span class="lock">🔒</span> <span id="url-typed">programaai.dev/cursos/fullstack</span></span></div>
+          <div id="pg-blank" class="vp">Nova aba</div>
+          <div id="pg-raw" class="vp">
+            <h1>programa AI</h1>
+            <p>Curso Fullstack - inscrições abertas</p>
+            <div class="f">Nome: <span></span></div>
+            <div class="f">E-mail: <span></span></div>
+            <div class="b">Quero me inscrever</div>
+          </div>
+          <div id="pg-site" class="vp">
+            <div class="nav"><div class="logo">programa<em>AI</em></div><small>Cursos · Sobre</small></div>
+            <div class="hero"><h2>🎓 Curso Fullstack</h2><p>Inscrições abertas · turma nova</p></div>
+            <div class="form">
+              <div class="lbl">Nome</div>
+              <div class="inp"><span id="v-nm-m" class="v">Maria Souza</span><span id="v-nm-j" class="v">João Lima</span></div>
+              <div class="lbl">E-mail</div>
+              <div class="inp"><span id="v-em-m" class="v">maria@email.com</span><div id="em-ring"></div></div>
+              <div id="btn">Quero me inscrever</div>
+            </div>
+            <div id="pg-err">⚠️ Informe o e-mail para continuar</div>
+            <div id="pg-ok"><div class="big">✅ Inscrição confirmada!</div>
+              <div class="sm">Bem-vinda ao Fullstack, Maria.</div><div class="n mono">inscrição nº 42</div></div>
+          </div>
+          <div id="build">
+            <span class="c c1"><img src="assets/html5.svg" alt="" />HTML = estrutura</span>
+            <span class="c c2"><img src="assets/css3.svg" alt="" />CSS = visual</span>
+            <span class="c c3"><img src="assets/javascript.svg" alt="" />JS = ação</span>
+          </div>
+        </div>
+        <div id="lbl-pc">💻 Computador da Maria · navegador</div>
+        <div id="ring"></div>
+        <div id="aqui">⬅ o frontend roda AQUI</div>
+
+        <!-- fluxo 1: URL + DNS -->
+        <div id="urlcard">
+          <div class="ttl">ANATOMIA DA URL</div>
+          <div class="row mono">
+            <div class="part p1"><span class="tx">https://</span><span class="lb">protocolo<small>🔒 conversa protegida</small></span></div>
+            <div class="part p2"><span class="tx">programaai.dev</span><span class="lb">domínio<small>o nome do site</small></span></div>
+            <div class="part p3"><span class="tx">/cursos/fullstack</span><span class="lb">caminho<small>qual página dentro do site</small></span></div>
+          </div>
+        </div>
+        <div id="dns">
+          <div class="ttl">📒 DNS <small>a agenda de contatos da internet</small></div>
+          <div class="row">
+            <span class="chip nm mono">programaai.dev</span>
+            <span id="dns-arrow"></span>
+            <span id="dns-ip" class="chip ip mono">104.21.8.47</span>
+            <span id="dns-ex" class="ex">(IP de exemplo)</span>
+          </div>
+        </div>
+
+        <!-- servidor web -->
+        <div id="websrv">
+          <div class="box-hd">🖥️ Servidor web</div>
+          <div class="box-sub mono">programaai.dev</div>
+          <div class="files mono">
+            <div class="fl f1"><img src="assets/html5.svg" alt="" />index.html</div>
+            <div class="fl f2"><img src="assets/css3.svg" alt="" />style.css</div>
+            <div class="fl f3"><img src="assets/javascript.svg" alt="" />app.js</div>
+          </div>
+        </div>
+
+        <!-- API (o cofre de regras aparece antes, no fluxo 3) -->
+        <div id="api">
+          <div id="api-frame"></div>
+          <div id="api-hd"><div class="box-hd">⚙️ API · backend</div><div class="box-sub mono">api.programaai.dev</div></div>
+          <div id="api-ep" class="mono"><span class="tg post">POST</span>/inscricoes</div>
+          <div id="rules">
+            <div class="rt">🔒 Regras de negócio</div>
+            <div class="r r1"><span class="bgno"></span><span class="ok">✔</span><span class="no">✖</span>e-mail preenchido?</div>
+            <div class="r r2"><span class="ok">✔</span>ainda tem vaga?</div>
+            <div class="r r3"><span class="ok">✔</span>já está inscrita?</div>
+          </div>
+        </div>
+        <div id="think">E os dados? Eu não guardo nada 🤔</div>
+
+        <!-- banco dentro do container -->
+        <div id="db">
+          <div id="db-frame"></div>
+          <div class="dk"><img src="assets/docker.svg" alt="" />container Docker</div>
+          <div class="pg">
+            <div class="h"><img src="assets/postgresql.svg" alt="" />PostgreSQL</div>
+            <div class="port mono">porta 5432 · fala SQL</div>
+            <div class="tb mono">
+              <div class="th">inscricoes</div>
+              <div class="tr"><span>41</span>Ana Lima</div>
+              <div id="row42" class="tr"><span>42</span>Maria Souza</div>
+            </div>
+          </div>
+        </div>
+        <div id="db-off">💤 o banco nem foi chamado</div>
+
+        <!-- fluxo 3: bolha e F12 -->
+        <div id="bubble">“Eu só <b>mostro telas</b>! Vaga, regra, cadastro? Não é comigo.” 🙋</div>
+        <div id="f12-arrow"></div>
+        <div id="f12-x">✖</div>
+        <div id="f12">🛠️ F12 da Maria</div>
+
+        <!-- pacotes -->
+        <div id="pk-get" class="pk mono"><span class="who">REQUISIÇÃO</span><span class="tg get">GET</span>/cursos/fullstack</div>
+        <div id="pk-200" class="pk resp mono"><span class="who">RESPOSTA</span><span class="tg s2">200 OK</span>
+          <img class="ic" src="assets/html5.svg" alt="" /><img class="ic" src="assets/css3.svg" alt="" /><img class="ic" src="assets/javascript.svg" alt="" /></div>
+        <div id="pk-post" class="pk mono"><span class="who">REQUISIÇÃO</span><span class="tg post">POST</span>/inscricoes {…}</div>
+        <div id="pk-sql" class="pk sqlp mono"><span class="who">SQL</span><span class="tg sql">INSERT</span>inscricoes</div>
+        <div id="pk-id" class="pk sqlp mono"><span class="who">RESULTADO</span>id = 42</div>
+        <div id="pk-201" class="pk resp mono"><span class="who">RESPOSTA</span><span class="tg s2">201 Created</span>{ "id": 42 }</div>
+        <div id="pk-post2" class="pk mono"><span class="who">REQUISIÇÃO</span><span class="tg post">POST</span>/inscricoes {…}</div>
+        <div id="pk-400" class="pk resp4 mono"><span class="who">RESPOSTA</span><span class="tg s4">400 Bad Request</span></div>
+
+        <!-- anatomias -->
+        <div id="dim"></div>
+        <div id="req-card" class="anat">
+          <div class="at">📨 DENTRO DA REQUISIÇÃO</div>
+          <div class="ar a1"><span class="k">Método</span><span class="v mono"><span class="tg post">POST</span><small>“quero CRIAR algo novo”</small></span></div>
+          <div class="ar a2"><span class="k">URL</span><span class="v mono">https://api.programaai.dev/inscricoes<small>para onde vai (endereço de exemplo)</small></span></div>
+          <div class="ar a3"><span class="k">Cabeçalho</span><span class="v mono">Content-Type: application/json<small>“o corpo está em JSON”</small></span></div>
+          <div class="ar a4"><span class="k">Corpo</span><pre class="v mono">{ <span class="j-k">"nome"</span>: <span class="j-s">"Maria Souza"</span>,
+  <span class="j-k">"email"</span>: <span class="j-s">"maria@email.com"</span>, <span class="j-k">"curso"</span>: <span class="j-s">"fullstack"</span> }</pre></div>
+          <div id="ep-label">endpoint = método + URL</div>
+        </div>
+        <div id="resp-card" class="anat resp">
+          <div class="at">📬 DENTRO DA RESPOSTA</div>
+          <div class="ar b1"><span class="k">Status</span><span class="v mono"><span class="tg s2">201 Created</span><small>“criei o que você pediu”</small></span></div>
+          <div class="ar b2"><span class="k">Cabeçalho</span><span class="v mono">Content-Type: application/json<small>“a resposta também está em JSON”</small></span></div>
+          <div class="ar b3"><span class="k">Corpo</span><pre class="v mono">{ <span class="j-k">"id"</span>: <span class="j-n">42</span>, <span class="j-k">"nome"</span>: <span class="j-s">"Maria Souza"</span>, <span class="j-k">"curso"</span>: <span class="j-s">"fullstack"</span> }</pre></div>
+        </div>
+
+        <!-- legendas -->
+        <div class="cap" id="c1a"><span>Maria quer se inscrever no curso <b>Fullstack</b>. Ela digita o endereço no navegador.</span></div>
+        <div class="cap" id="c1b"><span>A internet não entende nomes. O <b>DNS</b> é uma agenda: troca o nome do site pelo <b>IP</b>, o endereço do servidor.</span></div>
+        <div class="cap" id="c2a"><span>O navegador envia uma <b>requisição</b>: <span class="tg get">GET</span> “me dá a página”. Ela viaja até o <b>servidor web</b>.</span></div>
+        <div class="cap" id="c2b"><span>O servidor devolve uma <b>resposta</b>: <span class="tg s2">200 OK</span> + três arquivos: HTML, CSS e JavaScript.</span></div>
+        <div class="cap" id="c2c"><span>Atenção: o frontend <b>não roda no servidor</b>. Ele roda aqui, no navegador da Maria.</span></div>
+        <div class="cap" id="c3a"><span>Maria preenche o formulário e clica em “Quero me inscrever”.</span></div>
+        <div class="cap" id="c3b"><span>O frontend <b>só mostra telas</b>. Ele não sabe se ainda tem vaga e não guarda inscrições.</span></div>
+        <div class="cap" id="c3c"><span>Tudo que roda no navegador, a Maria pode abrir e alterar (F12). Por isso as <b>regras</b> ficam no servidor.</span></div>
+        <div class="cap" id="c4a"><span>Para cadastrar, o frontend faz <b>outra requisição</b>, agora para a <b>API</b>. Veja o que vai dentro dela:</span></div>
+        <div class="cap" id="c4b"><span><b>Endpoint</b> = método + endereço. É a “porta” da API que faz UMA coisa: aqui, criar uma inscrição.</span></div>
+        <div class="cap" id="c4c"><span>A API confere as regras… tudo certo! Mas onde ficam as inscrições? <b>A API não guarda dados.</b></span></div>
+        <div class="cap" id="c4d"><span>Quem guarda é o <b>banco de dados</b>: um PostgreSQL rodando dentro de um <b>container Docker</b>.</span></div>
+        <div class="cap" id="c4e"><span>O banco grava a linha e devolve o número gerado: <b>id 42</b>. Com o banco, a API não fala HTTP: fala <b>SQL</b>.</span></div>
+        <div class="cap" id="c5a"><span>Agora a API monta a <b>resposta</b>. Toda requisição volta como resposta: <b>status + corpo</b>.</span></div>
+        <div class="cap" id="c5b"><span>A resposta volta pelo mesmo caminho. O frontend lê o status e mostra a tela certa.</span></div>
+        <div class="cap" id="c5c"><span>Resumo: <span class="tg get">GET</span> ➜ <span class="tg s2">200</span> no fluxo 2. <span class="tg post">POST</span> ➜ <span class="tg s2">201</span> agora. Pedido e resposta, sempre em par.</span></div>
+        <div class="cap" id="c6a"><span>E quando o pedido vem errado? João esqueceu o e-mail e clicou em inscrever.</span></div>
+        <div class="cap" id="c6b"><span>A API confere a primeira regra: e-mail vazio! Ela recusa <b>antes</b> de chegar ao banco.</span></div>
+        <div class="cap" id="c6c"><span><span class="tg s4">400 Bad Request</span>: o pedido precisa ser corrigido. O front mostra a mensagem; <b>a API decide</b>.</span></div>
+      </div>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      const E = "power2.out";
+
+      /* ---------- helpers (tempos absolutos, seek-safe) ---------- */
+      const show = (sel, t, d = 0.7, from = {}) => {
+        tl.fromTo(sel, { opacity: 0, ...from }, { opacity: 1, x: 0, y: 0, scale: 1, duration: d, ease: E, immediateRender: false }, t);
+      };
+      const hide = (sel, t, d = 0.5) => tl.to(sel, { opacity: 0, duration: d, ease: "power1.in" }, t);
+      const cap = (id, tIn, tOut) => {
+        tl.fromTo("#" + id, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.6, ease: E, immediateRender: false }, tIn);
+        if (tOut !== undefined) hide("#" + id, tOut, 0.4);
+      };
+      /* pacote: aparece no ponto de partida, viaja devagar, some no destino */
+      const travel = (sel, t, dx, d = 2.0) => {
+        tl.to(sel, { opacity: 1, duration: 0.5, ease: E }, t);
+        tl.to(sel, { x: dx, duration: d, ease: "sine.inOut" }, t + 0.5);
+        tl.to(sel, { opacity: 0, duration: 0.4, ease: "power1.in" }, t + 0.5 + d + 0.3);
+      };
+      /* digitação: revela o texto da esquerda para a direita, letra a letra */
+      const type = (sel, t, d, n) => {
+        tl.fromTo(sel, { clipPath: "inset(0% 100% 0% 0%)", opacity: 1 },
+          { clipPath: "inset(0% 0% 0% 0%)", duration: d, ease: "steps(" + n + ")", immediateRender: false }, t);
+      };
+      const press = (t) => {
+        tl.to("#btn", { scale: 0.94, duration: 0.25, ease: "sine.inOut", yoyo: true, repeat: 1 }, t);
+        tl.to("#btn", { boxShadow: "0 0 0 6px rgba(108,99,255,0.45)", duration: 0.3 }, t);
+        tl.to("#btn", { boxShadow: "0 0 0 0px rgba(108,99,255,0)", duration: 0.6 }, t + 0.6);
+      };
+      const hdr = (n, t) => {
+        if (n > 1) hide(".hdr.h" + (n - 1), t, 0.4);
+        show(".hdr.h" + n, t + 0.3, 0.6, { y: -10 });
+        tl.to("#dots .d" + n, { backgroundColor: "#f7b731", borderColor: "#f7b731", duration: 0.5 }, t + 0.3);
+        if (n > 1) tl.to("#dots .d" + (n - 1), { backgroundColor: "#6b5a2a", borderColor: "#6b5a2a", duration: 0.5 }, t + 0.3);
+      };
+
+      /* ---------- estados iniciais ---------- */
+      tl.set(".hdr, #dots, #browser, #lbl-pc, #ring, #aqui, #urlcard, #dns, #websrv, .wire, #api-frame, #api-hd, #api-ep, #rules, #think, #db, #db-off, #bubble, #f12, #f12-x, #dim, .anat, .cap, .pk", { opacity: 0 }, 0);
+      tl.set(".pk", { xPercent: -50, x: 0 }, 0);
+      tl.set("#pg-raw, #pg-site, #pg-err, #pg-ok, #em-ring, #v-nm-j, #build", { opacity: 0 }, 0);
+      tl.set("#build .c", { opacity: 0.35 }, 0);
+      tl.set("#url-typed", { clipPath: "inset(0% 100% 0% 0%)" }, 0);
+      tl.set("#v-nm-m, #v-em-m, #v-nm-j", { clipPath: "inset(0% 100% 0% 0%)" }, 0);
+      tl.set("#urlcard .lb", { opacity: 0, y: 10 }, 0);
+      tl.set("#dns-arrow", { scaleX: 0 }, 0);
+      tl.set("#dns-ip, #dns-ex", { opacity: 0 }, 0);
+      tl.set("#websrv .fl", { borderColor: "#2c2c4a" }, 0);
+      tl.set("#rules .r", { opacity: 0 }, 0);
+      tl.set("#rules .ok, #rules .no, #rules .bgno", { opacity: 0 }, 0);
+      tl.set("#row42", { opacity: 0 }, 0);
+      tl.set("#f12-arrow", { scaleX: 0 }, 0);
+      tl.set("#req-card .ar, #resp-card .ar, #ep-label", { opacity: 0 }, 0);
+
+      /* posições de partida dos pacotes (centro do pill) */
+      gsap.set("#pk-get", { left: 620, top: 248 });
+      gsap.set("#pk-200", { left: 980, top: 248 });
+      gsap.set("#pk-post", { left: 620, top: 572 });
+      gsap.set("#pk-post2", { left: 620, top: 572 });
+      gsap.set("#pk-sql", { left: 1310, top: 572 });
+      gsap.set("#pk-id", { left: 1600, top: 572 });
+      gsap.set("#pk-201", { left: 980, top: 572 });
+      gsap.set("#pk-400", { left: 980, top: 572 });
+
+      /* =========================================================
+         FLUXO 1 · 0–18 s · URL e DNS
+         ========================================================= */
+      hdr(1, 0);
+      show("#dots", 0.4, 0.6);
+      show("#browser", 0.9, 0.9, { scale: 0.96 });
+      show("#lbl-pc", 1.4, 0.7);
+      cap("c1a", 2.0, 8.0);
+      type("#url-typed", 2.6, 2.4, 31);
+      show("#urlcard", 5.0, 0.8, { y: 20 });
+      show("#urlcard .p1 .lb", 5.9, 0.6, { y: 10 });
+      show("#urlcard .p2 .lb", 6.9, 0.6, { y: 10 });
+      show("#urlcard .p3 .lb", 7.9, 0.6, { y: 10 });
+      cap("c1b", 8.3, 18.0);
+      show("#dns", 9.0, 0.8, { y: 20 });
+      tl.to("#dns .nm", { borderColor: "#f7b731", duration: 0.5 }, 10.2);
+      tl.to("#dns-arrow", { scaleX: 1, duration: 1.0, ease: "power1.inOut" }, 10.7);
+      show("#dns-ip", 11.9, 0.7, { x: -10 });
+      show("#dns-ex", 12.8, 0.6);
+
+      /* =========================================================
+         FLUXO 2 · 18–40 s · GET da página e o front no navegador
+         ========================================================= */
+      hdr(2, 18.0);
+      hide("#urlcard, #dns", 18.0, 0.6);
+      show("#websrv", 18.8, 0.9, { x: 30 });
+      show("#wire1", 19.3, 0.6);
+      cap("c2a", 19.6, 25.6);
+      travel("#pk-get", 20.6, 360, 2.0);
+      tl.to("#websrv", { scale: 1.03, duration: 0.4, yoyo: true, repeat: 1, ease: "sine.inOut" }, 23.3);
+      tl.to("#websrv .fl", { borderColor: "#46d39a", duration: 0.4, stagger: 0.5 }, 24.0);
+      cap("c2b", 25.8, 31.4);
+      travel("#pk-200", 26.2, -360, 2.0);
+      hide("#pg-blank", 29.0, 0.5);
+      show("#build", 29.0, 0.5);
+      show("#pg-raw", 29.1, 0.8);
+      tl.to("#build .c1", { opacity: 1, borderColor: "#e44d26", color: "#eef0f8", duration: 0.5 }, 29.3);
+      show("#pg-site", 30.4, 0.9);
+      tl.to("#build .c2", { opacity: 1, borderColor: "#2965f1", color: "#eef0f8", duration: 0.5 }, 30.6);
+      tl.to("#build .c3", { opacity: 1, borderColor: "#f7df1e", color: "#eef0f8", duration: 0.5 }, 31.2);
+      cap("c2c", 31.6, 40.0);
+      show("#ring", 32.2, 0.7, { scale: 1.03 });
+      show("#aqui", 32.8, 0.7, { x: 16 });
+      tl.to("#ring", { scale: 1.015, duration: 0.9, yoyo: true, repeat: 3, ease: "sine.inOut" }, 33.2);
+
+      /* =========================================================
+         FLUXO 3 · 40–61 s · o front só mostra telas
+         ========================================================= */
+      hdr(3, 40.0);
+      hide("#ring, #aqui, #build", 40.0, 0.5);
+      cap("c3a", 40.6, 46.0);
+      type("#v-nm-m", 41.1, 1.6, 11);
+      type("#v-em-m", 43.1, 1.8, 15);
+      press(45.2);
+      cap("c3b", 46.2, 52.8);
+      show("#bubble", 46.7, 0.7, { y: 12 });
+      show("#rules", 48.0, 0.8, { y: 16 });
+      tl.fromTo("#rules .r", { opacity: 0, x: -10 }, { opacity: 1, x: 0, duration: 0.5, stagger: 0.6, ease: E, immediateRender: false }, 48.9);
+      cap("c3c", 53.0, 61.0);
+      hide("#bubble", 53.3, 0.5);
+      show("#f12", 53.8, 0.6, { y: 10 });
+      tl.to("#f12-arrow", { opacity: 1, duration: 0.2 }, 54.5);
+      tl.to("#f12-arrow", { scaleX: 1, duration: 1.4, ease: "power1.inOut" }, 54.5);
+      show("#f12-x", 56.1, 0.5, { scale: 0.6 });
+      tl.to("#rules", { borderColor: "rgba(247,183,49,1)", duration: 0.5 }, 56.3);
+
+      /* =========================================================
+         FLUXO 4 · 61–97 s · requisição até a API e a API no banco
+         ========================================================= */
+      hdr(4, 61.0);
+      hide("#f12, #f12-arrow, #f12-x", 61.0, 0.5);
+      cap("c4a", 61.6, 68.3);
+      show("#dim", 62.2, 0.6);
+      show("#req-card", 62.4, 0.8, { scale: 0.96 });
+      show("#req-card .a1", 63.2, 0.6, { x: -12 });
+      show("#req-card .a2", 64.4, 0.6, { x: -12 });
+      show("#req-card .a3", 65.6, 0.6, { x: -12 });
+      show("#req-card .a4", 66.8, 0.6, { x: -12 });
+      cap("c4b", 68.5, 75.4);
+      tl.to("#req-card .a1, #req-card .a2", { borderColor: "#f7b731", duration: 0.6 }, 68.9);
+      show("#ep-label", 69.3, 0.6, { y: -8 });
+      /* o cartão "encolhe" para virar o pacote que sai do navegador */
+      tl.to("#req-card", { scale: 0.2, opacity: 0, x: -520, y: 260, duration: 1.0, ease: "power2.in" }, 72.6);
+      hide("#dim", 72.9, 0.7);
+      show("#api-frame", 73.6, 0.9);
+      show("#api-hd", 73.9, 0.7);
+      show("#api-ep", 74.2, 0.7);
+      show("#wire2", 73.8, 0.6);
+      travel("#pk-post", 74.4, 360, 2.0);
+      tl.to("#api-ep", { borderColor: "#46d39a", duration: 0.4 }, 77.0);
+      cap("c4c", 75.6, 82.2);
+      tl.fromTo("#rules .r1 .ok, #rules .r2 .ok, #rules .r3 .ok", { opacity: 0, scale: 0.5 },
+        { opacity: 1, scale: 1, duration: 0.4, stagger: 0.8, ease: "back.out(1.6)", immediateRender: false }, 77.8);
+      show("#think", 80.4, 0.6, { y: 8 });
+      cap("c4d", 82.4, 88.2);
+      hide("#think", 82.6, 0.4);
+      show("#db", 82.9, 1.0, { x: 30 });
+      show("#wire3", 83.5, 0.6);
+      travel("#pk-sql", 84.6, 300, 2.0);
+      show("#row42", 87.6, 0.7, { x: -8 });
+      cap("c4e", 88.4, 97.0);
+      travel("#pk-id", 89.8, -300, 1.8);
+      tl.to("#api-ep", { borderColor: "#2c2c4a", duration: 0.5 }, 93.0);
+
+      /* =========================================================
+         FLUXO 5 · 97–118 s · a resposta volta
+         ========================================================= */
+      hdr(5, 97.0);
+      cap("c5a", 97.6, 103.8);
+      tl.to("#dim", { opacity: 1, duration: 0.6 }, 98.0);
+      show("#resp-card", 98.2, 0.8, { scale: 0.96 });
+      show("#resp-card .b1", 99.0, 0.6, { x: -12 });
+      show("#resp-card .b2", 100.2, 0.6, { x: -12 });
+      show("#resp-card .b3", 101.4, 0.6, { x: -12 });
+      cap("c5b", 104.0, 110.8);
+      tl.to("#resp-card", { scale: 0.2, opacity: 0, x: 60, y: 300, duration: 1.0, ease: "power2.in" }, 104.3);
+      tl.to("#dim", { opacity: 0, duration: 0.7 }, 104.6);
+      travel("#pk-201", 105.3, -360, 2.0);
+      show("#pg-ok", 108.2, 0.8, { scale: 0.96 });
+      cap("c5c", 111.0, 118.0);
+
+      /* =========================================================
+         FLUXO 6 · 118–140 s · o pedido vem errado (400)
+         ========================================================= */
+      hdr(6, 118.0);
+      hide("#pg-ok, #v-nm-m, #v-em-m", 118.4, 0.6);
+      tl.to("#rules .ok", { opacity: 0, duration: 0.4 }, 118.4);
+      cap("c6a", 118.6, 124.3);
+      type("#v-nm-j", 119.6, 1.3, 9);
+      show("#em-ring", 121.4, 0.6);
+      press(122.4);
+      travel("#pk-post2", 123.0, 360, 2.0);
+      cap("c6b", 124.5, 130.8);
+      tl.to("#rules .r1 .bgno", { opacity: 1, duration: 0.5 }, 126.0);
+      tl.to("#rules .r1 .no", { opacity: 1, duration: 0.5 }, 126.0);
+      tl.to("#api", { x: 5, duration: 0.25, yoyo: true, repeat: 3, ease: "sine.inOut" }, 126.2);
+      tl.to("#db", { opacity: 0.35, duration: 0.8 }, 127.2);
+      show("#db-off", 127.6, 0.6);
+      travel("#pk-400", 128.8, -360, 2.0);
+      cap("c6c", 131.0);
+      show("#pg-err", 131.8, 0.6, { y: -6 });
+
+      tl.to({}, { duration: 0.01 }, 139.99);
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

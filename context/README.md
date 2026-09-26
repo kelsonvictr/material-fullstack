@@ -24,6 +24,7 @@ A ideia (Spec-Driven Development) é simples: **nunca perder o contexto** — qu
 | [11a-levantamento-backend.md](11a-levantamento-backend.md) | O que o material de backend assume vs ensina de Java (base do Cap 11) |
 | [11b-catalogo-erros-javac.md](11b-catalogo-erros-javac.md) | Mensagens REAIS do javac/JVM 21 (25 erros + 14 saídas de runtime) para citar verbatim |
 | [12-plano-cap-12-spring.md](12-plano-cap-12-spring.md) | Plano e implementação do Cap 12: Initializr, Docker/PostgreSQL, SQL, IntelliJ/JDK 21 e CRUD de Fornecedor; checkpoints e validação |
+| [12a-plano-teoria-http.md](12a-plano-teoria-http.md) | Parte 0 do Cap 12: HTTP, API e REST com o filme HyperFrames `jornada-http` (6 fluxos, player controlado pelo professor), labs de status e de endpoints |
 
 ## Regra de ouro
 

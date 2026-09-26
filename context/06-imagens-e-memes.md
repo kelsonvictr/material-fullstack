@@ -35,6 +35,12 @@ Logos oficiais em SVG: HTML5, CSS3, JavaScript, React (e depois Vite, Node, json
    subiu pra 1) gritando **"EU MUDEI A TELA COM CÓDIGO"**. A euforia da primeira vez que o JS mexe na
    página. Usado no fim da seção "Juntando tudo" do Cap 3. (gpt-image-1, fotorrealista.)
 
+5. **REST × API / Cap 12 (H6 `#rest`)** — `meme-rest-api-fita.png`: meme russo das duas bicicletas
+   (back-end roxa, front-end verde) unidas por fita adesiva rotulada "REST API". Trazido pelo
+   próprio professor (2026-09-26). Analogia dele: **API é a fita; REST é o tipo de fita que segura bem
+   as duas bikes**. Box “Onde a analogia para”: fita é gambiarra, API real é contrato; existem outros
+   tipos de fita (GraphQL).
+
 ## Convenções de arquivo
 - Memes: `assets/memes/meme-NN-slug.png`
 - Logos/SVGs: `assets/svg/` ou `assets/logos-empresas/` (logos de empresas do "sobre").
