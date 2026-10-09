@@ -25,6 +25,7 @@ A ideia (Spec-Driven Development) é simples: **nunca perder o contexto** — qu
 | [11b-catalogo-erros-javac.md](11b-catalogo-erros-javac.md) | Mensagens REAIS do javac/JVM 21 (25 erros + 14 saídas de runtime) para citar verbatim |
 | [12-plano-cap-12-spring.md](12-plano-cap-12-spring.md) | Plano e implementação do Cap 12: Initializr, Docker/PostgreSQL, SQL, IntelliJ/JDK 21 e CRUD de Fornecedor; checkpoints e validação |
 | [12a-plano-teoria-http.md](12a-plano-teoria-http.md) | Parte 0 do Cap 12: HTTP, API e REST com o filme HyperFrames `jornada-http` (6 fluxos, player controlado pelo professor), labs de status e de endpoints |
+| [13-plano-cap-13-dto-validacao.md](13-plano-cap-13-dto-validacao.md) | Plano e implementação do Cap 13: Produto com DTO/record/Mapper, BigDecimal, lambda/stream, 404, Bean Validation (400), tratador de erros, @ManyToOne e Cliente feito pelo aluno; fonte única `tooling/cap13/` + build e validadores |
 
 ## Regra de ouro
 

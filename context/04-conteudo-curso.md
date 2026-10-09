@@ -24,10 +24,15 @@ com a API real é uma etapa posterior. Os materiais antigos de backend servem de
 | 10 | `capitulos/10-projeto-gestor/` | **Projeto: GestorPRO** | Sistema de clientes/fornecedores/produtos: CRUD (axios post/put/delete), AGENTS.md, escada "na mão → junto → você comanda" — fecha o front |
 | 11 | `capitulos/11-java-oo-basico/` | **Java & OO direto ao ponto** | Um projeto em 4h10: JDK 21 pelo IntelliJ, Main, Produto, classe/objeto, construtor/this, encapsulamento, List, ProdutoService, teatro didático e ponte para Spring |
 | 12 | `capitulos/12-spring-primeira-api/` | **Spring: nossa primeira API** | Framework, Initializr, Docker Desktop, containers/volumes, PostgreSQL, SQL, IntelliJ/JDK 21 e cinco endpoints de Fornecedor sem DTO; três simulações e caderno livre |
+| 13 | `capitulos/13-spring-dto-validacao/` | **Produto e Cliente: a API fica profissional** | DTO/record, Mapper, BigDecimal, lambda/stream, 404, Bean Validation + tratador (400), `@ManyToOne` Produto → Fornecedor; Cliente construído pelo aluno; 3 simulações |
 
 **Cap 12 implementado localmente:** especificação e evidências em
 [12-plano-cap-12-spring.md](12-plano-cap-12-spring.md). Produto é a próxima entidade proposta
 para introduzir DTO gradualmente.
+
+**Cap 13 implementado (2026-10-09):** `capitulos/13-spring-dto-validacao/` —
+Produto e Cliente com DTO, validação, erros e `@ManyToOne`; paga as três dívidas do Cap 12. Spec e evidências em
+[13-plano-cap-13-dto-validacao.md](13-plano-cap-13-dto-validacao.md).
 
 > **Mudança de mapa (2026-08-14):** o antigo "Cap 9 — Integração real (JWT/Spring/deploy)"
 > **saiu do frontend** e migra para a metade backend (quando a turma construir a API).

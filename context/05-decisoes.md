@@ -893,6 +893,36 @@ Lição registrada: **prompt de design vago é igual prompt de código vago — 
 ao estagiário**, e o estagiário devolve a média. Vale citar em aula que foi um achado real
 de teste.
 
+## 2026-10-09 — Cap 13 planejado; @ManyToOne já; integração React só no fim
+
+Plano do Cap 13 em `13-plano-cap-13-dto-validacao.md` (rascunho): Produto com DTO/record/
+Mapper, BigDecimal, lambda/stream, 404, Bean Validation (400), um `@RestControllerAdvice`, e
+Cliente feito pelo aluno. Pedido do prof: "básico bom de tudo, sem overkill".
+
+Decisões do professor no mesmo dia:
+
+- **`@ManyToOne` entra já no Cap 13** (Produto → Fornecedor): "importante termos algum
+  ManyToOne já". Formato mínimo: só o lado do Produto, Request com `fornecedorId`, Response
+  achatado (`fornecedorId` + `fornecedorNome`), 404 para fornecedor inexistente.
+- **Integração com o React fica para bem depois**: só com o backend todo consolidado, e em
+  **um único capítulo**, feito com IA. Os capítulos de backend não prometem nem antecipam a
+  integração (sem CORS, sem trocar `VITE_API_URL` no meio do caminho).
+
+## 2026-10-09 (cont.) — Cap 13 construído e fonte única para capítulos de backend
+
+O prof aprovou as recomendações do plano (criadoEm sim; 404 via properties; `exception/
+TratadorDeErros`; sem vozes; sem meme). Capítulo construído e validado no mesmo dia — detalhes e
+evidências em `13-plano-cap-13-dto-validacao.md` (seção “Implementação”).
+
+- **Fonte única** `tooling/cap13/codigo.py` + `pagina-*.html` → `tooling/build-cap13.py` gera HTML,
+  checkpoints e ZIPs; linhas que mudam na etapa ganham fundo verde automaticamente. Reaproveitar
+  nos próximos capítulos de backend em vez de escrever HTML com `<span>` à mão.
+- **Spring Boot 4**: mensagens de erro na resposta = `spring.web.error.include-message=always`
+  (o nome antigo `server.error.*` é ignorado). Registrado no capítulo como aviso.
+- **Contas novas** deixadas de propósito para os próximos caps: excluir fornecedor com produtos
+  responde 500 (traduzir para 409); `ddl-auto=update` não lida com coluna obrigatória em tabela
+  com dados (motivo futuro para migrations). Fornecedor sem DTO = desafio para casa.
+
 ## Pendências reconhecidas
 - Planejar em detalhe os **Caps 6–9** (React: state → efeitos/dados → router → integração).
   Caps 4 e 5 já fixaram o tom, o setup Vite base e a Mini-loja como artefato contínuo do arco React.

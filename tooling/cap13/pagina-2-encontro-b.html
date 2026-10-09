@@ -1,0 +1,261 @@
+
+<section class="step-section" id="validacao"><div class="step-header"><div class="step-number sn-green">10</div><div><h2 class="step-title">O segurança da porta</h2><p class="step-sub">Conta nº 3: recusar com 400 antes de chegar ao banco.</p></div></div><div class="card">
+<div class="part-badge">ENCONTRO B · SEGURANÇA E RELACIONAMENTO</div>
+<p>Comece o encontro vendo o problema de novo. Com a API rodando, envie um POST para <code>/produtos</code> com:</p>
+<!--CODE json|Body · um produto que não deveria existir-->
+{
+  "nome": "",
+  "preco": -5,
+  "estoque": 1
+}
+<!--/CODE-->
+<p><strong>O que acontece hoje:</strong> 201 Created. Rode o <code>SELECT</code> de produtos: lá está um produto sem nome, custando menos cinco reais. O DTO decidiu <em>quais campos</em> entram, mas ninguém conferiu <em>se os valores fazem sentido</em>.</p>
+<div class="analogy"><h3>🎫 O segurança do show</h3><p>Na porta do show, o segurança tem uma prancheta com regras: ingresso na mão, pulseira certa, maior de idade. Ele confere <strong>antes</strong> de deixar entrar. Quem é barrado não chega ao balcão do bar nem ao palco. E ele não precisa ligar para ninguém para conferir essas regras: está tudo na prancheta e no que a pessoa trouxe.</p></div>
+<p>Na nossa API, a prancheta são <strong>anotações nos componentes do DTO</strong>, e o segurança é o próprio Spring, que confere o formulário antes de chamar o Controller. Isso se chama <strong>Bean Validation</strong>, a validação padrão do Java para objetos.</p>
+<div class="concept"><h3>📍 Onde mora cada regra</h3><p>No Cap 12, dissemos que a regra “o nome não pode ficar vazio” ficaria no Service. Agora que temos DTO, dá para separar melhor:</p><div class="table-scroll"><table><thead><tr><th>Tipo de regra</th><th>Exemplos</th><th>Quem confere</th></tr></thead><tbody><tr><td><strong>Formato:</strong> dá para conferir só olhando o JSON</td><td>nome preenchido · preço maior que zero · e-mail com formato de e-mail</td><td>🚪 A porta: anotações no DTO + <code>@Valid</code></td></tr><tr><td><strong>Dados:</strong> precisa consultar o banco</td><td>esse produto existe? esse fornecedor existe?</td><td>⚙️ O Service, perguntando ao Repository</td></tr></tbody></table></div><p>Os 404 que você fez no Encontro A são do segundo tipo. Hoje entra o primeiro.</p></div>
+<h3>Passo 1 · Instalar o segurança: a dependência de validação</h3>
+<p>No Cap 12, o Initializr gerou o projeto sem a validação. Vamos acrescentá-la no <code>pom.xml</code>, a lista de dependências do Maven. Abra o arquivo e cole este bloco <strong>dentro</strong> de <code>&lt;dependencies&gt;</code>, ao lado das outras:</p>
+<!--POMDEP-->
+<p>Depois de salvar, o IntelliJ mostra um pequeno ícone do Maven com uma seta circular no canto do editor (<strong>Load Maven Changes</strong>). Clique nele e espere o download terminar. Se o ícone não aparecer, abra a aba <strong>Maven</strong> na lateral direita e clique em <strong>Reload All Maven Projects</strong>.</p>
+<details class="answer"><summary>🐛 Os imports ficaram vermelhos?</summary><div><p>Se o compilador responder <code>package jakarta.validation.constraints does not exist</code>, o Maven ainda não carregou a dependência nova. Confira se o bloco está dentro de <code>&lt;dependencies&gt;</code> (e não dentro de outro <code>&lt;dependency&gt;</code>), salve e recarregue o Maven de novo.</p></div></details>
+<h3>Passo 2 · Escrever a prancheta</h3>
+<p>Quatro anotações bastam para o nosso produto. Cada uma barra um tipo de JSON:</p>
+<div class="table-scroll"><table><caption>As anotações do Produto</caption><thead><tr><th>Anotação</th><th>Recusa quando…</th><th>Exemplo barrado</th></tr></thead><tbody><tr><td><code>@NotBlank</code></td><td>o texto é nulo, vazio ou só tem espaços</td><td><code>"nome": "   "</code></td></tr><tr><td><code>@NotNull</code></td><td>o valor não veio</td><td>JSON sem <code>"preco"</code></td></tr><tr><td><code>@Positive</code></td><td>o número é zero ou negativo</td><td><code>"preco": 0</code></td></tr><tr><td><code>@PositiveOrZero</code></td><td>o número é negativo (zero pode)</td><td><code>"estoque": -1</code></td></tr></tbody></table></div>
+<div class="table-scroll"><table><caption>@NotNull × @NotBlank, para textos</caption><thead><tr><th>Valor recebido</th><th>@NotNull</th><th>@NotBlank</th></tr></thead><tbody><tr><td><code>null</code> (campo ausente)</td><td>❌ recusa</td><td>❌ recusa</td></tr><tr><td><code>""</code></td><td>✅ aceita</td><td>❌ recusa</td></tr><tr><td><code>"   "</code></td><td>✅ aceita</td><td>❌ recusa</td></tr></tbody></table></div>
+<p>Para números, usamos <code>@NotNull</code>: número não tem “espaço em branco”. Para textos obrigatórios, <code>@NotBlank</code>. Agora as anotações vão para o DTO de entrada, cada uma em cima do componente que protege:</p>
+<!--JAVA 6 dto/ProdutoRequestDTO.java-->
+<p>O <code>message = "..."</code> é o texto que explica a recusa. Escrevemos em português, explicitamente, para não depender do idioma configurado no computador.</p>
+<h3>Passo 3 · Mandar o segurança trabalhar: <code>@Valid</code></h3>
+<p>As anotações sozinhas são só uma prancheta na gaveta. Quem manda o Spring <strong>conferir</strong> é a anotação <code>@Valid</code>, colocada junto do <code>@RequestBody</code>. Ela vai no POST e no PUT, os dois endpoints que recebem um formulário:</p>
+<!--JAVA 6 controller/ProdutoController.java-->
+<div class="warning"><strong>Sem <code>@Valid</code>, nada acontece.</strong> As regras continuam escritas no DTO e ninguém confere. O código compila, a API sobe e o lixo entra, sem erro nenhum. É o bug mais comum deste capítulo.</div>
+<h3>Passo 4 · Testar</h3>
+<p>Reinicie e mande o mesmo JSON do começo da seção. <strong>Resultado esperado:</strong> <code>400 Bad Request</code>. Rode o <code>SELECT</code>: nenhuma linha nova. O pedido foi barrado na porta, e o Service e o banco nem souberam dele. Mas olhe o corpo da resposta:</p>
+<!--CODE json|Resposta real · 400 Bad Request-->
+{
+  "timestamp": "2026-10-09T17:50:41.173Z",
+  "status": 400,
+  "error": "Bad Request",
+  "path": "/produtos"
+}
+<!--/CODE-->
+<p>Recusou, mas não disse <strong>por quê</strong>. Guarde esse incômodo: ele é o motivo da próxima seção.</p>
+<div class="lab" id="door-lab"><div class="lab-heading"><span>LAB 02 · SIMULAÇÃO</span><h3>🎫 Segurança da porta</h3><p>Escolha um JSON, decida se o <code>@Valid</code> está no Controller e envie. Nenhum servidor real é chamado; as respostas são as que a nossa API deu de verdade.</p></div>
+<div class="field-row"><label>JSON enviado<select id="door-case"><option value="valido">Válido · Teclado, 320.00, estoque 12</option><option value="vazio">Nome vazio · ""</option><option value="espacos">Nome só com espaços · "   "</option><option value="negativo">Preço negativo · -5</option><option value="semestoque">Sem o campo estoque</option></select></label><label class="check-label"><input type="checkbox" id="door-valid" checked> <code>@Valid</code> no Controller</label></div>
+<pre class="door-json" id="door-json"></pre>
+<ul class="clipboard" id="door-rules" aria-label="Regras da prancheta"></ul>
+<div class="request-state"><article><small>RESPOSTA</small><strong id="door-status">—</strong><p id="door-body"></p></article><article><small>TABELA produtos</small><strong id="door-rows">2 produtos</strong><p id="door-db"></p></article></div>
+<p class="lab-caption" id="door-caption" role="status" aria-live="polite">Escolha um caso e clique em Enviar.</p>
+<div class="lab-controls"><button type="button" id="door-send">Enviar →</button><button type="button" id="door-reset">Recomeçar</button></div></div>
+<div class="decision" data-explanation="Sem @Valid as anotações não são conferidas. Nome vazio e preço negativo são valores possíveis para String e BigDecimal, e as colunas aceitam esses valores; só um campo ausente com NOT NULL seria recusado pelo banco, com 500."><h4>🧠 Você esqueceu o <code>@Valid</code> e enviou <code>"nome": ""</code> com preço -5. O que acontece?</h4><div class="choices"><button type="button" data-choice="false" aria-pressed="false">400: as anotações estão no DTO, então o Spring confere.</button><button type="button" data-choice="true" aria-pressed="false">201: ninguém confere, e o produto inválido é gravado.</button><button type="button" data-choice="false" aria-pressed="false">O projeto nem compila sem o @Valid.</button></div><p class="feedback" role="status" aria-live="polite">Escolha uma resposta. Você pode tentar novamente.</p></div>
+<div class="decision" data-explanation="Estoque zero é permitido: um produto pode estar esgotado. @PositiveOrZero só recusa negativos. Já preço zero seria recusado por @Positive."><h4>🧠 Com <code>@Valid</code>: <code>{"nome": "Cabo USB", "preco": 15.00, "estoque": 0}</code>. Qual status?</h4><div class="choices"><button type="button" data-choice="true" aria-pressed="false">201: estoque zero é permitido; o produto está esgotado.</button><button type="button" data-choice="false" aria-pressed="false">400: zero não é positivo.</button><button type="button" data-choice="false" aria-pressed="false">400: falta a categoria.</button></div><p class="feedback" role="status" aria-live="polite">Escolha uma resposta. Você pode tentar novamente.</p></div>
+<p class="transfer">O segurança barra. Agora ele precisa dizer o motivo, para que a tela consiga mostrar “O nome é obrigatório” embaixo do campo certo.</p>
+</div></section><div class="section-connector"><div class="line"></div></div>
+
+<section class="step-section" id="tratador"><div class="step-header"><div class="step-number sn-green">11</div><div><h2 class="step-title">A recepção explica o “não”</h2><p class="step-sub">Um tratador de erros para toda a API.</p></div></div><div class="card">
+<p>Lembre do formulário do GestorPRO no Cap 10: quando algo estava errado, a tela mostrava uma mensagem perto do campo. Para isso, quem chama a API precisa saber <strong>qual campo</strong> falhou e <strong>por quê</strong>. Queremos uma resposta 400 assim:</p>
+<!--CODE json|O 400 que queremos-->
+{
+  "nome": "O nome é obrigatório",
+  "preco": "O preço deve ser maior que zero"
+}
+<!--/CODE-->
+<p>Quando a validação falha, o Spring <strong>lança uma exceção</strong> chamada <code>MethodArgumentNotValidException</code>, carregando a lista de campos recusados e suas mensagens. Hoje ninguém trata essa exceção, e o Spring responde com o 400 genérico. Vamos criar uma classe que a trata.</p>
+<h3>Uma recepção para todos os Controllers</h3>
+<ul><li><code>@RestControllerAdvice</code> marca uma classe que atende <strong>todos</strong> os Controllers quando algo dá errado. Uma classe só, e Produto, Fornecedor e Cliente passam a usá-la.</li><li><code>@ExceptionHandler(MethodArgumentNotValidException.class)</code> diz: “quando essa exceção acontecer, chame este método”.</li><li><code>@ResponseStatus(HttpStatus.BAD_REQUEST)</code>: a resposta continua sendo 400, como no <code>@ResponseStatus</code> dos Controllers.</li><li>O retorno é um <code>Map&lt;String, String&gt;</code>: um dicionário de pares chave → valor, como um objeto do JavaScript. A chave é o nome do campo; o valor, a mensagem. O Spring o transforma no JSON acima.</li></ul>
+<p>Crie o pacote <code>exception</code> e a classe <code>TratadorDeErros</code>:</p>
+<!--JAVA 7 exception/TratadorDeErros.java-->
+<p>O <code>for</code> percorre cada campo recusado (<code>FieldError</code>) e coloca no dicionário o nome do campo (<code>getField()</code>) e a mensagem que escrevemos no DTO (<code>getDefaultMessage()</code>).</p>
+<h3>Testar</h3>
+<p>Reinicie e envie <code>{"nome": "  ", "preco": -5}</code>. Resultado real:</p>
+<!--CODE json|Resposta real · 400 com os motivos-->
+{
+  "preco": "O preço deve ser maior que zero",
+  "estoque": "O estoque é obrigatório",
+  "nome": "O nome é obrigatório"
+}
+<!--/CODE-->
+<p>Os três problemas aparecem de uma vez, cada um com seu campo. A ordem das linhas pode variar: num <code>Map</code> desse tipo, a ordem não é garantida, e quem lê a resposta procura pela chave.</p>
+<h3>E a mensagem do 404?</h3>
+<p>Lembra que “Produto não encontrado” não aparecia no 404? O Spring esconde a mensagem por padrão. Uma linha no <code>application.properties</code> libera:</p>
+<!--PROPS 7-->
+<!--CODE json|Resposta real · 404 agora com a mensagem-->
+{
+  "timestamp": "2026-10-09T17:51:42.143Z",
+  "status": 404,
+  "error": "Not Found",
+  "message": "Produto não encontrado",
+  "path": "/produtos/99999"
+}
+<!--/CODE-->
+<div class="warning"><strong>Em tutoriais antigos você vai ver <code>server.error.include-message</code>.</strong> No Spring Boot 4, a propriedade mudou de nome para <code>spring.web.error.include-message</code>, e a forma antiga é ignorada. Nós testamos as duas: só a nova funciona.</div>
+<div class="tip"><strong>Só mostre mensagens que você escreveu.</strong> Com essa linha, outros erros também passam a exibir sua mensagem. Um JSON quebrado, por exemplo, responde 400 com <code>"message": "JSON parse error: ..."</code>. É útil em aula, mas, em sistemas reais, cada time decide com cuidado o que pode aparecer para quem chama a API.</div>
+<div class="decision" data-explanation="@RestControllerAdvice vale para todos os Controllers. Quando a validação de qualquer um deles falha, o Spring lança MethodArgumentNotValidException e o mesmo método trata."><h4>🧠 No fim do capítulo teremos Produto e Cliente com <code>@Valid</code>. Quantos tratadores de validação precisamos?</h4><div class="choices"><button type="button" data-choice="true" aria-pressed="false">Um só: o @RestControllerAdvice atende todos os Controllers.</button><button type="button" data-choice="false" aria-pressed="false">Um por Controller.</button><button type="button" data-choice="false" aria-pressed="false">Um por campo validado.</button></div><p class="feedback" role="status" aria-live="polite">Escolha uma resposta. Você pode tentar novamente.</p></div>
+<div class="checkpoint">✓ Conta nº 3 paga: dados inválidos são recusados com 400, antes do banco, e a resposta diz o motivo de cada campo.</div>
+<p class="transfer">As três contas estão pagas. Falta uma pergunta que o negócio faz todo dia: de quem compramos esse produto?</p>
+</div></section><div class="section-connector"><div class="line"></div></div>
+
+<section class="step-section" id="fornecedor"><div class="step-header"><div class="step-number sn-green">12</div><div><h2 class="step-title">Produto ganha um fornecedor</h2><p class="step-sub">O primeiro relacionamento: @ManyToOne.</p></div></div><div class="card">
+<p>O Teclado Mecânico acabou. Para repor, precisamos saber de quem compramos. Essa informação já existe: a TechDistrib está na tabela de fornecedores desde o Cap 12. O que falta é <strong>ligar</strong> as duas fichas.</p>
+<div class="analogy"><h3>🗂️ Ficha que aponta para ficha</h3><p>Imagine as fichas de papel do estoque. Na ficha do teclado, em vez de copiar o CNPJ, o telefone e o endereço da TechDistrib, alguém escreve só: <strong>“fornecedor nº 1”</strong>. Quem quiser os detalhes vai até o arquivo de fornecedores e abre a ficha 1. O mouse e o monitor também vêm da TechDistrib: as três fichas têm “fornecedor nº 1”. <strong>Muitos produtos, um fornecedor.</strong></p></div>
+<p>Onde a analogia para: no papel, ninguém impede de escrever “fornecedor nº 99”, que não existe. No banco, existe quem impeça.</p>
+<h3>No banco: a chave estrangeira</h3>
+<p>A tabela <code>produtos</code> ganha uma coluna <code>fornecedor_id</code>, que guarda o ID de uma linha da tabela <code>fornecedores</code>. Uma coluna que guarda a chave primária de <strong>outra</strong> tabela se chama <strong>chave estrangeira</strong> (em inglês, <em>foreign key</em>, ou FK). O PostgreSQL passa a garantir duas coisas: o número precisa existir na outra tabela, e não dá para apagar um fornecedor que ainda tem produtos apontando para ele.</p>
+<div class="fk-diagram" aria-label="Três produtos apontando para o mesmo fornecedor"><div class="fk-table"><b>produtos</b><span>1 · Teclado · <em>fornecedor_id 1</em></span><span>2 · Mouse · <em>fornecedor_id 1</em></span><span>3 · Monitor · <em>fornecedor_id 1</em></span></div><i aria-hidden="true">→</i><div class="fk-table one"><b>fornecedores</b><span>1 · TechDistrib</span><span>2 · Papelaria Nordeste</span></div></div>
+<p>O relacionamento é lido a partir do Produto: <strong>muitos</strong> produtos para <strong>um</strong> fornecedor. Em inglês, <em>many to one</em>. Neste capítulo, só o Produto conhece seu fornecedor; o Fornecedor não ganha uma lista de produtos.</p>
+<h3>Passo 0 · Antes de mexer no código: apagar os produtos de teste</h3>
+<p>A coluna nova será obrigatória: todo produto precisa ter fornecedor. Mas os produtos que você cadastrou no Encontro A não têm. Se a coluna for criada agora, que valor o banco colocaria neles? Ele não sabe, e recusa. Por isso, apague os produtos de teste <strong>antes</strong> de reiniciar a API. No psql:</p>
+<!--CODE sql|psql · esvaziar a tabela de produtos-->
+DELETE FROM produtos;
+<!--/CODE-->
+<p>É um <code>DELETE</code> sem <code>WHERE</code>, de propósito: você viu no Cap 12 que ele apaga todas as linhas. Aqui é exatamente o que queremos, e só na tabela <code>produtos</code>. Os fornecedores continuam lá.</p>
+<details class="answer"><summary>🐛 Esqueci e reiniciei a API antes. E agora?</summary><div><p>A API sobe, mas toda requisição de produtos responde <strong>500</strong>. No console, aparece um aviso como este:</p>
+<!--CODE texto|Console do IntelliJ · trecho real-->
+WARN ... GenerationTarget encountered exception accepting command : Error executing DDL "alter table if exists produtos add column fornecedor_id bigint not null" via JDBC [ERROR: column "fornecedor_id" of relation "produtos" contains null values]
+<!--/CODE-->
+<p>O Hibernate tentou criar a coluna obrigatória, o banco recusou por causa dos produtos antigos, e a API seguiu sem a coluna. Conserto: pare a API, rode o <code>DELETE FROM produtos;</code> e inicie de novo. Na nova tentativa, a coluna é criada.</p></div></details>
+<h3>Passo 1 · Model: o produto aponta para um Fornecedor</h3>
+<!--JAVA 8 model/Produto.java-->
+<ul><li>O campo é do tipo <strong><code>Fornecedor</code></strong>, o objeto, e não um <code>Long</code>. Em Java, ligamos objetos: <code>produto.getFornecedor().getNome()</code>. O Hibernate transforma esse objeto no número da coluna <code>fornecedor_id</code> ao gravar, e de volta em objeto ao ler.</li><li><code>@ManyToOne</code>: muitos produtos para um fornecedor.</li><li><code>@JoinColumn(name = "fornecedor_id", nullable = false)</code>: o nome da coluna da chave estrangeira, e ela é obrigatória.</li></ul>
+<h3>Passo 2 · DTO de entrada: só o número</h3>
+<!--JAVA 8 dto/ProdutoRequestDTO.java-->
+<p>Por que só <code>fornecedorId</code>, e não o fornecedor inteiro no JSON? Porque quem cadastra um produto <strong>escolhe</strong> um fornecedor que já existe. Ele não deve poder criar nem alterar um fornecedor de carona no cadastro de produto. É a mesma lógica do formulário da recepção: só os campos que fazem sentido para esta operação. A regra <code>@NotNull</code> vai para a mesma prancheta da seção 10.</p>
+<h3>Passo 3 · DTO de saída e Mapper: o nome, sem a ficha inteira</h3>
+<!--JAVA 8 dto/ProdutoResponseDTO.java-->
+<!--JAVA 8 mapper/ProdutoMapper.java-->
+<p>O comprovante mostra o ID e o <strong>nome</strong> do fornecedor, lado a lado com os campos do produto. Se o Controller devolvesse a entidade, cada produto da lista carregaria a ficha inteira do fornecedor: CNPJ, telefone, categoria. Com o DTO, nós escolhemos o que aparece.</p>
+<p>Leia <code>produto.getFornecedor().getNome()</code> da esquerda para a direita: do produto, pegue o fornecedor; do fornecedor, pegue o nome. Repare também no que o Mapper <strong>não</strong> faz: ele não busca o fornecedor no banco. Mapper só traduz. Quem consulta o banco é o Service.</p>
+<h3>Passo 4 · Service: dois repositories</h3>
+<p>Para ligar o produto, o Service precisa perguntar ao <code>FornecedorRepository</code> se o fornecedor existe. Ele ganha uma segunda dependência, com o mesmo padrão <code>private final</code> do Cap 12, e um método gêmeo do <code>buscarOuFalhar</code>:</p>
+<!--JAVA 8 service/ProdutoService.java-->
+<p>O <code>cadastrar</code> e o <code>atualizar</code> ganharam uma linha cada: buscar o fornecedor pelo número que veio no formulário e colocá-lo no produto. Se o número não existir, a resposta é <strong>404 “Fornecedor não encontrado”</strong>, e o produto não é gravado. Esta é uma regra do segundo tipo da seção 10: precisa consultar o banco, então mora no Service.</p>
+<h3>Passo 5 · Reiniciar e ver a chave estrangeira</h3>
+<p>Reinicie a API. No psql, peça a descrição da tabela:</p>
+<!--CODE sql|psql · descrever a tabela produtos-->
+\d produtos
+<!--/CODE-->
+<!--CODE texto|Final da saída-->
+ fornecedor_id | bigint                         |           | not null |
+Indexes:
+    "produtos_pkey" PRIMARY KEY, btree (id)
+Foreign-key constraints:
+    "fkje6bg3cu81l0e4nfprc0c7wwc" FOREIGN KEY (fornecedor_id) REFERENCES fornecedores(id)
+<!--/CODE-->
+<p>A coluna nova é obrigatória (<code>not null</code>) e é uma chave estrangeira que aponta para <code>fornecedores(id)</code>. O nome estranho, que começa com <code>fk</code>, foi gerado pelo Hibernate.</p>
+<h3>Passo 6 · Testar os três caminhos</h3>
+<p>Faça <code>GET /fornecedores</code> e anote o ID da TechDistrib (se ela não existir mais, cadastre de novo). Depois:</p>
+<!--CODE json|Body · POST /produtos com fornecedor-->
+{
+  "nome": "Teclado Mecânico",
+  "preco": 320.00,
+  "estoque": 12,
+  "categoria": "Periféricos",
+  "fornecedorId": 1
+}
+<!--/CODE-->
+<!--CODE json|Resposta real · 201 Created-->
+{
+  "id": 5,
+  "nome": "Teclado Mecânico",
+  "preco": 320.00,
+  "estoque": 12,
+  "categoria": "Periféricos",
+  "criadoEm": "2026-10-09T14:50:52.239625",
+  "fornecedorId": 1,
+  "fornecedorNome": "TechDistrib"
+}
+<!--/CODE-->
+<p>O ID do produto continua a sequência do banco, mesmo depois do <code>DELETE</code>. Agora troque o <code>fornecedorId</code> por <code>99999</code>: <strong>404</strong> com <code>"message": "Fornecedor não encontrado"</code>. E apague a linha do <code>fornecedorId</code>: <strong>400</strong> com <code>"fornecedorId": "O fornecedor é obrigatório"</code>.</p>
+<details class="answer"><summary>👨‍🏫 Com o professor · juntar as duas tabelas no SQL</summary><div><p>O banco também sabe seguir a ligação. Um <code>JOIN</code> (junção) traz o produto e o nome do fornecedor na mesma linha, comparando <code>fornecedor_id</code> com o <code>id</code> do fornecedor:</p>
+<!--CODE sql|psql · produto com o nome do fornecedor-->
+SELECT p.nome, p.preco, f.nome AS fornecedor
+FROM produtos p
+JOIN fornecedores f ON f.id = p.fornecedor_id;
+<!--/CODE-->
+<p>O <code>p</code> e o <code>f</code> são apelidos das tabelas, para não repetir o nome inteiro. Você não precisa escrever <code>JOIN</code> na API: o Hibernate faz isso quando o Mapper pede <code>produto.getFornecedor()</code>.</p></div></details>
+<h3>O limite que o banco mostrou</h3>
+<p>Tente excluir a TechDistrib, que agora tem um produto ligado: <code>DELETE /fornecedores/1</code>. Resultado real: <strong>500</strong>. No console:</p>
+<!--CODE texto|Console do IntelliJ · trecho real-->
+ERROR: update or delete on table "fornecedores" violates foreign key constraint "fkje6bg3cu81l0e4nfprc0c7wwc" on table "produtos"
+<!--/CODE-->
+<p>Leia com atenção: o banco <strong>protegeu</strong> os dados. Se deixasse apagar, o teclado ficaria apontando para uma ficha que não existe. O que está errado é só o status: 500 diz “o servidor quebrou”, quando na verdade a operação foi recusada por uma regra. Essa tradução fica anotada como uma <strong>conta nova</strong>, para os próximos capítulos.</p>
+<div class="decision" data-explanation="A coluna fornecedor_id fica na tabela produtos: cada produto guarda o número do seu fornecedor. O lado 'muitos' guarda a referência ao lado 'um'. A tabela fornecedores não muda."><h4>🧠 Onde mora o número que liga as duas fichas?</h4><div class="choices"><button type="button" data-choice="false" aria-pressed="false">Na tabela fornecedores, numa coluna com os IDs dos produtos.</button><button type="button" data-choice="true" aria-pressed="false">Na tabela produtos, na coluna fornecedor_id.</button><button type="button" data-choice="false" aria-pressed="false">Numa terceira tabela, criada pelo Hibernate.</button></div><p class="feedback" role="status" aria-live="polite">Escolha uma resposta. Você pode tentar novamente.</p></div>
+<p class="transfer">Agora uma requisição pode ser barrada na porta, recusada pelo Service ou chegar até o banco. Vamos ver cada caminho por dentro.</p>
+</div></section><div class="section-connector"><div class="line"></div></div>
+
+<section class="step-section" id="bastidores"><div class="step-header"><div class="step-number sn-green">13</div><div><h2 class="step-title">Quem barra o quê</h2><p class="step-sub">LAB 03: os bastidores, agora com porta, tradutor e recepção.</p></div></div><div class="card">
+<p>No Cap 12, o LAB dos bastidores tinha quatro camadas. Agora há peças novas: a porta (<code>@Valid</code>), o tradutor (Mapper) e a recepção de erros (Tratador). Avance cada caso e repare quais peças <strong>nem chegam a trabalhar</strong>.</p>
+<div class="lab" id="request-lab"><div class="lab-heading"><span>LAB 03 · SIMULAÇÃO</span><h3>Quem está trabalhando agora?</h3><p>Escolha um caso e avance. Peças acesas já trabalharam neste caso; apagadas ainda não, ou nunca vão trabalhar.</p></div><label class="case-label">Caso<select id="request-case"><option value="valid">POST · produto válido</option><option value="invalid">POST · nome vazio</option><option value="missing">GET · produto 99999</option><option value="supplier">POST · fornecedorId 99999</option></select></label><div class="request-track"><div data-layer="client">🌐 Cliente</div><div data-layer="door">🚪 Porta @Valid</div><div data-layer="controller">🎮 Controller</div><div data-layer="service">⚙️ Service</div><div data-layer="mapper">🔁 Mapper</div><div data-layer="repository">🗄️ Repository</div><div data-layer="database">🐘 Banco</div><div data-layer="handler">🛎️ Tratador</div></div><div class="request-state"><article><small>O QUE ESTÁ ACONTECENDO</small><h4 id="request-title"></h4><p id="request-description"></p></article><article><small>RESPOSTA</small><strong id="request-response"></strong><p id="request-records"></p></article></div><p class="lab-caption" id="request-caption" role="status" aria-live="polite"></p><div class="lab-controls"><button type="button" id="request-prev">← Voltar</button><span id="request-step"></span><button type="button" id="request-next">Próximo →</button><button type="button" id="request-reset">Reiniciar caso</button></div></div>
+<div class="decision" data-explanation="Formato de e-mail dá para conferir olhando só o JSON: é trabalho da porta, com @Email no DTO e @Valid no Controller. O Service nem é chamado."><h4>🧠 No Cliente, alguém envia <code>"email": "ana@"</code>. Quem barra?</h4><div class="choices"><button type="button" data-choice="true" aria-pressed="false">🚪 A porta: @Email no DTO, conferido pelo @Valid.</button><button type="button" data-choice="false" aria-pressed="false">⚙️ O Service, depois de perguntar ao banco.</button><button type="button" data-choice="false" aria-pressed="false">🐘 O banco, porque a coluna é NOT NULL.</button></div><p class="feedback" role="status" aria-live="polite">Escolha uma resposta. Você pode tentar novamente.</p></div>
+<div class="decision" data-explanation="O formulário pode estar perfeito e o cliente 77 ainda assim não existir. Só consultando o banco dá para saber: o Service pergunta ao Repository, recebe a caixa vazia e lança o 404."><h4>🧠 Alguém pede <code>GET /clientes/77</code>, que não existe. Quem descobre?</h4><div class="choices"><button type="button" data-choice="false" aria-pressed="false">🚪 A porta, porque 77 é um número inválido.</button><button type="button" data-choice="true" aria-pressed="false">⚙️ O Service, depois de perguntar ao Repository.</button><button type="button" data-choice="false" aria-pressed="false">🎮 O Controller, antes de chamar o Service.</button></div><p class="feedback" role="status" aria-live="polite">Escolha uma resposta. Você pode tentar novamente.</p></div>
+<p class="transfer">Essas duas perguntas não eram sobre Produto. Era um aquecimento: o próximo cadastro é seu.</p>
+</div></section><div class="section-connector"><div class="line"></div></div>
+
+<section class="step-section" id="cliente"><div class="step-header"><div class="step-number sn-green">14</div><div><h2 class="step-title">Sua vez: Cliente inteiro</h2><p class="step-sub">A mesma receita, agora sem o código na tela.</p></div></div><div class="card">
+<p>O GestorPRO também tem <strong>clientes</strong>. Você vai construir o CRUD completo, com tudo o que fizemos em Produto: DTOs, Mapper, validação e 404. Só uma anotação é nova. O resto é repetir a receita com consciência, entendendo cada linha.</p>
+<div class="table-scroll"><table><caption>O pedido: Cliente</caption><thead><tr><th>Campo</th><th>Tipo</th><th>Entrada</th><th>Saída</th><th>Regra</th></tr></thead><tbody><tr><td><code>id</code></td><td>Long</td><td>✗</td><td>✓</td><td>o banco gera</td></tr><tr><td><code>nome</code></td><td>String</td><td>✓</td><td>✓</td><td>obrigatório, sem espaços vazios</td></tr><tr><td><code>email</code></td><td>String</td><td>✓</td><td>✓</td><td>obrigatório e com formato de e-mail</td></tr><tr><td><code>telefone</code></td><td>String</td><td>✓</td><td>✓</td><td>opcional</td></tr><tr><td><code>cidade</code></td><td>String</td><td>✓</td><td>✓</td><td>opcional</td></tr></tbody></table></div>
+<p><strong>A anotação nova:</strong> <code>@Email</code>, do mesmo pacote <code>jakarta.validation.constraints</code>. Ela recusa textos que não têm formato de e-mail, como <code>ana@</code>. Mas ela aceita valor nulo: para “obrigatório e com formato”, use <code>@NotBlank</code> e <code>@Email</code> juntas. Sem <code>criadoEm</code> e sem relacionamento no Cliente.</p>
+<h3>A receita dos sete arquivos</h3>
+<ol class="recipe"><li><code>model/Cliente.java</code> · entidade com Lombok, tabela <code>clientes</code></li><li><code>repository/ClienteRepository.java</code></li><li><code>dto/ClienteRequestDTO.java</code> · record com as anotações</li><li><code>dto/ClienteResponseDTO.java</code> · record com o id</li><li><code>mapper/ClienteMapper.java</code> · toEntity, atualizar, toResponse</li><li><code>service/ClienteService.java</code> · os cinco métodos + buscarOuFalhar</li><li><code>controller/ClienteController.java</code> · <code>/clientes</code>, com <code>@Valid</code></li></ol>
+<p>O <code>TratadorDeErros</code> você não precisa mexer: ele já atende o Controller novo.</p>
+<h3>Roteiro de aceite no Insomnia</h3>
+<p>Crie uma pasta <strong>Clientes</strong> no Insomnia. O Cliente só está pronto quando todos os passos abaixo dão o status esperado:</p>
+<div class="table-scroll"><table><caption>Aceite do Cliente</caption><thead><tr><th>#</th><th>Requisição</th><th>Esperado</th></tr></thead><tbody><tr><td>1</td><td>POST Ana Souza, ana@gmail.com, (83) 99999-1111, João Pessoa</td><td>201 com id</td></tr><tr><td>2</td><td>POST com <code>"id": 1</code> no corpo</td><td>201 com outro id</td></tr><tr><td>3</td><td>POST com <code>"email": "ana@"</code></td><td>400 · <code>"email": "Informe um e-mail válido"</code></td></tr><tr><td>4</td><td>POST sem nome</td><td>400 · <code>"nome": "O nome é obrigatório"</code></td></tr><tr><td>5</td><td>GET /clientes</td><td>200 com a lista</td></tr><tr><td>6</td><td>GET /clientes/99999</td><td>404 · Cliente não encontrado</td></tr><tr><td>7</td><td>PUT mudando a cidade</td><td>200, mesmo id</td></tr><tr><td>8</td><td>DELETE · e DELETE de novo</td><td>204 · depois 404</td></tr></tbody></table></div>
+<details class="answer"><summary>💡 Uma dica para começar</summary><div><p>Abra os arquivos de Produto lado a lado com os de Cliente. Em cada linha, pergunte: “isto é de Produto ou é da receita?”. <code>BigDecimal</code>, <code>criadoEm</code> e fornecedor são de Produto e não vêm. <code>buscarOuFalhar</code>, <code>@Valid</code> e <code>existsById</code> são da receita e vêm.</p></div></details>
+<div class="try-first">🚨 PARE! Construa e passe no roteiro de aceite antes de abrir o gabarito.</div>
+<details class="answer"><summary>👀 Só depois de tentar: gabarito, arquivo por arquivo</summary><div>
+<!--JAVA 9 model/Cliente.java-->
+<!--JAVA 9 repository/ClienteRepository.java-->
+<!--JAVA 9 dto/ClienteRequestDTO.java-->
+<!--JAVA 9 dto/ClienteResponseDTO.java-->
+<!--JAVA 9 mapper/ClienteMapper.java-->
+<!--JAVA 9 service/ClienteService.java-->
+<!--JAVA 9 controller/ClienteController.java-->
+<p>Se o seu código está diferente, mas passa nos oito passos do aceite, ótimo: compare só para ver se alguma diferença é um descuido (um campo que o Mapper não copia, um <code>@Valid</code> esquecido no PUT).</p></div></details>
+<div class="checkpoint">✓ Cliente aceito: oito requisições, oito status certos. Você construiu um CRUD profissional sozinho.</div>
+</div></section><div class="section-connector"><div class="line"></div></div>
+
+<section class="step-section" id="bugzilla"><div class="step-header"><div class="step-number sn-green">15</div><div><h2 class="step-title">BugZilla: erros previsíveis</h2><p class="step-sub">Mensagens reais, causa e conserto.</p></div></div><div class="card">
+<p>Todos estes erros aconteceram de verdade enquanto testávamos este capítulo. Quando algo der errado, procure aqui pela mensagem ou pelo sintoma.</p>
+<details class="answer"><summary>🐛 1 · As regras estão no DTO, mas o lixo entra (201)</summary><div><p><strong>Causa:</strong> falta <code>@Valid</code> ao lado do <code>@RequestBody</code>. <strong>Conserto:</strong> <code>@RequestBody @Valid ProdutoRequestDTO dto</code>, no POST e no PUT.</p></div></details>
+<details class="answer"><summary>🐛 2 · cannot find symbol · method getNome()</summary><div>
+<!--CODE texto|Mensagem real do compilador-->
+error: cannot find symbol
+        System.out.println(dto.getNome());
+                              ^
+  symbol:   method getNome()
+  location: variable dto of type ProdutoRequestDTO
+<!--/CODE-->
+<p><strong>Causa:</strong> num record, a leitura não tem <code>get</code>. <strong>Conserto:</strong> <code>dto.nome()</code>. Na entidade (com Lombok), continua <code>produto.getNome()</code>.</p></div></details>
+<details class="answer"><summary>🐛 3 · package jakarta.validation.constraints does not exist</summary><div><p><strong>Causa:</strong> a dependência de validação não está no <code>pom.xml</code>, ou o Maven não foi recarregado. <strong>Conserto:</strong> seção 10, passo 1.</p></div></details>
+<details class="answer"><summary>🐛 4 · Um campo volta null na resposta, sem erro nenhum</summary><div><p><strong>Causa:</strong> o Mapper esqueceu de copiar esse campo, no <code>atualizar</code> ou no <code>toResponse</code>. É o pior tipo de bug: nada avisa. <strong>Conserto:</strong> confira o Mapper campo por campo, comparando com os componentes do record.</p></div></details>
+<details class="answer"><summary>🐛 5 · O preço aparece com uma dízima enorme</summary><div><p><strong>Causa:</strong> <code>new BigDecimal(0.1)</code>, criado a partir de um <code>double</code>, vira <code>0.1000000000000000055511151231257827021181583404541015625</code>. <strong>Conserto:</strong> crie a partir de texto, <code>new BigDecimal("0.1")</code>.</p></div></details>
+<details class="answer"><summary>🐛 6 · illegal character: '\u2192' · ou · illegal start of expression</summary><div>
+<!--CODE texto|Mensagem real do compilador-->
+error: illegal character: '\u2192'
+        nomes.forEach(n → System.out.println(n));
+                        ^
+<!--/CODE-->
+<p><strong>Causa:</strong> a seta da lambda foi colada como o símbolo → (copiado de algum lugar que desenhava a ligadura), ou digitada como <code>=&gt;</code>, a seta do JavaScript, que dá <code>illegal start of expression</code>. <strong>Conserto:</strong> apague e digite <kbd>-</kbd> seguido de <kbd>&gt;</kbd>.</p></div></details>
+<details class="answer"><summary>🐛 7 · Depois do @ManyToOne, todo /produtos responde 500</summary><div><p><strong>Causa:</strong> havia produtos antigos sem fornecedor, e o banco recusou criar a coluna obrigatória (o aviso <code>contains null values</code> no console). <strong>Conserto:</strong> pare a API, rode <code>DELETE FROM produtos;</code> no psql e inicie de novo. Seção 12, passo 0.</p></div></details>
+<details class="answer"><summary>🐛 8 · Excluir um fornecedor responde 500</summary><div><p><strong>Causa:</strong> ele tem produtos ligados, e a chave estrangeira impede (<code>violates foreign key constraint</code>). <strong>Não é bug seu:</strong> é o banco protegendo os dados. Exclua ou troque o fornecedor dos produtos antes. Traduzir isso para um status melhor é uma conta para os próximos capítulos.</p></div></details>
+<details class="answer"><summary>🐛 9 · A mensagem do 404 não aparece</summary><div><p><strong>Causa:</strong> falta a linha no <code>application.properties</code>, ou foi usado o nome antigo <code>server.error.include-message</code>. <strong>Conserto:</strong> <code>spring.web.error.include-message=always</code> e reinicie. Seção 11.</p></div></details>
+<details class="answer"><summary>🐛 10 · Funciona, mas o Controller devolve Produto em vez do DTO</summary><div><p>Compila e responde. Mas a conta nº 1 volta: a entidade está conversando com o mundo de novo, e qualquer campo novo da entidade passa a aparecer na resposta sem ninguém decidir. <strong>Conserto:</strong> o Controller só recebe e devolve DTOs.</p></div></details>
+</div></section><div class="section-connector"><div class="line"></div></div>
+
+<section class="step-section" id="fechamento"><div class="step-header"><div class="step-number sn-green">16</div><div><h2 class="step-title">As contas pagas</h2><p class="step-sub">O que mudou, o que ficou e para onde vamos.</p></div></div><div class="card">
+<div class="finish-banner"><span>🧾 DO CAP 12 AO CAP 13</span><h3>A entidade fica no banco.<br>O DTO conversa com o mundo.<br>A porta confere.</h3><p>A mesma API, agora com regras claras sobre o que entra, o que sai e o que é recusado.</p></div>
+<div class="table-scroll"><table><caption>Antes × depois</caption><thead><tr><th>Situação</th><th>Cap 12 · Fornecedor</th><th>Cap 13 · Produto e Cliente</th></tr></thead><tbody><tr><td>POST com <code>id</code> de um cadastro existente</td><td>201 e sobrescreve</td><td>201 com id novo; o enviado é ignorado</td></tr><tr><td>GET de ID inexistente</td><td>200 com <code>null</code></td><td>404 com mensagem</td></tr><tr><td>DELETE de ID inexistente</td><td>204</td><td>404</td></tr><tr><td>Nome em branco</td><td>gravado (201)</td><td>400, com o campo e o motivo</td></tr><tr><td>Dinheiro</td><td>—</td><td>BigDecimal, <code>numeric(10,2)</code></td></tr><tr><td>Ligação entre cadastros</td><td>—</td><td>Produto → Fornecedor, com chave estrangeira</td></tr></tbody></table></div>
+<div class="layer-map final-map"><div>🌐 Cliente HTTP<span>manda JSON</span></div><i>↓</i><div>🚪 @Valid + 🎮 Controller<span>confere o formulário · fala só DTO</span></div><i>↓</i><div>⚙️ Service + 🔁 Mapper<span>regras que consultam dados · traduz DTO ⇄ entidade</span></div><i>↓</i><div>🗄️ Repository<span>fala só entidade</span></div><i>↓</i><div>🐘 PostgreSQL<span>produtos.fornecedor_id → fornecedores.id</span></div><aside><b>🛎️ TratadorDeErros</b><p>Atende todos os Controllers quando a porta barra: 400 com o motivo de cada campo.</p></aside></div>
+<div class="decision" data-explanation="Preço negativo é um problema de formato: a porta barra com 400 antes do Service. Fornecedor inexistente só se descobre consultando o banco: 404 vindo do Service. 500 fica para falhas inesperadas, como a recusa da chave estrangeira que ainda não traduzimos."><h4>🧠 Um POST de produto chega com preço -5 <strong>e</strong> fornecedorId 99999. Qual status volta?</h4><div class="choices"><button type="button" data-choice="true" aria-pressed="false">400: a porta barra o preço antes de alguém procurar o fornecedor.</button><button type="button" data-choice="false" aria-pressed="false">404: o fornecedor não existe.</button><button type="button" data-choice="false" aria-pressed="false">500: os dois problemas juntos derrubam a API.</button></div><p class="feedback" role="status" aria-live="polite">Escolha uma resposta. Você pode tentar novamente.</p></div>
+<div class="decision" data-explanation="O Mapper só traduz entre DTO e entidade. Buscar no banco é com o Repository, chamado pelo Service. Por isso buscarFornecedorOuFalhar mora no Service."><h4>🧠 Quem busca o fornecedor no banco quando um produto é cadastrado?</h4><div class="choices"><button type="button" data-choice="false" aria-pressed="false">O Mapper, no toEntity.</button><button type="button" data-choice="true" aria-pressed="false">O Service, pelo FornecedorRepository.</button><button type="button" data-choice="false" aria-pressed="false">O Controller, antes de chamar o Service.</button></div><p class="feedback" role="status" aria-live="polite">Escolha uma resposta. Você pode tentar novamente.</p></div>
+<h3>Para casa ★★ · pagar as contas do Fornecedor</h3>
+<p>O Fornecedor do Cap 12 ainda tem as três contas abertas. Aplique nele tudo o que você fez no Cliente: <code>FornecedorRequestDTO</code> e <code>FornecedorResponseDTO</code>, <code>FornecedorMapper</code>, <code>@NotBlank</code> no nome com <code>@Valid</code>, e 404 no GET, PUT e DELETE. Use o mesmo roteiro de aceite da seção 14, trocando os dados. Não há gabarito nesta página: o seu Cliente é o modelo.</p>
+<div class="warning"><strong>Cuidado ao refatorar o Fornecedor:</strong> o <code>ProdutoService</code> usa o <code>FornecedorRepository</code>, e o <code>ProdutoMapper</code> lê <code>getFornecedor().getNome()</code>. Mude o Controller e o Service do Fornecedor, mas não mude a entidade nem o Repository. Depois, rode também o POST de produto para confirmar que nada quebrou.</div>
+<h3>As contas que ficam para depois</h3>
+<ul><li>Excluir um fornecedor com produtos ligados responde <strong>500</strong>. O banco tem razão em recusar; falta a API traduzir essa recusa para um status que explique o motivo.</li><li>O <code>ddl-auto=update</code> não sabe lidar com dados antigos quando uma coluna obrigatória aparece. Em sistemas reais, mudanças no banco são escritas e versionadas à parte.</li></ul>
+<div class="download-box"><h3>👀 Material de conferência</h3><p>Use depois de construir. O projeto completo tem Produto (ligado a Fornecedor), Cliente, o tratador de erros e a configuração desta aula. O Fornecedor continua como no Cap 12.</p><a class="action" href="apoio/api-completa.zip">Baixar API completa ↧</a><a class="action secondary" href="apoio/api-inicio-cap13.zip">Projeto de partida ↧</a><a class="action secondary" href="./caderno.html" target="_blank" rel="noopener">Abrir meu caderno ↗</a><p>Extraia, abra a pasta que contém <code>pom.xml</code>, selecione o JDK 21 e recarregue o Maven. Se o seu banco tiver produtos sem fornecedor, esvazie a tabela <code>produtos</code> antes de executar.</p></div>
+<p class="transfer">A API agora fala direito e os cadastros se conhecem. Os próximos capítulos continuam fortalecendo este backend.</p>
+<div class="chapter-route"><a class="action secondary" href="../12-spring-primeira-api/">← Cap 12 · Spring</a><a class="action" href="../../index.html">Voltar ao mapa do curso →</a></div>
+<details class="answer"><summary>📚 Referências usadas nesta página</summary><div><p>Comportamentos conferidos com Java 21, Spring Boot 4.1.1 e PostgreSQL 17, na mesma configuração do Cap 12.</p><ul><li><a href="https://docs.oracle.com/en/java/javase/21/language/records.html">Records na documentação do Java 21</a></li><li><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/math/BigDecimal.html">BigDecimal</a></li><li><a href="https://docs.spring.io/spring-framework/reference/core/validation/beanvalidation.html">Bean Validation no Spring</a></li><li><a href="https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-controller/ann-exceptionhandler.html">@ExceptionHandler no Spring MVC</a></li><li><a href="https://docs.spring.io/spring-boot/reference/web/servlet.html">Tratamento de erros no Spring Boot</a></li><li><a href="https://jakarta.ee/specifications/persistence/">Jakarta Persistence (JPA)</a></li></ul></div></details>
+</div></section></main><a class="notebook-link" href="./caderno.html" target="_blank" rel="noopener">📓 Meu caderno <span>↗</span></a><footer><p>Programa AI · Prof. Kelson Almeida · Capítulo 13</p><p>Escreva. Execute. Observe. Explique.</p></footer><script src="../../shared/scripts.js" defer></script><script src="./cap13.js" defer></script></body></html>
