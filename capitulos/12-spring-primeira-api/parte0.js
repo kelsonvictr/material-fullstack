@@ -281,11 +281,11 @@
     const states = [
       { dose: '🗄️ FornecedorRepository', target: '⚙️ FornecedorService', slot: '', done: false,
         cap: 'O FornecedorService declarou no construtor que precisa de um FornecedorRepository. Ele não usa new: só pede.' },
-      { dose: '🗄️ FornecedorRepository', target: '⚙️ FornecedorService', slot: 'repository ✓', done: true,
-        cap: 'O Spring aplicou: criou o Repository e o entregou pelo construtor. Isso é injeção de dependência. Por baixo, é como new FornecedorService(repository), só que quem chama é o Spring.' },
+      { dose: '🗄️ FornecedorRepository', target: '⚙️ FornecedorService', slot: 'fornecedorRepository ✓', done: true,
+        cap: 'O Spring aplicou: criou o Repository e o entregou pelo construtor. Isso é injeção de dependência. Por baixo, é como new FornecedorService(fornecedorRepository), só que quem chama é o Spring.' },
       { dose: '⚙️ FornecedorService', target: '🎮 FornecedorController', slot: '', done: false,
         cap: 'Agora o Controller precisa do Service. Mesmo padrão: um campo private final e o construtor gerado pelo @RequiredArgsConstructor.' },
-      { dose: '⚙️ FornecedorService', target: '🎮 FornecedorController', slot: 'service ✓', done: true,
+      { dose: '⚙️ FornecedorService', target: '🎮 FornecedorController', slot: 'fornecedorService ✓', done: true,
         cap: 'Corrente montada: o Controller recebe o pedido HTTP e chama o Service, que usa o Repository. Nenhuma dessas classes criou a outra com new.' }
     ];
     let i = 0;

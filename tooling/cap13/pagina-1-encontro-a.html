@@ -128,11 +128,11 @@ System.out.println(new BigDecimal(0.1));
 <div class="endpoint"><span>POST</span><code>http://localhost:8080/produtos</code><b>201 Created</b></div>
 <p>A ordem de construção é a do Cap 12, com duas peças novas no meio. O pedido vai percorrer o caminho ao contrário, mas construímos de dentro para fora:</p>
 <div class="crud-strip build-order"><span><b>1</b>Model</span><span><b>2</b>Repository</span><span><b>3</b>DTOs</span><span><b>4</b>Mapper</span><span><b>5</b>Service</span><span><b>6</b>Controller</span></div>
-<p>Todos os arquivos ficam dentro de <code>br.com.gestorpro.api</code>, ao lado dos de Fornecedor. Dois pacotes são novos: <code>dto</code> e <code>mapper</code>.</p>
+<p>Todos os arquivos ficam dentro de <code>com.gestorpro.api</code>, ao lado dos de Fornecedor. Dois pacotes são novos: <code>dto</code> e <code>mapper</code>.</p>
 <h3>Passo 1 · Model: a entidade Produto</h3>
 <p>No pacote <code>model</code>, crie a classe <code>Produto</code>. A estrutura é a mesma do Fornecedor; os tipos são novos:</p>
 <!--JAVA 1 model/Produto.java-->
-<div class="table-scroll"><table><caption>O que há de novo aqui</caption><thead><tr><th>Trecho</th><th>Por quê</th></tr></thead><tbody><tr><td><code>BigDecimal preco</code> + <code>precision = 10, scale = 2</code></td><td>Dinheiro exato, coluna <code>numeric(10,2)</code>, como na seção anterior.</td></tr><tr><td><code>Integer estoque</code></td><td>Contagem inteira. <code>Integer</code> (e não <code>int</code>) aceita <code>null</code>, como o <code>Long</code> do id.</td></tr><tr><td><code>LocalDateTime criadoEm</code></td><td>Data e hora, sem fuso horário. No banco, a coluna se chama <code>criado_em</code>: o Spring troca as maiúsculas por <code>_</code>.</td></tr><tr><td><code>nullable = false</code> em quase tudo</td><td>O banco recusa um produto sem nome, preço, estoque ou data. É a última barreira, não a primeira.</td></tr></tbody></table></div>
+<div class="table-scroll"><table><caption>O que há de novo aqui</caption><thead><tr><th>Trecho</th><th>Por quê</th></tr></thead><tbody><tr><td><code>BigDecimal preco</code> + <code>precision = 10, scale = 2</code></td><td>Dinheiro exato, coluna <code>numeric(10,2)</code>, como na seção anterior.</td></tr><tr><td><code>Integer estoque</code></td><td>Contagem inteira. <code>Integer</code> (e não <code>int</code>) aceita <code>null</code>, como o <code>Long</code> do id.</td></tr><tr><td><code>LocalDateTime criadoEm</code></td><td>Data e hora, sem fuso horário. No banco, a coluna se chama <code>criado_em</code>, como diz o <code>name</code>. É o caso em que o <code>name</code> mostra seu valor: em Java, o nome é <code>criadoEm</code>; no banco, o costume é separar palavras com <code>_</code>.</td></tr><tr><td><code>nullable = false</code> em quase tudo</td><td>O banco recusa um produto sem nome, preço, estoque ou data. É a última barreira, não a primeira.</td></tr></tbody></table></div>
 <h3>Passo 2 · Repository</h3>
 <p>No pacote <code>repository</code>, crie a interface. É igual à do Fornecedor, trocando o tipo da entidade:</p>
 <!--JAVA 1 repository/ProdutoRepository.java-->
@@ -199,10 +199,10 @@ SELECT id, nome, preco, estoque, criado_em FROM produtos ORDER BY id;
 
 <section class="step-section" id="listar"><div class="step-header"><div class="step-number sn-green">06</div><div><h2 class="step-title">R · Listar: a esteira</h2><p class="step-sub">Converter uma lista inteira, e a primeira lambda do backend.</p></div></div><div class="card">
 <div class="endpoint"><span>GET</span><code>http://localhost:8080/produtos</code><b>200 OK</b></div>
-<p>O <code>repository.findAll()</code> devolve uma <code>List&lt;Produto&gt;</code>: entidades. Mas o Controller só fala DTO. Precisamos transformar cada <code>Produto</code> em um <code>ProdutoResponseDTO</code> e juntar tudo numa lista nova. Primeiro, do jeito que você já sabe, com <code>for</code>:</p>
+<p>O <code>produtoRepository.findAll()</code> devolve uma <code>List&lt;Produto&gt;</code>: entidades. Mas o Controller só fala DTO. Precisamos transformar cada <code>Produto</code> em um <code>ProdutoResponseDTO</code> e juntar tudo numa lista nova. Primeiro, do jeito que você já sabe, com <code>for</code>:</p>
 <!--CODE java|Versão com for · só para comparar (não digite)-->
 public List<ProdutoResponseDTO> listar() {
-    List<Produto> produtos = repository.findAll();
+    List<Produto> produtos = produtoRepository.findAll();
     List<ProdutoResponseDTO> respostas = new ArrayList<>();
     for (Produto produto : produtos) {
         respostas.add(ProdutoMapper.toResponse(produto));
@@ -227,7 +227,7 @@ produtos.stream()
 <div class="warning"><strong>⚠️ A seta do Java são dois caracteres: <kbd>-</kbd> seguido de <kbd>&gt;</kbd>.</strong> O IntelliJ e o VS Code costumam desenhar os dois juntos como uma seta só (→), por causa de uma fonte com “ligaduras”. É só desenho: digite hífen e sinal de maior. Se você copiar uma seta → de algum lugar, o Java responde <code>illegal character: '\u2192'</code>. E se escrever a seta do JavaScript (<code>=&gt;</code>), responde <code>illegal start of expression</code>.</div>
 <h3>Passo 1 · Service: listar</h3>
 <!--JAVA 2 service/ProdutoService.java-->
-<p>Novo também: o <code>import java.util.List;</code>, no topo.</p>
+<p>Novo também: o <code>import java.util.List;</code>. Ele fica no fim da lista de imports: o IntelliJ separa os imports do próprio Java (<code>java.*</code>) com uma linha em branco e os coloca por último.</p>
 <h3>Passo 2 · Controller: listar</h3>
 <!--JAVA 2 controller/ProdutoController.java-->
 <h3>Passo 3 · Testar</h3>
@@ -241,14 +241,14 @@ produtos.stream()
 <p>No Cap 12, o <code>findById</code> devolvia um <code>Optional</code>: uma caixa de presente que pode vir com o fornecedor dentro ou vazia. O Controller devolvia a caixa fechada, e a caixa vazia virava <code>200</code> com <code>null</code>. Para quem chamou, “deu certo, mas não veio nada” é uma resposta confusa.</p>
 <p>O status certo para “isso não existe” é <strong>404 Not Found</strong>, que você conheceu na Parte 0 do Cap 12. Agora vamos abrir a caixa no Service e reagir:</p>
 <!--CODE java|O trecho novo, em destaque-->
-Produto produto = repository.findById(id)
+Produto produto = produtoRepository.findById(id)
         .orElseThrow(() -> new ResponseStatusException(
                 HttpStatus.NOT_FOUND, "Produto não encontrado"));
 <!--/CODE-->
 <ul><li><code>orElseThrow</code> quer dizer “me dê o que está na caixa; <strong>ou então</strong>, se estiver vazia, lance este erro”. Caixa cheia: a variável <code>produto</code> recebe o produto. Caixa vazia: o erro é lançado.</li><li><code>ResponseStatusException</code> é uma exceção que já carrega o status HTTP da resposta. O Spring a reconhece e responde <code>404</code> sozinho.</li><li><code>throw</code> (lançar) interrompe o método no meio. As linhas de baixo, inclusive o <code>return</code>, nem chegam a executar.</li><li><code>() -&gt; new ResponseStatusException(...)</code> é outra lambda, agora sem parâmetro: os parênteses ficam vazios. Ela é uma receita para criar o erro, e só é executada se a caixa estiver vazia.</li></ul>
 <h3>Passo 1 · Service: buscar</h3>
 <!--JAVA 3 service/ProdutoService.java-->
-<p>Três imports novos: <code>HttpStatus</code>, <code>ResponseStatusException</code> e, no Controller, <code>PathVariable</code>. Use <kbd>Alt</kbd>+<kbd>Enter</kbd> no IntelliJ quando um nome ficar vermelho, mas confira se o pacote importado é o mesmo do código acima.</p>
+<p>Dois imports novos no Service: <code>HttpStatus</code> e <code>ResponseStatusException</code>. No Controller, <code>@PathVariable</code> já chega pelo <code>import org.springframework.web.bind.annotation.*;</code>. Use <kbd>Alt</kbd>+<kbd>Enter</kbd> no IntelliJ quando um nome ficar vermelho, mas confira se o pacote importado é o mesmo do código acima.</p>
 <h3>Passo 2 · Controller: buscar</h3>
 <!--JAVA 3 controller/ProdutoController.java-->
 <p>O método devolve <code>ProdutoResponseDTO</code>, não mais um <code>Optional</code>. Quando chega ao <code>return</code>, o produto <strong>com certeza</strong> existe; se não existisse, o Service já teria lançado o 404.</p>
@@ -299,7 +299,7 @@ Produto produto = repository.findById(id)
 
 <section class="step-section" id="excluir"><div class="step-header"><div class="step-number sn-green">09</div><div><h2 class="step-title">D · Excluir com 404</h2><p class="step-sub">Conferir o alvo antes de apagar.</p></div></div><div class="card">
 <div class="endpoint"><span>DELETE</span><code>http://localhost:8080/produtos/{id}</code><b>204 No Content · 404 Not Found</b></div>
-<p>No Cap 12, excluir um ID que não existia respondia <code>204</code>, como se tivesse dado certo. Agora vamos perguntar antes: <code>repository.existsById(id)</code> responde <code>true</code> ou <code>false</code>, sem carregar o produto inteiro. O <code>!</code> na frente significa “não”: <code>!repository.existsById(id)</code> se lê “se <strong>não</strong> existe”.</p>
+<p>No Cap 12, excluir um ID que não existia respondia <code>204</code>, como se tivesse dado certo. Agora vamos perguntar antes: <code>produtoRepository.existsById(id)</code> responde <code>true</code> ou <code>false</code>, sem carregar o produto inteiro. O <code>!</code> na frente significa “não”: <code>!produtoRepository.existsById(id)</code> se lê “se <strong>não</strong> existe”.</p>
 <h3>Passo 1 · Service: excluir</h3>
 <!--JAVA 5 service/ProdutoService.java-->
 <p>Aqui usamos <code>throw</code> direto, dentro de um <code>if</code>, sem <code>Optional</code>: não há caixa para abrir, só uma pergunta de sim ou não.</p>

@@ -1,24 +1,21 @@
-package br.com.gestorpro.api.controller;
+package com.gestorpro.api.controller;
 
-import br.com.gestorpro.api.model.Fornecedor;
-import br.com.gestorpro.api.service.FornecedorService;
+import com.gestorpro.api.model.Fornecedor;
+import com.gestorpro.api.service.FornecedorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/fornecedores")
 @RequiredArgsConstructor
 public class FornecedorController {
-    private final FornecedorService service;
+
+    private final FornecedorService fornecedorService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Fornecedor cadastrar(@RequestBody Fornecedor fornecedor) {
-        return service.cadastrar(fornecedor);
+        return fornecedorService.cadastrar(fornecedor);
     }
 }

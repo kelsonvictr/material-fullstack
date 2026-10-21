@@ -1,40 +1,38 @@
-package br.com.gestorpro.api.model;
+package com.gestorpro.api.model;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-
-@Getter
 @Setter
+@Getter
 @NoArgsConstructor
-@Entity
+@AllArgsConstructor
 @Table(name = "produtos")
+@Entity
 public class Produto {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "nome", nullable = false)
     private String nome;
 
-    @Column(nullable = false, precision = 10, scale = 2)
+    @Column(name = "preco", nullable = false, precision = 10, scale = 2)
     private BigDecimal preco;
 
-    @Column(nullable = false)
+    @Column(name = "estoque", nullable = false)
     private Integer estoque;
 
+    @Column(name = "categoria")
     private String categoria;
 
-    @Column(nullable = false)
+    @Column(name = "criado_em", nullable = false)
     private LocalDateTime criadoEm;
 }

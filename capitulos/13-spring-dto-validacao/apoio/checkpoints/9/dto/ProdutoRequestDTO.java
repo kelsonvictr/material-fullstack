@@ -1,11 +1,11 @@
-package br.com.gestorpro.api.dto;
-
-import java.math.BigDecimal;
+package com.gestorpro.api.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
+
+import java.math.BigDecimal;
 
 public record ProdutoRequestDTO(
         @NotBlank(message = "O nome é obrigatório")

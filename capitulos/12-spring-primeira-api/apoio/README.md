@@ -25,8 +25,12 @@ PostgreSQL na imagem oficial `postgres:17`. Dependências: Spring Web (starter-w
 
 ## Padrão de código
 
-Fornecedor usa `@Getter`, `@Setter` e `@NoArgsConstructor`. Service e Controller usam
-`@RequiredArgsConstructor` com dependências `private final`. Lombok gera os construtores;
+Segue o estilo digitado na turma 06: pacote `com.gestorpro.api` (Group `com.gestorpro`).
+Fornecedor usa `@Setter`, `@Getter`, `@NoArgsConstructor` e `@AllArgsConstructor`, com
+`@Column(name = ..., nullable = false)` em nome, CNPJ e categoria (telefone é opcional).
+Service e Controller usam `@RequiredArgsConstructor` com dependências `private final`
+nomeadas pelo tipo (`fornecedorRepository`, `fornecedorService`). Model e Controller usam
+import com `*`, como o IntelliJ gera. Lombok gera os construtores;
 o Spring resolve e entrega as dependências. A comparação com o construtor explícito está
 no capítulo. O tutorial do IntelliJ inclui diagnóstico de plugin/processamento de anotações.
 

@@ -5,17 +5,13 @@ Cada etapa lista só os arquivos que mudam nela; o estado da etapa N é a soma d
 Nunca edite o código direto no HTML ou nos checkpoints: edite aqui e rode o build.
 """
 
-PACOTE = 'br/com/gestorpro/api/'
+PACOTE = 'com/gestorpro/api/'
 
 # ───────────────────────── Etapa 1 · POST com DTO ─────────────────────────
-PRODUTO_1 = '''package br.com.gestorpro.api.model;
+PRODUTO_1 = '''package com.gestorpro.api.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,36 +19,42 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Getter
 @Setter
+@Getter
 @NoArgsConstructor
-@Entity
+@AllArgsConstructor
 @Table(name = "produtos")
+@Entity
 public class Produto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "nome", nullable = false)
     private String nome;
 
-    @Column(nullable = false, precision = 10, scale = 2)
+    @Column(name = "preco", nullable = false, precision = 10, scale = 2)
     private BigDecimal preco;
 
-    @Column(nullable = false)
+    @Column(name = "estoque", nullable = false)
     private Integer estoque;
 
+    @Column(name = "categoria")
     private String categoria;
 
-    @Column(nullable = false)
+    @Column(name = "criado_em", nullable = false)
     private LocalDateTime criadoEm;
 }
 '''
 
-PRODUTO_REPOSITORY = '''package br.com.gestorpro.api.repository;
+PRODUTO_REPOSITORY = '''package com.gestorpro.api.repository;
 
-import br.com.gestorpro.api.model.Produto;
+import com.gestorpro.api.model.Produto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -61,7 +63,7 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
 }
 '''
 
-REQUEST_1 = '''package br.com.gestorpro.api.dto;
+REQUEST_1 = '''package com.gestorpro.api.dto;
 
 import java.math.BigDecimal;
 
@@ -74,7 +76,7 @@ public record ProdutoRequestDTO(
 }
 '''
 
-RESPONSE_1 = '''package br.com.gestorpro.api.dto;
+RESPONSE_1 = '''package com.gestorpro.api.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -90,11 +92,11 @@ public record ProdutoResponseDTO(
 }
 '''
 
-MAPPER_1 = '''package br.com.gestorpro.api.mapper;
+MAPPER_1 = '''package com.gestorpro.api.mapper;
 
-import br.com.gestorpro.api.dto.ProdutoRequestDTO;
-import br.com.gestorpro.api.dto.ProdutoResponseDTO;
-import br.com.gestorpro.api.model.Produto;
+import com.gestorpro.api.dto.ProdutoRequestDTO;
+import com.gestorpro.api.dto.ProdutoResponseDTO;
+import com.gestorpro.api.model.Produto;
 
 public class ProdutoMapper {
     public static Produto toEntity(ProdutoRequestDTO dto) {
@@ -119,36 +121,36 @@ public class ProdutoMapper {
 }
 '''
 
-SERVICE_1 = '''package br.com.gestorpro.api.service;
+SERVICE_1 = '''package com.gestorpro.api.service;
 
 import java.time.LocalDateTime;
-import br.com.gestorpro.api.dto.ProdutoRequestDTO;
-import br.com.gestorpro.api.dto.ProdutoResponseDTO;
-import br.com.gestorpro.api.mapper.ProdutoMapper;
-import br.com.gestorpro.api.model.Produto;
-import br.com.gestorpro.api.repository.ProdutoRepository;
+import com.gestorpro.api.dto.ProdutoRequestDTO;
+import com.gestorpro.api.dto.ProdutoResponseDTO;
+import com.gestorpro.api.mapper.ProdutoMapper;
+import com.gestorpro.api.model.Produto;
+import com.gestorpro.api.repository.ProdutoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class ProdutoService {
-    private final ProdutoRepository repository;
+    private final ProdutoRepository produtoRepository;
 
     public ProdutoResponseDTO cadastrar(ProdutoRequestDTO dto) {
         Produto produto = ProdutoMapper.toEntity(dto);
         produto.setCriadoEm(LocalDateTime.now());
-        Produto salvo = repository.save(produto);
+        Produto salvo = produtoRepository.save(produto);
         return ProdutoMapper.toResponse(salvo);
     }
 }
 '''
 
-CONTROLLER_1 = '''package br.com.gestorpro.api.controller;
+CONTROLLER_1 = '''package com.gestorpro.api.controller;
 
-import br.com.gestorpro.api.dto.ProdutoRequestDTO;
-import br.com.gestorpro.api.dto.ProdutoResponseDTO;
-import br.com.gestorpro.api.service.ProdutoService;
+import com.gestorpro.api.dto.ProdutoRequestDTO;
+import com.gestorpro.api.dto.ProdutoResponseDTO;
+import com.gestorpro.api.service.ProdutoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -161,43 +163,43 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/produtos")
 @RequiredArgsConstructor
 public class ProdutoController {
-    private final ProdutoService service;
+    private final ProdutoService produtoService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ProdutoResponseDTO cadastrar(@RequestBody ProdutoRequestDTO dto) {
-        return service.cadastrar(dto);
+        return produtoService.cadastrar(dto);
     }
 }
 '''
 
 # ───────────────────────── Etapa 2 · GET lista ─────────────────────────
-SERVICE_2 = '''package br.com.gestorpro.api.service;
+SERVICE_2 = '''package com.gestorpro.api.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import br.com.gestorpro.api.dto.ProdutoRequestDTO;
-import br.com.gestorpro.api.dto.ProdutoResponseDTO;
-import br.com.gestorpro.api.mapper.ProdutoMapper;
-import br.com.gestorpro.api.model.Produto;
-import br.com.gestorpro.api.repository.ProdutoRepository;
+import com.gestorpro.api.dto.ProdutoRequestDTO;
+import com.gestorpro.api.dto.ProdutoResponseDTO;
+import com.gestorpro.api.mapper.ProdutoMapper;
+import com.gestorpro.api.model.Produto;
+import com.gestorpro.api.repository.ProdutoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class ProdutoService {
-    private final ProdutoRepository repository;
+    private final ProdutoRepository produtoRepository;
 
     public ProdutoResponseDTO cadastrar(ProdutoRequestDTO dto) {
         Produto produto = ProdutoMapper.toEntity(dto);
         produto.setCriadoEm(LocalDateTime.now());
-        Produto salvo = repository.save(produto);
+        Produto salvo = produtoRepository.save(produto);
         return ProdutoMapper.toResponse(salvo);
     }
 
     public List<ProdutoResponseDTO> listar() {
-        List<Produto> produtos = repository.findAll();
+        List<Produto> produtos = produtoRepository.findAll();
         return produtos.stream()
                 .map(produto -> ProdutoMapper.toResponse(produto))
                 .toList();
@@ -205,12 +207,12 @@ public class ProdutoService {
 }
 '''
 
-CONTROLLER_2 = '''package br.com.gestorpro.api.controller;
+CONTROLLER_2 = '''package com.gestorpro.api.controller;
 
 import java.util.List;
-import br.com.gestorpro.api.dto.ProdutoRequestDTO;
-import br.com.gestorpro.api.dto.ProdutoResponseDTO;
-import br.com.gestorpro.api.service.ProdutoService;
+import com.gestorpro.api.dto.ProdutoRequestDTO;
+import com.gestorpro.api.dto.ProdutoResponseDTO;
+import com.gestorpro.api.service.ProdutoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -224,32 +226,32 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/produtos")
 @RequiredArgsConstructor
 public class ProdutoController {
-    private final ProdutoService service;
+    private final ProdutoService produtoService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ProdutoResponseDTO cadastrar(@RequestBody ProdutoRequestDTO dto) {
-        return service.cadastrar(dto);
+        return produtoService.cadastrar(dto);
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<ProdutoResponseDTO> listar() {
-        return service.listar();
+        return produtoService.listar();
     }
 }
 '''
 
 # ───────────────────────── Etapa 3 · GET por ID (404) ─────────────────────────
-SERVICE_3 = '''package br.com.gestorpro.api.service;
+SERVICE_3 = '''package com.gestorpro.api.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import br.com.gestorpro.api.dto.ProdutoRequestDTO;
-import br.com.gestorpro.api.dto.ProdutoResponseDTO;
-import br.com.gestorpro.api.mapper.ProdutoMapper;
-import br.com.gestorpro.api.model.Produto;
-import br.com.gestorpro.api.repository.ProdutoRepository;
+import com.gestorpro.api.dto.ProdutoRequestDTO;
+import com.gestorpro.api.dto.ProdutoResponseDTO;
+import com.gestorpro.api.mapper.ProdutoMapper;
+import com.gestorpro.api.model.Produto;
+import com.gestorpro.api.repository.ProdutoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -258,24 +260,24 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 @RequiredArgsConstructor
 public class ProdutoService {
-    private final ProdutoRepository repository;
+    private final ProdutoRepository produtoRepository;
 
     public ProdutoResponseDTO cadastrar(ProdutoRequestDTO dto) {
         Produto produto = ProdutoMapper.toEntity(dto);
         produto.setCriadoEm(LocalDateTime.now());
-        Produto salvo = repository.save(produto);
+        Produto salvo = produtoRepository.save(produto);
         return ProdutoMapper.toResponse(salvo);
     }
 
     public List<ProdutoResponseDTO> listar() {
-        List<Produto> produtos = repository.findAll();
+        List<Produto> produtos = produtoRepository.findAll();
         return produtos.stream()
                 .map(produto -> ProdutoMapper.toResponse(produto))
                 .toList();
     }
 
     public ProdutoResponseDTO buscar(Long id) {
-        Produto produto = repository.findById(id)
+        Produto produto = produtoRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Produto não encontrado"));
         return ProdutoMapper.toResponse(produto);
@@ -286,26 +288,26 @@ public class ProdutoService {
 CONTROLLER_3 = CONTROLLER_2.replace(
     'import org.springframework.web.bind.annotation.GetMapping;\n',
     'import org.springframework.web.bind.annotation.GetMapping;\nimport org.springframework.web.bind.annotation.PathVariable;\n'
-).replace('''        return service.listar();
+).replace('''        return produtoService.listar();
     }
 }
-''', '''        return service.listar();
+''', '''        return produtoService.listar();
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public ProdutoResponseDTO buscar(@PathVariable Long id) {
-        return service.buscar(id);
+        return produtoService.buscar(id);
     }
 }
 ''')
 
 # ───────────────────────── Etapa 4 · PUT ─────────────────────────
-MAPPER_4 = '''package br.com.gestorpro.api.mapper;
+MAPPER_4 = '''package com.gestorpro.api.mapper;
 
-import br.com.gestorpro.api.dto.ProdutoRequestDTO;
-import br.com.gestorpro.api.dto.ProdutoResponseDTO;
-import br.com.gestorpro.api.model.Produto;
+import com.gestorpro.api.dto.ProdutoRequestDTO;
+import com.gestorpro.api.dto.ProdutoResponseDTO;
+import com.gestorpro.api.model.Produto;
 
 public class ProdutoMapper {
     public static Produto toEntity(ProdutoRequestDTO dto) {
@@ -334,15 +336,15 @@ public class ProdutoMapper {
 }
 '''
 
-SERVICE_4 = '''package br.com.gestorpro.api.service;
+SERVICE_4 = '''package com.gestorpro.api.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import br.com.gestorpro.api.dto.ProdutoRequestDTO;
-import br.com.gestorpro.api.dto.ProdutoResponseDTO;
-import br.com.gestorpro.api.mapper.ProdutoMapper;
-import br.com.gestorpro.api.model.Produto;
-import br.com.gestorpro.api.repository.ProdutoRepository;
+import com.gestorpro.api.dto.ProdutoRequestDTO;
+import com.gestorpro.api.dto.ProdutoResponseDTO;
+import com.gestorpro.api.mapper.ProdutoMapper;
+import com.gestorpro.api.model.Produto;
+import com.gestorpro.api.repository.ProdutoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -351,17 +353,17 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 @RequiredArgsConstructor
 public class ProdutoService {
-    private final ProdutoRepository repository;
+    private final ProdutoRepository produtoRepository;
 
     public ProdutoResponseDTO cadastrar(ProdutoRequestDTO dto) {
         Produto produto = ProdutoMapper.toEntity(dto);
         produto.setCriadoEm(LocalDateTime.now());
-        Produto salvo = repository.save(produto);
+        Produto salvo = produtoRepository.save(produto);
         return ProdutoMapper.toResponse(salvo);
     }
 
     public List<ProdutoResponseDTO> listar() {
-        List<Produto> produtos = repository.findAll();
+        List<Produto> produtos = produtoRepository.findAll();
         return produtos.stream()
                 .map(produto -> ProdutoMapper.toResponse(produto))
                 .toList();
@@ -375,12 +377,12 @@ public class ProdutoService {
     public ProdutoResponseDTO atualizar(Long id, ProdutoRequestDTO dto) {
         Produto produto = buscarOuFalhar(id);
         ProdutoMapper.atualizar(produto, dto);
-        Produto salvo = repository.save(produto);
+        Produto salvo = produtoRepository.save(produto);
         return ProdutoMapper.toResponse(salvo);
     }
 
     private Produto buscarOuFalhar(Long id) {
-        return repository.findById(id)
+        return produtoRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Produto não encontrado"));
     }
@@ -390,26 +392,26 @@ public class ProdutoService {
 CONTROLLER_4 = CONTROLLER_3.replace(
     'import org.springframework.web.bind.annotation.PostMapping;\n',
     'import org.springframework.web.bind.annotation.PostMapping;\nimport org.springframework.web.bind.annotation.PutMapping;\n'
-).replace('''        return service.buscar(id);
+).replace('''        return produtoService.buscar(id);
     }
 }
-''', '''        return service.buscar(id);
+''', '''        return produtoService.buscar(id);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public ProdutoResponseDTO atualizar(@PathVariable Long id, @RequestBody ProdutoRequestDTO dto) {
-        return service.atualizar(id, dto);
+        return produtoService.atualizar(id, dto);
     }
 }
 ''')
 
 # ───────────────────────── Etapa 5 · DELETE ─────────────────────────
 SERVICE_5 = SERVICE_4.replace('''    private Produto buscarOuFalhar(Long id) {''', '''    public void excluir(Long id) {
-        if (!repository.existsById(id)) {
+        if (!produtoRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado");
         }
-        repository.deleteById(id);
+        produtoRepository.deleteById(id);
     }
 
     private Produto buscarOuFalhar(Long id) {''')
@@ -417,22 +419,22 @@ SERVICE_5 = SERVICE_4.replace('''    private Produto buscarOuFalhar(Long id) {''
 CONTROLLER_5 = CONTROLLER_4.replace(
     'import org.springframework.http.HttpStatus;\n',
     'import org.springframework.http.HttpStatus;\nimport org.springframework.web.bind.annotation.DeleteMapping;\n'
-).replace('''        return service.atualizar(id, dto);
+).replace('''        return produtoService.atualizar(id, dto);
     }
 }
-''', '''        return service.atualizar(id, dto);
+''', '''        return produtoService.atualizar(id, dto);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void excluir(@PathVariable Long id) {
-        service.excluir(id);
+        produtoService.excluir(id);
     }
 }
 ''')
 
 # ───────────────────────── Etapa 6 · Validação ─────────────────────────
-REQUEST_6 = '''package br.com.gestorpro.api.dto;
+REQUEST_6 = '''package com.gestorpro.api.dto;
 
 import java.math.BigDecimal;
 
@@ -459,12 +461,12 @@ public record ProdutoRequestDTO(
 '''
 
 CONTROLLER_6 = CONTROLLER_5.replace(
-    'import br.com.gestorpro.api.service.ProdutoService;\n',
-    'import br.com.gestorpro.api.service.ProdutoService;\nimport jakarta.validation.Valid;\n'
+    'import com.gestorpro.api.service.ProdutoService;\n',
+    'import com.gestorpro.api.service.ProdutoService;\nimport jakarta.validation.Valid;\n'
 ).replace('@RequestBody ProdutoRequestDTO dto', '@RequestBody @Valid ProdutoRequestDTO dto')
 
 # ───────────────────────── Etapa 7 · Tratador de erros ─────────────────────────
-TRATADOR = '''package br.com.gestorpro.api.exception;
+TRATADOR = '''package com.gestorpro.api.exception;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -494,10 +496,10 @@ public class TratadorDeErros {
 PRODUTO_8 = PRODUTO_1.replace(
     'import jakarta.persistence.Id;\n',
     'import jakarta.persistence.Id;\nimport jakarta.persistence.JoinColumn;\nimport jakarta.persistence.ManyToOne;\n'
-).replace('''    @Column(nullable = false)
+).replace('''    @Column(name = "criado_em", nullable = false)
     private LocalDateTime criadoEm;
 }
-''', '''    @Column(nullable = false)
+''', '''    @Column(name = "criado_em", nullable = false)
     private LocalDateTime criadoEm;
 
     @ManyToOne
@@ -525,17 +527,17 @@ MAPPER_8 = MAPPER_4.replace('''                produto.getCriadoEm()
                 produto.getFornecedor().getNome()
         );''')
 
-SERVICE_8 = '''package br.com.gestorpro.api.service;
+SERVICE_8 = '''package com.gestorpro.api.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import br.com.gestorpro.api.dto.ProdutoRequestDTO;
-import br.com.gestorpro.api.dto.ProdutoResponseDTO;
-import br.com.gestorpro.api.mapper.ProdutoMapper;
-import br.com.gestorpro.api.model.Fornecedor;
-import br.com.gestorpro.api.model.Produto;
-import br.com.gestorpro.api.repository.FornecedorRepository;
-import br.com.gestorpro.api.repository.ProdutoRepository;
+import com.gestorpro.api.dto.ProdutoRequestDTO;
+import com.gestorpro.api.dto.ProdutoResponseDTO;
+import com.gestorpro.api.mapper.ProdutoMapper;
+import com.gestorpro.api.model.Fornecedor;
+import com.gestorpro.api.model.Produto;
+import com.gestorpro.api.repository.FornecedorRepository;
+import com.gestorpro.api.repository.ProdutoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -544,19 +546,19 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 @RequiredArgsConstructor
 public class ProdutoService {
-    private final ProdutoRepository repository;
+    private final ProdutoRepository produtoRepository;
     private final FornecedorRepository fornecedorRepository;
 
     public ProdutoResponseDTO cadastrar(ProdutoRequestDTO dto) {
         Produto produto = ProdutoMapper.toEntity(dto);
         produto.setFornecedor(buscarFornecedorOuFalhar(dto.fornecedorId()));
         produto.setCriadoEm(LocalDateTime.now());
-        Produto salvo = repository.save(produto);
+        Produto salvo = produtoRepository.save(produto);
         return ProdutoMapper.toResponse(salvo);
     }
 
     public List<ProdutoResponseDTO> listar() {
-        List<Produto> produtos = repository.findAll();
+        List<Produto> produtos = produtoRepository.findAll();
         return produtos.stream()
                 .map(produto -> ProdutoMapper.toResponse(produto))
                 .toList();
@@ -571,19 +573,19 @@ public class ProdutoService {
         Produto produto = buscarOuFalhar(id);
         ProdutoMapper.atualizar(produto, dto);
         produto.setFornecedor(buscarFornecedorOuFalhar(dto.fornecedorId()));
-        Produto salvo = repository.save(produto);
+        Produto salvo = produtoRepository.save(produto);
         return ProdutoMapper.toResponse(salvo);
     }
 
     public void excluir(Long id) {
-        if (!repository.existsById(id)) {
+        if (!produtoRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado");
         }
-        repository.deleteById(id);
+        produtoRepository.deleteById(id);
     }
 
     private Produto buscarOuFalhar(Long id) {
-        return repository.findById(id)
+        return produtoRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Produto não encontrado"));
     }
@@ -597,11 +599,7 @@ public class ProdutoService {
 '''
 
 # ───────────────────────── Etapa 9 · Cliente (gabarito do aluno) ─────────────────────────
-CLIENTE = '''package br.com.gestorpro.api.model;
-
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
+CLIENTE = '''package com.gestorpro.api.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -609,31 +607,39 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Getter
 @Setter
+@Getter
 @NoArgsConstructor
-@Entity
+@AllArgsConstructor
 @Table(name = "clientes")
+@Entity
 public class Cliente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "nome", nullable = false)
     private String nome;
 
-    @Column(nullable = false)
+    @Column(name = "email", nullable = false)
     private String email;
 
+    @Column(name = "telefone")
     private String telefone;
+
+    @Column(name = "cidade")
     private String cidade;
 }
 '''
 
-CLIENTE_REPOSITORY = '''package br.com.gestorpro.api.repository;
+CLIENTE_REPOSITORY = '''package com.gestorpro.api.repository;
 
-import br.com.gestorpro.api.model.Cliente;
+import com.gestorpro.api.model.Cliente;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -642,7 +648,7 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 }
 '''
 
-CLIENTE_REQUEST = '''package br.com.gestorpro.api.dto;
+CLIENTE_REQUEST = '''package com.gestorpro.api.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -661,7 +667,7 @@ public record ClienteRequestDTO(
 }
 '''
 
-CLIENTE_RESPONSE = '''package br.com.gestorpro.api.dto;
+CLIENTE_RESPONSE = '''package com.gestorpro.api.dto;
 
 public record ClienteResponseDTO(
         Long id,
@@ -673,11 +679,11 @@ public record ClienteResponseDTO(
 }
 '''
 
-CLIENTE_MAPPER = '''package br.com.gestorpro.api.mapper;
+CLIENTE_MAPPER = '''package com.gestorpro.api.mapper;
 
-import br.com.gestorpro.api.dto.ClienteRequestDTO;
-import br.com.gestorpro.api.dto.ClienteResponseDTO;
-import br.com.gestorpro.api.model.Cliente;
+import com.gestorpro.api.dto.ClienteRequestDTO;
+import com.gestorpro.api.dto.ClienteResponseDTO;
+import com.gestorpro.api.model.Cliente;
 
 public class ClienteMapper {
     public static Cliente toEntity(ClienteRequestDTO dto) {
@@ -705,14 +711,14 @@ public class ClienteMapper {
 }
 '''
 
-CLIENTE_SERVICE = '''package br.com.gestorpro.api.service;
+CLIENTE_SERVICE = '''package com.gestorpro.api.service;
 
 import java.util.List;
-import br.com.gestorpro.api.dto.ClienteRequestDTO;
-import br.com.gestorpro.api.dto.ClienteResponseDTO;
-import br.com.gestorpro.api.mapper.ClienteMapper;
-import br.com.gestorpro.api.model.Cliente;
-import br.com.gestorpro.api.repository.ClienteRepository;
+import com.gestorpro.api.dto.ClienteRequestDTO;
+import com.gestorpro.api.dto.ClienteResponseDTO;
+import com.gestorpro.api.mapper.ClienteMapper;
+import com.gestorpro.api.model.Cliente;
+import com.gestorpro.api.repository.ClienteRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -721,16 +727,16 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 @RequiredArgsConstructor
 public class ClienteService {
-    private final ClienteRepository repository;
+    private final ClienteRepository clienteRepository;
 
     public ClienteResponseDTO cadastrar(ClienteRequestDTO dto) {
         Cliente cliente = ClienteMapper.toEntity(dto);
-        Cliente salvo = repository.save(cliente);
+        Cliente salvo = clienteRepository.save(cliente);
         return ClienteMapper.toResponse(salvo);
     }
 
     public List<ClienteResponseDTO> listar() {
-        List<Cliente> clientes = repository.findAll();
+        List<Cliente> clientes = clienteRepository.findAll();
         return clientes.stream()
                 .map(cliente -> ClienteMapper.toResponse(cliente))
                 .toList();
@@ -744,19 +750,19 @@ public class ClienteService {
     public ClienteResponseDTO atualizar(Long id, ClienteRequestDTO dto) {
         Cliente cliente = buscarOuFalhar(id);
         ClienteMapper.atualizar(cliente, dto);
-        Cliente salvo = repository.save(cliente);
+        Cliente salvo = clienteRepository.save(cliente);
         return ClienteMapper.toResponse(salvo);
     }
 
     public void excluir(Long id) {
-        if (!repository.existsById(id)) {
+        if (!clienteRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado");
         }
-        repository.deleteById(id);
+        clienteRepository.deleteById(id);
     }
 
     private Cliente buscarOuFalhar(Long id) {
-        return repository.findById(id)
+        return clienteRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Cliente não encontrado"));
     }
@@ -768,7 +774,8 @@ CLIENTE_CONTROLLER = (CONTROLLER_6
     .replace('ProdutoResponseDTO', 'ClienteResponseDTO')
     .replace('ProdutoService', 'ClienteService')
     .replace('ProdutoController', 'ClienteController')
-    .replace('"/produtos"', '"/clientes"'))
+    .replace('"/produtos"', '"/clientes"')
+    .replace('produtoService', 'clienteService'))
 
 ETAPAS = {
     1: {'model/Produto.java': PRODUTO_1, 'repository/ProdutoRepository.java': PRODUTO_REPOSITORY,
@@ -790,6 +797,38 @@ ETAPAS = {
         'mapper/ClienteMapper.java': CLIENTE_MAPPER, 'service/ClienteService.java': CLIENTE_SERVICE,
         'controller/ClienteController.java': CLIENTE_CONTROLLER},
 }
+
+
+
+def _estilo(src):
+    """Formata como o IntelliJ da turma 06: imports em ordem alfabética, java.* por último depois de
+    uma linha em branco, 5+ imports do mesmo pacote viram `pacote.*`, e uma linha em branco logo
+    depois da abertura de cada classe."""
+    linhas = src.split('\n')
+    idx = [i for i, l in enumerate(linhas) if l.startswith('import ')]
+    if idx:
+        nomes = [linhas[i][len('import '):-1] for i in idx]
+        pacotes = {}
+        for n in nomes:
+            pacotes.setdefault(n.rsplit('.', 1)[0], []).append(n)
+        finais = []
+        for n in nomes:
+            pacote = n.rsplit('.', 1)[0]
+            item = pacote + '.*' if len(pacotes[pacote]) >= 5 else n
+            if item not in finais:
+                finais.append(item)
+        outros = sorted(n for n in finais if not n.startswith('java.'))
+        javas = sorted(n for n in finais if n.startswith('java.'))
+        bloco = ['import ' + n + ';' for n in outros]
+        if javas:
+            bloco += ([''] if outros else []) + ['import ' + n + ';' for n in javas]
+        linhas = linhas[:idx[0]] + bloco + linhas[idx[-1] + 1:]
+    src = '\n'.join(linhas)
+    import re
+    return re.sub(r'(public class \w+[^{\n]*\{\n)(?!\n)', r'\1\n', src)
+
+
+ETAPAS = {n: {caminho: _estilo(src) for caminho, src in arquivos.items()} for n, arquivos in ETAPAS.items()}
 
 NOMES_ETAPAS = {1: 'POST', 2: 'GET lista', 3: 'GET por ID', 4: 'PUT', 5: 'DELETE',
                 6: 'Validação', 7: 'Tratador de erros', 8: 'Produto → Fornecedor', 9: 'Cliente'}

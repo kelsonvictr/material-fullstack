@@ -130,23 +130,23 @@
   const requestCases={
     valid:[
       ['client','Um pedido de cadastro','O cliente envia POST /fornecedores com nome TechDistrib, sem id.',0,'Aguardando','Entrada: JSON com os dados do fornecedor.'],
-      ['controller','JSON vira objeto','Spring encontra @PostMapping; @RequestBody preenche um Fornecedor.',0,'Aguardando','Controller chama service.cadastrar(fornecedor).'],
-      ['service','O Service organiza','Nesta primeira volta, o Service repassa o fornecedor ao Repository.',0,'Aguardando','O Service chama repository.save(fornecedor).'],
+      ['controller','JSON vira objeto','Spring encontra @PostMapping; @RequestBody preenche um Fornecedor.',0,'Aguardando','Controller chama fornecedorService.cadastrar(fornecedor).'],
+      ['service','O Service organiza','Nesta primeira volta, o Service repassa o fornecedor ao Repository.',0,'Aguardando','O Service chama fornecedorRepository.save(fornecedor).'],
       ['repository','Pedir a persistência','A implementação do Repository aciona JPA/Hibernate para persistir a entidade.',0,'Aguardando','O SQL será executado no PostgreSQL; ainda não mostramos uma linha gravada.'],
       ['database','Uma linha é gravada','PostgreSQL executa o INSERT e gera o ID. Aqui usamos 1 apenas como exemplo.',1,'ID 1 gerado','O volume passa a conter os dados do novo cadastro.'],
       ['controller','Voltar com o resultado','O retorno atravessa Repository e Service até o Controller; Spring serializa o objeto.',1,'201 Created','Saída: JSON do fornecedor com ID. O cliente recebe o resultado.']
     ],
     list:[
       ['client','Pedir a coleção','O cliente envia GET /fornecedores. O banco simulado já tem 1 fornecedor.',1,'Aguardando','GET não envia corpo JSON: ele só pede.'],
-      ['controller','Encontrar o método','Spring encontra @GetMapping sem caminho extra; Controller chama service.listar().',1,'Aguardando','Nenhum objeto precisa ser convertido na entrada.'],
-      ['service','Repassar a consulta','O Service chama repository.findAll().',1,'Aguardando','Consultar não altera nenhum registro.'],
+      ['controller','Encontrar o método','Spring encontra @GetMapping sem caminho extra; Controller chama fornecedorService.listar().',1,'Aguardando','Nenhum objeto precisa ser convertido na entrada.'],
+      ['service','Repassar a consulta','O Service chama fornecedorRepository.findAll().',1,'Aguardando','Consultar não altera nenhum registro.'],
       ['database','Ler as linhas','PostgreSQL executa um SELECT e devolve todas as linhas da tabela.',1,'Consulta concluída','O Repository transforma as linhas em uma List<Fornecedor>.'],
       ['controller','Responder com a lista','Spring serializa a lista em JSON, entre colchetes.',1,'200 OK','Saída: [ { "id": 1, "nome": "TechDistrib", ... } ]. Com a tabela vazia, seria [] e também 200.']
     ],
     remove:[
       ['client','Excluir um alvo','O cliente envia DELETE /fornecedores/1, sem corpo.',1,'Aguardando','O ID viaja na URL e diz qual fornecedor sai.'],
-      ['controller','Ler a variável do caminho','@PathVariable recebe 1; Controller chama service.excluir(1).',1,'Aguardando','O método do Controller é void: não haverá corpo na resposta.'],
-      ['service','Pedir a remoção','O Service chama repository.deleteById(1).',1,'Aguardando','O Repository aciona JPA/Hibernate.'],
+      ['controller','Ler a variável do caminho','@PathVariable recebe 1; Controller chama fornecedorService.excluir(1).',1,'Aguardando','O método do Controller é void: não haverá corpo na resposta.'],
+      ['service','Pedir a remoção','O Service chama fornecedorRepository.deleteById(1).',1,'Aguardando','O Repository aciona JPA/Hibernate.'],
       ['database','Uma linha sai','PostgreSQL executa o DELETE da linha com ID 1.',0,'Linha removida','Os outros fornecedores continuam na tabela.'],
       ['controller','Responder sem conteúdo','Spring devolve 204: deu certo e não há nada no corpo.',0,'204 No Content','Um GET desse ID agora devolve null, por enquanto.']
     ]

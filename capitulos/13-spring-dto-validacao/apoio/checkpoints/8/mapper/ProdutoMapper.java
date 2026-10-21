@@ -1,10 +1,11 @@
-package br.com.gestorpro.api.mapper;
+package com.gestorpro.api.mapper;
 
-import br.com.gestorpro.api.dto.ProdutoRequestDTO;
-import br.com.gestorpro.api.dto.ProdutoResponseDTO;
-import br.com.gestorpro.api.model.Produto;
+import com.gestorpro.api.dto.ProdutoRequestDTO;
+import com.gestorpro.api.dto.ProdutoResponseDTO;
+import com.gestorpro.api.model.Produto;
 
 public class ProdutoMapper {
+
     public static Produto toEntity(ProdutoRequestDTO dto) {
         Produto produto = new Produto();
         atualizar(produto, dto);

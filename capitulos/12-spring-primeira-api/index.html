@@ -126,8 +126,8 @@
 <div class="mini-stage"><span>1 · Chega um POST</span><span>2 · Spring encontra o método</span><span>3 · Nosso código decide</span><span>4 · Spring entrega a resposta</span></div>
 <div class="decision" data-explanation="O Spring consegue chamar nosso método, mas o método precisa implementar a regra que o sistema exige."><h4>🧠 O framework já sabe quais fornecedores podemos cadastrar?</h4><div class="choices"><button type="button" data-choice="false" aria-pressed="false">Sim. Gerar o projeto já cria as regras do GestorPRO.</button><button type="button" data-choice="true" aria-pressed="false">Não. Ele fornece infraestrutura; nós escrevemos as regras do cadastro.</button></div><p class="feedback" role="status" aria-live="polite">Escolha uma resposta. Você pode tentar novamente.</p></div><p class="transfer">Agora vamos pedir uma oficina vazia ao Initializr. As regras entram depois.</p></div></section><div class="section-connector"><div class="line"></div></div><section class="step-section" id="initializr"><div class="step-header"><div class="step-number sn-green">02</div><div><h2 class="step-title">Spring Initializr: o ponto de partida</h2><p class="step-sub">Cada escolha do site tem uma função.</p></div></div><div class="card">
 <p>Abra <a href="https://start.spring.io/" target="_blank" rel="noopener">start.spring.io ↗</a>. O <strong>Spring Initializr</strong> gera a estrutura inicial e configura as dependências. Ele não gera o cadastro de fornecedores.</p>
-<div class="setup-sheet"><div class="sheet-title">🌱 Spring Initializr <small>Guia de preenchimento · não é o site real</small></div><dl><dt>Project</dt><dd>Maven</dd><dt>Language</dt><dd>Java</dd><dt>Spring Boot</dt><dd>4.1.1 · versão usada neste capítulo</dd><dt>Group</dt><dd>br.com.gestorpro</dd><dt>Artifact / Name</dt><dd>api / Api</dd><dt>Package name</dt><dd>br.com.gestorpro.api</dd><dt>Packaging</dt><dd>Jar</dd><dt>Java</dt><dd>21</dd></dl></div>
-<div class="concept maven-box"><strong>📦 Maven: o “npm” do Java</strong><p>No front, você usou o <code>npm</code>: o <code>package.json</code> listava as bibliotecas do projeto e o <code>npm install</code> baixava tudo. No Java, quem faz esse papel é o <strong>Maven</strong>, uma ferramenta de <em>build</em> (construção de projetos). Ele cuida de três coisas:</p><ol><li><strong>Baixar as dependências</strong>: as bibliotecas que o projeto usa (Spring, driver do PostgreSQL, Lombok…) vêm de um repositório público na internet, o Maven Central.</li><li><strong>Compilar e empacotar</strong>: transformar o código em um arquivo <code>.jar</code> pronto para executar.</li><li><strong>Padronizar a estrutura</strong>: todo projeto Maven tem <code>src/main/java</code> e <code>src/main/resources</code>. Quem abre um projeto Maven já sabe onde está cada coisa.</li></ol><p>A configuração fica no <code>pom.xml</code> (<em>Project Object Model</em>, “modelo do projeto”): é o <code>package.json</code> do Java, escrito em XML. No Cap 11, você escolheu Maven ao criar o projeto; agora sabe para que ele serve. Existe uma alternativa parecida, o Gradle, mas vamos usar Maven.</p></div><p><strong>Group</strong> identifica a organização; <strong>Artifact</strong>, o projeto. <strong>Package</strong> organiza nossas classes. <strong>JAR</strong> é o formato em que empacotaremos a aplicação Java.</p>
+<div class="setup-sheet"><div class="sheet-title">🌱 Spring Initializr <small>Guia de preenchimento · não é o site real</small></div><dl><dt>Project</dt><dd>Maven</dd><dt>Language</dt><dd>Java</dd><dt>Spring Boot</dt><dd>4.1.1 · versão usada neste capítulo</dd><dt>Group</dt><dd>com.gestorpro</dd><dt>Artifact / Name</dt><dd>api / Api</dd><dt>Package name</dt><dd>com.gestorpro.api</dd><dt>Packaging</dt><dd>Jar</dd><dt>Java</dt><dd>21</dd></dl></div>
+<div class="concept maven-box"><strong>📦 Maven: o “npm” do Java</strong><p>No front, você usou o <code>npm</code>: o <code>package.json</code> listava as bibliotecas do projeto e o <code>npm install</code> baixava tudo. No Java, quem faz esse papel é o <strong>Maven</strong>, uma ferramenta de <em>build</em> (construção de projetos). Ele cuida de três coisas:</p><ol><li><strong>Baixar as dependências</strong>: as bibliotecas que o projeto usa (Spring, driver do PostgreSQL, Lombok…) vêm de um repositório público na internet, o Maven Central.</li><li><strong>Compilar e empacotar</strong>: transformar o código em um arquivo <code>.jar</code> pronto para executar.</li><li><strong>Padronizar a estrutura</strong>: todo projeto Maven tem <code>src/main/java</code> e <code>src/main/resources</code>. Quem abre um projeto Maven já sabe onde está cada coisa.</li></ol><p>A configuração fica no <code>pom.xml</code> (<em>Project Object Model</em>, “modelo do projeto”): é o <code>package.json</code> do Java, escrito em XML. No Cap 11, você escolheu Maven ao criar o projeto; agora sabe para que ele serve. Existe uma alternativa parecida, o Gradle, mas vamos usar Maven.</p></div><p><strong>Group</strong> identifica a organização. Por convenção, é o domínio escrito ao contrário: <code>gestorpro.com</code> vira <code>com.gestorpro</code>. <strong>Artifact</strong> identifica o projeto. O Initializr junta os dois para sugerir o pacote <code>com.gestorpro.api</code>. <strong>Package</strong> organiza nossas classes. <strong>JAR</strong> é o formato em que empacotaremos a aplicação Java.</p>
 <h3>Em Add Dependencies, procure e adicione</h3>
 <div class="three-cards dependency-grid"><article><h4>Spring Web</h4><p>Receber pedidos HTTP e responder pela web.</p></article><article><h4>Spring Data JPA</h4><p>Acessar dados usando repositories.</p></article><article><h4>PostgreSQL Driver</h4><p>Permitir a comunicação Java ↔ PostgreSQL.</p></article><article><h4>Lombok</h4><p>Gerar construtores, getters e setters na compilação, reduzindo código repetitivo.</p></article></div>
 <p>Selecione <strong>Generate</strong>, baixe o ZIP e extraia a pasta. Confira que existe um <code>pom.xml</code> dentro dela. Vamos abri-la no IntelliJ depois da experiência com SQL.</p>
@@ -206,14 +206,14 @@ docker exec gestorpro-postgres pg_isready -<span class="kw">U</span> gestorpro -
 ├── pom.xml
 ├── mvnw / mvnw.cmd
 └── src/main/
-    ├── java/br/com/gestorpro/api/<span class="tp">ApiApplication</span>.java
+    ├── java/com/gestorpro/api/<span class="tp">ApiApplication</span>.java
     └── resources/application.properties</code></pre></div>
 <p><code>mvnw</code> e <code>mvnw.cmd</code> são o <strong>Maven Wrapper</strong>: executam a versão de Maven definida pelo projeto, sem exigir uma instalação global. Hoje podemos iniciar pelo botão ▶ da IDE.</p>
 <details class="answer"><summary>🐛 Lombok: getNome() ou o construtor aparecem com erro?</summary><div><ol><li>Confira se selecionou <strong>Lombok</strong> no Initializr. O ZIP inicial desta aula já o inclui.</li><li>Na janela Maven, use <strong>Reload All Maven Projects</strong> e aguarde a sincronização.</li><li>Em <strong>Settings → Plugins</strong>, confira se o suporte/plugin Lombok está instalado e habilitado para a sua versão da IDE.</li><li>Em <strong>Settings → Build, Execution, Deployment → Compiler → Annotation Processors</strong>, confira <strong>Enable annotation processing</strong>. O IntelliJ normalmente importa a configuração do Maven automaticamente.</li></ol><p>Não crie outro construtor só para esconder um erro de configuração: vamos conferir primeiro a geração do Lombok. Referências: <a href="https://projectlombok.org/setup/intellij">Lombok no IntelliJ</a> e <a href="https://www.jetbrains.com/help/idea/annotation-processors-support.html">processamento de anotações</a>.</p></div></details><div class="checkpoint">✓ SDK 21 configurada, POM com Lombok carregado, classe ApiApplication localizada.</div>
 <p class="source"><a href="https://www.jetbrains.com/help/idea/sdk.html" target="_blank" rel="noopener">Referência: configuração de SDK no IntelliJ ↗</a></p>
 </div></section><div class="section-connector"><div class="line"></div></div><section class="step-section" id="conexao"><div class="step-header"><div class="step-number sn-green">08</div><div><h2 class="step-title">Ligar Java e PostgreSQL</h2><p class="step-sub">A API ainda não tem rotas. Primeiro ela precisa iniciar.</p></div></div><div class="card">
 <h3>O main continua existindo</h3><p>Abra o arquivo que o Initializr criou. Assim como no Cap 11, há um ponto de entrada. A diferença é que ele inicia a aplicação Spring:</p>
-<div class="code-block"><div class="code-header"><span class="filename">ApiApplication.java · já gerado pelo Initializr</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar ApiApplication.java · já gerado pelo Initializr">Copiar</button></div><pre data-java="main"><code><span class="kw">package</span> br.com.gestorpro.api;
+<div class="code-block"><div class="code-header"><span class="filename">ApiApplication.java · já gerado pelo Initializr</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar ApiApplication.java · já gerado pelo Initializr">Copiar</button></div><pre data-java="main"><code><span class="kw">package</span> com.gestorpro.api;
 
 <span class="kw">import</span> org.springframework.boot.<span class="tp">SpringApplication</span>;
 <span class="kw">import</span> org.springframework.boot.autoconfigure.<span class="tp">SpringBootApplication</span>;
@@ -246,24 +246,26 @@ spring.jpa.show-sql=true</code></pre></div>
 <p>No Cap 11, você usava <code>new</code>. Agora o Spring cria e gerencia os componentes identificados por anotações, como <code>@Service</code> e <code>@RestController</code>. Quando uma classe precisa de outra, o Spring fornece essa dependência: isso é <strong>injeção de dependência</strong>.</p><div class="analogy di-analogy"><h3>💉 A seringa do Spring</h3><p>Pense numa seringa. O <strong>conteúdo</strong> é a dependência: um objeto pronto, como o <code>FornecedorRepository</code>. Quem aperta o êmbolo é o <strong>Spring</strong>. E a agulha entra num ponto combinado: o <strong>construtor</strong> da classe que precisa daquele objeto.</p><p>A classe não fabrica o que precisa com <code>new</code>. Ela só declara “preciso de um Repository” e o Spring aplica. Onde a analogia para: não existe nada mágico nem forçado. Por baixo, o Spring apenas chama o construtor passando o objeto como argumento, como você fazia no Cap 11 com <code>new</code>.</p></div><p class="di-legend">💉 Nos códigos deste capítulo, a seringa marca as linhas da injeção de dependência. <strong>Ela não faz parte do código: não digite.</strong></p>
 <h3>Primeiro, o construtor que você já conhece</h3><p>Para funcionar, o Service precisa de um Repository. Vamos declarar essa necessidade no construtor. Observe o mecanismo; os arquivos completos serão escritos no próximo bloco.</p><div class="code-block"><div class="code-header"><span class="filename">Exemplo conceitual · construtor escrito à mão</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar Exemplo conceitual · construtor escrito à mão">Copiar</button></div><pre data-constructor="explicit"><code><span class="attr">@Service</span>
 <span class="kw">public</span> <span class="kw">class</span> <span class="tp">FornecedorService</span> {
-    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">FornecedorRepository</span> repository;
 
-    <span class="kw">public</span> <span class="tp">FornecedorService</span>(<span class="di-hl"><span class="tp">FornecedorRepository</span> repository</span>) {
-        <span class="kw">this</span>.repository = repository;
+    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">FornecedorRepository</span> fornecedorRepository;
+
+    <span class="kw">public</span> <span class="tp">FornecedorService</span>(<span class="di-hl"><span class="tp">FornecedorRepository</span> fornecedorRepository</span>) {
+        <span class="kw">this</span>.fornecedorRepository = fornecedorRepository;
     }
-}</code></pre></div><p>O parâmetro recebe o Repository e <code>this.repository = repository</code> guarda essa referência no campo do objeto. <code>final</code> indica que esse campo só recebe sua referência uma vez; isso não torna o objeto Repository imutável. O Spring localiza a dependência e chama esse construtor para criar o Service.</p><p><strong>Quando existe um único construtor, o Spring o utiliza sem precisar de <code>@Autowired</code>.</strong> A dependência já chega na criação do objeto, em vez de ser preenchida depois em um campo.</p><h3>Agora, o mesmo construtor gerado pelo Lombok</h3><div class="code-block"><div class="code-header"><span class="filename">Exemplo conceitual · mesma dependência, menos escrita</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar Exemplo conceitual · mesma dependência, menos escrita">Copiar</button></div><pre data-constructor="lombok"><code><span class="attr">@Service</span>
+}</code></pre></div><p>O parâmetro recebe o Repository e <code>this.fornecedorRepository = fornecedorRepository</code> guarda essa referência no campo do objeto. <code>final</code> indica que esse campo só recebe sua referência uma vez; isso não torna o objeto Repository imutável. O Spring localiza a dependência e chama esse construtor para criar o Service.</p><p><strong>Quando existe um único construtor, o Spring o utiliza sem precisar de <code>@Autowired</code>.</strong> A dependência já chega na criação do objeto, em vez de ser preenchida depois em um campo.</p><h3>Agora, o mesmo construtor gerado pelo Lombok</h3><div class="code-block"><div class="code-header"><span class="filename">Exemplo conceitual · mesma dependência, menos escrita</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar Exemplo conceitual · mesma dependência, menos escrita">Copiar</button></div><pre data-constructor="lombok"><code><span class="attr">@Service</span>
 <span class="di-hl"><span class="attr">@RequiredArgsConstructor</span></span>
 <span class="kw">public</span> <span class="kw">class</span> <span class="tp">FornecedorService</span> {
-    <span class="di-hl"><span class="kw">private</span> <span class="kw">final</span> <span class="tp">FornecedorRepository</span> repository;</span>
-}</code></pre></div><p><code>@RequiredArgsConstructor</code> gera um construtor para os campos <code>final</code> que ainda não receberam valor. Neste exemplo, ele gera justamente o construtor acima. Não mantenha o construtor explícito junto com a anotação: são duas formas de produzir a mesma assinatura.</p><div class="tip"><strong>Lombok gera o construtor; Spring fornece a dependência.</strong> No Controller, o mesmo padrão será usado com <code>private final FornecedorService service;</code>. Não criamos o Service manualmente dentro do Controller.</div>
+
+    <span class="di-hl"><span class="kw">private</span> <span class="kw">final</span> <span class="tp">FornecedorRepository</span> fornecedorRepository;</span>
+}</code></pre></div><p><code>@RequiredArgsConstructor</code> gera um construtor para os campos <code>final</code> que ainda não receberam valor. Neste exemplo, ele gera justamente o construtor acima. Não mantenha o construtor explícito junto com a anotação: são duas formas de produzir a mesma assinatura.</p><p><strong>Repare no nome do campo:</strong> <code>fornecedorRepository</code> é o nome do tipo (<code>FornecedorRepository</code>) com a primeira letra minúscula. É uma convenção comum em Java: quem lê <code>fornecedorRepository.save(...)</code> sabe na hora de qual tabela estamos falando. Isso vai ajudar quando um Service precisar de dois repositories, como no próximo capítulo.</p><div class="tip"><strong>Lombok gera o construtor; Spring fornece a dependência.</strong> No Controller, o mesmo padrão será usado com <code>private final FornecedorService fornecedorService;</code>. Não criamos o Service manualmente dentro do Controller.</div>
 <div class="lab di-lab" id="di-lab"><div class="lab-heading"><span>LAB · SIMULAÇÃO</span><h3>💉 Aplique a injeção</h3><p>Avance um passo por vez. A seringa representa o Spring; nada é executado no seu computador.</p></div>
 <div class="di-stage"><div class="syringe"><span class="syr-label syr-who" aria-hidden="true">🌱 Spring aperta</span><span class="syr-label syr-what">conteúdo: <b data-di-dose></b></span><div class="syr-body" aria-hidden="true"><div class="syr-glass"><span class="syr-dose"></span></div><div class="syr-plunger"><span class="syr-thumb"></span><span class="syr-rod"></span><span class="syr-stopper"></span></div></div><span class="syr-hub" aria-hidden="true"></span><span class="syr-needle" aria-hidden="true"></span></div>
 <div class="di-target"><small>QUEM PRECISA</small><strong data-di-target></strong><code class="di-slot mono">construtor( <span data-di-slot></span> )</code></div></div>
 <p class="lab-caption" data-di-caption role="status" aria-live="polite"></p><div class="lab-controls"><button type="button" data-di-prev>← Voltar</button><span data-di-step></span><button type="button" data-di-next>Próximo →</button><button type="button" data-di-reset>Recomeçar</button></div></div>
-<div class="decision" data-explanation="Declaramos a necessidade com um campo final e deixamos o Lombok gerar o construtor; o Spring aplica o Service. Criar com new faria o Controller fabricar o Service sozinho, e o Service ainda precisaria de um Repository."><h4>🧠 O Controller precisa do Service. O que escrevemos no Controller?</h4><div class="choices"><button type="button" data-choice="false" aria-pressed="false">private FornecedorService service = new FornecedorService();</button><button type="button" data-choice="true" aria-pressed="false">private final FornecedorService service; e a anotação @RequiredArgsConstructor na classe.</button><button type="button" data-choice="false" aria-pressed="false">Nada: o Spring descobre sozinho do que o Controller precisa.</button></div><p class="feedback" role="status" aria-live="polite">Escolha uma resposta. Você pode tentar novamente.</p></div>
+<div class="decision" data-explanation="Declaramos a necessidade com um campo final e deixamos o Lombok gerar o construtor; o Spring aplica o Service. Criar com new faria o Controller fabricar o Service sozinho, e o Service ainda precisaria de um Repository."><h4>🧠 O Controller precisa do Service. O que escrevemos no Controller?</h4><div class="choices"><button type="button" data-choice="false" aria-pressed="false">private FornecedorService fornecedorService = new FornecedorService();</button><button type="button" data-choice="true" aria-pressed="false">private final FornecedorService fornecedorService; e a anotação @RequiredArgsConstructor na classe.</button><button type="button" data-choice="false" aria-pressed="false">Nada: o Spring descobre sozinho do que o Controller precisa.</button></div><p class="feedback" role="status" aria-live="polite">Escolha uma resposta. Você pode tentar novamente.</p></div>
 <div class="responsibility decision" data-explanation="O Service concentra a regra do cadastro. O Controller traduz a conversa HTTP; o Repository cuida do acesso aos dados."><h4>🧠 Nos próximos capítulos, vamos criar a regra “nome não pode estar vazio”. Onde ela deve ficar?</h4><div class="choices"><button type="button" data-choice="false" aria-pressed="false">🗄️ Repository</button><button type="button" data-choice="true" aria-pressed="false">⚙️ Service</button><button type="button" data-choice="false" aria-pressed="false">🎮 Só no botão React</button></div><p class="feedback" role="status">Escolha a responsabilidade. Você pode tentar novamente.</p></div>
-<h3>Nosso pacote principal</h3><p>Dentro de <code>br.com.gestorpro.api</code>, crie os pacotes abaixo com <strong>New → Package</strong>. Deixe a classe principal no pacote pai: o Spring procurará componentes a partir dele.</p>
-<div class="code-block"><div class="code-header"><span class="filename">src/main/java · pacotes e arquivos</span><span class="lang-badge">Estrutura</span><button type="button" class="copy-code" aria-label="Copiar src/main/java · pacotes e arquivos">Copiar</button></div><pre ><code>br.com.gestorpro.api
+<h3>Nosso pacote principal</h3><p>Dentro de <code>com.gestorpro.api</code>, crie os pacotes abaixo com <strong>New → Package</strong>. Deixe a classe principal no pacote pai: o Spring procurará componentes a partir dele.</p>
+<div class="code-block"><div class="code-header"><span class="filename">src/main/java · pacotes e arquivos</span><span class="lang-badge">Estrutura</span><button type="button" class="copy-code" aria-label="Copiar src/main/java · pacotes e arquivos">Copiar</button></div><pre ><code>com.gestorpro.api
 ├── <span class="tp">ApiApplication</span>.java
 ├── model/<span class="tp">Fornecedor</span>.java
 ├── repository/<span class="tp">FornecedorRepository</span>.java
@@ -271,39 +273,56 @@ spring.jpa.show-sql=true</code></pre></div>
 └── controller/<span class="tp">FornecedorController</span>.java</code></pre></div><p class="transfer">Vamos atravessar as quatro classes para concluir um único cadastro. Só depois entra a listagem.</p></div></section><div class="section-connector"><div class="line"></div></div><section class="step-section" id="post"><div class="step-header"><div class="step-number sn-green">10</div><div><h2 class="step-title">C · Cadastrar um fornecedor</h2><p class="step-sub">Do Model ao primeiro POST funcionando.</p></div></div><div class="card">
 <div class="endpoint"><span>POST</span><code>http://localhost:8080/fornecedores</code><b>201 Created</b></div>
 <h3>Passo 1 · Model: a classe que representa o cadastro</h3>
-<p>Crie <code>Fornecedor</code> em <code>model</code>. Já conhecemos campos privados, construtor, getters e setters. Vamos usar Lombok para gerar os métodos repetitivos e adicionar as anotações que mapeiam a classe para uma tabela:</p>
-<div class="code-block"><div class="code-header"><span class="filename">model/Fornecedor.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar model/Fornecedor.java">Copiar</button></div><pre data-stage="1" data-file="model/Fornecedor.java"><code><span class="kw">package</span> br.com.gestorpro.api.model;
+<p>Crie <code>Fornecedor</code> em <code>model</code>. Já conhecemos campos privados, construtores, getters e setters. Vamos usar Lombok para gerar os métodos repetitivos e adicionar as anotações que mapeiam a classe para uma tabela:</p>
+<div class="code-block"><div class="code-header"><span class="filename">model/Fornecedor.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar model/Fornecedor.java">Copiar</button></div><pre data-stage="1" data-file="model/Fornecedor.java"><code><span class="kw">package</span> com.gestorpro.api.model;
 
+<span class="kw">import</span> jakarta.persistence.*;
+<span class="kw">import</span> lombok.<span class="tp">AllArgsConstructor</span>;
 <span class="kw">import</span> lombok.<span class="tp">Getter</span>;
-<span class="kw">import</span> lombok.<span class="tp">Setter</span>;
 <span class="kw">import</span> lombok.<span class="tp">NoArgsConstructor</span>;
+<span class="kw">import</span> lombok.<span class="tp">Setter</span>;
 
-<span class="kw">import</span> jakarta.persistence.<span class="tp">Column</span>;
-<span class="kw">import</span> jakarta.persistence.<span class="tp">Entity</span>;
-<span class="kw">import</span> jakarta.persistence.<span class="tp">GeneratedValue</span>;
-<span class="kw">import</span> jakarta.persistence.<span class="tp">GenerationType</span>;
-<span class="kw">import</span> jakarta.persistence.<span class="tp">Id</span>;
-<span class="kw">import</span> jakarta.persistence.<span class="tp">Table</span>;
-
-<span class="attr">@Getter</span>
 <span class="attr">@Setter</span>
+<span class="attr">@Getter</span>
 <span class="attr">@NoArgsConstructor</span>
-<span class="attr">@Entity</span>
+<span class="attr">@AllArgsConstructor</span>
 <span class="attr">@Table</span>(name = <span class="st">&quot;fornecedores&quot;</span>)
+<span class="attr">@Entity</span>
 <span class="kw">public</span> <span class="kw">class</span> <span class="tp">Fornecedor</span> {
+
     <span class="attr">@Id</span>
     <span class="attr">@GeneratedValue</span>(strategy = <span class="tp">GenerationType</span>.<span class="tp">IDENTITY</span>)
     <span class="kw">private</span> <span class="tp">Long</span> id;
 
-    <span class="attr">@Column</span>(nullable = false)
+    <span class="attr">@Column</span>(name = <span class="st">&quot;nome&quot;</span>, nullable = false)
     <span class="kw">private</span> <span class="tp">String</span> nome;
+
+    <span class="attr">@Column</span>(name = <span class="st">&quot;cnpj&quot;</span>, nullable = false)
     <span class="kw">private</span> <span class="tp">String</span> cnpj;
+
+    <span class="attr">@Column</span>(name = <span class="st">&quot;categoria&quot;</span>, nullable = false)
     <span class="kw">private</span> <span class="tp">String</span> categoria;
+
+    <span class="attr">@Column</span>(name = <span class="st">&quot;telefone&quot;</span>)
     <span class="kw">private</span> <span class="tp">String</span> telefone;
 }</code></pre></div>
-<div class="table-scroll"><table><caption>As anotações, uma por vez</caption><thead><tr><th>Anotação</th><th>O que informa</th></tr></thead><tbody><tr><td><code>@Entity</code></td><td>Esta classe é uma entidade persistente: seus objetos podem ser mapeados para registros.</td></tr><tr><td><code>@Table(name = "fornecedores")</code></td><td>Nome explícito da tabela que a entidade utiliza.</td></tr><tr><td><code>@Id</code></td><td>Campo que identifica cada registro.</td></tr><tr><td><code>@GeneratedValue(...IDENTITY)</code></td><td>O banco gera o ID na inserção. Por isso usamos Long, que aceita null antes de salvar.</td></tr><tr><td><code>@Column(nullable = false)</code></td><td>Mapeia o nome como uma coluna que não aceita null: o próprio banco recusa um fornecedor sem nome.</td></tr></tbody></table></div>
-<h3>Três anotações, três tarefas conhecidas</h3><div class="three-cards"><article><h4>@Getter</h4><p>Gera métodos de leitura, como <code>getNome()</code> e <code>getId()</code>.</p></article><article><h4>@Setter</h4><p>Gera métodos de alteração, como <code>setNome(nome)</code> e <code>setTelefone(telefone)</code>.</p></article><article><h4>@NoArgsConstructor</h4><p>Gera o construtor público sem argumentos exigido pelo JPA.</p></article></div><p>Os campos continuam privados. Os métodos existem no código compilado, mesmo que você não veja seu corpo no arquivo Java. Lombok não cria regras de negócio. Regras como “o nome não pode ficar em branco” são responsabilidade do Service e vão aparecer nos próximos capítulos.</p><details class="answer"><summary>👀 O que essas anotações substituem?</summary><div><p>Para o campo nome, os métodos gerados equivalem aos que você escreveu no Cap 11. O construtor também tem uma forma familiar. Este trecho serve para comparar; não precisa ser colado na entidade anotada.</p><div class="code-block"><div class="code-header"><span class="filename">Equivalência · métodos de nome e construtor sem argumentos</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar Equivalência · métodos de nome e construtor sem argumentos">Copiar</button></div><pre ><code><span class="kw">public</span> <span class="tp">Fornecedor</span>() {
+<div class="table-scroll"><table><caption>As anotações, uma por vez</caption><thead><tr><th>Anotação</th><th>O que informa</th></tr></thead><tbody><tr><td><code>@Entity</code></td><td>Esta classe é uma entidade persistente: seus objetos podem ser mapeados para registros.</td></tr><tr><td><code>@Table(name = "fornecedores")</code></td><td>Nome explícito da tabela que a entidade utiliza.</td></tr><tr><td><code>@Id</code></td><td>Campo que identifica cada registro.</td></tr><tr><td><code>@GeneratedValue(...IDENTITY)</code></td><td>O banco gera o ID na inserção. Por isso usamos Long, que aceita null antes de salvar.</td></tr><tr><td><code>@Column(name = "nome", nullable = false)</code></td><td>Liga o campo a uma coluna. <code>name</code> diz o nome da coluna na tabela; <code>nullable = false</code> cria a coluna com <code>NOT NULL</code>: o próprio banco recusa um fornecedor sem nome. O mesmo vale para CNPJ e categoria.</td></tr><tr><td><code>@Column(name = "telefone")</code></td><td>Só o nome da coluna. Sem <code>nullable = false</code>, o telefone pode ficar vazio (null): é opcional.</td></tr></tbody></table></div>
+<div class="tip"><strong>Por que escrever <code>name = "nome"</code> se o campo já se chama nome?</strong> Sem o <code>name</code>, o JPA usaria o nome do campo e o resultado seria o mesmo. Escrevendo, o mapeamento fica à vista: você lê a classe e já sabe o nome de cada coluna no banco. Se um dia a coluna tiver outro nome, como <code>nome_fantasia</code>, só o <code>name</code> muda; o campo Java continua <code>nome</code>.</div>
+<div class="concept"><strong>O asterisco em <code>import jakarta.persistence.*;</code></strong><p>O <code>*</code> importa <strong>todas</strong> as classes daquele pacote de uma vez: <code>Entity</code>, <code>Table</code>, <code>Id</code>, <code>Column</code>… Você não precisa digitá-lo: quando uma classe usa cinco ou mais imports do mesmo pacote, o IntelliJ junta tudo num <code>*</code> sozinho. O Controller vai usar o mesmo recurso com as anotações do Spring.</p></div>
+<h3>Quatro anotações do Lombok, quatro tarefas conhecidas</h3><div class="three-cards dependency-grid"><article><h4>@Setter</h4><p>Gera métodos de alteração, como <code>setNome(nome)</code> e <code>setTelefone(telefone)</code>.</p></article><article><h4>@Getter</h4><p>Gera métodos de leitura, como <code>getNome()</code> e <code>getId()</code>.</p></article><article><h4>@NoArgsConstructor</h4><p>Gera o construtor <strong>sem</strong> argumentos. O JPA exige esse construtor para montar o objeto quando lê uma linha do banco.</p></article><article><h4>@AllArgsConstructor</h4><p>Gera o construtor <strong>com todos</strong> os campos, na ordem em que aparecem: <code>id</code>, <code>nome</code>, <code>cnpj</code>, <code>categoria</code>, <code>telefone</code>.</p></article></div><p>A ordem das anotações em cima da classe não muda nada: <code>@Setter</code> antes ou depois de <code>@Entity</code> dá o mesmo resultado.</p><p>Os campos continuam privados. Os métodos existem no código compilado, mesmo que você não veja seu corpo no arquivo Java. Lombok não cria regras de negócio. Regras como “o nome não pode ficar em branco” são responsabilidade do Service e vão aparecer nos próximos capítulos.</p><details class="answer"><summary>👀 O que essas anotações substituem?</summary><div><p>Para o campo nome, os métodos gerados equivalem aos que você escreveu no Cap 11. Os dois construtores também têm uma forma familiar: o segundo é parecido com o <code>new Produto(...)</code> do Cap 11. Este trecho serve para comparar; não precisa ser colado na entidade anotada.</p><div class="code-block"><div class="code-header"><span class="filename">Equivalência · os dois construtores e os métodos de nome</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar Equivalência · os dois construtores e os métodos de nome">Copiar</button></div><pre ><code><span class="cm">// @NoArgsConstructor</span>
+<span class="kw">public</span> <span class="tp">Fornecedor</span>() {
 }
+
+<span class="cm">// @AllArgsConstructor</span>
+<span class="kw">public</span> <span class="tp">Fornecedor</span>(<span class="tp">Long</span> id, <span class="tp">String</span> nome, <span class="tp">String</span> cnpj, <span class="tp">String</span> categoria, <span class="tp">String</span> telefone) {
+    <span class="kw">this</span>.id = id;
+    <span class="kw">this</span>.nome = nome;
+    <span class="kw">this</span>.cnpj = cnpj;
+    <span class="kw">this</span>.categoria = categoria;
+    <span class="kw">this</span>.telefone = telefone;
+}
+
+<span class="cm">// @Getter e @Setter, para o campo nome</span>
 
 <span class="kw">public</span> <span class="tp">String</span> getNome() {
     <span class="kw">return</span> <span class="kw">this</span>.nome;
@@ -311,11 +330,11 @@ spring.jpa.show-sql=true</code></pre></div>
 
 <span class="kw">public</span> <span class="kw">void</span> setNome(<span class="tp">String</span> nome) {
     <span class="kw">this</span>.nome = nome;
-}</code></pre></div><p><code>@Getter</code> e <code>@Setter</code> na classe repetem o padrão para os demais campos. Os campos da entidade não são <code>final</code>: seus valores precisam ser preenchidos e alterados.</p></div></details>
+}</code></pre></div><p><code>@Getter</code> e <code>@Setter</code> na classe repetem o padrão para os demais campos. Os campos da entidade não são <code>final</code>: seus valores precisam ser preenchidos e alterados.</p><p>Nesta API, quem cria os objetos <code>Fornecedor</code> é o Spring, a partir do JSON, usando o construtor vazio e os setters. O construtor completo fica pronto para quando você quiser montar um fornecedor numa linha só, em um teste, por exemplo.</p></div></details>
 <h3>Passo 2 · Repository: o acesso aos dados</h3><p>No pacote <code>repository</code>, use <strong>New → Java Class → Interface</strong>. Uma interface descreve um contrato. Neste caso, ela herda operações de <code>JpaRepository</code>; Spring Data fornece a implementação em execução.</p>
-<div class="code-block"><div class="code-header"><span class="filename">repository/FornecedorRepository.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar repository/FornecedorRepository.java">Copiar</button></div><pre data-stage="1" data-file="repository/FornecedorRepository.java"><code><span class="kw">package</span> br.com.gestorpro.api.repository;
+<div class="code-block"><div class="code-header"><span class="filename">repository/FornecedorRepository.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar repository/FornecedorRepository.java">Copiar</button></div><pre data-stage="1" data-file="repository/FornecedorRepository.java"><code><span class="kw">package</span> com.gestorpro.api.repository;
 
-<span class="kw">import</span> br.com.gestorpro.api.model.<span class="tp">Fornecedor</span>;
+<span class="kw">import</span> com.gestorpro.api.model.<span class="tp">Fornecedor</span>;
 <span class="kw">import</span> org.springframework.data.jpa.repository.<span class="tp">JpaRepository</span>;
 <span class="kw">import</span> org.springframework.stereotype.<span class="tp">Repository</span>;
 
@@ -324,50 +343,48 @@ spring.jpa.show-sql=true</code></pre></div>
 }</code></pre></div>
 <p>Leia <code>JpaRepository&lt;Fornecedor, Long&gt;</code> como “um repository de <strong>Fornecedor</strong>, cujo ID é <strong>Long</strong>”. Os tipos entre <code>&lt; &gt;</code> são parâmetros de tipo, chamados <em>generics</em>. Não são uma comparação matemática. O método <code>save</code> já faz parte desse contrato: não precisamos escrever o INSERT manualmente aqui.</p>
 <h3>Passo 3 · Service: cadastrar</h3><p>Crie <code>FornecedorService</code> em <code>service</code>. Nesta primeira volta, ele é simples de propósito: recebe o fornecedor e pede ao Repository que o salve. As regras de negócio entram nos próximos capítulos.</p>
-<div class="code-block"><div class="code-header"><span class="filename">service/FornecedorService.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar service/FornecedorService.java">Copiar</button></div><pre data-stage="1" data-file="service/FornecedorService.java"><code><span class="kw">package</span> br.com.gestorpro.api.service;
+<div class="code-block"><div class="code-header"><span class="filename">service/FornecedorService.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar service/FornecedorService.java">Copiar</button></div><pre data-stage="1" data-file="service/FornecedorService.java"><code><span class="kw">package</span> com.gestorpro.api.service;
 
-<span class="kw">import</span> br.com.gestorpro.api.model.<span class="tp">Fornecedor</span>;
-<span class="kw">import</span> br.com.gestorpro.api.repository.<span class="tp">FornecedorRepository</span>;
+<span class="kw">import</span> com.gestorpro.api.model.<span class="tp">Fornecedor</span>;
+<span class="kw">import</span> com.gestorpro.api.repository.<span class="tp">FornecedorRepository</span>;
 <span class="kw">import</span> lombok.<span class="tp">RequiredArgsConstructor</span>;
 <span class="kw">import</span> org.springframework.stereotype.<span class="tp">Service</span>;
 
 <span class="attr">@Service</span>
 <span class="di-hl"><span class="attr">@RequiredArgsConstructor</span></span>
 <span class="kw">public</span> <span class="kw">class</span> <span class="tp">FornecedorService</span> {
-    <span class="di-hl"><span class="kw">private</span> <span class="kw">final</span> <span class="tp">FornecedorRepository</span> repository;</span>
+
+    <span class="di-hl"><span class="kw">private</span> <span class="kw">final</span> <span class="tp">FornecedorRepository</span> fornecedorRepository;</span>
 
     <span class="kw">public</span> <span class="tp">Fornecedor</span> cadastrar(<span class="tp">Fornecedor</span> fornecedor) {
-        <span class="kw">return</span> repository.save(fornecedor);
+        <span class="kw">return</span> fornecedorRepository.save(fornecedor);
     }
 }</code></pre></div>
-<p><code>@Service</code> permite ao Spring descobrir esse componente. <code>@RequiredArgsConstructor</code> gera o construtor que recebe o <code>repository</code>, declarado <code>final</code>. O Spring entrega essa dependência ao criar o Service.</p>
+<p><code>@Service</code> permite ao Spring descobrir esse componente. <code>@RequiredArgsConstructor</code> gera o construtor que recebe o <code>fornecedorRepository</code>, declarado <code>final</code>. O Spring entrega essa dependência ao criar o Service.</p>
 <p><code>save</code> grava o fornecedor e devolve o mesmo objeto, agora com o ID. Não precisamos informar o ID: o <code>@GeneratedValue</code> do Model faz o banco gerar esse número. O <code>return</code> leva o objeto salvo de volta para quem chamou o método.</p>
 <h3>Passo 4 · Controller: abrir a porta HTTP</h3><p>Crie <code>FornecedorController</code> no pacote <code>controller</code>:</p>
-<div class="code-block"><div class="code-header"><span class="filename">controller/FornecedorController.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar controller/FornecedorController.java">Copiar</button></div><pre data-stage="1" data-file="controller/FornecedorController.java"><code><span class="kw">package</span> br.com.gestorpro.api.controller;
+<div class="code-block"><div class="code-header"><span class="filename">controller/FornecedorController.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar controller/FornecedorController.java">Copiar</button></div><pre data-stage="1" data-file="controller/FornecedorController.java"><code><span class="kw">package</span> com.gestorpro.api.controller;
 
-<span class="kw">import</span> br.com.gestorpro.api.model.<span class="tp">Fornecedor</span>;
-<span class="kw">import</span> br.com.gestorpro.api.service.<span class="tp">FornecedorService</span>;
+<span class="kw">import</span> com.gestorpro.api.model.<span class="tp">Fornecedor</span>;
+<span class="kw">import</span> com.gestorpro.api.service.<span class="tp">FornecedorService</span>;
 <span class="kw">import</span> lombok.<span class="tp">RequiredArgsConstructor</span>;
 <span class="kw">import</span> org.springframework.http.<span class="tp">HttpStatus</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">PostMapping</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">RequestBody</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">RequestMapping</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">ResponseStatus</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">RestController</span>;
+<span class="kw">import</span> org.springframework.web.bind.annotation.*;
 
 <span class="attr">@RestController</span>
 <span class="attr">@RequestMapping</span>(<span class="st">&quot;/fornecedores&quot;</span>)
 <span class="di-hl"><span class="attr">@RequiredArgsConstructor</span></span>
 <span class="kw">public</span> <span class="kw">class</span> <span class="tp">FornecedorController</span> {
-    <span class="di-hl"><span class="kw">private</span> <span class="kw">final</span> <span class="tp">FornecedorService</span> service;</span>
+
+    <span class="di-hl"><span class="kw">private</span> <span class="kw">final</span> <span class="tp">FornecedorService</span> fornecedorService;</span>
 
     <span class="attr">@PostMapping</span>
     <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">CREATED</span>)
     <span class="kw">public</span> <span class="tp">Fornecedor</span> cadastrar(<span class="attr">@RequestBody</span> <span class="tp">Fornecedor</span> fornecedor) {
-        <span class="kw">return</span> service.cadastrar(fornecedor);
+        <span class="kw">return</span> fornecedorService.cadastrar(fornecedor);
     }
 }</code></pre></div>
-<p><code>@RequiredArgsConstructor</code> também gera aqui o construtor para o campo <code>final service</code>: o Spring entrega o Service quando cria o Controller. <code>@RestController</code> registra um controlador cujos retornos vão para o corpo da resposta. <code>@RequestMapping</code> define o caminho base. <code>@PostMapping</code> recebe POST nesse caminho. <code>@RequestBody</code> pede que o JSON recebido seja convertido em <code>Fornecedor</code>. <code>@ResponseStatus(CREATED)</code> marca o sucesso como <strong>201</strong>.</p>
+<p>Repare no <code>import org.springframework.web.bind.annotation.*;</code>: o asterisco traz de uma vez todas as anotações web que vamos usar (<code>@RestController</code>, <code>@PostMapping</code>, <code>@RequestBody</code>…), inclusive as dos próximos endpoints.</p><p><code>@RequiredArgsConstructor</code> também gera aqui o construtor para o campo <code>final fornecedorService</code>: o Spring entrega o Service quando cria o Controller. <code>@RestController</code> registra um controlador cujos retornos vão para o corpo da resposta. <code>@RequestMapping</code> define o caminho base. <code>@PostMapping</code> recebe POST nesse caminho. <code>@RequestBody</code> pede que o JSON recebido seja convertido em <code>Fornecedor</code>. <code>@ResponseStatus(CREATED)</code> marca o sucesso como <strong>201</strong>.</p>
 <h3>Passo 5 · Testar pelo Insomnia</h3>
 <ol class="steps"><li>Instale e abra o <a href="https://insomnia.rest/download" target="_blank" rel="noopener">Insomnia</a>. Crie uma coleção de requisições e uma requisição HTTP chamada <strong>Cadastrar fornecedor</strong>.</li><li>Selecione o método <strong>POST</strong> e a URL <code>http://localhost:8080/fornecedores</code>.</li><li>Em Body, selecione <strong>JSON</strong> e escreva o corpo abaixo. Confira o header <code>Content-Type: application/json</code>, que informa o formato enviado.</li><li>Reinicie a API no IntelliJ para carregar as classes. Clique em <strong>Send</strong> no Insomnia.</li></ol>
 <div class="code-block"><div class="code-header"><span class="filename">Body · JSON de cadastro</span><span class="lang-badge">JSON</span><button type="button" class="copy-code" aria-label="Copiar Body · JSON de cadastro">Copiar</button></div><pre data-payload="create"><code>{
@@ -380,61 +397,61 @@ spring.jpa.show-sql=true</code></pre></div>
 <div class="code-block"><div class="code-header"><span class="filename">psql · o efeito da requisição</span><span class="lang-badge">SQL</span><button type="button" class="copy-code" aria-label="Copiar psql · o efeito da requisição">Copiar</button></div><pre ><code><span class="kw">SELECT</span> id, nome, telefone <span class="kw">FROM</span> fornecedores <span class="kw">ORDER</span> <span class="kw">BY</span> id;</code></pre></div>
 <div class="warning"><strong>Agora a tabela é fornecedores, sem _treino.</strong> Ela nasce a partir da entidade com a configuração de laboratório. Não procure o registro da API na tabela do exercício SQL.</div>
 <div class="warning"><strong>Não envie <code>id</code> no JSON do POST.</strong> Quem gera o ID é o banco. Se o JSON trouxer o ID de um fornecedor que já existe, o <code>save</code> entende que é uma atualização e <strong>sobrescreve</strong> aquele cadastro. Nos próximos capítulos, vamos proteger a API contra isso.</div>
-<div class="exercise solo"><h3>✍️ Mais um cadastro, outro ID</h3><p>Cadastre a Papelaria Nordeste, categoria Papelaria, telefone (83) 3333-4000. Compare o ID devolvido com o do primeiro cadastro e confira a tabela no psql.</p><details class="answer"><summary>💡 Uma dica</summary><div>Reaproveite a requisição do Insomnia e troque só os valores. Não coloque <code>id</code> no JSON.</div></details><div class="try-first">🚨 PARE! Tente primeiro. Compare o resultado, não só o código.</div><details class="answer"><summary>👀 Só depois de tentar — conferir solução</summary><div><p>Esperado: <strong>201</strong> e um ID diferente do primeiro, gerado pelo banco. No psql, <code>SELECT * FROM fornecedores ORDER BY id;</code> mostra duas linhas.</p></div></details></div><div class="checkpoint">✓ Você atravessou Model, Repository, Service e Controller. Primeiro endpoint completo!</div></div></section><div class="section-connector"><div class="line"></div></div><section class="step-section" id="listar"><div class="step-header"><div class="step-number sn-green">11</div><div><h2 class="step-title">R · Listar fornecedores</h2><p class="step-sub">A segunda operação reaproveita toda a estrutura.</p></div></div><div class="card">
+<div class="tip"><strong>Esqueceu o CNPJ ou a categoria?</strong> Teste: apague a linha <code>"cnpj"</code> do JSON e envie. A resposta é <strong>500</strong>. No console Java aparece um erro do banco dizendo que a coluna <code>cnpj</code> não aceita null: foi o <code>nullable = false</code> trabalhando. O dado errado não entrou, mas a mensagem ainda é feia. Responder <strong>400</strong> com uma explicação clara fica para o próximo capítulo. Sem o <code>"telefone"</code>, o cadastro funciona: ele é opcional.</div>
+<div class="exercise solo"><h3>✍️ Mais um cadastro, outro ID</h3><p>Cadastre a Papelaria Nordeste, CNPJ 23.456.789/0001-10, categoria Papelaria, telefone (83) 3333-4000. Compare o ID devolvido com o do primeiro cadastro e confira a tabela no psql.</p><details class="answer"><summary>💡 Uma dica</summary><div>Reaproveite a requisição do Insomnia e troque só os valores. Não coloque <code>id</code> no JSON. Nome, CNPJ e categoria são obrigatórios.</div></details><div class="try-first">🚨 PARE! Tente primeiro. Compare o resultado, não só o código.</div><details class="answer"><summary>👀 Só depois de tentar — conferir solução</summary><div><p>Esperado: <strong>201</strong> e um ID diferente do primeiro, gerado pelo banco. No psql, <code>SELECT * FROM fornecedores ORDER BY id;</code> mostra duas linhas.</p></div></details></div><div class="checkpoint">✓ Você atravessou Model, Repository, Service e Controller. Primeiro endpoint completo!</div></div></section><div class="section-connector"><div class="line"></div></div><section class="step-section" id="listar"><div class="step-header"><div class="step-number sn-green">11</div><div><h2 class="step-title">R · Listar fornecedores</h2><p class="step-sub">A segunda operação reaproveita toda a estrutura.</p></div></div><div class="card">
 <div class="endpoint"><span>GET</span><code>http://localhost:8080/fornecedores</code><b>200 OK</b></div>
 <p><code>findAll()</code> busca todos os registros. O resultado é uma <code>List&lt;Fornecedor&gt;</code>, como a lista do Cap 11, mas agora preenchida com dados vindos do banco. Não precisamos criar uma lista estática no Service.</p>
 <p>O novo método <code>listar</code> no Service devolve o resultado do repository. No Controller, <code>@GetMapping</code> atende GET no caminho base, sem precisar de um corpo JSON.</p>
 <p><code>@ResponseStatus(HttpStatus.OK)</code> marca o sucesso como <strong>200</strong>. O Spring já responde 200 quando não dizemos nada, mas vamos deixar o status escrito em todos os endpoints, como fizemos com o 201 do POST: quem lê o código vê na hora o que a API responde.</p>
-<p><strong>Como editar:</strong> substitua o conteúdo dos dois arquivos abaixo. Eles incluem os métodos anteriores e os imports novos. Model e Repository continuam iguais.</p><div class="code-block"><div class="code-header"><span class="filename">service/FornecedorService.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar service/FornecedorService.java">Copiar</button></div><pre data-stage="2" data-file="service/FornecedorService.java"><code><span class="kw">package</span> br.com.gestorpro.api.service;
+<p><strong>Como editar:</strong> substitua o conteúdo dos dois arquivos abaixo. Eles incluem os métodos anteriores e os imports novos. Model e Repository continuam iguais.</p><div class="code-block"><div class="code-header"><span class="filename">service/FornecedorService.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar service/FornecedorService.java">Copiar</button></div><pre data-stage="2" data-file="service/FornecedorService.java"><code><span class="kw">package</span> com.gestorpro.api.service;
 
-<span class="kw">import</span> java.util.<span class="tp">List</span>;
-<span class="kw">import</span> br.com.gestorpro.api.model.<span class="tp">Fornecedor</span>;
-<span class="kw">import</span> br.com.gestorpro.api.repository.<span class="tp">FornecedorRepository</span>;
+<span class="kw">import</span> com.gestorpro.api.model.<span class="tp">Fornecedor</span>;
+<span class="kw">import</span> com.gestorpro.api.repository.<span class="tp">FornecedorRepository</span>;
 <span class="kw">import</span> lombok.<span class="tp">RequiredArgsConstructor</span>;
 <span class="kw">import</span> org.springframework.stereotype.<span class="tp">Service</span>;
+
+<span class="kw">import</span> java.util.<span class="tp">List</span>;
 
 <span class="attr">@Service</span>
 <span class="attr">@RequiredArgsConstructor</span>
 <span class="kw">public</span> <span class="kw">class</span> <span class="tp">FornecedorService</span> {
-    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">FornecedorRepository</span> repository;
+
+    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">FornecedorRepository</span> fornecedorRepository;
 
     <span class="kw">public</span> <span class="tp">Fornecedor</span> cadastrar(<span class="tp">Fornecedor</span> fornecedor) {
-        <span class="kw">return</span> repository.save(fornecedor);
+        <span class="kw">return</span> fornecedorRepository.save(fornecedor);
     }
 
     <span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">Fornecedor</span>&gt; listar() {
-        <span class="kw">return</span> repository.findAll();
+        <span class="kw">return</span> fornecedorRepository.findAll();
     }
-}</code></pre></div><div class="code-block"><div class="code-header"><span class="filename">controller/FornecedorController.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar controller/FornecedorController.java">Copiar</button></div><pre data-stage="2" data-file="controller/FornecedorController.java"><code><span class="kw">package</span> br.com.gestorpro.api.controller;
+}</code></pre></div><div class="code-block"><div class="code-header"><span class="filename">controller/FornecedorController.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar controller/FornecedorController.java">Copiar</button></div><pre data-stage="2" data-file="controller/FornecedorController.java"><code><span class="kw">package</span> com.gestorpro.api.controller;
 
-<span class="kw">import</span> java.util.<span class="tp">List</span>;
-<span class="kw">import</span> br.com.gestorpro.api.model.<span class="tp">Fornecedor</span>;
-<span class="kw">import</span> br.com.gestorpro.api.service.<span class="tp">FornecedorService</span>;
+<span class="kw">import</span> com.gestorpro.api.model.<span class="tp">Fornecedor</span>;
+<span class="kw">import</span> com.gestorpro.api.service.<span class="tp">FornecedorService</span>;
 <span class="kw">import</span> lombok.<span class="tp">RequiredArgsConstructor</span>;
 <span class="kw">import</span> org.springframework.http.<span class="tp">HttpStatus</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">GetMapping</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">PostMapping</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">RequestBody</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">RequestMapping</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">ResponseStatus</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">RestController</span>;
+<span class="kw">import</span> org.springframework.web.bind.annotation.*;
+
+<span class="kw">import</span> java.util.<span class="tp">List</span>;
 
 <span class="attr">@RestController</span>
 <span class="attr">@RequestMapping</span>(<span class="st">&quot;/fornecedores&quot;</span>)
 <span class="attr">@RequiredArgsConstructor</span>
 <span class="kw">public</span> <span class="kw">class</span> <span class="tp">FornecedorController</span> {
-    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">FornecedorService</span> service;
+
+    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">FornecedorService</span> fornecedorService;
 
     <span class="attr">@PostMapping</span>
     <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">CREATED</span>)
     <span class="kw">public</span> <span class="tp">Fornecedor</span> cadastrar(<span class="attr">@RequestBody</span> <span class="tp">Fornecedor</span> fornecedor) {
-        <span class="kw">return</span> service.cadastrar(fornecedor);
+        <span class="kw">return</span> fornecedorService.cadastrar(fornecedor);
     }
 
     <span class="attr">@GetMapping</span>
     <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">OK</span>)
     <span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">Fornecedor</span>&gt; listar() {
-        <span class="kw">return</span> service.listar();
+        <span class="kw">return</span> fornecedorService.listar();
     }
 }</code></pre></div>
 <p>Reinicie a API e crie no Insomnia uma requisição GET para a URL acima. Você também pode abrir essa URL no navegador. Deve receber <strong>200</strong> e uma lista JSON com colchetes <code>[...]</code>.</p>
@@ -445,69 +462,67 @@ spring.jpa.show-sql=true</code></pre></div>
 <h3>Optional: pode haver um resultado ou não</h3>
 <p><code>findById(id)</code> não promete encontrar o cadastro. Ele devolve um <code>Optional&lt;Fornecedor&gt;</code>: uma “caixinha” que pode conter um fornecedor ou estar vazia. Nesta primeira volta, o Service e o Controller devolvem essa caixinha do jeito que ela vem. O Spring abre a caixinha e transforma o fornecedor em JSON.</p>
 <div class="tip"><strong>E se o ID não existir?</strong> Por enquanto, a resposta é <strong>200</strong> com o corpo <code>null</code>: a caixinha veio vazia. O mais correto seria responder <strong>404</strong>. Vamos fazer isso nos próximos capítulos, junto com o tratamento de erros.</div>
-<p><strong>Como editar:</strong> substitua o conteúdo dos dois arquivos abaixo. Eles incluem os métodos anteriores e os imports novos. Model e Repository continuam iguais.</p><div class="code-block"><div class="code-header"><span class="filename">service/FornecedorService.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar service/FornecedorService.java">Copiar</button></div><pre data-stage="3" data-file="service/FornecedorService.java"><code><span class="kw">package</span> br.com.gestorpro.api.service;
+<p><strong>Como editar:</strong> substitua o conteúdo dos dois arquivos abaixo. Eles incluem os métodos anteriores e os imports novos. Model e Repository continuam iguais.</p><div class="code-block"><div class="code-header"><span class="filename">service/FornecedorService.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar service/FornecedorService.java">Copiar</button></div><pre data-stage="3" data-file="service/FornecedorService.java"><code><span class="kw">package</span> com.gestorpro.api.service;
+
+<span class="kw">import</span> com.gestorpro.api.model.<span class="tp">Fornecedor</span>;
+<span class="kw">import</span> com.gestorpro.api.repository.<span class="tp">FornecedorRepository</span>;
+<span class="kw">import</span> lombok.<span class="tp">RequiredArgsConstructor</span>;
+<span class="kw">import</span> org.springframework.stereotype.<span class="tp">Service</span>;
 
 <span class="kw">import</span> java.util.<span class="tp">List</span>;
 <span class="kw">import</span> java.util.<span class="tp">Optional</span>;
-<span class="kw">import</span> br.com.gestorpro.api.model.<span class="tp">Fornecedor</span>;
-<span class="kw">import</span> br.com.gestorpro.api.repository.<span class="tp">FornecedorRepository</span>;
-<span class="kw">import</span> lombok.<span class="tp">RequiredArgsConstructor</span>;
-<span class="kw">import</span> org.springframework.stereotype.<span class="tp">Service</span>;
 
 <span class="attr">@Service</span>
 <span class="attr">@RequiredArgsConstructor</span>
 <span class="kw">public</span> <span class="kw">class</span> <span class="tp">FornecedorService</span> {
-    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">FornecedorRepository</span> repository;
+
+    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">FornecedorRepository</span> fornecedorRepository;
 
     <span class="kw">public</span> <span class="tp">Fornecedor</span> cadastrar(<span class="tp">Fornecedor</span> fornecedor) {
-        <span class="kw">return</span> repository.save(fornecedor);
+        <span class="kw">return</span> fornecedorRepository.save(fornecedor);
     }
 
     <span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">Fornecedor</span>&gt; listar() {
-        <span class="kw">return</span> repository.findAll();
+        <span class="kw">return</span> fornecedorRepository.findAll();
     }
 
     <span class="kw">public</span> <span class="tp">Optional</span>&lt;<span class="tp">Fornecedor</span>&gt; buscar(<span class="tp">Long</span> id) {
-        <span class="kw">return</span> repository.findById(id);
+        <span class="kw">return</span> fornecedorRepository.findById(id);
     }
-}</code></pre></div><div class="code-block"><div class="code-header"><span class="filename">controller/FornecedorController.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar controller/FornecedorController.java">Copiar</button></div><pre data-stage="3" data-file="controller/FornecedorController.java"><code><span class="kw">package</span> br.com.gestorpro.api.controller;
+}</code></pre></div><div class="code-block"><div class="code-header"><span class="filename">controller/FornecedorController.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar controller/FornecedorController.java">Copiar</button></div><pre data-stage="3" data-file="controller/FornecedorController.java"><code><span class="kw">package</span> com.gestorpro.api.controller;
+
+<span class="kw">import</span> com.gestorpro.api.model.<span class="tp">Fornecedor</span>;
+<span class="kw">import</span> com.gestorpro.api.service.<span class="tp">FornecedorService</span>;
+<span class="kw">import</span> lombok.<span class="tp">RequiredArgsConstructor</span>;
+<span class="kw">import</span> org.springframework.http.<span class="tp">HttpStatus</span>;
+<span class="kw">import</span> org.springframework.web.bind.annotation.*;
 
 <span class="kw">import</span> java.util.<span class="tp">List</span>;
 <span class="kw">import</span> java.util.<span class="tp">Optional</span>;
-<span class="kw">import</span> br.com.gestorpro.api.model.<span class="tp">Fornecedor</span>;
-<span class="kw">import</span> br.com.gestorpro.api.service.<span class="tp">FornecedorService</span>;
-<span class="kw">import</span> lombok.<span class="tp">RequiredArgsConstructor</span>;
-<span class="kw">import</span> org.springframework.http.<span class="tp">HttpStatus</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">GetMapping</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">PathVariable</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">PostMapping</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">RequestBody</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">RequestMapping</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">ResponseStatus</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">RestController</span>;
 
 <span class="attr">@RestController</span>
 <span class="attr">@RequestMapping</span>(<span class="st">&quot;/fornecedores&quot;</span>)
 <span class="attr">@RequiredArgsConstructor</span>
 <span class="kw">public</span> <span class="kw">class</span> <span class="tp">FornecedorController</span> {
-    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">FornecedorService</span> service;
+
+    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">FornecedorService</span> fornecedorService;
 
     <span class="attr">@PostMapping</span>
     <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">CREATED</span>)
     <span class="kw">public</span> <span class="tp">Fornecedor</span> cadastrar(<span class="attr">@RequestBody</span> <span class="tp">Fornecedor</span> fornecedor) {
-        <span class="kw">return</span> service.cadastrar(fornecedor);
+        <span class="kw">return</span> fornecedorService.cadastrar(fornecedor);
     }
 
     <span class="attr">@GetMapping</span>
     <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">OK</span>)
     <span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">Fornecedor</span>&gt; listar() {
-        <span class="kw">return</span> service.listar();
+        <span class="kw">return</span> fornecedorService.listar();
     }
 
     <span class="attr">@GetMapping</span>(<span class="st">&quot;/{id}&quot;</span>)
     <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">OK</span>)
     <span class="kw">public</span> <span class="tp">Optional</span>&lt;<span class="tp">Fornecedor</span>&gt; buscar(<span class="attr">@PathVariable</span> <span class="tp">Long</span> id) {
-        <span class="kw">return</span> service.buscar(id);
+        <span class="kw">return</span> fornecedorService.buscar(id);
     }
 }</code></pre></div>
 <p>Reinicie a API. Faça GET do ID cadastrado: <strong>200</strong> e um objeto JSON, sem os colchetes da lista. Depois faça GET de um ID que não existe: por enquanto, você verá <strong>200</strong> e <code>null</code>.</p>
@@ -515,81 +530,78 @@ spring.jpa.show-sql=true</code></pre></div>
 <div class="endpoint"><span>PUT</span><code>http://localhost:8080/fornecedores/1</code><b>200 OK</b></div>
 <p>Nosso PUT recebe todos os campos editáveis no corpo e o ID na URL. O Service coloca esse ID no objeto com <code>setId(id)</code> e chama <code>save</code>. Como já existe um fornecedor com esse ID, o <code>save</code> <strong>atualiza</strong> a linha em vez de criar outra.</p>
 <p><strong>Por que <code>setId</code> aqui, se no POST não precisou?</strong> No POST, o banco gera um ID novo. No PUT, o ID já existe e vem da URL: é ele que diz qual linha vai mudar.</p>
-<p><strong>Como editar:</strong> substitua o conteúdo dos dois arquivos abaixo. Eles incluem os métodos anteriores e os imports novos. Model e Repository continuam iguais.</p><div class="code-block"><div class="code-header"><span class="filename">service/FornecedorService.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar service/FornecedorService.java">Copiar</button></div><pre data-stage="4" data-file="service/FornecedorService.java"><code><span class="kw">package</span> br.com.gestorpro.api.service;
+<p><strong>Como editar:</strong> substitua o conteúdo dos dois arquivos abaixo. Eles incluem os métodos anteriores e os imports novos. Model e Repository continuam iguais.</p><div class="code-block"><div class="code-header"><span class="filename">service/FornecedorService.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar service/FornecedorService.java">Copiar</button></div><pre data-stage="4" data-file="service/FornecedorService.java"><code><span class="kw">package</span> com.gestorpro.api.service;
+
+<span class="kw">import</span> com.gestorpro.api.model.<span class="tp">Fornecedor</span>;
+<span class="kw">import</span> com.gestorpro.api.repository.<span class="tp">FornecedorRepository</span>;
+<span class="kw">import</span> lombok.<span class="tp">RequiredArgsConstructor</span>;
+<span class="kw">import</span> org.springframework.stereotype.<span class="tp">Service</span>;
 
 <span class="kw">import</span> java.util.<span class="tp">List</span>;
 <span class="kw">import</span> java.util.<span class="tp">Optional</span>;
-<span class="kw">import</span> br.com.gestorpro.api.model.<span class="tp">Fornecedor</span>;
-<span class="kw">import</span> br.com.gestorpro.api.repository.<span class="tp">FornecedorRepository</span>;
-<span class="kw">import</span> lombok.<span class="tp">RequiredArgsConstructor</span>;
-<span class="kw">import</span> org.springframework.stereotype.<span class="tp">Service</span>;
 
 <span class="attr">@Service</span>
 <span class="attr">@RequiredArgsConstructor</span>
 <span class="kw">public</span> <span class="kw">class</span> <span class="tp">FornecedorService</span> {
-    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">FornecedorRepository</span> repository;
+
+    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">FornecedorRepository</span> fornecedorRepository;
 
     <span class="kw">public</span> <span class="tp">Fornecedor</span> cadastrar(<span class="tp">Fornecedor</span> fornecedor) {
-        <span class="kw">return</span> repository.save(fornecedor);
+        <span class="kw">return</span> fornecedorRepository.save(fornecedor);
     }
 
     <span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">Fornecedor</span>&gt; listar() {
-        <span class="kw">return</span> repository.findAll();
+        <span class="kw">return</span> fornecedorRepository.findAll();
     }
 
     <span class="kw">public</span> <span class="tp">Optional</span>&lt;<span class="tp">Fornecedor</span>&gt; buscar(<span class="tp">Long</span> id) {
-        <span class="kw">return</span> repository.findById(id);
+        <span class="kw">return</span> fornecedorRepository.findById(id);
     }
 
     <span class="kw">public</span> <span class="tp">Fornecedor</span> atualizar(<span class="tp">Long</span> id, <span class="tp">Fornecedor</span> fornecedor) {
         fornecedor.setId(id);
-        <span class="kw">return</span> repository.save(fornecedor);
+        <span class="kw">return</span> fornecedorRepository.save(fornecedor);
     }
-}</code></pre></div><div class="code-block"><div class="code-header"><span class="filename">controller/FornecedorController.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar controller/FornecedorController.java">Copiar</button></div><pre data-stage="4" data-file="controller/FornecedorController.java"><code><span class="kw">package</span> br.com.gestorpro.api.controller;
+}</code></pre></div><div class="code-block"><div class="code-header"><span class="filename">controller/FornecedorController.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar controller/FornecedorController.java">Copiar</button></div><pre data-stage="4" data-file="controller/FornecedorController.java"><code><span class="kw">package</span> com.gestorpro.api.controller;
+
+<span class="kw">import</span> com.gestorpro.api.model.<span class="tp">Fornecedor</span>;
+<span class="kw">import</span> com.gestorpro.api.service.<span class="tp">FornecedorService</span>;
+<span class="kw">import</span> lombok.<span class="tp">RequiredArgsConstructor</span>;
+<span class="kw">import</span> org.springframework.http.<span class="tp">HttpStatus</span>;
+<span class="kw">import</span> org.springframework.web.bind.annotation.*;
 
 <span class="kw">import</span> java.util.<span class="tp">List</span>;
 <span class="kw">import</span> java.util.<span class="tp">Optional</span>;
-<span class="kw">import</span> br.com.gestorpro.api.model.<span class="tp">Fornecedor</span>;
-<span class="kw">import</span> br.com.gestorpro.api.service.<span class="tp">FornecedorService</span>;
-<span class="kw">import</span> lombok.<span class="tp">RequiredArgsConstructor</span>;
-<span class="kw">import</span> org.springframework.http.<span class="tp">HttpStatus</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">GetMapping</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">PathVariable</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">PostMapping</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">PutMapping</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">RequestBody</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">RequestMapping</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">ResponseStatus</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">RestController</span>;
 
 <span class="attr">@RestController</span>
 <span class="attr">@RequestMapping</span>(<span class="st">&quot;/fornecedores&quot;</span>)
 <span class="attr">@RequiredArgsConstructor</span>
 <span class="kw">public</span> <span class="kw">class</span> <span class="tp">FornecedorController</span> {
-    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">FornecedorService</span> service;
+
+    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">FornecedorService</span> fornecedorService;
 
     <span class="attr">@PostMapping</span>
     <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">CREATED</span>)
     <span class="kw">public</span> <span class="tp">Fornecedor</span> cadastrar(<span class="attr">@RequestBody</span> <span class="tp">Fornecedor</span> fornecedor) {
-        <span class="kw">return</span> service.cadastrar(fornecedor);
+        <span class="kw">return</span> fornecedorService.cadastrar(fornecedor);
     }
 
     <span class="attr">@GetMapping</span>
     <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">OK</span>)
     <span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">Fornecedor</span>&gt; listar() {
-        <span class="kw">return</span> service.listar();
+        <span class="kw">return</span> fornecedorService.listar();
     }
 
     <span class="attr">@GetMapping</span>(<span class="st">&quot;/{id}&quot;</span>)
     <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">OK</span>)
     <span class="kw">public</span> <span class="tp">Optional</span>&lt;<span class="tp">Fornecedor</span>&gt; buscar(<span class="attr">@PathVariable</span> <span class="tp">Long</span> id) {
-        <span class="kw">return</span> service.buscar(id);
+        <span class="kw">return</span> fornecedorService.buscar(id);
     }
 
     <span class="attr">@PutMapping</span>(<span class="st">&quot;/{id}&quot;</span>)
     <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">OK</span>)
     <span class="kw">public</span> <span class="tp">Fornecedor</span> atualizar(<span class="attr">@PathVariable</span> <span class="tp">Long</span> id, <span class="attr">@RequestBody</span> <span class="tp">Fornecedor</span> fornecedor) {
-        <span class="kw">return</span> service.atualizar(id, fornecedor);
+        <span class="kw">return</span> fornecedorService.atualizar(id, fornecedor);
     }
 }</code></pre></div><div class="code-block"><div class="code-header"><span class="filename">Body · envie todos os campos editáveis</span><span class="lang-badge">JSON</span><button type="button" class="copy-code" aria-label="Copiar Body · envie todos os campos editáveis">Copiar</button></div><pre data-payload="update"><code>{
   <span class="st">&quot;nome&quot;</span>: <span class="st">&quot;TechDistrib&quot;</span>,
@@ -599,102 +611,98 @@ spring.jpa.show-sql=true</code></pre></div>
 }</code></pre></div>
 <p>Reinicie a API, envie o PUT usando o ID anotado e depois faça GET desse ID. Espere <strong>200</strong>, o mesmo ID e o telefone novo. Confira também no psql:</p>
 <div class="code-block"><div class="code-header"><span class="filename">psql · substitua 1 pelo seu ID</span><span class="lang-badge">SQL</span><button type="button" class="copy-code" aria-label="Copiar psql · substitua 1 pelo seu ID">Copiar</button></div><pre ><code><span class="kw">SELECT</span> id, nome, telefone <span class="kw">FROM</span> fornecedores <span class="kw">WHERE</span> id = <span class="num">1</span>;</code></pre></div>
-<div class="warning"><strong>PUT deste capítulo não é atualização parcial.</strong> Envie os quatro campos editáveis. Omitir um campo opcional o transforma em null quando copiamos os dados. Uma atualização parcial teria outro contrato, que não precisamos implementar agora.</div>
+<div class="warning"><strong>PUT deste capítulo não é atualização parcial.</strong> Envie os quatro campos editáveis. Omitir o telefone o transforma em null; omitir nome, CNPJ ou categoria termina em erro 500, porque essas colunas não aceitam null. Uma atualização parcial teria outro contrato, que não precisamos implementar agora.</div>
 <div class="tip"><strong>Use um ID que existe.</strong> Com um ID que não está no banco, a API responde, por enquanto, um erro <strong>500</strong>. O tratamento de erros vem nos próximos capítulos.</div>
 <div class="exercise solo"><h3>✍️ Atualizar sem criar outro</h3><p>Conte as linhas da tabela, envie um PUT alterando a categoria do fornecedor e conte de novo.</p><details class="answer"><summary>💡 Uma dica</summary><div>Use <code>SELECT COUNT(*) FROM fornecedores;</code> no psql antes e depois. No PUT, mande os quatro campos editáveis.</div></details><div class="try-first">🚨 PARE! Tente primeiro. Compare o resultado, não só o código.</div><details class="answer"><summary>👀 Só depois de tentar — conferir solução</summary><div><p>O PUT responde <strong>200</strong> com o mesmo ID e a categoria nova. A contagem não muda: o <code>save</code> alterou a linha existente, não criou outra.</p></div></details></div><div class="checkpoint">✓ O telefone mudou na mesma linha. A quantidade de registros não aumentou.</div></div></section><div class="section-connector"><div class="line"></div></div><section class="step-section" id="excluir"><div class="step-header"><div class="step-number sn-green">14</div><div><h2 class="step-title">D · Excluir com um alvo definido</h2><p class="step-sub">O último verbo do CRUD.</p></div></div><div class="card">
 <div class="endpoint"><span>DELETE</span><code>http://localhost:8080/fornecedores/1</code><b>204 No Content</b></div>
 <p>O Service pede ao Repository que remova o fornecedor pelo ID, com <code>deleteById</code>. Em caso de sucesso, o Controller devolve <strong>204</strong>: a operação foi concluída e não há corpo de resposta. Por isso os métodos usam <code>void</code>.</p>
-<p><strong>Como editar:</strong> substitua o conteúdo dos dois arquivos abaixo. Eles incluem os métodos anteriores e os imports novos. Model e Repository continuam iguais.</p><div class="code-block"><div class="code-header"><span class="filename">service/FornecedorService.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar service/FornecedorService.java">Copiar</button></div><pre data-stage="5" data-file="service/FornecedorService.java"><code><span class="kw">package</span> br.com.gestorpro.api.service;
+<p><strong>Como editar:</strong> substitua o conteúdo dos dois arquivos abaixo. Eles incluem os métodos anteriores e os imports novos. Model e Repository continuam iguais.</p><div class="code-block"><div class="code-header"><span class="filename">service/FornecedorService.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar service/FornecedorService.java">Copiar</button></div><pre data-stage="5" data-file="service/FornecedorService.java"><code><span class="kw">package</span> com.gestorpro.api.service;
+
+<span class="kw">import</span> com.gestorpro.api.model.<span class="tp">Fornecedor</span>;
+<span class="kw">import</span> com.gestorpro.api.repository.<span class="tp">FornecedorRepository</span>;
+<span class="kw">import</span> lombok.<span class="tp">RequiredArgsConstructor</span>;
+<span class="kw">import</span> org.springframework.stereotype.<span class="tp">Service</span>;
 
 <span class="kw">import</span> java.util.<span class="tp">List</span>;
 <span class="kw">import</span> java.util.<span class="tp">Optional</span>;
-<span class="kw">import</span> br.com.gestorpro.api.model.<span class="tp">Fornecedor</span>;
-<span class="kw">import</span> br.com.gestorpro.api.repository.<span class="tp">FornecedorRepository</span>;
-<span class="kw">import</span> lombok.<span class="tp">RequiredArgsConstructor</span>;
-<span class="kw">import</span> org.springframework.stereotype.<span class="tp">Service</span>;
 
 <span class="attr">@Service</span>
 <span class="attr">@RequiredArgsConstructor</span>
 <span class="kw">public</span> <span class="kw">class</span> <span class="tp">FornecedorService</span> {
-    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">FornecedorRepository</span> repository;
+
+    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">FornecedorRepository</span> fornecedorRepository;
 
     <span class="kw">public</span> <span class="tp">Fornecedor</span> cadastrar(<span class="tp">Fornecedor</span> fornecedor) {
-        <span class="kw">return</span> repository.save(fornecedor);
+        <span class="kw">return</span> fornecedorRepository.save(fornecedor);
     }
 
     <span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">Fornecedor</span>&gt; listar() {
-        <span class="kw">return</span> repository.findAll();
+        <span class="kw">return</span> fornecedorRepository.findAll();
     }
 
     <span class="kw">public</span> <span class="tp">Optional</span>&lt;<span class="tp">Fornecedor</span>&gt; buscar(<span class="tp">Long</span> id) {
-        <span class="kw">return</span> repository.findById(id);
+        <span class="kw">return</span> fornecedorRepository.findById(id);
     }
 
     <span class="kw">public</span> <span class="tp">Fornecedor</span> atualizar(<span class="tp">Long</span> id, <span class="tp">Fornecedor</span> fornecedor) {
         fornecedor.setId(id);
-        <span class="kw">return</span> repository.save(fornecedor);
+        <span class="kw">return</span> fornecedorRepository.save(fornecedor);
     }
 
     <span class="kw">public</span> <span class="kw">void</span> excluir(<span class="tp">Long</span> id) {
-        repository.deleteById(id);
+        fornecedorRepository.deleteById(id);
     }
-}</code></pre></div><div class="code-block"><div class="code-header"><span class="filename">controller/FornecedorController.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar controller/FornecedorController.java">Copiar</button></div><pre data-stage="5" data-file="controller/FornecedorController.java"><code><span class="kw">package</span> br.com.gestorpro.api.controller;
+}</code></pre></div><div class="code-block"><div class="code-header"><span class="filename">controller/FornecedorController.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar controller/FornecedorController.java">Copiar</button></div><pre data-stage="5" data-file="controller/FornecedorController.java"><code><span class="kw">package</span> com.gestorpro.api.controller;
+
+<span class="kw">import</span> com.gestorpro.api.model.<span class="tp">Fornecedor</span>;
+<span class="kw">import</span> com.gestorpro.api.service.<span class="tp">FornecedorService</span>;
+<span class="kw">import</span> lombok.<span class="tp">RequiredArgsConstructor</span>;
+<span class="kw">import</span> org.springframework.http.<span class="tp">HttpStatus</span>;
+<span class="kw">import</span> org.springframework.web.bind.annotation.*;
 
 <span class="kw">import</span> java.util.<span class="tp">List</span>;
 <span class="kw">import</span> java.util.<span class="tp">Optional</span>;
-<span class="kw">import</span> br.com.gestorpro.api.model.<span class="tp">Fornecedor</span>;
-<span class="kw">import</span> br.com.gestorpro.api.service.<span class="tp">FornecedorService</span>;
-<span class="kw">import</span> lombok.<span class="tp">RequiredArgsConstructor</span>;
-<span class="kw">import</span> org.springframework.http.<span class="tp">HttpStatus</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">DeleteMapping</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">GetMapping</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">PathVariable</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">PostMapping</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">PutMapping</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">RequestBody</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">RequestMapping</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">ResponseStatus</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">RestController</span>;
 
 <span class="attr">@RestController</span>
 <span class="attr">@RequestMapping</span>(<span class="st">&quot;/fornecedores&quot;</span>)
 <span class="attr">@RequiredArgsConstructor</span>
 <span class="kw">public</span> <span class="kw">class</span> <span class="tp">FornecedorController</span> {
-    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">FornecedorService</span> service;
+
+    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">FornecedorService</span> fornecedorService;
 
     <span class="attr">@PostMapping</span>
     <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">CREATED</span>)
     <span class="kw">public</span> <span class="tp">Fornecedor</span> cadastrar(<span class="attr">@RequestBody</span> <span class="tp">Fornecedor</span> fornecedor) {
-        <span class="kw">return</span> service.cadastrar(fornecedor);
+        <span class="kw">return</span> fornecedorService.cadastrar(fornecedor);
     }
 
     <span class="attr">@GetMapping</span>
     <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">OK</span>)
     <span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">Fornecedor</span>&gt; listar() {
-        <span class="kw">return</span> service.listar();
+        <span class="kw">return</span> fornecedorService.listar();
     }
 
     <span class="attr">@GetMapping</span>(<span class="st">&quot;/{id}&quot;</span>)
     <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">OK</span>)
     <span class="kw">public</span> <span class="tp">Optional</span>&lt;<span class="tp">Fornecedor</span>&gt; buscar(<span class="attr">@PathVariable</span> <span class="tp">Long</span> id) {
-        <span class="kw">return</span> service.buscar(id);
+        <span class="kw">return</span> fornecedorService.buscar(id);
     }
 
     <span class="attr">@PutMapping</span>(<span class="st">&quot;/{id}&quot;</span>)
     <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">OK</span>)
     <span class="kw">public</span> <span class="tp">Fornecedor</span> atualizar(<span class="attr">@PathVariable</span> <span class="tp">Long</span> id, <span class="attr">@RequestBody</span> <span class="tp">Fornecedor</span> fornecedor) {
-        <span class="kw">return</span> service.atualizar(id, fornecedor);
+        <span class="kw">return</span> fornecedorService.atualizar(id, fornecedor);
     }
 
     <span class="attr">@DeleteMapping</span>(<span class="st">&quot;/{id}&quot;</span>)
     <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">NO_CONTENT</span>)
     <span class="kw">public</span> <span class="kw">void</span> excluir(<span class="attr">@PathVariable</span> <span class="tp">Long</span> id) {
-        service.excluir(id);
+        fornecedorService.excluir(id);
     }
 }</code></pre></div>
 <p>Reinicie a API e envie DELETE para o ID que você quer remover, sem corpo JSON. Depois faça GET do mesmo ID: por enquanto, você verá <strong>200</strong> e <code>null</code>, porque o registro não existe mais. Liste todos para confirmar que os outros fornecedores continuam lá.</p>
 <div class="tip"><strong>DELETE repetido:</strong> excluir de novo um ID que já não existe também responde 204. O <code>deleteById</code> não reclama da ausência, e o estado final é o mesmo: registro ausente.</div>
-<div class="exercise solo"><h3>✍️ Fechar o ciclo sem apagar o colega</h3><p>Cadastre dois fornecedores de teste. Exclua apenas um e confirme que o outro ainda pode ser consultado.</p><details class="answer"><summary>💡 Uma dica</summary><div>Anote separadamente os IDs retornados pelos dois POSTs. A URL do DELETE precisa usar apenas um deles.</div></details><div class="try-first">🚨 PARE! Tente primeiro. Compare o resultado, não só o código.</div><details class="answer"><summary>👀 Só depois de tentar — conferir solução</summary><div><p>Primeiro POST: 201. Segundo POST: 201. DELETE do primeiro: 204. GET do primeiro: 200 com <code>null</code>. GET do segundo: 200 com o objeto. No SQL, só a linha escolhida foi removida.</p></div></details></div><div class="checkpoint">✓ Cinco endpoints completos. Você consegue explicar o pedido e comprovar o efeito no banco.</div></div></section><div class="section-connector"><div class="line"></div></div><section class="step-section" id="viagem"><div class="step-header"><div class="step-number sn-green">15</div><div><h2 class="step-title">Abra os bastidores de uma requisição</h2><p class="step-sub">O mesmo cadastro, visto por todas as camadas.</p></div></div><div class="card"><p>No filme da Parte 0, a API era uma caixa fechada: o POST entrava, o SQL saía para o banco e a resposta voltava. Agora você construiu essa caixa. Vamos dar um <strong>zoom</strong> nela e ver quem trabalha lá dentro.</p>
+<div class="exercise solo"><h3>✍️ Fechar o ciclo sem apagar o colega</h3><p>Cadastre dois fornecedores de teste, com nome, CNPJ e categoria. Exclua apenas um e confirme que o outro ainda pode ser consultado.</p><details class="answer"><summary>💡 Uma dica</summary><div>Anote separadamente os IDs retornados pelos dois POSTs. A URL do DELETE precisa usar apenas um deles.</div></details><div class="try-first">🚨 PARE! Tente primeiro. Compare o resultado, não só o código.</div><details class="answer"><summary>👀 Só depois de tentar — conferir solução</summary><div><p>Primeiro POST: 201. Segundo POST: 201. DELETE do primeiro: 204. GET do primeiro: 200 com <code>null</code>. GET do segundo: 200 com o objeto. No SQL, só a linha escolhida foi removida.</p></div></details></div><div class="checkpoint">✓ Cinco endpoints completos. Você consegue explicar o pedido e comprovar o efeito no banco.</div></div></section><div class="section-connector"><div class="line"></div></div><section class="step-section" id="viagem"><div class="step-header"><div class="step-number sn-green">15</div><div><h2 class="step-title">Abra os bastidores de uma requisição</h2><p class="step-sub">O mesmo cadastro, visto por todas as camadas.</p></div></div><div class="card"><p>No filme da Parte 0, a API era uma caixa fechada: o POST entrava, o SQL saía para o banco e a resposta voltava. Agora você construiu essa caixa. Vamos dar um <strong>zoom</strong> nela e ver quem trabalha lá dentro.</p>
 <div class="lab" id="request-lab"><div class="lab-heading"><span>LAB 03 · SIMULAÇÃO</span><h3>Quem está trabalhando agora?</h3><p>Escolha um caso e avance. As fichas representam etapas do fluxo; nenhum servidor real é chamado.</p></div><label class="case-label">Caso<select id="request-case"><option value="valid">POST · cadastrar um fornecedor</option><option value="list">GET · listar os fornecedores</option><option value="remove">DELETE · excluir pelo ID</option></select></label><div class="request-track"><div data-layer="client">🌐 Cliente</div><div data-layer="controller">🎮 Controller</div><div data-layer="service">⚙️ Service</div><div data-layer="repository">🗄️ Repository</div><div data-layer="database">🐘 Banco</div></div><div class="request-state"><article><small>O QUE ESTÁ ACONTECENDO</small><h4 id="request-title"></h4><p id="request-description"></p></article><article><small>REGISTROS / RESPOSTA</small><strong id="request-records"></strong><p id="request-response"></p></article></div><p class="lab-caption" id="request-caption" role="status" aria-live="polite"></p><div class="lab-controls"><button type="button" id="request-prev">← Voltar</button><span id="request-step"></span><button type="button" id="request-next">Próximo →</button><button type="button" id="request-reset">Reiniciar caso</button></div></div>
 <div class="decision" data-explanation="204 No Content quer dizer: deu certo e não há nada para devolver no corpo. Por isso o método do Controller é void."><h4>🧠 O DELETE terminou com 204. O que vem no corpo da resposta?</h4><div class="choices"><button type="button" data-choice="false" aria-pressed="false">O fornecedor excluído, em JSON, para confirmar.</button><button type="button" data-choice="true" aria-pressed="false">Nada: 204 é sucesso sem conteúdo.</button><button type="button" data-choice="false" aria-pressed="false">Uma mensagem de erro, porque o registro sumiu.</button></div><p class="feedback" role="status" aria-live="polite">Escolha uma resposta. Você pode tentar novamente.</p></div><section class="step-section" id="missao"><div class="step-header"><div class="step-number sn-green">16</div><div><h2 class="step-title">Sua vez: provar que funciona</h2><p class="step-sub">Um roteiro de evidências, não uma corrida para copiar.</p></div></div><div class="card">
 <div class="table-scroll"><table><caption>Contrato final da nossa API</caption><thead><tr><th>Operação</th><th>Caminho</th><th>Sucesso</th></tr></thead><tbody><tr><td>POST</td><td>/fornecedores</td><td>201 + objeto</td></tr><tr><td>GET</td><td>/fornecedores</td><td>200 + lista</td></tr><tr><td>GET</td><td>/fornecedores/{id}</td><td>200 + objeto</td></tr><tr><td>PUT</td><td>/fornecedores/{id}</td><td>200 + objeto</td></tr><tr><td>DELETE</td><td>/fornecedores/{id}</td><td>204 · sem corpo</td></tr></tbody></table></div>
@@ -703,14 +711,14 @@ spring.jpa.show-sql=true</code></pre></div>
 docker start gestorpro-postgres
 docker exec gestorpro-postgres pg_isready -<span class="kw">U</span> gestorpro -d gestorpro</code></pre></div>
 <p>Espere o banco aceitar conexões. Inicie a API e consulte o ID anotado. O registro deve continuar existindo: parar e iniciar não apagou os dados.</p></div>
-<div class="exercise solo"><h3>✍️ Missão final · Fornecedor do começo ao fim</h3><p>Cadastre Editora Farol; liste; busque pelo ID; altere o telefone; reinicie a API; confira a persistência; exclua; confirme que ele sumiu da lista. Registre os status e desenhe o caminho do pedido no seu caderno.</p><details class="answer"><summary>💡 Uma dica</summary><div>No POST, omita o ID. No PUT, envie todos os campos editáveis. Use sempre o ID devolvido pelo seu cadastro. Para ver a evidência, compare a resposta HTTP com um SELECT.</div></details><div class="try-first">🚨 PARE! Tente primeiro. Compare o resultado, não só o código.</div><details class="answer"><summary>👀 Só depois de tentar — conferir solução</summary><div><ol><li>POST válido → 201 e ID gerado.</li><li>GET da coleção → 200 e lista contendo esse ID.</li><li>GET do ID → 200 e objeto da Editora Farol.</li><li>PUT com telefone novo → 200, mesmo ID.</li><li>Reiniciar Java e GET → 200, telefone novo preservado.</li><li>DELETE → 204 e corpo vazio.</li><li>GET da coleção → 200, e a Editora Farol não aparece mais. (GET desse ID → 200 com <code>null</code>, por enquanto.)</li></ol></div></details></div>
+<div class="exercise solo"><h3>✍️ Missão final · Fornecedor do começo ao fim</h3><p>Cadastre Editora Farol (CNPJ 34.567.890/0001-20, categoria Livros, telefone (83) 3333-6000); liste; busque pelo ID; altere o telefone; reinicie a API; confira a persistência; exclua; confirme que ele sumiu da lista. Registre os status e desenhe o caminho do pedido no seu caderno.</p><details class="answer"><summary>💡 Uma dica</summary><div>No POST, omita o ID. No PUT, envie todos os campos editáveis. Use sempre o ID devolvido pelo seu cadastro. Para ver a evidência, compare a resposta HTTP com um SELECT.</div></details><div class="try-first">🚨 PARE! Tente primeiro. Compare o resultado, não só o código.</div><details class="answer"><summary>👀 Só depois de tentar — conferir solução</summary><div><ol><li>POST válido → 201 e ID gerado.</li><li>GET da coleção → 200 e lista contendo esse ID.</li><li>GET do ID → 200 e objeto da Editora Farol.</li><li>PUT com telefone novo → 200, mesmo ID.</li><li>Reiniciar Java e GET → 200, telefone novo preservado.</li><li>DELETE → 204 e corpo vazio.</li><li>GET da coleção → 200, e a Editora Farol não aparece mais. (GET desse ID → 200 com <code>null</code>, por enquanto.)</li></ol></div></details></div>
 <h3>Para casa · explique o erro, não só a correção</h3><p>Escolha uma falha que você encontrou: Docker parado, senha divergente, rota errada ou JDK diferente. Anote o sintoma, qual parte do sistema falhou e como você confirmou a correção. Não precisa criar outra entidade ainda.</p>
 <div class="download-box"><h3>👀 Material de conferência</h3><p>Use depois de construir. O projeto completo tem o código final da mesma entidade e as configurações locais desta aula.</p><a class="action" href="./apoio/api-completa.zip" download>Baixar API completa ↧</a><a class="action secondary" href="./apoio/api-inicial.zip" download>Projeto inicial ↧</a><a class="action secondary" href="./caderno.html" target="_blank" rel="noopener">Abrir meu caderno ↗</a><p>Extraia, abra a pasta que contém pom.xml, selecione JDK 21 e mantenha o PostgreSQL pronto. A API completa usa a mesma porta e o mesmo banco; execute uma cópia por vez.</p></div>
 </div></section><div class="section-connector"><div class="line"></div></div><section class="step-section" id="fechamento"><div class="step-header"><div class="step-number sn-green">17</div><div><h2 class="step-title">Você já construiu o caminho inteiro</h2><p class="step-sub">Agora sabemos por que cada peça existe.</p></div></div><div class="card">
 <div class="finish-banner"><span>🌱 DO JAVA À API</span><h3>Um pedido entra.<br>As camadas trabalham.<br>Um registro fica.</h3><p>O framework organiza a infraestrutura. Você programa o comportamento.</p></div>
 <p>O <strong>Controller</strong> recebe a conversa HTTP. O <strong>Service</strong> organiza a operação. O <strong>Repository</strong> acessa o banco. O <strong>Model</strong> representa os dados. O <strong>PostgreSQL</strong> persiste os registros, executando no nosso container.</p>
 <div class="decision" data-explanation="O Model não chama o Repository: ele representa os dados. O pedido passa pelo Controller, Service e Repository para chegar ao banco."><h4>🧠 Qual sequência representa o acesso ao banco nesta API?</h4><div class="choices"><button type="button" data-choice="true" aria-pressed="false">Controller → Service → Repository → PostgreSQL.</button><button type="button" data-choice="false" aria-pressed="false">Controller → Model → PostgreSQL → Service.</button><button type="button" data-choice="false" aria-pressed="false">React → PostgreSQL, sem passar pela API.</button></div><p class="feedback" role="status" aria-live="polite">Escolha uma resposta. Você pode tentar novamente.</p></div>
-<h3>O que ficou para os próximos capítulos</h3><p>Nesta primeira volta, fizemos o caminho mais curto de propósito. Ficaram três pendências, que você viu acontecer:</p><ul><li><strong>Nome em branco é aceito</strong>, e um fornecedor sem nome termina em erro 500: falta <strong>validação</strong>, com resposta 400.</li><li><strong>ID inexistente responde 200 com <code>null</code></strong>: falta devolver <strong>404</strong>.</li><li><strong>Um <code>id</code> no JSON do POST sobrescreve um cadastro</strong>: falta separar o que a API recebe do que ela guarda.</li></ul><h3>A próxima pergunta: precisamos expor tudo?</h3><p>Hoje o JSON recebido e devolvido usa a própria entidade. Isso ajudou a enxergar o fluxo. Mas e se o banco guardar um campo que não deve entrar na resposta? E se o formato pedido pela tela for diferente do formato persistido?</p>
+<h3>O que ficou para os próximos capítulos</h3><p>Nesta primeira volta, fizemos o caminho mais curto de propósito. Ficaram três pendências, que você viu acontecer:</p><ul><li><strong>Nome em branco <code>""</code> é aceito</strong>, e um fornecedor sem nome, CNPJ ou categoria termina em erro 500: falta <strong>validação</strong>, com resposta 400.</li><li><strong>ID inexistente responde 200 com <code>null</code></strong>: falta devolver <strong>404</strong>.</li><li><strong>Um <code>id</code> no JSON do POST sobrescreve um cadastro</strong>: falta separar o que a API recebe do que ela guarda.</li></ul><h3>A próxima pergunta: precisamos expor tudo?</h3><p>Hoje o JSON recebido e devolvido usa a própria entidade. Isso ajudou a enxergar o fluxo. Mas e se o banco guardar um campo que não deve entrar na resposta? E se o formato pedido pela tela for diferente do formato persistido?</p>
 <p>Na próxima entidade, <strong>Produto</strong>, entraremos em <strong>DTO — Data Transfer Object</strong>, objeto de transferência de dados: uma estrutura que descreve quais dados entram e saem da API. A evolução terá um motivo concreto. Mapper, validações e relacionamentos entrarão conforme forem necessários.</p>
 <div class="warning">Nesta etapa, o GestorPRO React ainda usa seu backend anterior. A integração com a API, CORS e autenticação serão construídos depois. Não basta trocar a URL e esperar que login e todas as entidades já existam.</div>
 <div class="chapter-route"><a class="action secondary" href="../11-java-oo-basico/">← Cap 11 · Java básico</a><a class="action" href="../13-spring-dto-validacao/">Cap 13 · DTO e validação →</a></div>

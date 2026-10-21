@@ -112,55 +112,53 @@ docker exec gestorpro-postgres pg_isready -U gestorpro -d gestorpro</code></pre>
 <div class="endpoint"><span>POST</span><code>http://localhost:8080/produtos</code><b>201 Created</b></div>
 <p>A ordem de construção é a do Cap 12, com duas peças novas no meio. O pedido vai percorrer o caminho ao contrário, mas construímos de dentro para fora:</p>
 <div class="crud-strip build-order"><span><b>1</b>Model</span><span><b>2</b>Repository</span><span><b>3</b>DTOs</span><span><b>4</b>Mapper</span><span><b>5</b>Service</span><span><b>6</b>Controller</span></div>
-<p>Todos os arquivos ficam dentro de <code>br.com.gestorpro.api</code>, ao lado dos de Fornecedor. Dois pacotes são novos: <code>dto</code> e <code>mapper</code>.</p>
+<p>Todos os arquivos ficam dentro de <code>com.gestorpro.api</code>, ao lado dos de Fornecedor. Dois pacotes são novos: <code>dto</code> e <code>mapper</code>.</p>
 <h3>Passo 1 · Model: a entidade Produto</h3>
 <p>No pacote <code>model</code>, crie a classe <code>Produto</code>. A estrutura é a mesma do Fornecedor; os tipos são novos:</p>
-<div class="code-block"><div class="code-header"><span class="filename">model/Produto.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar model/Produto.java">Copiar</button></div><pre data-stage="1" data-file="model/Produto.java"><code><span class="kw">package</span> br.com.gestorpro.api.model;
+<div class="code-block"><div class="code-header"><span class="filename">model/Produto.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar model/Produto.java">Copiar</button></div><pre data-stage="1" data-file="model/Produto.java"><code><span class="kw">package</span> com.gestorpro.api.model;
+
+<span class="kw">import</span> jakarta.persistence.*;
+<span class="kw">import</span> lombok.<span class="tp">AllArgsConstructor</span>;
+<span class="kw">import</span> lombok.<span class="tp">Getter</span>;
+<span class="kw">import</span> lombok.<span class="tp">NoArgsConstructor</span>;
+<span class="kw">import</span> lombok.<span class="tp">Setter</span>;
 
 <span class="kw">import</span> java.math.<span class="tp">BigDecimal</span>;
 <span class="kw">import</span> java.time.<span class="tp">LocalDateTime</span>;
 
-<span class="kw">import</span> lombok.<span class="tp">Getter</span>;
-<span class="kw">import</span> lombok.<span class="tp">Setter</span>;
-<span class="kw">import</span> lombok.<span class="tp">NoArgsConstructor</span>;
-
-<span class="kw">import</span> jakarta.persistence.<span class="tp">Column</span>;
-<span class="kw">import</span> jakarta.persistence.<span class="tp">Entity</span>;
-<span class="kw">import</span> jakarta.persistence.<span class="tp">GeneratedValue</span>;
-<span class="kw">import</span> jakarta.persistence.<span class="tp">GenerationType</span>;
-<span class="kw">import</span> jakarta.persistence.<span class="tp">Id</span>;
-<span class="kw">import</span> jakarta.persistence.<span class="tp">Table</span>;
-
-<span class="attr">@Getter</span>
 <span class="attr">@Setter</span>
+<span class="attr">@Getter</span>
 <span class="attr">@NoArgsConstructor</span>
-<span class="attr">@Entity</span>
+<span class="attr">@AllArgsConstructor</span>
 <span class="attr">@Table</span>(name = <span class="st">"produtos"</span>)
+<span class="attr">@Entity</span>
 <span class="kw">public</span> <span class="kw">class</span> <span class="tp">Produto</span> {
+
     <span class="attr">@Id</span>
     <span class="attr">@GeneratedValue</span>(strategy = <span class="tp">GenerationType</span>.<span class="tp">IDENTITY</span>)
     <span class="kw">private</span> <span class="tp">Long</span> id;
 
-    <span class="attr">@Column</span>(nullable = <span class="kw">false</span>)
+    <span class="attr">@Column</span>(name = <span class="st">"nome"</span>, nullable = <span class="kw">false</span>)
     <span class="kw">private</span> <span class="tp">String</span> nome;
 
-    <span class="attr">@Column</span>(nullable = <span class="kw">false</span>, precision = <span class="num">10</span>, scale = <span class="num">2</span>)
+    <span class="attr">@Column</span>(name = <span class="st">"preco"</span>, nullable = <span class="kw">false</span>, precision = <span class="num">10</span>, scale = <span class="num">2</span>)
     <span class="kw">private</span> <span class="tp">BigDecimal</span> preco;
 
-    <span class="attr">@Column</span>(nullable = <span class="kw">false</span>)
+    <span class="attr">@Column</span>(name = <span class="st">"estoque"</span>, nullable = <span class="kw">false</span>)
     <span class="kw">private</span> <span class="tp">Integer</span> estoque;
 
+    <span class="attr">@Column</span>(name = <span class="st">"categoria"</span>)
     <span class="kw">private</span> <span class="tp">String</span> categoria;
 
-    <span class="attr">@Column</span>(nullable = <span class="kw">false</span>)
+    <span class="attr">@Column</span>(name = <span class="st">"criado_em"</span>, nullable = <span class="kw">false</span>)
     <span class="kw">private</span> <span class="tp">LocalDateTime</span> criadoEm;
 }</code></pre></div>
-<div class="table-scroll"><table><caption>O que há de novo aqui</caption><thead><tr><th>Trecho</th><th>Por quê</th></tr></thead><tbody><tr><td><code>BigDecimal preco</code> + <code>precision = 10, scale = 2</code></td><td>Dinheiro exato, coluna <code>numeric(10,2)</code>, como na seção anterior.</td></tr><tr><td><code>Integer estoque</code></td><td>Contagem inteira. <code>Integer</code> (e não <code>int</code>) aceita <code>null</code>, como o <code>Long</code> do id.</td></tr><tr><td><code>LocalDateTime criadoEm</code></td><td>Data e hora, sem fuso horário. No banco, a coluna se chama <code>criado_em</code>: o Spring troca as maiúsculas por <code>_</code>.</td></tr><tr><td><code>nullable = false</code> em quase tudo</td><td>O banco recusa um produto sem nome, preço, estoque ou data. É a última barreira, não a primeira.</td></tr></tbody></table></div>
+<div class="table-scroll"><table><caption>O que há de novo aqui</caption><thead><tr><th>Trecho</th><th>Por quê</th></tr></thead><tbody><tr><td><code>BigDecimal preco</code> + <code>precision = 10, scale = 2</code></td><td>Dinheiro exato, coluna <code>numeric(10,2)</code>, como na seção anterior.</td></tr><tr><td><code>Integer estoque</code></td><td>Contagem inteira. <code>Integer</code> (e não <code>int</code>) aceita <code>null</code>, como o <code>Long</code> do id.</td></tr><tr><td><code>LocalDateTime criadoEm</code></td><td>Data e hora, sem fuso horário. No banco, a coluna se chama <code>criado_em</code>, como diz o <code>name</code>. É o caso em que o <code>name</code> mostra seu valor: em Java, o nome é <code>criadoEm</code>; no banco, o costume é separar palavras com <code>_</code>.</td></tr><tr><td><code>nullable = false</code> em quase tudo</td><td>O banco recusa um produto sem nome, preço, estoque ou data. É a última barreira, não a primeira.</td></tr></tbody></table></div>
 <h3>Passo 2 · Repository</h3>
 <p>No pacote <code>repository</code>, crie a interface. É igual à do Fornecedor, trocando o tipo da entidade:</p>
-<div class="code-block"><div class="code-header"><span class="filename">repository/ProdutoRepository.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar repository/ProdutoRepository.java">Copiar</button></div><pre data-stage="1" data-file="repository/ProdutoRepository.java"><code><span class="kw">package</span> br.com.gestorpro.api.repository;
+<div class="code-block"><div class="code-header"><span class="filename">repository/ProdutoRepository.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar repository/ProdutoRepository.java">Copiar</button></div><pre data-stage="1" data-file="repository/ProdutoRepository.java"><code><span class="kw">package</span> com.gestorpro.api.repository;
 
-<span class="kw">import</span> br.com.gestorpro.api.model.<span class="tp">Produto</span>;
+<span class="kw">import</span> com.gestorpro.api.model.<span class="tp">Produto</span>;
 <span class="kw">import</span> org.springframework.data.jpa.repository.<span class="tp">JpaRepository</span>;
 <span class="kw">import</span> org.springframework.stereotype.<span class="tp">Repository</span>;
 
@@ -169,7 +167,7 @@ docker exec gestorpro-postgres pg_isready -U gestorpro -d gestorpro</code></pre>
 }</code></pre></div>
 <h3>Passo 3 · Os dois DTOs</h3>
 <p>Crie o pacote <code>dto</code>. Clique com o botão direito nele, <strong>New → Java Class</strong>, digite o nome e escolha <strong>Record</strong> na lista abaixo do nome. O de entrada não tem <code>id</code> nem <code>criadoEm</code>:</p>
-<div class="code-block"><div class="code-header"><span class="filename">dto/ProdutoRequestDTO.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar dto/ProdutoRequestDTO.java">Copiar</button></div><pre data-stage="1" data-file="dto/ProdutoRequestDTO.java"><code><span class="kw">package</span> br.com.gestorpro.api.dto;
+<div class="code-block"><div class="code-header"><span class="filename">dto/ProdutoRequestDTO.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar dto/ProdutoRequestDTO.java">Copiar</button></div><pre data-stage="1" data-file="dto/ProdutoRequestDTO.java"><code><span class="kw">package</span> com.gestorpro.api.dto;
 
 <span class="kw">import</span> java.math.<span class="tp">BigDecimal</span>;
 
@@ -181,7 +179,7 @@ docker exec gestorpro-postgres pg_isready -U gestorpro -d gestorpro</code></pre>
 ) {
 }</code></pre></div>
 <p>O de saída mostra tudo o que o cadastro tem, inclusive o que só o servidor decide:</p>
-<div class="code-block"><div class="code-header"><span class="filename">dto/ProdutoResponseDTO.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar dto/ProdutoResponseDTO.java">Copiar</button></div><pre data-stage="1" data-file="dto/ProdutoResponseDTO.java"><code><span class="kw">package</span> br.com.gestorpro.api.dto;
+<div class="code-block"><div class="code-header"><span class="filename">dto/ProdutoResponseDTO.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar dto/ProdutoResponseDTO.java">Copiar</button></div><pre data-stage="1" data-file="dto/ProdutoResponseDTO.java"><code><span class="kw">package</span> com.gestorpro.api.dto;
 
 <span class="kw">import</span> java.math.<span class="tp">BigDecimal</span>;
 <span class="kw">import</span> java.time.<span class="tp">LocalDateTime</span>;
@@ -198,13 +196,14 @@ docker exec gestorpro-postgres pg_isready -U gestorpro -d gestorpro</code></pre>
 <div class="tip"><strong>Escrever em linhas separadas é só organização.</strong> <code>record ProdutoRequestDTO(String nome, BigDecimal preco, ...)</code> numa linha só funcionaria igual. Uma linha por componente fica mais fácil de ler e, no Encontro B, de anotar.</div>
 <h3>Passo 4 · Mapper: o tradutor</h3>
 <p>Alguém precisa copiar os dados do formulário para a entidade e da entidade para o comprovante. Poderíamos fazer isso dentro do Service, mas a cópia vai se repetir em vários endpoints. Ela ganha uma classe própria. Crie o pacote <code>mapper</code> e a classe <code>ProdutoMapper</code>:</p>
-<div class="code-block"><div class="code-header"><span class="filename">mapper/ProdutoMapper.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar mapper/ProdutoMapper.java">Copiar</button></div><pre data-stage="1" data-file="mapper/ProdutoMapper.java"><code><span class="kw">package</span> br.com.gestorpro.api.mapper;
+<div class="code-block"><div class="code-header"><span class="filename">mapper/ProdutoMapper.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar mapper/ProdutoMapper.java">Copiar</button></div><pre data-stage="1" data-file="mapper/ProdutoMapper.java"><code><span class="kw">package</span> com.gestorpro.api.mapper;
 
-<span class="kw">import</span> br.com.gestorpro.api.dto.<span class="tp">ProdutoRequestDTO</span>;
-<span class="kw">import</span> br.com.gestorpro.api.dto.<span class="tp">ProdutoResponseDTO</span>;
-<span class="kw">import</span> br.com.gestorpro.api.model.<span class="tp">Produto</span>;
+<span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoRequestDTO</span>;
+<span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoResponseDTO</span>;
+<span class="kw">import</span> com.gestorpro.api.model.<span class="tp">Produto</span>;
 
 <span class="kw">public</span> <span class="kw">class</span> <span class="tp">ProdutoMapper</span> {
+
     <span class="kw">public</span> <span class="kw">static</span> <span class="tp">Produto</span> toEntity(<span class="tp">ProdutoRequestDTO</span> dto) {
         <span class="tp">Produto</span> produto = <span class="kw">new</span> <span class="tp">Produto</span>();
         produto.setNome(dto.nome());
@@ -227,54 +226,53 @@ docker exec gestorpro-postgres pg_isready -U gestorpro -d gestorpro</code></pre>
 }</code></pre></div>
 <ul><li><code>toEntity</code> (“para entidade”) cria um <code>Produto</code> vazio e copia os quatro campos do formulário. Repare no que <strong>não</strong> é copiado: <code>id</code> e <code>criadoEm</code>. Não existe de onde copiar.</li><li><code>toResponse</code> (“para resposta”) monta o comprovante com <code>new ProdutoResponseDTO(...)</code>. Os valores vão <strong>na mesma ordem</strong> dos componentes do record.</li><li><code>static</code>, como você viu no Cap 11: o método pertence à classe. Chamamos <code>ProdutoMapper.toEntity(dto)</code> sem fazer <code>new ProdutoMapper()</code>. O Mapper não guarda nada; ele só traduz.</li></ul>
 <h3>Passo 5 · Service: cadastrar</h3>
-<div class="code-block"><div class="code-header"><span class="filename">service/ProdutoService.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar service/ProdutoService.java">Copiar</button></div><pre data-stage="1" data-file="service/ProdutoService.java"><code><span class="kw">package</span> br.com.gestorpro.api.service;
+<div class="code-block"><div class="code-header"><span class="filename">service/ProdutoService.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar service/ProdutoService.java">Copiar</button></div><pre data-stage="1" data-file="service/ProdutoService.java"><code><span class="kw">package</span> com.gestorpro.api.service;
 
-<span class="kw">import</span> java.time.<span class="tp">LocalDateTime</span>;
-<span class="kw">import</span> br.com.gestorpro.api.dto.<span class="tp">ProdutoRequestDTO</span>;
-<span class="kw">import</span> br.com.gestorpro.api.dto.<span class="tp">ProdutoResponseDTO</span>;
-<span class="kw">import</span> br.com.gestorpro.api.mapper.<span class="tp">ProdutoMapper</span>;
-<span class="kw">import</span> br.com.gestorpro.api.model.<span class="tp">Produto</span>;
-<span class="kw">import</span> br.com.gestorpro.api.repository.<span class="tp">ProdutoRepository</span>;
+<span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoRequestDTO</span>;
+<span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoResponseDTO</span>;
+<span class="kw">import</span> com.gestorpro.api.mapper.<span class="tp">ProdutoMapper</span>;
+<span class="kw">import</span> com.gestorpro.api.model.<span class="tp">Produto</span>;
+<span class="kw">import</span> com.gestorpro.api.repository.<span class="tp">ProdutoRepository</span>;
 <span class="kw">import</span> lombok.<span class="tp">RequiredArgsConstructor</span>;
 <span class="kw">import</span> org.springframework.stereotype.<span class="tp">Service</span>;
+
+<span class="kw">import</span> java.time.<span class="tp">LocalDateTime</span>;
 
 <span class="attr">@Service</span>
 <span class="attr">@RequiredArgsConstructor</span>
 <span class="kw">public</span> <span class="kw">class</span> <span class="tp">ProdutoService</span> {
-    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">ProdutoRepository</span> repository;
+
+    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">ProdutoRepository</span> produtoRepository;
 
     <span class="kw">public</span> <span class="tp">ProdutoResponseDTO</span> cadastrar(<span class="tp">ProdutoRequestDTO</span> dto) {
         <span class="tp">Produto</span> produto = <span class="tp">ProdutoMapper</span>.toEntity(dto);
         produto.setCriadoEm(<span class="tp">LocalDateTime</span>.now());
-        <span class="tp">Produto</span> salvo = repository.save(produto);
+        <span class="tp">Produto</span> salvo = produtoRepository.save(produto);
         <span class="kw">return</span> <span class="tp">ProdutoMapper</span>.toResponse(salvo);
     }
 }</code></pre></div>
 <p>O método <code>cadastrar</code> tem quatro linhas, uma por tarefa: <strong>traduzir</strong> o formulário em entidade; <strong>carimbar</strong> a data com o relógio do servidor (<code>LocalDateTime.now()</code>); <strong>salvar</strong> (o <code>save</code> devolve a entidade já com o ID gerado); e <strong>traduzir de volta</strong> para o comprovante. A data é uma regra do servidor, por isso mora no Service, e não no Mapper.</p>
 <h3>Passo 6 · Controller</h3>
-<div class="code-block"><div class="code-header"><span class="filename">controller/ProdutoController.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar controller/ProdutoController.java">Copiar</button></div><pre data-stage="1" data-file="controller/ProdutoController.java"><code><span class="kw">package</span> br.com.gestorpro.api.controller;
+<div class="code-block"><div class="code-header"><span class="filename">controller/ProdutoController.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar controller/ProdutoController.java">Copiar</button></div><pre data-stage="1" data-file="controller/ProdutoController.java"><code><span class="kw">package</span> com.gestorpro.api.controller;
 
-<span class="kw">import</span> br.com.gestorpro.api.dto.<span class="tp">ProdutoRequestDTO</span>;
-<span class="kw">import</span> br.com.gestorpro.api.dto.<span class="tp">ProdutoResponseDTO</span>;
-<span class="kw">import</span> br.com.gestorpro.api.service.<span class="tp">ProdutoService</span>;
+<span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoRequestDTO</span>;
+<span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoResponseDTO</span>;
+<span class="kw">import</span> com.gestorpro.api.service.<span class="tp">ProdutoService</span>;
 <span class="kw">import</span> lombok.<span class="tp">RequiredArgsConstructor</span>;
 <span class="kw">import</span> org.springframework.http.<span class="tp">HttpStatus</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">PostMapping</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">RequestBody</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">RequestMapping</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">ResponseStatus</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">RestController</span>;
+<span class="kw">import</span> org.springframework.web.bind.annotation.*;
 
 <span class="attr">@RestController</span>
 <span class="attr">@RequestMapping</span>(<span class="st">"/produtos"</span>)
 <span class="attr">@RequiredArgsConstructor</span>
 <span class="kw">public</span> <span class="kw">class</span> <span class="tp">ProdutoController</span> {
-    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">ProdutoService</span> service;
+
+    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">ProdutoService</span> produtoService;
 
     <span class="attr">@PostMapping</span>
     <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">CREATED</span>)
     <span class="kw">public</span> <span class="tp">ProdutoResponseDTO</span> cadastrar(<span class="attr">@RequestBody</span> <span class="tp">ProdutoRequestDTO</span> dto) {
-        <span class="kw">return</span> service.cadastrar(dto);
+        <span class="kw">return</span> produtoService.cadastrar(dto);
     }
 }</code></pre></div>
 <p>Compare com o Controller de Fornecedor: o <code>@RequestBody</code> agora preenche um <code>ProdutoRequestDTO</code>, e o retorno é um <code>ProdutoResponseDTO</code>. <strong>O Controller não conhece a entidade.</strong> Quem conhece os dois lados é o Service, com a ajuda do Mapper.</p>
@@ -317,9 +315,9 @@ docker exec gestorpro-postgres pg_isready -U gestorpro -d gestorpro</code></pre>
 
 <section class="step-section" id="listar"><div class="step-header"><div class="step-number sn-green">06</div><div><h2 class="step-title">R · Listar: a esteira</h2><p class="step-sub">Converter uma lista inteira, e a primeira lambda do backend.</p></div></div><div class="card">
 <div class="endpoint"><span>GET</span><code>http://localhost:8080/produtos</code><b>200 OK</b></div>
-<p>O <code>repository.findAll()</code> devolve uma <code>List&lt;Produto&gt;</code>: entidades. Mas o Controller só fala DTO. Precisamos transformar cada <code>Produto</code> em um <code>ProdutoResponseDTO</code> e juntar tudo numa lista nova. Primeiro, do jeito que você já sabe, com <code>for</code>:</p>
+<p>O <code>produtoRepository.findAll()</code> devolve uma <code>List&lt;Produto&gt;</code>: entidades. Mas o Controller só fala DTO. Precisamos transformar cada <code>Produto</code> em um <code>ProdutoResponseDTO</code> e juntar tudo numa lista nova. Primeiro, do jeito que você já sabe, com <code>for</code>:</p>
 <div class="code-block"><div class="code-header"><span class="filename">Versão com for · só para comparar (não digite)</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar Versão com for · só para comparar (não digite)">Copiar</button></div><pre><code><span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">ProdutoResponseDTO</span>&gt; listar() {
-    <span class="tp">List</span>&lt;<span class="tp">Produto</span>&gt; produtos = repository.findAll();
+    <span class="tp">List</span>&lt;<span class="tp">Produto</span>&gt; produtos = produtoRepository.findAll();
     <span class="tp">List</span>&lt;<span class="tp">ProdutoResponseDTO</span>&gt; respostas = <span class="kw">new</span> <span class="tp">ArrayList</span>&lt;&gt;();
     <span class="kw">for</span> (<span class="tp">Produto</span> produto : produtos) {
         respostas.add(<span class="tp">ProdutoMapper</span>.toResponse(produto));
@@ -338,70 +336,69 @@ docker exec gestorpro-postgres pg_isready -U gestorpro -d gestorpro</code></pre>
 <div class="arrow-compare"><div><small>JavaScript</small><code>produto =&gt; ...</code><span>igual + maior</span></div><div><small>Java</small><code>produto -&gt; ...</code><span>hífen + maior</span></div></div>
 <div class="warning"><strong>⚠️ A seta do Java são dois caracteres: <kbd>-</kbd> seguido de <kbd>&gt;</kbd>.</strong> O IntelliJ e o VS Code costumam desenhar os dois juntos como uma seta só (→), por causa de uma fonte com “ligaduras”. É só desenho: digite hífen e sinal de maior. Se você copiar uma seta → de algum lugar, o Java responde <code>illegal character: '\u2192'</code>. E se escrever a seta do JavaScript (<code>=&gt;</code>), responde <code>illegal start of expression</code>.</div>
 <h3>Passo 1 · Service: listar</h3>
-<div class="code-block"><div class="code-header"><span class="filename">service/ProdutoService.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar service/ProdutoService.java">Copiar</button></div><pre data-stage="2" data-file="service/ProdutoService.java"><code><span class="kw">package</span> br.com.gestorpro.api.service;
+<div class="code-block"><div class="code-header"><span class="filename">service/ProdutoService.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar service/ProdutoService.java">Copiar</button></div><pre data-stage="2" data-file="service/ProdutoService.java"><code><span class="kw">package</span> com.gestorpro.api.service;
+
+<span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoRequestDTO</span>;
+<span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoResponseDTO</span>;
+<span class="kw">import</span> com.gestorpro.api.mapper.<span class="tp">ProdutoMapper</span>;
+<span class="kw">import</span> com.gestorpro.api.model.<span class="tp">Produto</span>;
+<span class="kw">import</span> com.gestorpro.api.repository.<span class="tp">ProdutoRepository</span>;
+<span class="kw">import</span> lombok.<span class="tp">RequiredArgsConstructor</span>;
+<span class="kw">import</span> org.springframework.stereotype.<span class="tp">Service</span>;
 
 <span class="kw">import</span> java.time.<span class="tp">LocalDateTime</span>;
 <span class="novo"><span class="kw">import</span> java.util.<span class="tp">List</span>;</span>
-<span class="kw">import</span> br.com.gestorpro.api.dto.<span class="tp">ProdutoRequestDTO</span>;
-<span class="kw">import</span> br.com.gestorpro.api.dto.<span class="tp">ProdutoResponseDTO</span>;
-<span class="kw">import</span> br.com.gestorpro.api.mapper.<span class="tp">ProdutoMapper</span>;
-<span class="kw">import</span> br.com.gestorpro.api.model.<span class="tp">Produto</span>;
-<span class="kw">import</span> br.com.gestorpro.api.repository.<span class="tp">ProdutoRepository</span>;
-<span class="kw">import</span> lombok.<span class="tp">RequiredArgsConstructor</span>;
-<span class="kw">import</span> org.springframework.stereotype.<span class="tp">Service</span>;
 
 <span class="attr">@Service</span>
 <span class="attr">@RequiredArgsConstructor</span>
 <span class="kw">public</span> <span class="kw">class</span> <span class="tp">ProdutoService</span> {
-    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">ProdutoRepository</span> repository;
+
+    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">ProdutoRepository</span> produtoRepository;
 
     <span class="kw">public</span> <span class="tp">ProdutoResponseDTO</span> cadastrar(<span class="tp">ProdutoRequestDTO</span> dto) {
         <span class="tp">Produto</span> produto = <span class="tp">ProdutoMapper</span>.toEntity(dto);
         produto.setCriadoEm(<span class="tp">LocalDateTime</span>.now());
-        <span class="tp">Produto</span> salvo = repository.save(produto);
+        <span class="tp">Produto</span> salvo = produtoRepository.save(produto);
         <span class="kw">return</span> <span class="tp">ProdutoMapper</span>.toResponse(salvo);
     }
 
 <span class="novo">    <span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">ProdutoResponseDTO</span>&gt; listar() {</span>
-<span class="novo">        <span class="tp">List</span>&lt;<span class="tp">Produto</span>&gt; produtos = repository.findAll();</span>
+<span class="novo">        <span class="tp">List</span>&lt;<span class="tp">Produto</span>&gt; produtos = produtoRepository.findAll();</span>
 <span class="novo">        <span class="kw">return</span> produtos.stream()</span>
 <span class="novo">                .map(produto -&gt; <span class="tp">ProdutoMapper</span>.toResponse(produto))</span>
 <span class="novo">                .toList();</span>
 <span class="novo">    }</span>
 }</code></pre><p class="code-note">Linhas com fundo verde: o que mudou nesta etapa. Substitua o arquivo inteiro.</p></div>
-<p>Novo também: o <code>import java.util.List;</code>, no topo.</p>
+<p>Novo também: o <code>import java.util.List;</code>. Ele fica no fim da lista de imports: o IntelliJ separa os imports do próprio Java (<code>java.*</code>) com uma linha em branco e os coloca por último.</p>
 <h3>Passo 2 · Controller: listar</h3>
-<div class="code-block"><div class="code-header"><span class="filename">controller/ProdutoController.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar controller/ProdutoController.java">Copiar</button></div><pre data-stage="2" data-file="controller/ProdutoController.java"><code><span class="kw">package</span> br.com.gestorpro.api.controller;
+<div class="code-block"><div class="code-header"><span class="filename">controller/ProdutoController.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar controller/ProdutoController.java">Copiar</button></div><pre data-stage="2" data-file="controller/ProdutoController.java"><code><span class="kw">package</span> com.gestorpro.api.controller;
 
-<span class="novo"><span class="kw">import</span> java.util.<span class="tp">List</span>;</span>
-<span class="kw">import</span> br.com.gestorpro.api.dto.<span class="tp">ProdutoRequestDTO</span>;
-<span class="kw">import</span> br.com.gestorpro.api.dto.<span class="tp">ProdutoResponseDTO</span>;
-<span class="kw">import</span> br.com.gestorpro.api.service.<span class="tp">ProdutoService</span>;
+<span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoRequestDTO</span>;
+<span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoResponseDTO</span>;
+<span class="kw">import</span> com.gestorpro.api.service.<span class="tp">ProdutoService</span>;
 <span class="kw">import</span> lombok.<span class="tp">RequiredArgsConstructor</span>;
 <span class="kw">import</span> org.springframework.http.<span class="tp">HttpStatus</span>;
-<span class="novo"><span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">GetMapping</span>;</span>
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">PostMapping</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">RequestBody</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">RequestMapping</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">ResponseStatus</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">RestController</span>;
+<span class="kw">import</span> org.springframework.web.bind.annotation.*;
+
+<span class="novo"><span class="kw">import</span> java.util.<span class="tp">List</span>;</span>
 
 <span class="attr">@RestController</span>
 <span class="attr">@RequestMapping</span>(<span class="st">"/produtos"</span>)
 <span class="attr">@RequiredArgsConstructor</span>
 <span class="kw">public</span> <span class="kw">class</span> <span class="tp">ProdutoController</span> {
-    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">ProdutoService</span> service;
+
+    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">ProdutoService</span> produtoService;
 
     <span class="attr">@PostMapping</span>
     <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">CREATED</span>)
     <span class="kw">public</span> <span class="tp">ProdutoResponseDTO</span> cadastrar(<span class="attr">@RequestBody</span> <span class="tp">ProdutoRequestDTO</span> dto) {
-        <span class="kw">return</span> service.cadastrar(dto);
+        <span class="kw">return</span> produtoService.cadastrar(dto);
     }
 
 <span class="novo">    <span class="attr">@GetMapping</span></span>
 <span class="novo">    <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">OK</span>)</span>
 <span class="novo">    <span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">ProdutoResponseDTO</span>&gt; listar() {</span>
-<span class="novo">        <span class="kw">return</span> service.listar();</span>
+<span class="novo">        <span class="kw">return</span> produtoService.listar();</span>
 <span class="novo">    }</span>
 }</code></pre><p class="code-note">Linhas com fundo verde: o que mudou nesta etapa. Substitua o arquivo inteiro.</p></div>
 <h3>Passo 3 · Testar</h3>
@@ -414,91 +411,89 @@ docker exec gestorpro-postgres pg_isready -U gestorpro -d gestorpro</code></pre>
 <div class="endpoint"><span>GET</span><code>http://localhost:8080/produtos/{id}</code><b>200 OK · 404 Not Found</b></div>
 <p>No Cap 12, o <code>findById</code> devolvia um <code>Optional</code>: uma caixa de presente que pode vir com o fornecedor dentro ou vazia. O Controller devolvia a caixa fechada, e a caixa vazia virava <code>200</code> com <code>null</code>. Para quem chamou, “deu certo, mas não veio nada” é uma resposta confusa.</p>
 <p>O status certo para “isso não existe” é <strong>404 Not Found</strong>, que você conheceu na Parte 0 do Cap 12. Agora vamos abrir a caixa no Service e reagir:</p>
-<div class="code-block"><div class="code-header"><span class="filename">O trecho novo, em destaque</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar O trecho novo, em destaque">Copiar</button></div><pre><code><span class="tp">Produto</span> produto = repository.findById(id)
+<div class="code-block"><div class="code-header"><span class="filename">O trecho novo, em destaque</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar O trecho novo, em destaque">Copiar</button></div><pre><code><span class="tp">Produto</span> produto = produtoRepository.findById(id)
         .orElseThrow(() -&gt; <span class="kw">new</span> <span class="tp">ResponseStatusException</span>(
                 <span class="tp">HttpStatus</span>.<span class="tp">NOT_FOUND</span>, <span class="st">"Produto não encontrado"</span>));</code></pre></div>
 <ul><li><code>orElseThrow</code> quer dizer “me dê o que está na caixa; <strong>ou então</strong>, se estiver vazia, lance este erro”. Caixa cheia: a variável <code>produto</code> recebe o produto. Caixa vazia: o erro é lançado.</li><li><code>ResponseStatusException</code> é uma exceção que já carrega o status HTTP da resposta. O Spring a reconhece e responde <code>404</code> sozinho.</li><li><code>throw</code> (lançar) interrompe o método no meio. As linhas de baixo, inclusive o <code>return</code>, nem chegam a executar.</li><li><code>() -&gt; new ResponseStatusException(...)</code> é outra lambda, agora sem parâmetro: os parênteses ficam vazios. Ela é uma receita para criar o erro, e só é executada se a caixa estiver vazia.</li></ul>
 <h3>Passo 1 · Service: buscar</h3>
-<div class="code-block"><div class="code-header"><span class="filename">service/ProdutoService.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar service/ProdutoService.java">Copiar</button></div><pre data-stage="3" data-file="service/ProdutoService.java"><code><span class="kw">package</span> br.com.gestorpro.api.service;
+<div class="code-block"><div class="code-header"><span class="filename">service/ProdutoService.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar service/ProdutoService.java">Copiar</button></div><pre data-stage="3" data-file="service/ProdutoService.java"><code><span class="kw">package</span> com.gestorpro.api.service;
 
-<span class="kw">import</span> java.time.<span class="tp">LocalDateTime</span>;
-<span class="kw">import</span> java.util.<span class="tp">List</span>;
-<span class="kw">import</span> br.com.gestorpro.api.dto.<span class="tp">ProdutoRequestDTO</span>;
-<span class="kw">import</span> br.com.gestorpro.api.dto.<span class="tp">ProdutoResponseDTO</span>;
-<span class="kw">import</span> br.com.gestorpro.api.mapper.<span class="tp">ProdutoMapper</span>;
-<span class="kw">import</span> br.com.gestorpro.api.model.<span class="tp">Produto</span>;
-<span class="kw">import</span> br.com.gestorpro.api.repository.<span class="tp">ProdutoRepository</span>;
+<span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoRequestDTO</span>;
+<span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoResponseDTO</span>;
+<span class="kw">import</span> com.gestorpro.api.mapper.<span class="tp">ProdutoMapper</span>;
+<span class="kw">import</span> com.gestorpro.api.model.<span class="tp">Produto</span>;
+<span class="kw">import</span> com.gestorpro.api.repository.<span class="tp">ProdutoRepository</span>;
 <span class="kw">import</span> lombok.<span class="tp">RequiredArgsConstructor</span>;
 <span class="novo"><span class="kw">import</span> org.springframework.http.<span class="tp">HttpStatus</span>;</span>
 <span class="kw">import</span> org.springframework.stereotype.<span class="tp">Service</span>;
 <span class="novo"><span class="kw">import</span> org.springframework.web.server.<span class="tp">ResponseStatusException</span>;</span>
 
+<span class="kw">import</span> java.time.<span class="tp">LocalDateTime</span>;
+<span class="kw">import</span> java.util.<span class="tp">List</span>;
+
 <span class="attr">@Service</span>
 <span class="attr">@RequiredArgsConstructor</span>
 <span class="kw">public</span> <span class="kw">class</span> <span class="tp">ProdutoService</span> {
-    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">ProdutoRepository</span> repository;
+
+    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">ProdutoRepository</span> produtoRepository;
 
     <span class="kw">public</span> <span class="tp">ProdutoResponseDTO</span> cadastrar(<span class="tp">ProdutoRequestDTO</span> dto) {
         <span class="tp">Produto</span> produto = <span class="tp">ProdutoMapper</span>.toEntity(dto);
         produto.setCriadoEm(<span class="tp">LocalDateTime</span>.now());
-        <span class="tp">Produto</span> salvo = repository.save(produto);
+        <span class="tp">Produto</span> salvo = produtoRepository.save(produto);
         <span class="kw">return</span> <span class="tp">ProdutoMapper</span>.toResponse(salvo);
     }
 
     <span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">ProdutoResponseDTO</span>&gt; listar() {
-        <span class="tp">List</span>&lt;<span class="tp">Produto</span>&gt; produtos = repository.findAll();
+        <span class="tp">List</span>&lt;<span class="tp">Produto</span>&gt; produtos = produtoRepository.findAll();
         <span class="kw">return</span> produtos.stream()
                 .map(produto -&gt; <span class="tp">ProdutoMapper</span>.toResponse(produto))
                 .toList();
     }
 
 <span class="novo">    <span class="kw">public</span> <span class="tp">ProdutoResponseDTO</span> buscar(<span class="tp">Long</span> id) {</span>
-<span class="novo">        <span class="tp">Produto</span> produto = repository.findById(id)</span>
+<span class="novo">        <span class="tp">Produto</span> produto = produtoRepository.findById(id)</span>
 <span class="novo">                .orElseThrow(() -&gt; <span class="kw">new</span> <span class="tp">ResponseStatusException</span>(</span>
 <span class="novo">                        <span class="tp">HttpStatus</span>.<span class="tp">NOT_FOUND</span>, <span class="st">"Produto não encontrado"</span>));</span>
 <span class="novo">        <span class="kw">return</span> <span class="tp">ProdutoMapper</span>.toResponse(produto);</span>
 <span class="novo">    }</span>
 }</code></pre><p class="code-note">Linhas com fundo verde: o que mudou nesta etapa. Substitua o arquivo inteiro.</p></div>
-<p>Três imports novos: <code>HttpStatus</code>, <code>ResponseStatusException</code> e, no Controller, <code>PathVariable</code>. Use <kbd>Alt</kbd>+<kbd>Enter</kbd> no IntelliJ quando um nome ficar vermelho, mas confira se o pacote importado é o mesmo do código acima.</p>
+<p>Dois imports novos no Service: <code>HttpStatus</code> e <code>ResponseStatusException</code>. No Controller, <code>@PathVariable</code> já chega pelo <code>import org.springframework.web.bind.annotation.*;</code>. Use <kbd>Alt</kbd>+<kbd>Enter</kbd> no IntelliJ quando um nome ficar vermelho, mas confira se o pacote importado é o mesmo do código acima.</p>
 <h3>Passo 2 · Controller: buscar</h3>
-<div class="code-block"><div class="code-header"><span class="filename">controller/ProdutoController.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar controller/ProdutoController.java">Copiar</button></div><pre data-stage="3" data-file="controller/ProdutoController.java"><code><span class="kw">package</span> br.com.gestorpro.api.controller;
+<div class="code-block"><div class="code-header"><span class="filename">controller/ProdutoController.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar controller/ProdutoController.java">Copiar</button></div><pre data-stage="3" data-file="controller/ProdutoController.java"><code><span class="kw">package</span> com.gestorpro.api.controller;
 
-<span class="kw">import</span> java.util.<span class="tp">List</span>;
-<span class="kw">import</span> br.com.gestorpro.api.dto.<span class="tp">ProdutoRequestDTO</span>;
-<span class="kw">import</span> br.com.gestorpro.api.dto.<span class="tp">ProdutoResponseDTO</span>;
-<span class="kw">import</span> br.com.gestorpro.api.service.<span class="tp">ProdutoService</span>;
+<span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoRequestDTO</span>;
+<span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoResponseDTO</span>;
+<span class="kw">import</span> com.gestorpro.api.service.<span class="tp">ProdutoService</span>;
 <span class="kw">import</span> lombok.<span class="tp">RequiredArgsConstructor</span>;
 <span class="kw">import</span> org.springframework.http.<span class="tp">HttpStatus</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">GetMapping</span>;
-<span class="novo"><span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">PathVariable</span>;</span>
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">PostMapping</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">RequestBody</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">RequestMapping</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">ResponseStatus</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">RestController</span>;
+<span class="kw">import</span> org.springframework.web.bind.annotation.*;
+
+<span class="kw">import</span> java.util.<span class="tp">List</span>;
 
 <span class="attr">@RestController</span>
 <span class="attr">@RequestMapping</span>(<span class="st">"/produtos"</span>)
 <span class="attr">@RequiredArgsConstructor</span>
 <span class="kw">public</span> <span class="kw">class</span> <span class="tp">ProdutoController</span> {
-    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">ProdutoService</span> service;
+
+    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">ProdutoService</span> produtoService;
 
     <span class="attr">@PostMapping</span>
     <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">CREATED</span>)
     <span class="kw">public</span> <span class="tp">ProdutoResponseDTO</span> cadastrar(<span class="attr">@RequestBody</span> <span class="tp">ProdutoRequestDTO</span> dto) {
-        <span class="kw">return</span> service.cadastrar(dto);
+        <span class="kw">return</span> produtoService.cadastrar(dto);
     }
 
     <span class="attr">@GetMapping</span>
     <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">OK</span>)
     <span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">ProdutoResponseDTO</span>&gt; listar() {
-        <span class="kw">return</span> service.listar();
+        <span class="kw">return</span> produtoService.listar();
     }
 
 <span class="novo">    <span class="attr">@GetMapping</span>(<span class="st">"/{id}"</span>)</span>
 <span class="novo">    <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">OK</span>)</span>
 <span class="novo">    <span class="kw">public</span> <span class="tp">ProdutoResponseDTO</span> buscar(<span class="attr">@PathVariable</span> <span class="tp">Long</span> id) {</span>
-<span class="novo">        <span class="kw">return</span> service.buscar(id);</span>
+<span class="novo">        <span class="kw">return</span> produtoService.buscar(id);</span>
 <span class="novo">    }</span>
 }</code></pre><p class="code-note">Linhas com fundo verde: o que mudou nesta etapa. Substitua o arquivo inteiro.</p></div>
 <p>O método devolve <code>ProdutoResponseDTO</code>, não mais um <code>Optional</code>. Quando chega ao <code>return</code>, o produto <strong>com certeza</strong> existe; se não existisse, o Service já teria lançado o 404.</p>
@@ -522,13 +517,14 @@ docker exec gestorpro-postgres pg_isready -U gestorpro -d gestorpro</code></pre>
 <p>O jeito certo tem três passos: <strong>buscar</strong> o produto que já existe (404 se não houver), <strong>copiar</strong> para ele só os campos do formulário, e <strong>salvar</strong>. O que o formulário não tem, como <code>id</code> e <code>criadoEm</code>, fica como estava.</p>
 <h3>Passo 1 · Mapper: copiar para um produto existente</h3>
 <p>O <code>toEntity</code> já copia os quatro campos, mas para um produto <strong>novo</strong>. Agora precisamos copiar para um produto que já existe. Em vez de escrever as mesmas quatro linhas duas vezes, elas vão para um método <code>atualizar</code>, e o <code>toEntity</code> passa a usá-lo:</p>
-<div class="code-block"><div class="code-header"><span class="filename">mapper/ProdutoMapper.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar mapper/ProdutoMapper.java">Copiar</button></div><pre data-stage="4" data-file="mapper/ProdutoMapper.java"><code><span class="kw">package</span> br.com.gestorpro.api.mapper;
+<div class="code-block"><div class="code-header"><span class="filename">mapper/ProdutoMapper.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar mapper/ProdutoMapper.java">Copiar</button></div><pre data-stage="4" data-file="mapper/ProdutoMapper.java"><code><span class="kw">package</span> com.gestorpro.api.mapper;
 
-<span class="kw">import</span> br.com.gestorpro.api.dto.<span class="tp">ProdutoRequestDTO</span>;
-<span class="kw">import</span> br.com.gestorpro.api.dto.<span class="tp">ProdutoResponseDTO</span>;
-<span class="kw">import</span> br.com.gestorpro.api.model.<span class="tp">Produto</span>;
+<span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoRequestDTO</span>;
+<span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoResponseDTO</span>;
+<span class="kw">import</span> com.gestorpro.api.model.<span class="tp">Produto</span>;
 
 <span class="kw">public</span> <span class="kw">class</span> <span class="tp">ProdutoMapper</span> {
+
     <span class="kw">public</span> <span class="kw">static</span> <span class="tp">Produto</span> toEntity(<span class="tp">ProdutoRequestDTO</span> dto) {
         <span class="tp">Produto</span> produto = <span class="kw">new</span> <span class="tp">Produto</span>();
 <span class="novo">        atualizar(produto, dto);</span>
@@ -556,34 +552,36 @@ docker exec gestorpro-postgres pg_isready -U gestorpro -d gestorpro</code></pre>
 <p><code>atualizar</code> é <code>void</code>: não devolve nada, porque altera o produto que recebeu. Depois dele, o mesmo objeto <code>produto</code> já está com os dados novos.</p>
 <h3>Passo 2 · Service: atualizar, e um método novo</h3>
 <p>O PUT também precisa de “buscar ou responder 404”. Aquele trecho do <code>orElseThrow</code> apareceria duas vezes. Quando um trecho se repete, ele ganha um nome: <code>buscarOuFalhar</code>. É <code>private</code> porque só o próprio Service usa.</p>
-<div class="code-block"><div class="code-header"><span class="filename">service/ProdutoService.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar service/ProdutoService.java">Copiar</button></div><pre data-stage="4" data-file="service/ProdutoService.java"><code><span class="kw">package</span> br.com.gestorpro.api.service;
+<div class="code-block"><div class="code-header"><span class="filename">service/ProdutoService.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar service/ProdutoService.java">Copiar</button></div><pre data-stage="4" data-file="service/ProdutoService.java"><code><span class="kw">package</span> com.gestorpro.api.service;
 
-<span class="kw">import</span> java.time.<span class="tp">LocalDateTime</span>;
-<span class="kw">import</span> java.util.<span class="tp">List</span>;
-<span class="kw">import</span> br.com.gestorpro.api.dto.<span class="tp">ProdutoRequestDTO</span>;
-<span class="kw">import</span> br.com.gestorpro.api.dto.<span class="tp">ProdutoResponseDTO</span>;
-<span class="kw">import</span> br.com.gestorpro.api.mapper.<span class="tp">ProdutoMapper</span>;
-<span class="kw">import</span> br.com.gestorpro.api.model.<span class="tp">Produto</span>;
-<span class="kw">import</span> br.com.gestorpro.api.repository.<span class="tp">ProdutoRepository</span>;
+<span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoRequestDTO</span>;
+<span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoResponseDTO</span>;
+<span class="kw">import</span> com.gestorpro.api.mapper.<span class="tp">ProdutoMapper</span>;
+<span class="kw">import</span> com.gestorpro.api.model.<span class="tp">Produto</span>;
+<span class="kw">import</span> com.gestorpro.api.repository.<span class="tp">ProdutoRepository</span>;
 <span class="kw">import</span> lombok.<span class="tp">RequiredArgsConstructor</span>;
 <span class="kw">import</span> org.springframework.http.<span class="tp">HttpStatus</span>;
 <span class="kw">import</span> org.springframework.stereotype.<span class="tp">Service</span>;
 <span class="kw">import</span> org.springframework.web.server.<span class="tp">ResponseStatusException</span>;
 
+<span class="kw">import</span> java.time.<span class="tp">LocalDateTime</span>;
+<span class="kw">import</span> java.util.<span class="tp">List</span>;
+
 <span class="attr">@Service</span>
 <span class="attr">@RequiredArgsConstructor</span>
 <span class="kw">public</span> <span class="kw">class</span> <span class="tp">ProdutoService</span> {
-    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">ProdutoRepository</span> repository;
+
+    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">ProdutoRepository</span> produtoRepository;
 
     <span class="kw">public</span> <span class="tp">ProdutoResponseDTO</span> cadastrar(<span class="tp">ProdutoRequestDTO</span> dto) {
         <span class="tp">Produto</span> produto = <span class="tp">ProdutoMapper</span>.toEntity(dto);
         produto.setCriadoEm(<span class="tp">LocalDateTime</span>.now());
-        <span class="tp">Produto</span> salvo = repository.save(produto);
+        <span class="tp">Produto</span> salvo = produtoRepository.save(produto);
         <span class="kw">return</span> <span class="tp">ProdutoMapper</span>.toResponse(salvo);
     }
 
     <span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">ProdutoResponseDTO</span>&gt; listar() {
-        <span class="tp">List</span>&lt;<span class="tp">Produto</span>&gt; produtos = repository.findAll();
+        <span class="tp">List</span>&lt;<span class="tp">Produto</span>&gt; produtos = produtoRepository.findAll();
         <span class="kw">return</span> produtos.stream()
                 .map(produto -&gt; <span class="tp">ProdutoMapper</span>.toResponse(produto))
                 .toList();
@@ -597,63 +595,58 @@ docker exec gestorpro-postgres pg_isready -U gestorpro -d gestorpro</code></pre>
 <span class="novo">    <span class="kw">public</span> <span class="tp">ProdutoResponseDTO</span> atualizar(<span class="tp">Long</span> id, <span class="tp">ProdutoRequestDTO</span> dto) {</span>
 <span class="novo">        <span class="tp">Produto</span> produto = buscarOuFalhar(id);</span>
 <span class="novo">        <span class="tp">ProdutoMapper</span>.atualizar(produto, dto);</span>
-<span class="novo">        <span class="tp">Produto</span> salvo = repository.save(produto);</span>
+<span class="novo">        <span class="tp">Produto</span> salvo = produtoRepository.save(produto);</span>
 <span class="novo">        <span class="kw">return</span> <span class="tp">ProdutoMapper</span>.toResponse(salvo);</span>
 <span class="novo">    }</span>
 
 <span class="novo">    <span class="kw">private</span> <span class="tp">Produto</span> buscarOuFalhar(<span class="tp">Long</span> id) {</span>
-<span class="novo">        <span class="kw">return</span> repository.findById(id)</span>
+<span class="novo">        <span class="kw">return</span> produtoRepository.findById(id)</span>
                 .orElseThrow(() -&gt; <span class="kw">new</span> <span class="tp">ResponseStatusException</span>(
                         <span class="tp">HttpStatus</span>.<span class="tp">NOT_FOUND</span>, <span class="st">"Produto não encontrado"</span>));
     }
 }</code></pre><p class="code-note">Linhas com fundo verde: o que mudou nesta etapa. Substitua o arquivo inteiro.</p></div>
 <p>Repare que o <code>buscar</code> também ficou mais curto: agora ele só chama <code>buscarOuFalhar</code> e traduz.</p>
 <h3>Passo 3 · Controller: atualizar</h3>
-<div class="code-block"><div class="code-header"><span class="filename">controller/ProdutoController.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar controller/ProdutoController.java">Copiar</button></div><pre data-stage="4" data-file="controller/ProdutoController.java"><code><span class="kw">package</span> br.com.gestorpro.api.controller;
+<div class="code-block"><div class="code-header"><span class="filename">controller/ProdutoController.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar controller/ProdutoController.java">Copiar</button></div><pre data-stage="4" data-file="controller/ProdutoController.java"><code><span class="kw">package</span> com.gestorpro.api.controller;
 
-<span class="kw">import</span> java.util.<span class="tp">List</span>;
-<span class="kw">import</span> br.com.gestorpro.api.dto.<span class="tp">ProdutoRequestDTO</span>;
-<span class="kw">import</span> br.com.gestorpro.api.dto.<span class="tp">ProdutoResponseDTO</span>;
-<span class="kw">import</span> br.com.gestorpro.api.service.<span class="tp">ProdutoService</span>;
+<span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoRequestDTO</span>;
+<span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoResponseDTO</span>;
+<span class="kw">import</span> com.gestorpro.api.service.<span class="tp">ProdutoService</span>;
 <span class="kw">import</span> lombok.<span class="tp">RequiredArgsConstructor</span>;
 <span class="kw">import</span> org.springframework.http.<span class="tp">HttpStatus</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">GetMapping</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">PathVariable</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">PostMapping</span>;
-<span class="novo"><span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">PutMapping</span>;</span>
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">RequestBody</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">RequestMapping</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">ResponseStatus</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">RestController</span>;
+<span class="kw">import</span> org.springframework.web.bind.annotation.*;
+
+<span class="kw">import</span> java.util.<span class="tp">List</span>;
 
 <span class="attr">@RestController</span>
 <span class="attr">@RequestMapping</span>(<span class="st">"/produtos"</span>)
 <span class="attr">@RequiredArgsConstructor</span>
 <span class="kw">public</span> <span class="kw">class</span> <span class="tp">ProdutoController</span> {
-    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">ProdutoService</span> service;
+
+    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">ProdutoService</span> produtoService;
 
     <span class="attr">@PostMapping</span>
     <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">CREATED</span>)
     <span class="kw">public</span> <span class="tp">ProdutoResponseDTO</span> cadastrar(<span class="attr">@RequestBody</span> <span class="tp">ProdutoRequestDTO</span> dto) {
-        <span class="kw">return</span> service.cadastrar(dto);
+        <span class="kw">return</span> produtoService.cadastrar(dto);
     }
 
     <span class="attr">@GetMapping</span>
     <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">OK</span>)
     <span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">ProdutoResponseDTO</span>&gt; listar() {
-        <span class="kw">return</span> service.listar();
+        <span class="kw">return</span> produtoService.listar();
     }
 
     <span class="attr">@GetMapping</span>(<span class="st">"/{id}"</span>)
     <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">OK</span>)
     <span class="kw">public</span> <span class="tp">ProdutoResponseDTO</span> buscar(<span class="attr">@PathVariable</span> <span class="tp">Long</span> id) {
-        <span class="kw">return</span> service.buscar(id);
+        <span class="kw">return</span> produtoService.buscar(id);
     }
 
 <span class="novo">    <span class="attr">@PutMapping</span>(<span class="st">"/{id}"</span>)</span>
 <span class="novo">    <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">OK</span>)</span>
 <span class="novo">    <span class="kw">public</span> <span class="tp">ProdutoResponseDTO</span> atualizar(<span class="attr">@PathVariable</span> <span class="tp">Long</span> id, <span class="attr">@RequestBody</span> <span class="tp">ProdutoRequestDTO</span> dto) {</span>
-<span class="novo">        <span class="kw">return</span> service.atualizar(id, dto);</span>
+<span class="novo">        <span class="kw">return</span> produtoService.atualizar(id, dto);</span>
 <span class="novo">    }</span>
 }</code></pre><p class="code-note">Linhas com fundo verde: o que mudou nesta etapa. Substitua o arquivo inteiro.</p></div>
 <h3>Passo 4 · Testar</h3>
@@ -671,36 +664,38 @@ docker exec gestorpro-postgres pg_isready -U gestorpro -d gestorpro</code></pre>
 
 <section class="step-section" id="excluir"><div class="step-header"><div class="step-number sn-green">09</div><div><h2 class="step-title">D · Excluir com 404</h2><p class="step-sub">Conferir o alvo antes de apagar.</p></div></div><div class="card">
 <div class="endpoint"><span>DELETE</span><code>http://localhost:8080/produtos/{id}</code><b>204 No Content · 404 Not Found</b></div>
-<p>No Cap 12, excluir um ID que não existia respondia <code>204</code>, como se tivesse dado certo. Agora vamos perguntar antes: <code>repository.existsById(id)</code> responde <code>true</code> ou <code>false</code>, sem carregar o produto inteiro. O <code>!</code> na frente significa “não”: <code>!repository.existsById(id)</code> se lê “se <strong>não</strong> existe”.</p>
+<p>No Cap 12, excluir um ID que não existia respondia <code>204</code>, como se tivesse dado certo. Agora vamos perguntar antes: <code>produtoRepository.existsById(id)</code> responde <code>true</code> ou <code>false</code>, sem carregar o produto inteiro. O <code>!</code> na frente significa “não”: <code>!produtoRepository.existsById(id)</code> se lê “se <strong>não</strong> existe”.</p>
 <h3>Passo 1 · Service: excluir</h3>
-<div class="code-block"><div class="code-header"><span class="filename">service/ProdutoService.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar service/ProdutoService.java">Copiar</button></div><pre data-stage="5" data-file="service/ProdutoService.java"><code><span class="kw">package</span> br.com.gestorpro.api.service;
+<div class="code-block"><div class="code-header"><span class="filename">service/ProdutoService.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar service/ProdutoService.java">Copiar</button></div><pre data-stage="5" data-file="service/ProdutoService.java"><code><span class="kw">package</span> com.gestorpro.api.service;
 
-<span class="kw">import</span> java.time.<span class="tp">LocalDateTime</span>;
-<span class="kw">import</span> java.util.<span class="tp">List</span>;
-<span class="kw">import</span> br.com.gestorpro.api.dto.<span class="tp">ProdutoRequestDTO</span>;
-<span class="kw">import</span> br.com.gestorpro.api.dto.<span class="tp">ProdutoResponseDTO</span>;
-<span class="kw">import</span> br.com.gestorpro.api.mapper.<span class="tp">ProdutoMapper</span>;
-<span class="kw">import</span> br.com.gestorpro.api.model.<span class="tp">Produto</span>;
-<span class="kw">import</span> br.com.gestorpro.api.repository.<span class="tp">ProdutoRepository</span>;
+<span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoRequestDTO</span>;
+<span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoResponseDTO</span>;
+<span class="kw">import</span> com.gestorpro.api.mapper.<span class="tp">ProdutoMapper</span>;
+<span class="kw">import</span> com.gestorpro.api.model.<span class="tp">Produto</span>;
+<span class="kw">import</span> com.gestorpro.api.repository.<span class="tp">ProdutoRepository</span>;
 <span class="kw">import</span> lombok.<span class="tp">RequiredArgsConstructor</span>;
 <span class="kw">import</span> org.springframework.http.<span class="tp">HttpStatus</span>;
 <span class="kw">import</span> org.springframework.stereotype.<span class="tp">Service</span>;
 <span class="kw">import</span> org.springframework.web.server.<span class="tp">ResponseStatusException</span>;
 
+<span class="kw">import</span> java.time.<span class="tp">LocalDateTime</span>;
+<span class="kw">import</span> java.util.<span class="tp">List</span>;
+
 <span class="attr">@Service</span>
 <span class="attr">@RequiredArgsConstructor</span>
 <span class="kw">public</span> <span class="kw">class</span> <span class="tp">ProdutoService</span> {
-    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">ProdutoRepository</span> repository;
+
+    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">ProdutoRepository</span> produtoRepository;
 
     <span class="kw">public</span> <span class="tp">ProdutoResponseDTO</span> cadastrar(<span class="tp">ProdutoRequestDTO</span> dto) {
         <span class="tp">Produto</span> produto = <span class="tp">ProdutoMapper</span>.toEntity(dto);
         produto.setCriadoEm(<span class="tp">LocalDateTime</span>.now());
-        <span class="tp">Produto</span> salvo = repository.save(produto);
+        <span class="tp">Produto</span> salvo = produtoRepository.save(produto);
         <span class="kw">return</span> <span class="tp">ProdutoMapper</span>.toResponse(salvo);
     }
 
     <span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">ProdutoResponseDTO</span>&gt; listar() {
-        <span class="tp">List</span>&lt;<span class="tp">Produto</span>&gt; produtos = repository.findAll();
+        <span class="tp">List</span>&lt;<span class="tp">Produto</span>&gt; produtos = produtoRepository.findAll();
         <span class="kw">return</span> produtos.stream()
                 .map(produto -&gt; <span class="tp">ProdutoMapper</span>.toResponse(produto))
                 .toList();
@@ -714,77 +709,71 @@ docker exec gestorpro-postgres pg_isready -U gestorpro -d gestorpro</code></pre>
     <span class="kw">public</span> <span class="tp">ProdutoResponseDTO</span> atualizar(<span class="tp">Long</span> id, <span class="tp">ProdutoRequestDTO</span> dto) {
         <span class="tp">Produto</span> produto = buscarOuFalhar(id);
         <span class="tp">ProdutoMapper</span>.atualizar(produto, dto);
-        <span class="tp">Produto</span> salvo = repository.save(produto);
+        <span class="tp">Produto</span> salvo = produtoRepository.save(produto);
         <span class="kw">return</span> <span class="tp">ProdutoMapper</span>.toResponse(salvo);
     }
 
 <span class="novo">    <span class="kw">public</span> <span class="kw">void</span> excluir(<span class="tp">Long</span> id) {</span>
-<span class="novo">        <span class="kw">if</span> (!repository.existsById(id)) {</span>
+<span class="novo">        <span class="kw">if</span> (!produtoRepository.existsById(id)) {</span>
 <span class="novo">            <span class="kw">throw</span> <span class="kw">new</span> <span class="tp">ResponseStatusException</span>(<span class="tp">HttpStatus</span>.<span class="tp">NOT_FOUND</span>, <span class="st">"Produto não encontrado"</span>);</span>
 <span class="novo">        }</span>
-<span class="novo">        repository.deleteById(id);</span>
+<span class="novo">        produtoRepository.deleteById(id);</span>
 <span class="novo">    }</span>
 
     <span class="kw">private</span> <span class="tp">Produto</span> buscarOuFalhar(<span class="tp">Long</span> id) {
-        <span class="kw">return</span> repository.findById(id)
+        <span class="kw">return</span> produtoRepository.findById(id)
                 .orElseThrow(() -&gt; <span class="kw">new</span> <span class="tp">ResponseStatusException</span>(
                         <span class="tp">HttpStatus</span>.<span class="tp">NOT_FOUND</span>, <span class="st">"Produto não encontrado"</span>));
     }
 }</code></pre><p class="code-note">Linhas com fundo verde: o que mudou nesta etapa. Substitua o arquivo inteiro.</p></div>
 <p>Aqui usamos <code>throw</code> direto, dentro de um <code>if</code>, sem <code>Optional</code>: não há caixa para abrir, só uma pergunta de sim ou não.</p>
 <h3>Passo 2 · Controller: excluir</h3>
-<div class="code-block"><div class="code-header"><span class="filename">controller/ProdutoController.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar controller/ProdutoController.java">Copiar</button></div><pre data-stage="5" data-file="controller/ProdutoController.java"><code><span class="kw">package</span> br.com.gestorpro.api.controller;
+<div class="code-block"><div class="code-header"><span class="filename">controller/ProdutoController.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar controller/ProdutoController.java">Copiar</button></div><pre data-stage="5" data-file="controller/ProdutoController.java"><code><span class="kw">package</span> com.gestorpro.api.controller;
 
-<span class="kw">import</span> java.util.<span class="tp">List</span>;
-<span class="kw">import</span> br.com.gestorpro.api.dto.<span class="tp">ProdutoRequestDTO</span>;
-<span class="kw">import</span> br.com.gestorpro.api.dto.<span class="tp">ProdutoResponseDTO</span>;
-<span class="kw">import</span> br.com.gestorpro.api.service.<span class="tp">ProdutoService</span>;
+<span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoRequestDTO</span>;
+<span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoResponseDTO</span>;
+<span class="kw">import</span> com.gestorpro.api.service.<span class="tp">ProdutoService</span>;
 <span class="kw">import</span> lombok.<span class="tp">RequiredArgsConstructor</span>;
 <span class="kw">import</span> org.springframework.http.<span class="tp">HttpStatus</span>;
-<span class="novo"><span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">DeleteMapping</span>;</span>
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">GetMapping</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">PathVariable</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">PostMapping</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">PutMapping</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">RequestBody</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">RequestMapping</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">ResponseStatus</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">RestController</span>;
+<span class="kw">import</span> org.springframework.web.bind.annotation.*;
+
+<span class="kw">import</span> java.util.<span class="tp">List</span>;
 
 <span class="attr">@RestController</span>
 <span class="attr">@RequestMapping</span>(<span class="st">"/produtos"</span>)
 <span class="attr">@RequiredArgsConstructor</span>
 <span class="kw">public</span> <span class="kw">class</span> <span class="tp">ProdutoController</span> {
-    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">ProdutoService</span> service;
+
+    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">ProdutoService</span> produtoService;
 
     <span class="attr">@PostMapping</span>
     <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">CREATED</span>)
     <span class="kw">public</span> <span class="tp">ProdutoResponseDTO</span> cadastrar(<span class="attr">@RequestBody</span> <span class="tp">ProdutoRequestDTO</span> dto) {
-        <span class="kw">return</span> service.cadastrar(dto);
+        <span class="kw">return</span> produtoService.cadastrar(dto);
     }
 
     <span class="attr">@GetMapping</span>
     <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">OK</span>)
     <span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">ProdutoResponseDTO</span>&gt; listar() {
-        <span class="kw">return</span> service.listar();
+        <span class="kw">return</span> produtoService.listar();
     }
 
     <span class="attr">@GetMapping</span>(<span class="st">"/{id}"</span>)
     <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">OK</span>)
     <span class="kw">public</span> <span class="tp">ProdutoResponseDTO</span> buscar(<span class="attr">@PathVariable</span> <span class="tp">Long</span> id) {
-        <span class="kw">return</span> service.buscar(id);
+        <span class="kw">return</span> produtoService.buscar(id);
     }
 
     <span class="attr">@PutMapping</span>(<span class="st">"/{id}"</span>)
     <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">OK</span>)
     <span class="kw">public</span> <span class="tp">ProdutoResponseDTO</span> atualizar(<span class="attr">@PathVariable</span> <span class="tp">Long</span> id, <span class="attr">@RequestBody</span> <span class="tp">ProdutoRequestDTO</span> dto) {
-        <span class="kw">return</span> service.atualizar(id, dto);
+        <span class="kw">return</span> produtoService.atualizar(id, dto);
     }
 
 <span class="novo">    <span class="attr">@DeleteMapping</span>(<span class="st">"/{id}"</span>)</span>
 <span class="novo">    <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">NO_CONTENT</span>)</span>
 <span class="novo">    <span class="kw">public</span> <span class="kw">void</span> excluir(<span class="attr">@PathVariable</span> <span class="tp">Long</span> id) {</span>
-<span class="novo">        service.excluir(id);</span>
+<span class="novo">        produtoService.excluir(id);</span>
 <span class="novo">    }</span>
 }</code></pre><p class="code-note">Linhas com fundo verde: o que mudou nesta etapa. Substitua o arquivo inteiro.</p></div>
 <h3>Passo 3 · Testar duas vezes</h3>
@@ -819,14 +808,14 @@ docker exec gestorpro-postgres pg_isready -U gestorpro -d gestorpro</code></pre>
 <div class="table-scroll"><table><caption>As anotações do Produto</caption><thead><tr><th>Anotação</th><th>Recusa quando…</th><th>Exemplo barrado</th></tr></thead><tbody><tr><td><code>@NotBlank</code></td><td>o texto é nulo, vazio ou só tem espaços</td><td><code>"nome": "   "</code></td></tr><tr><td><code>@NotNull</code></td><td>o valor não veio</td><td>JSON sem <code>"preco"</code></td></tr><tr><td><code>@Positive</code></td><td>o número é zero ou negativo</td><td><code>"preco": 0</code></td></tr><tr><td><code>@PositiveOrZero</code></td><td>o número é negativo (zero pode)</td><td><code>"estoque": -1</code></td></tr></tbody></table></div>
 <div class="table-scroll"><table><caption>@NotNull × @NotBlank, para textos</caption><thead><tr><th>Valor recebido</th><th>@NotNull</th><th>@NotBlank</th></tr></thead><tbody><tr><td><code>null</code> (campo ausente)</td><td>❌ recusa</td><td>❌ recusa</td></tr><tr><td><code>""</code></td><td>✅ aceita</td><td>❌ recusa</td></tr><tr><td><code>"   "</code></td><td>✅ aceita</td><td>❌ recusa</td></tr></tbody></table></div>
 <p>Para números, usamos <code>@NotNull</code>: número não tem “espaço em branco”. Para textos obrigatórios, <code>@NotBlank</code>. Agora as anotações vão para o DTO de entrada, cada uma em cima do componente que protege:</p>
-<div class="code-block"><div class="code-header"><span class="filename">dto/ProdutoRequestDTO.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar dto/ProdutoRequestDTO.java">Copiar</button></div><pre data-stage="6" data-file="dto/ProdutoRequestDTO.java"><code><span class="kw">package</span> br.com.gestorpro.api.dto;
-
-<span class="kw">import</span> java.math.<span class="tp">BigDecimal</span>;
+<div class="code-block"><div class="code-header"><span class="filename">dto/ProdutoRequestDTO.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar dto/ProdutoRequestDTO.java">Copiar</button></div><pre data-stage="6" data-file="dto/ProdutoRequestDTO.java"><code><span class="kw">package</span> com.gestorpro.api.dto;
 
 <span class="novo"><span class="kw">import</span> jakarta.validation.constraints.<span class="tp">NotBlank</span>;</span>
 <span class="novo"><span class="kw">import</span> jakarta.validation.constraints.<span class="tp">NotNull</span>;</span>
 <span class="novo"><span class="kw">import</span> jakarta.validation.constraints.<span class="tp">Positive</span>;</span>
 <span class="novo"><span class="kw">import</span> jakarta.validation.constraints.<span class="tp">PositiveOrZero</span>;</span>
+
+<span class="kw">import</span> java.math.<span class="tp">BigDecimal</span>;
 
 <span class="kw">public</span> <span class="kw">record</span> <span class="tp">ProdutoRequestDTO</span>(
 <span class="novo">        <span class="attr">@NotBlank</span>(message = <span class="st">"O nome é obrigatório"</span>)</span>
@@ -846,59 +835,53 @@ docker exec gestorpro-postgres pg_isready -U gestorpro -d gestorpro</code></pre>
 <p>O <code>message = "..."</code> é o texto que explica a recusa. Escrevemos em português, explicitamente, para não depender do idioma configurado no computador.</p>
 <h3>Passo 3 · Mandar o segurança trabalhar: <code>@Valid</code></h3>
 <p>As anotações sozinhas são só uma prancheta na gaveta. Quem manda o Spring <strong>conferir</strong> é a anotação <code>@Valid</code>, colocada junto do <code>@RequestBody</code>. Ela vai no POST e no PUT, os dois endpoints que recebem um formulário:</p>
-<div class="code-block"><div class="code-header"><span class="filename">controller/ProdutoController.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar controller/ProdutoController.java">Copiar</button></div><pre data-stage="6" data-file="controller/ProdutoController.java"><code><span class="kw">package</span> br.com.gestorpro.api.controller;
+<div class="code-block"><div class="code-header"><span class="filename">controller/ProdutoController.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar controller/ProdutoController.java">Copiar</button></div><pre data-stage="6" data-file="controller/ProdutoController.java"><code><span class="kw">package</span> com.gestorpro.api.controller;
 
-<span class="kw">import</span> java.util.<span class="tp">List</span>;
-<span class="kw">import</span> br.com.gestorpro.api.dto.<span class="tp">ProdutoRequestDTO</span>;
-<span class="kw">import</span> br.com.gestorpro.api.dto.<span class="tp">ProdutoResponseDTO</span>;
-<span class="kw">import</span> br.com.gestorpro.api.service.<span class="tp">ProdutoService</span>;
+<span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoRequestDTO</span>;
+<span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoResponseDTO</span>;
+<span class="kw">import</span> com.gestorpro.api.service.<span class="tp">ProdutoService</span>;
 <span class="novo"><span class="kw">import</span> jakarta.validation.<span class="tp">Valid</span>;</span>
 <span class="kw">import</span> lombok.<span class="tp">RequiredArgsConstructor</span>;
 <span class="kw">import</span> org.springframework.http.<span class="tp">HttpStatus</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">DeleteMapping</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">GetMapping</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">PathVariable</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">PostMapping</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">PutMapping</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">RequestBody</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">RequestMapping</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">ResponseStatus</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">RestController</span>;
+<span class="kw">import</span> org.springframework.web.bind.annotation.*;
+
+<span class="kw">import</span> java.util.<span class="tp">List</span>;
 
 <span class="attr">@RestController</span>
 <span class="attr">@RequestMapping</span>(<span class="st">"/produtos"</span>)
 <span class="attr">@RequiredArgsConstructor</span>
 <span class="kw">public</span> <span class="kw">class</span> <span class="tp">ProdutoController</span> {
-    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">ProdutoService</span> service;
+
+    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">ProdutoService</span> produtoService;
 
     <span class="attr">@PostMapping</span>
     <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">CREATED</span>)
 <span class="novo">    <span class="kw">public</span> <span class="tp">ProdutoResponseDTO</span> cadastrar(<span class="attr">@RequestBody</span> <span class="attr">@Valid</span> <span class="tp">ProdutoRequestDTO</span> dto) {</span>
-        <span class="kw">return</span> service.cadastrar(dto);
+        <span class="kw">return</span> produtoService.cadastrar(dto);
     }
 
     <span class="attr">@GetMapping</span>
     <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">OK</span>)
     <span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">ProdutoResponseDTO</span>&gt; listar() {
-        <span class="kw">return</span> service.listar();
+        <span class="kw">return</span> produtoService.listar();
     }
 
     <span class="attr">@GetMapping</span>(<span class="st">"/{id}"</span>)
     <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">OK</span>)
     <span class="kw">public</span> <span class="tp">ProdutoResponseDTO</span> buscar(<span class="attr">@PathVariable</span> <span class="tp">Long</span> id) {
-        <span class="kw">return</span> service.buscar(id);
+        <span class="kw">return</span> produtoService.buscar(id);
     }
 
     <span class="attr">@PutMapping</span>(<span class="st">"/{id}"</span>)
     <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">OK</span>)
 <span class="novo">    <span class="kw">public</span> <span class="tp">ProdutoResponseDTO</span> atualizar(<span class="attr">@PathVariable</span> <span class="tp">Long</span> id, <span class="attr">@RequestBody</span> <span class="attr">@Valid</span> <span class="tp">ProdutoRequestDTO</span> dto) {</span>
-        <span class="kw">return</span> service.atualizar(id, dto);
+        <span class="kw">return</span> produtoService.atualizar(id, dto);
     }
 
     <span class="attr">@DeleteMapping</span>(<span class="st">"/{id}"</span>)
     <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">NO_CONTENT</span>)
     <span class="kw">public</span> <span class="kw">void</span> excluir(<span class="attr">@PathVariable</span> <span class="tp">Long</span> id) {
-        service.excluir(id);
+        produtoService.excluir(id);
     }
 }</code></pre><p class="code-note">Linhas com fundo verde: o que mudou nesta etapa. Substitua o arquivo inteiro.</p></div>
 <div class="warning"><strong>Sem <code>@Valid</code>, nada acontece.</strong> As regras continuam escritas no DTO e ninguém confere. O código compila, a API sobe e o lixo entra, sem erro nenhum. É o bug mais comum deste capítulo.</div>
@@ -933,16 +916,17 @@ docker exec gestorpro-postgres pg_isready -U gestorpro -d gestorpro</code></pre>
 <h3>Uma recepção para todos os Controllers</h3>
 <ul><li><code>@RestControllerAdvice</code> marca uma classe que atende <strong>todos</strong> os Controllers quando algo dá errado. Uma classe só, e Produto, Fornecedor e Cliente passam a usá-la.</li><li><code>@ExceptionHandler(MethodArgumentNotValidException.class)</code> diz: “quando essa exceção acontecer, chame este método”.</li><li><code>@ResponseStatus(HttpStatus.BAD_REQUEST)</code>: a resposta continua sendo 400, como no <code>@ResponseStatus</code> dos Controllers.</li><li>O retorno é um <code>Map&lt;String, String&gt;</code>: um dicionário de pares chave → valor, como um objeto do JavaScript. A chave é o nome do campo; o valor, a mensagem. O Spring o transforma no JSON acima.</li></ul>
 <p>Crie o pacote <code>exception</code> e a classe <code>TratadorDeErros</code>:</p>
-<div class="code-block"><div class="code-header"><span class="filename">exception/TratadorDeErros.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar exception/TratadorDeErros.java">Copiar</button></div><pre data-stage="7" data-file="exception/TratadorDeErros.java"><code><span class="kw">package</span> br.com.gestorpro.api.exception;
+<div class="code-block"><div class="code-header"><span class="filename">exception/TratadorDeErros.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar exception/TratadorDeErros.java">Copiar</button></div><pre data-stage="7" data-file="exception/TratadorDeErros.java"><code><span class="kw">package</span> com.gestorpro.api.exception;
 
-<span class="kw">import</span> java.util.<span class="tp">HashMap</span>;
-<span class="kw">import</span> java.util.<span class="tp">Map</span>;
 <span class="kw">import</span> org.springframework.http.<span class="tp">HttpStatus</span>;
 <span class="kw">import</span> org.springframework.validation.<span class="tp">FieldError</span>;
 <span class="kw">import</span> org.springframework.web.bind.<span class="tp">MethodArgumentNotValidException</span>;
 <span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">ExceptionHandler</span>;
 <span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">ResponseStatus</span>;
 <span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">RestControllerAdvice</span>;
+
+<span class="kw">import</span> java.util.<span class="tp">HashMap</span>;
+<span class="kw">import</span> java.util.<span class="tp">Map</span>;
 
 <span class="attr">@RestControllerAdvice</span>
 <span class="kw">public</span> <span class="kw">class</span> <span class="tp">TratadorDeErros</span> {
@@ -1005,46 +989,42 @@ docker exec gestorpro-postgres pg_isready -U gestorpro -d gestorpro</code></pre>
 <div class="code-block"><div class="code-header"><span class="filename">Console do IntelliJ · trecho real</span><span class="lang-badge">Texto</span><button type="button" class="copy-code" aria-label="Copiar Console do IntelliJ · trecho real">Copiar</button></div><pre><code>WARN ... GenerationTarget encountered exception accepting command : Error executing DDL "alter table if exists produtos add column fornecedor_id bigint not null" via JDBC [ERROR: column "fornecedor_id" of relation "produtos" contains null values]</code></pre></div>
 <p>O Hibernate tentou criar a coluna obrigatória, o banco recusou por causa dos produtos antigos, e a API seguiu sem a coluna. Conserto: pare a API, rode o <code>DELETE FROM produtos;</code> e inicie de novo. Na nova tentativa, a coluna é criada.</p></div></details>
 <h3>Passo 1 · Model: o produto aponta para um Fornecedor</h3>
-<div class="code-block"><div class="code-header"><span class="filename">model/Produto.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar model/Produto.java">Copiar</button></div><pre data-stage="8" data-file="model/Produto.java"><code><span class="kw">package</span> br.com.gestorpro.api.model;
+<div class="code-block"><div class="code-header"><span class="filename">model/Produto.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar model/Produto.java">Copiar</button></div><pre data-stage="8" data-file="model/Produto.java"><code><span class="kw">package</span> com.gestorpro.api.model;
+
+<span class="kw">import</span> jakarta.persistence.*;
+<span class="kw">import</span> lombok.<span class="tp">AllArgsConstructor</span>;
+<span class="kw">import</span> lombok.<span class="tp">Getter</span>;
+<span class="kw">import</span> lombok.<span class="tp">NoArgsConstructor</span>;
+<span class="kw">import</span> lombok.<span class="tp">Setter</span>;
 
 <span class="kw">import</span> java.math.<span class="tp">BigDecimal</span>;
 <span class="kw">import</span> java.time.<span class="tp">LocalDateTime</span>;
 
-<span class="kw">import</span> lombok.<span class="tp">Getter</span>;
-<span class="kw">import</span> lombok.<span class="tp">Setter</span>;
-<span class="kw">import</span> lombok.<span class="tp">NoArgsConstructor</span>;
-
-<span class="kw">import</span> jakarta.persistence.<span class="tp">Column</span>;
-<span class="kw">import</span> jakarta.persistence.<span class="tp">Entity</span>;
-<span class="kw">import</span> jakarta.persistence.<span class="tp">GeneratedValue</span>;
-<span class="kw">import</span> jakarta.persistence.<span class="tp">GenerationType</span>;
-<span class="kw">import</span> jakarta.persistence.<span class="tp">Id</span>;
-<span class="novo"><span class="kw">import</span> jakarta.persistence.<span class="tp">JoinColumn</span>;</span>
-<span class="novo"><span class="kw">import</span> jakarta.persistence.<span class="tp">ManyToOne</span>;</span>
-<span class="kw">import</span> jakarta.persistence.<span class="tp">Table</span>;
-
-<span class="attr">@Getter</span>
 <span class="attr">@Setter</span>
+<span class="attr">@Getter</span>
 <span class="attr">@NoArgsConstructor</span>
-<span class="attr">@Entity</span>
+<span class="attr">@AllArgsConstructor</span>
 <span class="attr">@Table</span>(name = <span class="st">"produtos"</span>)
+<span class="attr">@Entity</span>
 <span class="kw">public</span> <span class="kw">class</span> <span class="tp">Produto</span> {
+
     <span class="attr">@Id</span>
     <span class="attr">@GeneratedValue</span>(strategy = <span class="tp">GenerationType</span>.<span class="tp">IDENTITY</span>)
     <span class="kw">private</span> <span class="tp">Long</span> id;
 
-    <span class="attr">@Column</span>(nullable = <span class="kw">false</span>)
+    <span class="attr">@Column</span>(name = <span class="st">"nome"</span>, nullable = <span class="kw">false</span>)
     <span class="kw">private</span> <span class="tp">String</span> nome;
 
-    <span class="attr">@Column</span>(nullable = <span class="kw">false</span>, precision = <span class="num">10</span>, scale = <span class="num">2</span>)
+    <span class="attr">@Column</span>(name = <span class="st">"preco"</span>, nullable = <span class="kw">false</span>, precision = <span class="num">10</span>, scale = <span class="num">2</span>)
     <span class="kw">private</span> <span class="tp">BigDecimal</span> preco;
 
-    <span class="attr">@Column</span>(nullable = <span class="kw">false</span>)
+    <span class="attr">@Column</span>(name = <span class="st">"estoque"</span>, nullable = <span class="kw">false</span>)
     <span class="kw">private</span> <span class="tp">Integer</span> estoque;
 
+    <span class="attr">@Column</span>(name = <span class="st">"categoria"</span>)
     <span class="kw">private</span> <span class="tp">String</span> categoria;
 
-    <span class="attr">@Column</span>(nullable = <span class="kw">false</span>)
+    <span class="attr">@Column</span>(name = <span class="st">"criado_em"</span>, nullable = <span class="kw">false</span>)
     <span class="kw">private</span> <span class="tp">LocalDateTime</span> criadoEm;
 
 <span class="novo">    <span class="attr">@ManyToOne</span></span>
@@ -1053,14 +1033,14 @@ docker exec gestorpro-postgres pg_isready -U gestorpro -d gestorpro</code></pre>
 }</code></pre><p class="code-note">Linhas com fundo verde: o que mudou nesta etapa. Substitua o arquivo inteiro.</p></div>
 <ul><li>O campo é do tipo <strong><code>Fornecedor</code></strong>, o objeto, e não um <code>Long</code>. Em Java, ligamos objetos: <code>produto.getFornecedor().getNome()</code>. O Hibernate transforma esse objeto no número da coluna <code>fornecedor_id</code> ao gravar, e de volta em objeto ao ler.</li><li><code>@ManyToOne</code>: muitos produtos para um fornecedor.</li><li><code>@JoinColumn(name = "fornecedor_id", nullable = false)</code>: o nome da coluna da chave estrangeira, e ela é obrigatória.</li></ul>
 <h3>Passo 2 · DTO de entrada: só o número</h3>
-<div class="code-block"><div class="code-header"><span class="filename">dto/ProdutoRequestDTO.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar dto/ProdutoRequestDTO.java">Copiar</button></div><pre data-stage="8" data-file="dto/ProdutoRequestDTO.java"><code><span class="kw">package</span> br.com.gestorpro.api.dto;
-
-<span class="kw">import</span> java.math.<span class="tp">BigDecimal</span>;
+<div class="code-block"><div class="code-header"><span class="filename">dto/ProdutoRequestDTO.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar dto/ProdutoRequestDTO.java">Copiar</button></div><pre data-stage="8" data-file="dto/ProdutoRequestDTO.java"><code><span class="kw">package</span> com.gestorpro.api.dto;
 
 <span class="kw">import</span> jakarta.validation.constraints.<span class="tp">NotBlank</span>;
 <span class="kw">import</span> jakarta.validation.constraints.<span class="tp">NotNull</span>;
 <span class="kw">import</span> jakarta.validation.constraints.<span class="tp">Positive</span>;
 <span class="kw">import</span> jakarta.validation.constraints.<span class="tp">PositiveOrZero</span>;
+
+<span class="kw">import</span> java.math.<span class="tp">BigDecimal</span>;
 
 <span class="kw">public</span> <span class="kw">record</span> <span class="tp">ProdutoRequestDTO</span>(
         <span class="attr">@NotBlank</span>(message = <span class="st">"O nome é obrigatório"</span>)
@@ -1082,7 +1062,7 @@ docker exec gestorpro-postgres pg_isready -U gestorpro -d gestorpro</code></pre>
 }</code></pre><p class="code-note">Linhas com fundo verde: o que mudou nesta etapa. Substitua o arquivo inteiro.</p></div>
 <p>Por que só <code>fornecedorId</code>, e não o fornecedor inteiro no JSON? Porque quem cadastra um produto <strong>escolhe</strong> um fornecedor que já existe. Ele não deve poder criar nem alterar um fornecedor de carona no cadastro de produto. É a mesma lógica do formulário da recepção: só os campos que fazem sentido para esta operação. A regra <code>@NotNull</code> vai para a mesma prancheta da seção 10.</p>
 <h3>Passo 3 · DTO de saída e Mapper: o nome, sem a ficha inteira</h3>
-<div class="code-block"><div class="code-header"><span class="filename">dto/ProdutoResponseDTO.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar dto/ProdutoResponseDTO.java">Copiar</button></div><pre data-stage="8" data-file="dto/ProdutoResponseDTO.java"><code><span class="kw">package</span> br.com.gestorpro.api.dto;
+<div class="code-block"><div class="code-header"><span class="filename">dto/ProdutoResponseDTO.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar dto/ProdutoResponseDTO.java">Copiar</button></div><pre data-stage="8" data-file="dto/ProdutoResponseDTO.java"><code><span class="kw">package</span> com.gestorpro.api.dto;
 
 <span class="kw">import</span> java.math.<span class="tp">BigDecimal</span>;
 <span class="kw">import</span> java.time.<span class="tp">LocalDateTime</span>;
@@ -1098,13 +1078,14 @@ docker exec gestorpro-postgres pg_isready -U gestorpro -d gestorpro</code></pre>
 <span class="novo">        <span class="tp">String</span> fornecedorNome</span>
 ) {
 }</code></pre><p class="code-note">Linhas com fundo verde: o que mudou nesta etapa. Substitua o arquivo inteiro.</p></div>
-<div class="code-block"><div class="code-header"><span class="filename">mapper/ProdutoMapper.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar mapper/ProdutoMapper.java">Copiar</button></div><pre data-stage="8" data-file="mapper/ProdutoMapper.java"><code><span class="kw">package</span> br.com.gestorpro.api.mapper;
+<div class="code-block"><div class="code-header"><span class="filename">mapper/ProdutoMapper.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar mapper/ProdutoMapper.java">Copiar</button></div><pre data-stage="8" data-file="mapper/ProdutoMapper.java"><code><span class="kw">package</span> com.gestorpro.api.mapper;
 
-<span class="kw">import</span> br.com.gestorpro.api.dto.<span class="tp">ProdutoRequestDTO</span>;
-<span class="kw">import</span> br.com.gestorpro.api.dto.<span class="tp">ProdutoResponseDTO</span>;
-<span class="kw">import</span> br.com.gestorpro.api.model.<span class="tp">Produto</span>;
+<span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoRequestDTO</span>;
+<span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoResponseDTO</span>;
+<span class="kw">import</span> com.gestorpro.api.model.<span class="tp">Produto</span>;
 
 <span class="kw">public</span> <span class="kw">class</span> <span class="tp">ProdutoMapper</span> {
+
     <span class="kw">public</span> <span class="kw">static</span> <span class="tp">Produto</span> toEntity(<span class="tp">ProdutoRequestDTO</span> dto) {
         <span class="tp">Produto</span> produto = <span class="kw">new</span> <span class="tp">Produto</span>();
         atualizar(produto, dto);
@@ -1135,38 +1116,40 @@ docker exec gestorpro-postgres pg_isready -U gestorpro -d gestorpro</code></pre>
 <p>Leia <code>produto.getFornecedor().getNome()</code> da esquerda para a direita: do produto, pegue o fornecedor; do fornecedor, pegue o nome. Repare também no que o Mapper <strong>não</strong> faz: ele não busca o fornecedor no banco. Mapper só traduz. Quem consulta o banco é o Service.</p>
 <h3>Passo 4 · Service: dois repositories</h3>
 <p>Para ligar o produto, o Service precisa perguntar ao <code>FornecedorRepository</code> se o fornecedor existe. Ele ganha uma segunda dependência, com o mesmo padrão <code>private final</code> do Cap 12, e um método gêmeo do <code>buscarOuFalhar</code>:</p>
-<div class="code-block"><div class="code-header"><span class="filename">service/ProdutoService.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar service/ProdutoService.java">Copiar</button></div><pre data-stage="8" data-file="service/ProdutoService.java"><code><span class="kw">package</span> br.com.gestorpro.api.service;
+<div class="code-block"><div class="code-header"><span class="filename">service/ProdutoService.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar service/ProdutoService.java">Copiar</button></div><pre data-stage="8" data-file="service/ProdutoService.java"><code><span class="kw">package</span> com.gestorpro.api.service;
 
-<span class="kw">import</span> java.time.<span class="tp">LocalDateTime</span>;
-<span class="kw">import</span> java.util.<span class="tp">List</span>;
-<span class="kw">import</span> br.com.gestorpro.api.dto.<span class="tp">ProdutoRequestDTO</span>;
-<span class="kw">import</span> br.com.gestorpro.api.dto.<span class="tp">ProdutoResponseDTO</span>;
-<span class="kw">import</span> br.com.gestorpro.api.mapper.<span class="tp">ProdutoMapper</span>;
-<span class="novo"><span class="kw">import</span> br.com.gestorpro.api.model.<span class="tp">Fornecedor</span>;</span>
-<span class="kw">import</span> br.com.gestorpro.api.model.<span class="tp">Produto</span>;
-<span class="novo"><span class="kw">import</span> br.com.gestorpro.api.repository.<span class="tp">FornecedorRepository</span>;</span>
-<span class="kw">import</span> br.com.gestorpro.api.repository.<span class="tp">ProdutoRepository</span>;
+<span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoRequestDTO</span>;
+<span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoResponseDTO</span>;
+<span class="kw">import</span> com.gestorpro.api.mapper.<span class="tp">ProdutoMapper</span>;
+<span class="novo"><span class="kw">import</span> com.gestorpro.api.model.<span class="tp">Fornecedor</span>;</span>
+<span class="kw">import</span> com.gestorpro.api.model.<span class="tp">Produto</span>;
+<span class="novo"><span class="kw">import</span> com.gestorpro.api.repository.<span class="tp">FornecedorRepository</span>;</span>
+<span class="kw">import</span> com.gestorpro.api.repository.<span class="tp">ProdutoRepository</span>;
 <span class="kw">import</span> lombok.<span class="tp">RequiredArgsConstructor</span>;
 <span class="kw">import</span> org.springframework.http.<span class="tp">HttpStatus</span>;
 <span class="kw">import</span> org.springframework.stereotype.<span class="tp">Service</span>;
 <span class="kw">import</span> org.springframework.web.server.<span class="tp">ResponseStatusException</span>;
 
+<span class="kw">import</span> java.time.<span class="tp">LocalDateTime</span>;
+<span class="kw">import</span> java.util.<span class="tp">List</span>;
+
 <span class="attr">@Service</span>
 <span class="attr">@RequiredArgsConstructor</span>
 <span class="kw">public</span> <span class="kw">class</span> <span class="tp">ProdutoService</span> {
-    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">ProdutoRepository</span> repository;
+
+    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">ProdutoRepository</span> produtoRepository;
 <span class="novo">    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">FornecedorRepository</span> fornecedorRepository;</span>
 
     <span class="kw">public</span> <span class="tp">ProdutoResponseDTO</span> cadastrar(<span class="tp">ProdutoRequestDTO</span> dto) {
         <span class="tp">Produto</span> produto = <span class="tp">ProdutoMapper</span>.toEntity(dto);
 <span class="novo">        produto.setFornecedor(buscarFornecedorOuFalhar(dto.fornecedorId()));</span>
         produto.setCriadoEm(<span class="tp">LocalDateTime</span>.now());
-        <span class="tp">Produto</span> salvo = repository.save(produto);
+        <span class="tp">Produto</span> salvo = produtoRepository.save(produto);
         <span class="kw">return</span> <span class="tp">ProdutoMapper</span>.toResponse(salvo);
     }
 
     <span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">ProdutoResponseDTO</span>&gt; listar() {
-        <span class="tp">List</span>&lt;<span class="tp">Produto</span>&gt; produtos = repository.findAll();
+        <span class="tp">List</span>&lt;<span class="tp">Produto</span>&gt; produtos = produtoRepository.findAll();
         <span class="kw">return</span> produtos.stream()
                 .map(produto -&gt; <span class="tp">ProdutoMapper</span>.toResponse(produto))
                 .toList();
@@ -1181,19 +1164,19 @@ docker exec gestorpro-postgres pg_isready -U gestorpro -d gestorpro</code></pre>
         <span class="tp">Produto</span> produto = buscarOuFalhar(id);
         <span class="tp">ProdutoMapper</span>.atualizar(produto, dto);
 <span class="novo">        produto.setFornecedor(buscarFornecedorOuFalhar(dto.fornecedorId()));</span>
-        <span class="tp">Produto</span> salvo = repository.save(produto);
+        <span class="tp">Produto</span> salvo = produtoRepository.save(produto);
         <span class="kw">return</span> <span class="tp">ProdutoMapper</span>.toResponse(salvo);
     }
 
     <span class="kw">public</span> <span class="kw">void</span> excluir(<span class="tp">Long</span> id) {
-        <span class="kw">if</span> (!repository.existsById(id)) {
+        <span class="kw">if</span> (!produtoRepository.existsById(id)) {
             <span class="kw">throw</span> <span class="kw">new</span> <span class="tp">ResponseStatusException</span>(<span class="tp">HttpStatus</span>.<span class="tp">NOT_FOUND</span>, <span class="st">"Produto não encontrado"</span>);
         }
-        repository.deleteById(id);
+        produtoRepository.deleteById(id);
     }
 
     <span class="kw">private</span> <span class="tp">Produto</span> buscarOuFalhar(<span class="tp">Long</span> id) {
-        <span class="kw">return</span> repository.findById(id)
+        <span class="kw">return</span> produtoRepository.findById(id)
                 .orElseThrow(() -&gt; <span class="kw">new</span> <span class="tp">ResponseStatusException</span>(
                         <span class="tp">HttpStatus</span>.<span class="tp">NOT_FOUND</span>, <span class="st">"Produto não encontrado"</span>));
     }
@@ -1268,48 +1251,48 @@ Foreign-key constraints:
 <details class="answer"><summary>💡 Uma dica para começar</summary><div><p>Abra os arquivos de Produto lado a lado com os de Cliente. Em cada linha, pergunte: “isto é de Produto ou é da receita?”. <code>BigDecimal</code>, <code>criadoEm</code> e fornecedor são de Produto e não vêm. <code>buscarOuFalhar</code>, <code>@Valid</code> e <code>existsById</code> são da receita e vêm.</p></div></details>
 <div class="try-first">🚨 PARE! Construa e passe no roteiro de aceite antes de abrir o gabarito.</div>
 <details class="answer"><summary>👀 Só depois de tentar: gabarito, arquivo por arquivo</summary><div>
-<div class="code-block"><div class="code-header"><span class="filename">model/Cliente.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar model/Cliente.java">Copiar</button></div><pre data-stage="9" data-file="model/Cliente.java"><code><span class="kw">package</span> br.com.gestorpro.api.model;
+<div class="code-block"><div class="code-header"><span class="filename">model/Cliente.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar model/Cliente.java">Copiar</button></div><pre data-stage="9" data-file="model/Cliente.java"><code><span class="kw">package</span> com.gestorpro.api.model;
 
+<span class="kw">import</span> jakarta.persistence.*;
+<span class="kw">import</span> lombok.<span class="tp">AllArgsConstructor</span>;
 <span class="kw">import</span> lombok.<span class="tp">Getter</span>;
-<span class="kw">import</span> lombok.<span class="tp">Setter</span>;
 <span class="kw">import</span> lombok.<span class="tp">NoArgsConstructor</span>;
+<span class="kw">import</span> lombok.<span class="tp">Setter</span>;
 
-<span class="kw">import</span> jakarta.persistence.<span class="tp">Column</span>;
-<span class="kw">import</span> jakarta.persistence.<span class="tp">Entity</span>;
-<span class="kw">import</span> jakarta.persistence.<span class="tp">GeneratedValue</span>;
-<span class="kw">import</span> jakarta.persistence.<span class="tp">GenerationType</span>;
-<span class="kw">import</span> jakarta.persistence.<span class="tp">Id</span>;
-<span class="kw">import</span> jakarta.persistence.<span class="tp">Table</span>;
-
-<span class="attr">@Getter</span>
 <span class="attr">@Setter</span>
+<span class="attr">@Getter</span>
 <span class="attr">@NoArgsConstructor</span>
-<span class="attr">@Entity</span>
+<span class="attr">@AllArgsConstructor</span>
 <span class="attr">@Table</span>(name = <span class="st">"clientes"</span>)
+<span class="attr">@Entity</span>
 <span class="kw">public</span> <span class="kw">class</span> <span class="tp">Cliente</span> {
+
     <span class="attr">@Id</span>
     <span class="attr">@GeneratedValue</span>(strategy = <span class="tp">GenerationType</span>.<span class="tp">IDENTITY</span>)
     <span class="kw">private</span> <span class="tp">Long</span> id;
 
-    <span class="attr">@Column</span>(nullable = <span class="kw">false</span>)
+    <span class="attr">@Column</span>(name = <span class="st">"nome"</span>, nullable = <span class="kw">false</span>)
     <span class="kw">private</span> <span class="tp">String</span> nome;
 
-    <span class="attr">@Column</span>(nullable = <span class="kw">false</span>)
+    <span class="attr">@Column</span>(name = <span class="st">"email"</span>, nullable = <span class="kw">false</span>)
     <span class="kw">private</span> <span class="tp">String</span> email;
 
+    <span class="attr">@Column</span>(name = <span class="st">"telefone"</span>)
     <span class="kw">private</span> <span class="tp">String</span> telefone;
+
+    <span class="attr">@Column</span>(name = <span class="st">"cidade"</span>)
     <span class="kw">private</span> <span class="tp">String</span> cidade;
 }</code></pre></div>
-<div class="code-block"><div class="code-header"><span class="filename">repository/ClienteRepository.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar repository/ClienteRepository.java">Copiar</button></div><pre data-stage="9" data-file="repository/ClienteRepository.java"><code><span class="kw">package</span> br.com.gestorpro.api.repository;
+<div class="code-block"><div class="code-header"><span class="filename">repository/ClienteRepository.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar repository/ClienteRepository.java">Copiar</button></div><pre data-stage="9" data-file="repository/ClienteRepository.java"><code><span class="kw">package</span> com.gestorpro.api.repository;
 
-<span class="kw">import</span> br.com.gestorpro.api.model.<span class="tp">Cliente</span>;
+<span class="kw">import</span> com.gestorpro.api.model.<span class="tp">Cliente</span>;
 <span class="kw">import</span> org.springframework.data.jpa.repository.<span class="tp">JpaRepository</span>;
 <span class="kw">import</span> org.springframework.stereotype.<span class="tp">Repository</span>;
 
 <span class="attr">@Repository</span>
 <span class="kw">public</span> <span class="kw">interface</span> <span class="tp">ClienteRepository</span> <span class="kw">extends</span> <span class="tp">JpaRepository</span>&lt;<span class="tp">Cliente</span>, <span class="tp">Long</span>&gt; {
 }</code></pre></div>
-<div class="code-block"><div class="code-header"><span class="filename">dto/ClienteRequestDTO.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar dto/ClienteRequestDTO.java">Copiar</button></div><pre data-stage="9" data-file="dto/ClienteRequestDTO.java"><code><span class="kw">package</span> br.com.gestorpro.api.dto;
+<div class="code-block"><div class="code-header"><span class="filename">dto/ClienteRequestDTO.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar dto/ClienteRequestDTO.java">Copiar</button></div><pre data-stage="9" data-file="dto/ClienteRequestDTO.java"><code><span class="kw">package</span> com.gestorpro.api.dto;
 
 <span class="kw">import</span> jakarta.validation.constraints.<span class="tp">Email</span>;
 <span class="kw">import</span> jakarta.validation.constraints.<span class="tp">NotBlank</span>;
@@ -1326,7 +1309,7 @@ Foreign-key constraints:
         <span class="tp">String</span> cidade
 ) {
 }</code></pre></div>
-<div class="code-block"><div class="code-header"><span class="filename">dto/ClienteResponseDTO.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar dto/ClienteResponseDTO.java">Copiar</button></div><pre data-stage="9" data-file="dto/ClienteResponseDTO.java"><code><span class="kw">package</span> br.com.gestorpro.api.dto;
+<div class="code-block"><div class="code-header"><span class="filename">dto/ClienteResponseDTO.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar dto/ClienteResponseDTO.java">Copiar</button></div><pre data-stage="9" data-file="dto/ClienteResponseDTO.java"><code><span class="kw">package</span> com.gestorpro.api.dto;
 
 <span class="kw">public</span> <span class="kw">record</span> <span class="tp">ClienteResponseDTO</span>(
         <span class="tp">Long</span> id,
@@ -1336,13 +1319,14 @@ Foreign-key constraints:
         <span class="tp">String</span> cidade
 ) {
 }</code></pre></div>
-<div class="code-block"><div class="code-header"><span class="filename">mapper/ClienteMapper.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar mapper/ClienteMapper.java">Copiar</button></div><pre data-stage="9" data-file="mapper/ClienteMapper.java"><code><span class="kw">package</span> br.com.gestorpro.api.mapper;
+<div class="code-block"><div class="code-header"><span class="filename">mapper/ClienteMapper.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar mapper/ClienteMapper.java">Copiar</button></div><pre data-stage="9" data-file="mapper/ClienteMapper.java"><code><span class="kw">package</span> com.gestorpro.api.mapper;
 
-<span class="kw">import</span> br.com.gestorpro.api.dto.<span class="tp">ClienteRequestDTO</span>;
-<span class="kw">import</span> br.com.gestorpro.api.dto.<span class="tp">ClienteResponseDTO</span>;
-<span class="kw">import</span> br.com.gestorpro.api.model.<span class="tp">Cliente</span>;
+<span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ClienteRequestDTO</span>;
+<span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ClienteResponseDTO</span>;
+<span class="kw">import</span> com.gestorpro.api.model.<span class="tp">Cliente</span>;
 
 <span class="kw">public</span> <span class="kw">class</span> <span class="tp">ClienteMapper</span> {
+
     <span class="kw">public</span> <span class="kw">static</span> <span class="tp">Cliente</span> toEntity(<span class="tp">ClienteRequestDTO</span> dto) {
         <span class="tp">Cliente</span> cliente = <span class="kw">new</span> <span class="tp">Cliente</span>();
         atualizar(cliente, dto);
@@ -1366,32 +1350,34 @@ Foreign-key constraints:
         );
     }
 }</code></pre></div>
-<div class="code-block"><div class="code-header"><span class="filename">service/ClienteService.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar service/ClienteService.java">Copiar</button></div><pre data-stage="9" data-file="service/ClienteService.java"><code><span class="kw">package</span> br.com.gestorpro.api.service;
+<div class="code-block"><div class="code-header"><span class="filename">service/ClienteService.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar service/ClienteService.java">Copiar</button></div><pre data-stage="9" data-file="service/ClienteService.java"><code><span class="kw">package</span> com.gestorpro.api.service;
 
-<span class="kw">import</span> java.util.<span class="tp">List</span>;
-<span class="kw">import</span> br.com.gestorpro.api.dto.<span class="tp">ClienteRequestDTO</span>;
-<span class="kw">import</span> br.com.gestorpro.api.dto.<span class="tp">ClienteResponseDTO</span>;
-<span class="kw">import</span> br.com.gestorpro.api.mapper.<span class="tp">ClienteMapper</span>;
-<span class="kw">import</span> br.com.gestorpro.api.model.<span class="tp">Cliente</span>;
-<span class="kw">import</span> br.com.gestorpro.api.repository.<span class="tp">ClienteRepository</span>;
+<span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ClienteRequestDTO</span>;
+<span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ClienteResponseDTO</span>;
+<span class="kw">import</span> com.gestorpro.api.mapper.<span class="tp">ClienteMapper</span>;
+<span class="kw">import</span> com.gestorpro.api.model.<span class="tp">Cliente</span>;
+<span class="kw">import</span> com.gestorpro.api.repository.<span class="tp">ClienteRepository</span>;
 <span class="kw">import</span> lombok.<span class="tp">RequiredArgsConstructor</span>;
 <span class="kw">import</span> org.springframework.http.<span class="tp">HttpStatus</span>;
 <span class="kw">import</span> org.springframework.stereotype.<span class="tp">Service</span>;
 <span class="kw">import</span> org.springframework.web.server.<span class="tp">ResponseStatusException</span>;
 
+<span class="kw">import</span> java.util.<span class="tp">List</span>;
+
 <span class="attr">@Service</span>
 <span class="attr">@RequiredArgsConstructor</span>
 <span class="kw">public</span> <span class="kw">class</span> <span class="tp">ClienteService</span> {
-    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">ClienteRepository</span> repository;
+
+    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">ClienteRepository</span> clienteRepository;
 
     <span class="kw">public</span> <span class="tp">ClienteResponseDTO</span> cadastrar(<span class="tp">ClienteRequestDTO</span> dto) {
         <span class="tp">Cliente</span> cliente = <span class="tp">ClienteMapper</span>.toEntity(dto);
-        <span class="tp">Cliente</span> salvo = repository.save(cliente);
+        <span class="tp">Cliente</span> salvo = clienteRepository.save(cliente);
         <span class="kw">return</span> <span class="tp">ClienteMapper</span>.toResponse(salvo);
     }
 
     <span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">ClienteResponseDTO</span>&gt; listar() {
-        <span class="tp">List</span>&lt;<span class="tp">Cliente</span>&gt; clientes = repository.findAll();
+        <span class="tp">List</span>&lt;<span class="tp">Cliente</span>&gt; clientes = clienteRepository.findAll();
         <span class="kw">return</span> clientes.stream()
                 .map(cliente -&gt; <span class="tp">ClienteMapper</span>.toResponse(cliente))
                 .toList();
@@ -1405,76 +1391,70 @@ Foreign-key constraints:
     <span class="kw">public</span> <span class="tp">ClienteResponseDTO</span> atualizar(<span class="tp">Long</span> id, <span class="tp">ClienteRequestDTO</span> dto) {
         <span class="tp">Cliente</span> cliente = buscarOuFalhar(id);
         <span class="tp">ClienteMapper</span>.atualizar(cliente, dto);
-        <span class="tp">Cliente</span> salvo = repository.save(cliente);
+        <span class="tp">Cliente</span> salvo = clienteRepository.save(cliente);
         <span class="kw">return</span> <span class="tp">ClienteMapper</span>.toResponse(salvo);
     }
 
     <span class="kw">public</span> <span class="kw">void</span> excluir(<span class="tp">Long</span> id) {
-        <span class="kw">if</span> (!repository.existsById(id)) {
+        <span class="kw">if</span> (!clienteRepository.existsById(id)) {
             <span class="kw">throw</span> <span class="kw">new</span> <span class="tp">ResponseStatusException</span>(<span class="tp">HttpStatus</span>.<span class="tp">NOT_FOUND</span>, <span class="st">"Cliente não encontrado"</span>);
         }
-        repository.deleteById(id);
+        clienteRepository.deleteById(id);
     }
 
     <span class="kw">private</span> <span class="tp">Cliente</span> buscarOuFalhar(<span class="tp">Long</span> id) {
-        <span class="kw">return</span> repository.findById(id)
+        <span class="kw">return</span> clienteRepository.findById(id)
                 .orElseThrow(() -&gt; <span class="kw">new</span> <span class="tp">ResponseStatusException</span>(
                         <span class="tp">HttpStatus</span>.<span class="tp">NOT_FOUND</span>, <span class="st">"Cliente não encontrado"</span>));
     }
 }</code></pre></div>
-<div class="code-block"><div class="code-header"><span class="filename">controller/ClienteController.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar controller/ClienteController.java">Copiar</button></div><pre data-stage="9" data-file="controller/ClienteController.java"><code><span class="kw">package</span> br.com.gestorpro.api.controller;
+<div class="code-block"><div class="code-header"><span class="filename">controller/ClienteController.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar controller/ClienteController.java">Copiar</button></div><pre data-stage="9" data-file="controller/ClienteController.java"><code><span class="kw">package</span> com.gestorpro.api.controller;
 
-<span class="kw">import</span> java.util.<span class="tp">List</span>;
-<span class="kw">import</span> br.com.gestorpro.api.dto.<span class="tp">ClienteRequestDTO</span>;
-<span class="kw">import</span> br.com.gestorpro.api.dto.<span class="tp">ClienteResponseDTO</span>;
-<span class="kw">import</span> br.com.gestorpro.api.service.<span class="tp">ClienteService</span>;
+<span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ClienteRequestDTO</span>;
+<span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ClienteResponseDTO</span>;
+<span class="kw">import</span> com.gestorpro.api.service.<span class="tp">ClienteService</span>;
 <span class="kw">import</span> jakarta.validation.<span class="tp">Valid</span>;
 <span class="kw">import</span> lombok.<span class="tp">RequiredArgsConstructor</span>;
 <span class="kw">import</span> org.springframework.http.<span class="tp">HttpStatus</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">DeleteMapping</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">GetMapping</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">PathVariable</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">PostMapping</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">PutMapping</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">RequestBody</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">RequestMapping</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">ResponseStatus</span>;
-<span class="kw">import</span> org.springframework.web.bind.annotation.<span class="tp">RestController</span>;
+<span class="kw">import</span> org.springframework.web.bind.annotation.*;
+
+<span class="kw">import</span> java.util.<span class="tp">List</span>;
 
 <span class="attr">@RestController</span>
 <span class="attr">@RequestMapping</span>(<span class="st">"/clientes"</span>)
 <span class="attr">@RequiredArgsConstructor</span>
 <span class="kw">public</span> <span class="kw">class</span> <span class="tp">ClienteController</span> {
-    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">ClienteService</span> service;
+
+    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">ClienteService</span> clienteService;
 
     <span class="attr">@PostMapping</span>
     <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">CREATED</span>)
     <span class="kw">public</span> <span class="tp">ClienteResponseDTO</span> cadastrar(<span class="attr">@RequestBody</span> <span class="attr">@Valid</span> <span class="tp">ClienteRequestDTO</span> dto) {
-        <span class="kw">return</span> service.cadastrar(dto);
+        <span class="kw">return</span> clienteService.cadastrar(dto);
     }
 
     <span class="attr">@GetMapping</span>
     <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">OK</span>)
     <span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">ClienteResponseDTO</span>&gt; listar() {
-        <span class="kw">return</span> service.listar();
+        <span class="kw">return</span> clienteService.listar();
     }
 
     <span class="attr">@GetMapping</span>(<span class="st">"/{id}"</span>)
     <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">OK</span>)
     <span class="kw">public</span> <span class="tp">ClienteResponseDTO</span> buscar(<span class="attr">@PathVariable</span> <span class="tp">Long</span> id) {
-        <span class="kw">return</span> service.buscar(id);
+        <span class="kw">return</span> clienteService.buscar(id);
     }
 
     <span class="attr">@PutMapping</span>(<span class="st">"/{id}"</span>)
     <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">OK</span>)
     <span class="kw">public</span> <span class="tp">ClienteResponseDTO</span> atualizar(<span class="attr">@PathVariable</span> <span class="tp">Long</span> id, <span class="attr">@RequestBody</span> <span class="attr">@Valid</span> <span class="tp">ClienteRequestDTO</span> dto) {
-        <span class="kw">return</span> service.atualizar(id, dto);
+        <span class="kw">return</span> clienteService.atualizar(id, dto);
     }
 
     <span class="attr">@DeleteMapping</span>(<span class="st">"/{id}"</span>)
     <span class="attr">@ResponseStatus</span>(<span class="tp">HttpStatus</span>.<span class="tp">NO_CONTENT</span>)
     <span class="kw">public</span> <span class="kw">void</span> excluir(<span class="attr">@PathVariable</span> <span class="tp">Long</span> id) {
-        service.excluir(id);
+        clienteService.excluir(id);
     }
 }</code></pre></div>
 <p>Se o seu código está diferente, mas passa nos oito passos do aceite, ótimo: compare só para ver se alguma diferença é um descuido (um campo que o Mapper não copia, um <code>@Valid</code> esquecido no PUT).</p></div></details>

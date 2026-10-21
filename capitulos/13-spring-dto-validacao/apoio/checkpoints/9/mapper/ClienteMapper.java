@@ -1,10 +1,11 @@
-package br.com.gestorpro.api.mapper;
+package com.gestorpro.api.mapper;
 
-import br.com.gestorpro.api.dto.ClienteRequestDTO;
-import br.com.gestorpro.api.dto.ClienteResponseDTO;
-import br.com.gestorpro.api.model.Cliente;
+import com.gestorpro.api.dto.ClienteRequestDTO;
+import com.gestorpro.api.dto.ClienteResponseDTO;
+import com.gestorpro.api.model.Cliente;
 
 public class ClienteMapper {
+
     public static Cliente toEntity(ClienteRequestDTO dto) {
         Cliente cliente = new Cliente();
         atualizar(cliente, dto);

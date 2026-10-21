@@ -1,29 +1,31 @@
-package br.com.gestorpro.api.service;
+package com.gestorpro.api.service;
+
+import com.gestorpro.api.dto.ProdutoRequestDTO;
+import com.gestorpro.api.dto.ProdutoResponseDTO;
+import com.gestorpro.api.mapper.ProdutoMapper;
+import com.gestorpro.api.model.Produto;
+import com.gestorpro.api.repository.ProdutoRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import br.com.gestorpro.api.dto.ProdutoRequestDTO;
-import br.com.gestorpro.api.dto.ProdutoResponseDTO;
-import br.com.gestorpro.api.mapper.ProdutoMapper;
-import br.com.gestorpro.api.model.Produto;
-import br.com.gestorpro.api.repository.ProdutoRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class ProdutoService {
-    private final ProdutoRepository repository;
+
+    private final ProdutoRepository produtoRepository;
 
     public ProdutoResponseDTO cadastrar(ProdutoRequestDTO dto) {
         Produto produto = ProdutoMapper.toEntity(dto);
         produto.setCriadoEm(LocalDateTime.now());
-        Produto salvo = repository.save(produto);
+        Produto salvo = produtoRepository.save(produto);
         return ProdutoMapper.toResponse(salvo);
     }
 
     public List<ProdutoResponseDTO> listar() {
-        List<Produto> produtos = repository.findAll();
+        List<Produto> produtos = produtoRepository.findAll();
         return produtos.stream()
                 .map(produto -> ProdutoMapper.toResponse(produto))
                 .toList();

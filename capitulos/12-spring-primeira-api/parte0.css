@@ -123,10 +123,10 @@
 .syr-stopper{position:absolute;right:0;top:3px;bottom:3px;width:12px;border-radius:3px;background:#3d4459}
 .syr-hub{width:14px;height:26px;background:#cfd8ea;border-radius:0 5px 5px 0;flex:none}
 .syr-needle{width:clamp(24px,6vw,70px);height:3px;background:#cfd8ea;flex:none}
-.di-target{flex:none;width:clamp(170px,30%,260px);border:2px solid #4d4b70;border-radius:14px;background:#1a1928;padding:12px 14px;transition:border-color .6s,box-shadow .6s}
+.di-target{flex:none;width:clamp(200px,34%,300px);border:2px solid #4d4b70;border-radius:14px;background:#1a1928;padding:12px 14px;transition:border-color .6s,box-shadow .6s}
 .di-target small{font-size:.62rem;font-weight:900;letter-spacing:1.5px;color:var(--text-dim)}
 .di-target strong{display:block;font-size:.95rem;margin:4px 0 8px}
-.di-slot{display:block;font-size:.78rem!important;background:#0d0d1a!important;border-radius:8px;padding:6px 8px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.di-slot{display:block;font-size:.78rem!important;background:#0d0d1a!important;border-radius:8px;padding:6px 8px!important;white-space:normal;overflow-wrap:anywhere}
 .di-slot span{color:var(--text-dim);font-weight:800}
 .di-lab[data-injected="true"] .syr-plunger{transform:translateX(calc(var(--b) - 18px))}
 .di-lab[data-injected="true"] .syr-dose{left:100%}

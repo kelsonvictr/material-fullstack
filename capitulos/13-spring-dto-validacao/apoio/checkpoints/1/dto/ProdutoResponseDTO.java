@@ -1,4 +1,4 @@
-package br.com.gestorpro.api.dto;
+package com.gestorpro.api.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

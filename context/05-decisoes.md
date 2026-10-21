@@ -923,6 +923,27 @@ evidências em `13-plano-cap-13-dto-validacao.md` (seção “Implementação”
   responde 500 (traduzir para 409); `ddl-auto=update` não lida com coluna obrigatória em tabela
   com dados (motivo futuro para migrations). Fornecedor sem DTO = desafio para casa.
 
+## 2026-10-21 — Caps 12 e 13 seguem o código digitado na turma 06
+
+Referência: `~/Documents/workspace/curso-fullstack/turma06/api` (POST, GET lista e GET por ID feitos em
+sala; PUT e DELETE ainda não, mas já ficam no Cap 12 no mesmo estilo). Mudanças:
+
+- **Pacote `com.gestorpro.api`** (Group `com.gestorpro`), não mais `br.com.gestorpro.api`. Vale para
+  Cap 12, Cap 13, checkpoints e os quatro ZIPs (`api-inicial`/`api-completa` de cada capítulo).
+- **Model:** `@Setter @Getter @NoArgsConstructor @AllArgsConstructor @Table @Entity` (nessa ordem),
+  `import jakarta.persistence.*;`, linha em branco após `{`, e **`@Column(name = "...")` em todo campo
+  que não é id**. Fornecedor: nome, CNPJ e categoria `nullable = false`; telefone opcional. Produto:
+  `criado_em` explícito; Cliente: nome/email obrigatórios, telefone/cidade só com `name`.
+- **Campos injetados nomeados pelo tipo:** `fornecedorRepository`, `fornecedorService`,
+  `produtoRepository`, `produtoService`, `clienteRepository`, `clienteService`.
+- **Imports como o IntelliJ gera:** ordem alfabética, `java.*` por último após linha em branco, 5+ do
+  mesmo pacote viram `*` (Controller: `org.springframework.web.bind.annotation.*`). No Cap 13 isso é
+  aplicado por `_estilo()` em `tooling/cap13/codigo.py`; no Cap 12 o HTML/checkpoints/ZIPs foram
+  regenerados por script (o validador `validate-cap12.py` confere os três).
+- Consequência didática: CNPJ e categoria obrigatórios → exercícios de API ganharam CNPJ; tip novo
+  "sem CNPJ = 500, 400 vem no Cap 13"; validador de integração do Cap 12 testa esse 500.
+- Tabela de treino SQL (`fornecedores_treino`) NÃO mudou (Encontro A já dado).
+
 ## Pendências reconhecidas
 - Planejar em detalhe os **Caps 6–9** (React: state → efeitos/dados → router → integração).
   Caps 4 e 5 já fixaram o tom, o setup Vite base e a Mini-loja como artefato contínuo do arco React.

@@ -55,7 +55,7 @@ def main():
     final={};
     for stage in range(1,6):final.update(java[stage])
     with zipfile.ZipFile(CHAPTER/'apoio/api-completa.zip') as z:
-        for p,s in final.items():assert z.read('api/src/main/java/br/com/gestorpro/api/'+p).decode()==s
+        for p,s in final.items():assert z.read('api/src/main/java/com/gestorpro/api/'+p).decode()==s
         assert z.read('api/src/main/resources/application.properties').decode()==properties
         with zipfile.ZipFile(CHAPTER/'apoio/api-inicial.zip') as initial:
             assert z.read('api/pom.xml')==initial.read('api/pom.xml'),'POM inicial e final divergentes'
@@ -72,7 +72,7 @@ def main():
         for stage in range(1,6):
             current.update(java[stage])
             for p,s in current.items():
-                target=project/'src/main/java/br/com/gestorpro/api'/p;target.parent.mkdir(parents=True,exist_ok=True);target.write_text(s)
+                target=project/'src/main/java/com/gestorpro/api'/p;target.parent.mkdir(parents=True,exist_ok=True);target.write_text(s)
             run(['mvn','-q','-DskipTests','compile'],cwd=project,env=env)
             print(f'Java 21: checkpoint {stage}/5 compila.',flush=True)
         (project/'src/main/resources/application.properties').write_text(properties)
@@ -116,6 +116,8 @@ def main():
             assert http(apiport,'GET',f'/{id}')==(200,created)
             status,second=http(apiport,'POST',data={**payload,'nome':'Papelaria Nordeste'})
             assert status==201 and second['id']!=id
+            # @Column(nullable = false): sem CNPJ, o banco recusa e a primeira volta responde 500.
+            assert http(apiport,'POST',data={k:v for k,v in payload.items() if k!='cnpj'})[0]==500
             updated={**payload,'id':second['id'],'telefone':'(83) 3333-2000'}
             status,changed=http(apiport,'PUT',f'/{id}',updated);assert status==200 and changed['id']==id and changed['telefone']==updated['telefone']
             assert http(apiport,'GET',f"/{second['id']}")[1]['nome']=='Papelaria Nordeste'

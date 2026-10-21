@@ -1,4 +1,4 @@
-package br.com.gestorpro.api.dto;
+package com.gestorpro.api.dto;
 
 public record ClienteResponseDTO(
         Long id,
