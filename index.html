@@ -62,6 +62,15 @@
   .erp-card .ec-n{font-family:'JetBrains Mono',monospace;color:var(--react);font-size:1.4rem;font-weight:700}
   .erp-card .ec-s{font-size:0.72rem;color:var(--text-dim)}
   @media(max-width:560px){.erp-body{grid-template-columns:1fr}}
+  /* capítulo secreto: só abre com a senha passada em sala */
+  .hub-card.secreto{border-style:dashed;border-color:rgba(127,214,200,0.45);
+    background:repeating-linear-gradient(-45deg,rgba(127,214,200,0.035) 0 12px,transparent 12px 24px),var(--surface)}
+  .hub-card.secreto::after{
+    content:'🤫 com senha';position:absolute;top:12px;right:12px;
+    background:rgba(127,214,200,0.12);color:#7fd6c8;
+    font-size:0.62rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;
+    padding:3px 9px;border-radius:50px;border:1px solid rgba(127,214,200,0.35);
+  }
   /* capítulos ainda não publicados */
   .hub-card.em-breve{opacity:0.5;pointer-events:none;filter:grayscale(0.25)}
   .hub-card.em-breve::after{
@@ -431,6 +440,18 @@
           <span class="pill">Spring Boot</span>
           <span class="pill">Docker + SQL</span>
           <span class="pill">CRUD</span>
+        </span>
+      </a>
+
+      <a class="hub-card c06 secreto" href="capitulos/12b-secreto/">
+        <span class="num">CAP · 12b</span>
+        <span class="ic">🔒</span>
+        <span class="title">Secreto</span>
+        <span class="desc">Só abre com a senha do professor. Se você recebeu, já sabe o que fazer.</span>
+        <span class="pills">
+          <span class="pill">senha</span>
+          <span class="pill">desafio</span>
+          <span class="pill">???</span>
         </span>
       </a>
 

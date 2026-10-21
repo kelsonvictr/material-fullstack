@@ -944,6 +944,18 @@ sala; PUT e DELETE ainda não, mas já ficam no Cap 12 no mesmo estilo). Mudanç
   "sem CNPJ = 500, 400 vem no Cap 13"; validador de integração do Cap 12 testa esse 500.
 - Tabela de treino SQL (`fornecedores_treino`) NÃO mudou (Encontro A já dado).
 
+## 2026-10-21 — Cap 12b secreto (protegido por senha)
+
+- `capitulos/12b-secreto/` entre o 12 e o 13, card "Secreto" no hub. Desafio paralelo às aulas,
+  para quem o professor liberar. **O tema e o conteúdo não são descritos aqui de propósito**: o repo é
+  público. Detalhes em `tooling/secreto/NOTAS.md` (local, gitignored).
+- **Proteção:** a página publicada é cifrada (AES-256-GCM, PBKDF2-SHA256 310k) e decifrada no navegador
+  (`cofre.js`). Fonte em claro e gabarito ficam em `tooling/secreto/` (gitignored).
+  `node tooling/build-secreto.mjs` cifra; `--extrair` recria a fonte a partir da página publicada;
+  `--salvar-senha` grava a senha no Keychain (serviço `material-fullstack-secreto`). A senha é
+  comparada sem diferenciar maiúsculas/espaços. Trocar a senha = salvar outra e rodar o build.
+- Novos capítulos secretos: mesmo motor, nova fonte em `tooling/secreto/`, sem descrever o tema aqui.
+
 ## Pendências reconhecidas
 - Planejar em detalhe os **Caps 6–9** (React: state → efeitos/dados → router → integração).
   Caps 4 e 5 já fixaram o tom, o setup Vite base e a Mini-loja como artefato contínuo do arco React.

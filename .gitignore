@@ -13,3 +13,6 @@
 node_modules/
 tooling/remotion/out/
 .remotion/
+
+# capítulo secreto: fonte em claro e gabarito ficam só na máquina do professor (repo público)
+tooling/secreto/
