@@ -1,5 +1,9 @@
 # 13 — Plano do Cap 13 · Produto e Cliente: a API fica profissional
 
+> **REVISTO em 2026-10-24: o Mapper saiu.** A conversão DTO ⇄ entidade agora fica no Service
+> (`new` + `set` e um `private paraResposta`). As menções a Mapper abaixo são o plano original;
+> ver `05-decisoes.md` (2026-10-24) e `tooling/cap13/codigo.py`.
+>
 > **IMPLEMENTADO em 2026-10-09** (ver “Implementação” no fim). Plano aprovado no mesmo dia.
 > Rascunho original — 2026-10-09. Pedido do professor: próximas entidades (Produto e
 > Cliente) com DTO e "coisas mais profissionais", **bem didático, bom para iniciantes, sem

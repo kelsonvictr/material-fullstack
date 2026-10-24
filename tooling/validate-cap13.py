@@ -121,10 +121,10 @@ def main():
             print(f'Java 21: etapa {n}/{len(codigo.ETAPAS)} ({codigo.NOMES_ETAPAS[n]}) compila.', flush=True)
         # A versão com for, mostrada só para comparação na seção 06, também precisa compilar.
         com_for = codigo.SERVICE_2.replace('''        return produtos.stream()
-                .map(produto -> ProdutoMapper.toResponse(produto))
+                .map(produto -> paraResposta(produto))
                 .toList();''', '''        List<ProdutoResponseDTO> respostas = new ArrayList<>();
         for (Produto produto : produtos) {
-            respostas.add(ProdutoMapper.toResponse(produto));
+            respostas.add(paraResposta(produto));
         }
         return respostas;''').replace('import java.util.List;', 'import java.util.ArrayList;\nimport java.util.List;')
         assert com_for != codigo.SERVICE_2
@@ -142,7 +142,7 @@ def main():
             nonlocal proc
             for f in (project / 'src/main/java' / codigo.PACOTE).rglob('*.java'):
                 rel = str(f.relative_to(project / 'src/main/java' / codigo.PACOTE))
-                if rel not in codigo.estado(n) and rel.split('/')[0] in ('dto', 'mapper', 'exception') or (rel not in codigo.estado(n) and ('Produto' in rel or 'Cliente' in rel)):
+                if rel not in codigo.estado(n) and rel.split('/')[0] in ('dto', 'exception') or (rel not in codigo.estado(n) and ('Produto' in rel or 'Cliente' in rel)):
                     f.unlink()
             etapa(n); run(['mvn', '-q', '-DskipTests', 'package'], cwd=project, env=env)
             log = open(folder / 'app.log', 'w')

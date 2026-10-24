@@ -2,7 +2,6 @@ package com.gestorpro.api.service;
 
 import com.gestorpro.api.dto.ClienteRequestDTO;
 import com.gestorpro.api.dto.ClienteResponseDTO;
-import com.gestorpro.api.mapper.ClienteMapper;
 import com.gestorpro.api.model.Cliente;
 import com.gestorpro.api.repository.ClienteRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,28 +18,37 @@ public class ClienteService {
     private final ClienteRepository clienteRepository;
 
     public ClienteResponseDTO cadastrar(ClienteRequestDTO dto) {
-        Cliente cliente = ClienteMapper.toEntity(dto);
+        Cliente cliente = new Cliente();
+        cliente.setNome(dto.nome());
+        cliente.setEmail(dto.email());
+        cliente.setTelefone(dto.telefone());
+        cliente.setCidade(dto.cidade());
+
         Cliente salvo = clienteRepository.save(cliente);
-        return ClienteMapper.toResponse(salvo);
+        return paraResposta(salvo);
     }
 
     public List<ClienteResponseDTO> listar() {
         List<Cliente> clientes = clienteRepository.findAll();
         return clientes.stream()
-                .map(cliente -> ClienteMapper.toResponse(cliente))
+                .map(cliente -> paraResposta(cliente))
                 .toList();
     }
 
     public ClienteResponseDTO buscar(Long id) {
         Cliente cliente = buscarOuFalhar(id);
-        return ClienteMapper.toResponse(cliente);
+        return paraResposta(cliente);
     }
 
     public ClienteResponseDTO atualizar(Long id, ClienteRequestDTO dto) {
         Cliente cliente = buscarOuFalhar(id);
-        ClienteMapper.atualizar(cliente, dto);
+        cliente.setNome(dto.nome());
+        cliente.setEmail(dto.email());
+        cliente.setTelefone(dto.telefone());
+        cliente.setCidade(dto.cidade());
+
         Cliente salvo = clienteRepository.save(cliente);
-        return ClienteMapper.toResponse(salvo);
+        return paraResposta(salvo);
     }
 
     public void excluir(Long id) {
@@ -54,5 +62,15 @@ public class ClienteService {
         return clienteRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Cliente não encontrado"));
+    }
+
+    private ClienteResponseDTO paraResposta(Cliente cliente) {
+        return new ClienteResponseDTO(
+                cliente.getId(),
+                cliente.getNome(),
+                cliente.getEmail(),
+                cliente.getTelefone(),
+                cliente.getCidade()
+        );
     }
 }

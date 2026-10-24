@@ -3,7 +3,7 @@
 O aluno acompanha `../index.html`. Este diretório permite conferir o código depois de tentar.
 
 - `api-inicio-cap13.zip`: ponto de partida. É o `api-completa.zip` do Cap 12 (CRUD de Fornecedor).
-- `api-completa.zip`: o mesmo projeto ao fim do Cap 13 — Produto (DTOs, Mapper, validação, 404,
+- `api-completa.zip`: o mesmo projeto ao fim do Cap 13 — Produto (DTOs, conversão no Service com `paraResposta`, validação, 404,
   ligado a Fornecedor por `@ManyToOne`), Cliente (gabarito da seção 14), `TratadorDeErros`,
   `pom.xml` com `spring-boot-starter-validation` e `application.properties` com
   `spring.web.error.include-message=always`. O código do Fornecedor continua igual ao do Cap 12

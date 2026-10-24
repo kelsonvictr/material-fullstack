@@ -2,7 +2,6 @@ package com.gestorpro.api.service;
 
 import com.gestorpro.api.dto.ProdutoRequestDTO;
 import com.gestorpro.api.dto.ProdutoResponseDTO;
-import com.gestorpro.api.mapper.ProdutoMapper;
 import com.gestorpro.api.model.Produto;
 import com.gestorpro.api.repository.ProdutoRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,34 +19,54 @@ public class ProdutoService {
     private final ProdutoRepository produtoRepository;
 
     public ProdutoResponseDTO cadastrar(ProdutoRequestDTO dto) {
-        Produto produto = ProdutoMapper.toEntity(dto);
+        Produto produto = new Produto();
+        produto.setNome(dto.nome());
+        produto.setPreco(dto.preco());
+        produto.setEstoque(dto.estoque());
+        produto.setCategoria(dto.categoria());
         produto.setCriadoEm(LocalDateTime.now());
+
         Produto salvo = produtoRepository.save(produto);
-        return ProdutoMapper.toResponse(salvo);
+        return paraResposta(salvo);
     }
 
     public List<ProdutoResponseDTO> listar() {
         List<Produto> produtos = produtoRepository.findAll();
         return produtos.stream()
-                .map(produto -> ProdutoMapper.toResponse(produto))
+                .map(produto -> paraResposta(produto))
                 .toList();
     }
 
     public ProdutoResponseDTO buscar(Long id) {
         Produto produto = buscarOuFalhar(id);
-        return ProdutoMapper.toResponse(produto);
+        return paraResposta(produto);
     }
 
     public ProdutoResponseDTO atualizar(Long id, ProdutoRequestDTO dto) {
         Produto produto = buscarOuFalhar(id);
-        ProdutoMapper.atualizar(produto, dto);
+        produto.setNome(dto.nome());
+        produto.setPreco(dto.preco());
+        produto.setEstoque(dto.estoque());
+        produto.setCategoria(dto.categoria());
+
         Produto salvo = produtoRepository.save(produto);
-        return ProdutoMapper.toResponse(salvo);
+        return paraResposta(salvo);
     }
 
     private Produto buscarOuFalhar(Long id) {
         return produtoRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Produto não encontrado"));
+    }
+
+    private ProdutoResponseDTO paraResposta(Produto produto) {
+        return new ProdutoResponseDTO(
+                produto.getId(),
+                produto.getNome(),
+                produto.getPreco(),
+                produto.getEstoque(),
+                produto.getCategoria(),
+                produto.getCriadoEm()
+        );
     }
 }

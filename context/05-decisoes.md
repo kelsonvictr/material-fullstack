@@ -956,6 +956,22 @@ sala; PUT e DELETE ainda não, mas já ficam no Cap 12 no mesmo estilo). Mudanç
   comparada sem diferenciar maiúsculas/espaços. Trocar a senha = salvar outra e rodar o build.
 - Novos capítulos secretos: mesmo motor, nova fonte em `tooling/secreto/`, sem descrever o tema aqui.
 
+## 2026-10-24 — Cap 13 sem Mapper: conversão DTO ⇄ entidade dentro do Service
+
+Pedido do professor antes de dar o Cap 13 em sala: tirar a classe Mapper, "mais fácil para os
+alunos iniciantes". Ele sugeriu fazer o `new` no Controller; ficou no **Service**, porque o
+Controller não tem o `FornecedorRepository` (o `fornecedorId` precisa virar `Fornecedor`), o
+`new ProdutoResponseDTO(...)` se repetiria nos 4 endpoints e o PUT precisa copiar para o produto
+que veio do banco.
+
+- Etapa 1: `cadastrar` faz `new Produto()` + `set` e devolve `new ProdutoResponseDTO(...)` inline.
+- Etapa 2 (listar): o comprovante se repete → vira `private paraResposta(Produto)`, usado na
+  lambda `produto -> paraResposta(produto)`. É o primeiro "trecho repetido ganha nome"; o
+  `buscarOuFalhar` (etapa 4) é apresentado "como o `paraResposta`".
+- Etapa 4 (PUT): os quatro `set` repetidos no `atualizar`, sem `new` (copia no produto do banco).
+- Cliente igual (6 arquivos, não 7). LAB 03 ficou com 7 peças (sem a peça Mapper).
+- O Mapper pode voltar mais tarde como refatoração, quando a repetição dos `set` incomodar.
+
 ## Pendências reconhecidas
 - Planejar em detalhe os **Caps 6–9** (React: state → efeitos/dados → router → integração).
   Caps 4 e 5 já fixaram o tom, o setup Vite base e a Mini-loja como artefato contínuo do arco React.

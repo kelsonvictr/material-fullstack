@@ -109,7 +109,7 @@ kbd{font-family:'JetBrains Mono',monospace;font-size:.8rem;background:#23263a;bo
 .flow-row>i{font-style:normal;color:#9cc985;font-weight:900}
 .flow-box{border:1px solid #3e4b3f;border-radius:8px;padding:9px 12px;font-size:.82rem;font-weight:800;background:#18201b;color:#dbe7d4}
 .flow-box small{display:block;font-weight:400;font-size:.7rem;color:#a7b6a6}
-.flow-box.dto{border-color:#a1db78;background:#1f3320}.flow-box.mapper{border-color:#70cddd;background:#15292d}.flow-box.entity{border-color:#e7c46c;background:#2b2618}.flow-box.json{font-family:'JetBrains Mono',monospace;font-size:.75rem}
+.flow-box.dto{border-color:#a1db78;background:#1f3320}.flow-box.service{border-color:#70cddd;background:#15292d}.flow-box.entity{border-color:#e7c46c;background:#2b2618}.flow-box.json{font-family:'JetBrains Mono',monospace;font-size:.75rem}
 /* Triagem dos campos */
 .triage-rows{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:18px 0}
 .triage-rows label{font-family:'JetBrains Mono',monospace;font-size:.85rem;color:#d7e8cf;border:1px solid #3c5945;border-radius:10px;padding:12px;background:#14241e}

@@ -48,7 +48,7 @@ assert.equal(await door('semestoque', true), '400 Bad Request');
 await page.locator('#door-reset').click(); assert.equal(await page.locator('#door-rows').innerText(), '2 produto(s)');
 
 // LAB 03: peças que nunca trabalham ficam marcadas no último passo
-for (const [c, status, skipped] of [['valid', '201', ['handler']], ['invalid', '400', ['controller', 'service', 'mapper', 'repository', 'database']], ['missing', '404', ['door', 'mapper', 'handler']], ['supplier', '404', ['handler']]]) {
+for (const [c, status, skipped] of [['valid', '201', ['handler']], ['invalid', '400', ['controller', 'service', 'repository', 'database']], ['missing', '404', ['door', 'handler']], ['supplier', '404', ['handler']]]) {
   await page.locator('#request-case').selectOption(c);
   while (await page.locator('#request-next').isEnabled()) await page.locator('#request-next').click();
   assert.match(await page.locator('#request-response').innerText(), new RegExp(status));

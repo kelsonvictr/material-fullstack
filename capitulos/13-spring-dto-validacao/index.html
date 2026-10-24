@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Produto e Cliente com DTO, record, Mapper, BigDecimal, 404, validação, tratador de erros e o primeiro relacionamento @ManyToOne."><title>Cap 13 · Produto e Cliente: a API fica profissional | Programa AI</title><link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&amp;family=JetBrains+Mono:wght@400;600;700&amp;family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet"><link rel="stylesheet" href="../../shared/styles.css"><link rel="stylesheet" href="../../shared/components.css"><link rel="stylesheet" href="../../shared/animations.css"><link rel="stylesheet" href="./cap13.css"><noscript><style>.step-section{opacity:1;transform:none}.lab{display:none}</style></noscript></head>
+<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Produto e Cliente com DTO, record, BigDecimal, 404, validação, tratador de erros e o primeiro relacionamento @ManyToOne."><title>Cap 13 · Produto e Cliente: a API fica profissional | Programa AI</title><link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&amp;family=JetBrains+Mono:wght@400;600;700&amp;family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet"><link rel="stylesheet" href="../../shared/styles.css"><link rel="stylesheet" href="../../shared/components.css"><link rel="stylesheet" href="../../shared/animations.css"><link rel="stylesheet" href="./cap13.css"><noscript><style>.step-section{opacity:1;transform:none}.lab{display:none}</style></noscript></head>
 <body class="spring-chapter"><a class="skip-link" href="#conteudo">Pular para o conteúdo</a><div class="bg-grid" aria-hidden="true"></div><div class="progress-track" aria-hidden="true"><div class="progress-bar"></div></div><button type="button" class="menu-toggle" aria-label="Abrir navegação" aria-expanded="false" aria-controls="chapter-menu">☰</button><div class="sidebar-overlay"></div>
 <nav class="sidebar-nav" id="chapter-menu" aria-label="Navegação do capítulo" inert><button type="button" class="sidebar-close" aria-label="Fechar navegação">✕</button><div class="sidebar-header"><h3>🧾 Cap 13 · DTO e validação</h3><a class="sidebar-back" href="../../index.html">← Mapa do curso</a></div><div class="sidebar-group"><span class="sidebar-group-title">ENCONTRO A · A PORTA DE ENTRADA</span><a class="sidebar-link" href="#mapa">00 · Três contas em aberto</a><a class="sidebar-link" href="#dto">01 · DTO: o formulário da recepção</a><a class="sidebar-link" href="#record">02 · record: um DTO em poucas linhas</a><a class="sidebar-link" href="#recepcao">03 · LAB: o mesmo JSON, dois mundos</a><a class="sidebar-link" href="#dinheiro">04 · Dinheiro não é double</a><a class="sidebar-link" href="#post">05 · C · Cadastrar um produto</a><a class="sidebar-link" href="#listar">06 · R · Listar: a esteira</a><a class="sidebar-link" href="#buscar">07 · R · Buscar: o 404 de verdade</a><a class="sidebar-link" href="#atualizar">08 · U · Atualizar sem perder nada</a><a class="sidebar-link" href="#excluir">09 · D · Excluir com 404</a><span class="sidebar-group-title">ENCONTRO B · SEGURANÇA E RELACIONAMENTO</span><a class="sidebar-link" href="#validacao">10 · O segurança da porta (400)</a><a class="sidebar-link" href="#tratador">11 · A recepção explica o “não”</a><a class="sidebar-link" href="#fornecedor">12 · Produto ganha um fornecedor</a><a class="sidebar-link" href="#bastidores">13 · LAB: quem barra o quê</a><a class="sidebar-link" href="#cliente">14 · Sua vez: Cliente inteiro</a><a class="sidebar-link" href="#bugzilla">15 · BugZilla: erros previsíveis</a><a class="sidebar-link" href="#fechamento">16 · As contas pagas</a><a class="sidebar-link" href="./caderno.html" target="_blank" rel="noopener">📓 Meu caderno ↗</a></div></nav>
 <header class="hero spring-hero"><span class="hero-badge">CAPÍTULO 13 · BACKEND DO GESTORPRO</span><div class="hero-icons"><img src="../../assets/svg/spring.svg" alt="Spring" width="58" height="58"><span aria-hidden="true">＋</span><img src="../../assets/svg/java.svg" alt="Java" width="52" height="52"></div><h1>A mesma API.<br><em>Agora com porta.</em></h1><p class="subtitle">Produto e Cliente do jeito profissional: o que entra, o que sai, o que é barrado e o que não existe. Uma decisão por vez.</p><div class="hero-stack"><span class="stack-chip">DTO + record</span><span class="stack-chip">BigDecimal</span><span class="stack-chip">404 e 400 de verdade</span><span class="stack-chip">@ManyToOne</span></div><div class="hero-note"><span>ANTES</span><b>A entidade conversava com o mundo</b><i aria-hidden="true">→</i><span>AGORA</span><b>Cada coisa no seu lugar</b></div><a class="action" href="#mapa">Bora profissionalizar ↓</a></header>
@@ -34,7 +34,7 @@ docker exec gestorpro-postgres pg_isready -U gestorpro -d gestorpro</code></pre>
 <p>Onde a analogia para: o formulário não é uma tranca de segurança. Ele só define <strong>quais campos existem</strong>. Se algo não tem campo no formulário, não entra. Mas o que tem campo ainda pode vir errado; para isso existe a validação, no Encontro B.</p>
 <h3>O nome técnico</h3>
 <p><strong>DTO</strong> significa <em>Data Transfer Object</em>, ou objeto de transferência de dados. É uma classe que só carrega os dados que <strong>atravessam a fronteira HTTP</strong>, em uma direção. Não tem regra de negócio e não vai para o banco. Na clínica, o formulário e o comprovante são DTOs; o prontuário é a entidade.</p>
-<div class="flow-diagram" aria-label="O caminho dos dados com DTO"><div class="flow-row"><span class="flow-box json">JSON que chega</span><i aria-hidden="true">→</i><span class="flow-box dto">ProdutoRequestDTO<small>o formulário</small></span><i aria-hidden="true">→</i><span class="flow-box mapper">Mapper<small>copia os campos</small></span><i aria-hidden="true">→</i><span class="flow-box entity">Produto<small>a entidade</small></span><i aria-hidden="true">→</i><span class="flow-box db">🐘 banco</span></div><div class="flow-row back"><span class="flow-box json">JSON que sai</span><i aria-hidden="true">←</i><span class="flow-box dto">ProdutoResponseDTO<small>o comprovante</small></span><i aria-hidden="true">←</i><span class="flow-box mapper">Mapper</span><i aria-hidden="true">←</i><span class="flow-box entity">Produto</span><i aria-hidden="true">←</i><span class="flow-box db">🐘 banco</span></div></div>
+<div class="flow-diagram" aria-label="O caminho dos dados com DTO"><div class="flow-row"><span class="flow-box json">JSON que chega</span><i aria-hidden="true">→</i><span class="flow-box dto">ProdutoRequestDTO<small>o formulário</small></span><i aria-hidden="true">→</i><span class="flow-box service">Service<small>copia os campos</small></span><i aria-hidden="true">→</i><span class="flow-box entity">Produto<small>a entidade</small></span><i aria-hidden="true">→</i><span class="flow-box db">🐘 banco</span></div><div class="flow-row back"><span class="flow-box json">JSON que sai</span><i aria-hidden="true">←</i><span class="flow-box dto">ProdutoResponseDTO<small>o comprovante</small></span><i aria-hidden="true">←</i><span class="flow-box service">Service</span><i aria-hidden="true">←</i><span class="flow-box entity">Produto</span><i aria-hidden="true">←</i><span class="flow-box db">🐘 banco</span></div></div>
 <p>São <strong>dois</strong> DTOs, um para cada direção. O de entrada diz o que o cliente da API <strong>pode mandar</strong>. O de saída diz o que a API <strong>mostra</strong>. A entidade continua existindo, mas agora fica do lado de dentro, conversando só com o banco.</p>
 <p>Nosso Produto terá estes campos (os mesmos do GestorPRO que você construiu no React, mais um campo novo, <code>criadoEm</code>, a data e hora do cadastro):</p>
 <div class="table-scroll"><table><caption>Produto: quem preenche cada campo</caption><thead><tr><th>Campo</th><th>Quem decide o valor</th></tr></thead><tbody><tr><td><code>id</code></td><td>O banco, na hora de gravar.</td></tr><tr><td><code>nome</code>, <code>preco</code>, <code>estoque</code>, <code>categoria</code></td><td>Quem usa a API: são os dados do cadastro.</td></tr><tr><td><code>criadoEm</code></td><td>O servidor, com o relógio dele, no momento do cadastro.</td></tr></tbody></table></div>
@@ -108,11 +108,11 @@ docker exec gestorpro-postgres pg_isready -U gestorpro -d gestorpro</code></pre>
 <p class="transfer">Temos os DTOs desenhados e o tipo do dinheiro escolhido. Hora de construir o primeiro endpoint de ponta a ponta.</p>
 </div></section><div class="section-connector"><div class="line"></div></div>
 
-<section class="step-section" id="post"><div class="step-header"><div class="step-number sn-green">05</div><div><h2 class="step-title">C · Cadastrar um produto</h2><p class="step-sub">Seis arquivos, um POST, e a conta nº 1 paga.</p></div></div><div class="card">
+<section class="step-section" id="post"><div class="step-header"><div class="step-number sn-green">05</div><div><h2 class="step-title">C · Cadastrar um produto</h2><p class="step-sub">Cinco arquivos, um POST, e a conta nº 1 paga.</p></div></div><div class="card">
 <div class="endpoint"><span>POST</span><code>http://localhost:8080/produtos</code><b>201 Created</b></div>
-<p>A ordem de construção é a do Cap 12, com duas peças novas no meio. O pedido vai percorrer o caminho ao contrário, mas construímos de dentro para fora:</p>
-<div class="crud-strip build-order"><span><b>1</b>Model</span><span><b>2</b>Repository</span><span><b>3</b>DTOs</span><span><b>4</b>Mapper</span><span><b>5</b>Service</span><span><b>6</b>Controller</span></div>
-<p>Todos os arquivos ficam dentro de <code>com.gestorpro.api</code>, ao lado dos de Fornecedor. Dois pacotes são novos: <code>dto</code> e <code>mapper</code>.</p>
+<p>A ordem de construção é a do Cap 12, com uma peça nova no meio: os DTOs. O pedido vai percorrer o caminho ao contrário, mas construímos de dentro para fora:</p>
+<div class="crud-strip build-order"><span><b>1</b>Model</span><span><b>2</b>Repository</span><span><b>3</b>DTOs</span><span><b>4</b>Service</span><span><b>5</b>Controller</span></div>
+<p>Todos os arquivos ficam dentro de <code>com.gestorpro.api</code>, ao lado dos de Fornecedor. Um pacote é novo: <code>dto</code>.</p>
 <h3>Passo 1 · Model: a entidade Produto</h3>
 <p>No pacote <code>model</code>, crie a classe <code>Produto</code>. A estrutura é a mesma do Fornecedor; os tipos são novos:</p>
 <div class="code-block"><div class="code-header"><span class="filename">model/Produto.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar model/Produto.java">Copiar</button></div><pre data-stage="1" data-file="model/Produto.java"><code><span class="kw">package</span> com.gestorpro.api.model;
@@ -194,43 +194,12 @@ docker exec gestorpro-postgres pg_isready -U gestorpro -d gestorpro</code></pre>
 ) {
 }</code></pre></div>
 <div class="tip"><strong>Escrever em linhas separadas é só organização.</strong> <code>record ProdutoRequestDTO(String nome, BigDecimal preco, ...)</code> numa linha só funcionaria igual. Uma linha por componente fica mais fácil de ler e, no Encontro B, de anotar.</div>
-<h3>Passo 4 · Mapper: o tradutor</h3>
-<p>Alguém precisa copiar os dados do formulário para a entidade e da entidade para o comprovante. Poderíamos fazer isso dentro do Service, mas a cópia vai se repetir em vários endpoints. Ela ganha uma classe própria. Crie o pacote <code>mapper</code> e a classe <code>ProdutoMapper</code>:</p>
-<div class="code-block"><div class="code-header"><span class="filename">mapper/ProdutoMapper.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar mapper/ProdutoMapper.java">Copiar</button></div><pre data-stage="1" data-file="mapper/ProdutoMapper.java"><code><span class="kw">package</span> com.gestorpro.api.mapper;
-
-<span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoRequestDTO</span>;
-<span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoResponseDTO</span>;
-<span class="kw">import</span> com.gestorpro.api.model.<span class="tp">Produto</span>;
-
-<span class="kw">public</span> <span class="kw">class</span> <span class="tp">ProdutoMapper</span> {
-
-    <span class="kw">public</span> <span class="kw">static</span> <span class="tp">Produto</span> toEntity(<span class="tp">ProdutoRequestDTO</span> dto) {
-        <span class="tp">Produto</span> produto = <span class="kw">new</span> <span class="tp">Produto</span>();
-        produto.setNome(dto.nome());
-        produto.setPreco(dto.preco());
-        produto.setEstoque(dto.estoque());
-        produto.setCategoria(dto.categoria());
-        <span class="kw">return</span> produto;
-    }
-
-    <span class="kw">public</span> <span class="kw">static</span> <span class="tp">ProdutoResponseDTO</span> toResponse(<span class="tp">Produto</span> produto) {
-        <span class="kw">return</span> <span class="kw">new</span> <span class="tp">ProdutoResponseDTO</span>(
-                produto.getId(),
-                produto.getNome(),
-                produto.getPreco(),
-                produto.getEstoque(),
-                produto.getCategoria(),
-                produto.getCriadoEm()
-        );
-    }
-}</code></pre></div>
-<ul><li><code>toEntity</code> (“para entidade”) cria um <code>Produto</code> vazio e copia os quatro campos do formulário. Repare no que <strong>não</strong> é copiado: <code>id</code> e <code>criadoEm</code>. Não existe de onde copiar.</li><li><code>toResponse</code> (“para resposta”) monta o comprovante com <code>new ProdutoResponseDTO(...)</code>. Os valores vão <strong>na mesma ordem</strong> dos componentes do record.</li><li><code>static</code>, como você viu no Cap 11: o método pertence à classe. Chamamos <code>ProdutoMapper.toEntity(dto)</code> sem fazer <code>new ProdutoMapper()</code>. O Mapper não guarda nada; ele só traduz.</li></ul>
-<h3>Passo 5 · Service: cadastrar</h3>
+<h3>Passo 4 · Service: cadastrar</h3>
+<p>Alguém precisa copiar os dados do formulário para a entidade e, depois de salvar, montar o comprovante. Quem faz isso é o Service: ele é a camada que conhece os dois lados, o DTO e a entidade.</p>
 <div class="code-block"><div class="code-header"><span class="filename">service/ProdutoService.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar service/ProdutoService.java">Copiar</button></div><pre data-stage="1" data-file="service/ProdutoService.java"><code><span class="kw">package</span> com.gestorpro.api.service;
 
 <span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoRequestDTO</span>;
 <span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoResponseDTO</span>;
-<span class="kw">import</span> com.gestorpro.api.mapper.<span class="tp">ProdutoMapper</span>;
 <span class="kw">import</span> com.gestorpro.api.model.<span class="tp">Produto</span>;
 <span class="kw">import</span> com.gestorpro.api.repository.<span class="tp">ProdutoRepository</span>;
 <span class="kw">import</span> lombok.<span class="tp">RequiredArgsConstructor</span>;
@@ -245,14 +214,28 @@ docker exec gestorpro-postgres pg_isready -U gestorpro -d gestorpro</code></pre>
     <span class="kw">private</span> <span class="kw">final</span> <span class="tp">ProdutoRepository</span> produtoRepository;
 
     <span class="kw">public</span> <span class="tp">ProdutoResponseDTO</span> cadastrar(<span class="tp">ProdutoRequestDTO</span> dto) {
-        <span class="tp">Produto</span> produto = <span class="tp">ProdutoMapper</span>.toEntity(dto);
+        <span class="tp">Produto</span> produto = <span class="kw">new</span> <span class="tp">Produto</span>();
+        produto.setNome(dto.nome());
+        produto.setPreco(dto.preco());
+        produto.setEstoque(dto.estoque());
+        produto.setCategoria(dto.categoria());
         produto.setCriadoEm(<span class="tp">LocalDateTime</span>.now());
+
         <span class="tp">Produto</span> salvo = produtoRepository.save(produto);
-        <span class="kw">return</span> <span class="tp">ProdutoMapper</span>.toResponse(salvo);
+        <span class="kw">return</span> <span class="kw">new</span> <span class="tp">ProdutoResponseDTO</span>(
+                salvo.getId(),
+                salvo.getNome(),
+                salvo.getPreco(),
+                salvo.getEstoque(),
+                salvo.getCategoria(),
+                salvo.getCriadoEm()
+        );
     }
 }</code></pre></div>
-<p>O método <code>cadastrar</code> tem quatro linhas, uma por tarefa: <strong>traduzir</strong> o formulário em entidade; <strong>carimbar</strong> a data com o relógio do servidor (<code>LocalDateTime.now()</code>); <strong>salvar</strong> (o <code>save</code> devolve a entidade já com o ID gerado); e <strong>traduzir de volta</strong> para o comprovante. A data é uma regra do servidor, por isso mora no Service, e não no Mapper.</p>
-<h3>Passo 6 · Controller</h3>
+<p>O método <code>cadastrar</code> faz quatro tarefas, nesta ordem:</p>
+<ul><li><strong>Montar a entidade:</strong> <code>new Produto()</code> cria um produto vazio, e os quatro <code>set</code> copiam os campos do formulário. Repare no que <strong>não</strong> vem do formulário: <code>id</code> e <code>criadoEm</code>. Não existe de onde copiar.</li><li><strong>Carimbar a data</strong> com o relógio do servidor (<code>LocalDateTime.now()</code>). A data é uma regra do servidor, por isso mora no Service.</li><li><strong>Salvar:</strong> o <code>save</code> devolve a entidade já com o ID gerado pelo banco. Guardamos em <code>salvo</code>.</li><li><strong>Montar o comprovante:</strong> <code>new ProdutoResponseDTO(...)</code> recebe os valores <strong>na mesma ordem</strong> dos componentes do record.</li></ul>
+<div class="tip"><strong>Duas formas de ler um valor.</strong> No formulário, que é um record, a leitura é <code>dto.nome()</code>, sem <code>get</code>. Na entidade, que tem <code>@Getter</code> do Lombok, é <code>salvo.getNome()</code>. Trocar uma pela outra é o erro de compilação mais comum desta seção.</div>
+<h3>Passo 5 · Controller</h3>
 <div class="code-block"><div class="code-header"><span class="filename">controller/ProdutoController.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar controller/ProdutoController.java">Copiar</button></div><pre data-stage="1" data-file="controller/ProdutoController.java"><code><span class="kw">package</span> com.gestorpro.api.controller;
 
 <span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoRequestDTO</span>;
@@ -275,9 +258,9 @@ docker exec gestorpro-postgres pg_isready -U gestorpro -d gestorpro</code></pre>
         <span class="kw">return</span> produtoService.cadastrar(dto);
     }
 }</code></pre></div>
-<p>Compare com o Controller de Fornecedor: o <code>@RequestBody</code> agora preenche um <code>ProdutoRequestDTO</code>, e o retorno é um <code>ProdutoResponseDTO</code>. <strong>O Controller não conhece a entidade.</strong> Quem conhece os dois lados é o Service, com a ajuda do Mapper.</p>
-<div class="layer-knows"><div><b>🎮 Controller</b><span>conhece só DTOs</span></div><div><b>⚙️ Service + 🔁 Mapper</b><span>traduzem entre DTO e entidade</span></div><div><b>🗄️ Repository</b><span>conhece só a entidade</span></div></div>
-<h3>Passo 7 · Testar no Insomnia</h3>
+<p>Compare com o Controller de Fornecedor: o <code>@RequestBody</code> agora preenche um <code>ProdutoRequestDTO</code>, e o retorno é um <code>ProdutoResponseDTO</code>. <strong>O Controller não conhece a entidade.</strong> Quem conhece os dois lados é o Service.</p>
+<div class="layer-knows"><div><b>🎮 Controller</b><span>conhece só DTOs</span></div><div><b>⚙️ Service</b><span>copia entre DTO e entidade</span></div><div><b>🗄️ Repository</b><span>conhece só a entidade</span></div></div>
+<h3>Passo 6 · Testar no Insomnia</h3>
 <ol class="steps"><li>Reinicie a API no IntelliJ. No console, procure <code>create table produtos</code>: o Hibernate criou a tabela.</li><li>No Insomnia, crie uma pasta <strong>Produtos</strong> e, dentro dela, a requisição <strong>Cadastrar produto</strong>: método <strong>POST</strong>, URL <code>http://localhost:8080/produtos</code>, body JSON:</li></ol>
 <div class="code-block"><div class="code-header"><span class="filename">Body · cadastrar o Teclado</span><span class="lang-badge">JSON</span><button type="button" class="copy-code" aria-label="Copiar Body · cadastrar o Teclado">Copiar</button></div><pre><code>{
   <span class="st">"nome"</span>: <span class="st">"Teclado Mecânico"</span>,
@@ -296,7 +279,7 @@ docker exec gestorpro-postgres pg_isready -U gestorpro -d gestorpro</code></pre>
 }</code></pre></div>
 <p>Você não mandou <code>id</code> nem <code>criadoEm</code>, e os dois voltaram no comprovante. Confira no banco, pelo psql (<code>docker exec -it gestorpro-postgres psql -U gestorpro -d gestorpro</code>):</p>
 <div class="code-block"><div class="code-header"><span class="filename">psql · a linha gravada</span><span class="lang-badge">SQL</span><button type="button" class="copy-code" aria-label="Copiar psql · a linha gravada">Copiar</button></div><pre><code><span class="kw">SELECT</span> id, nome, preco, estoque, criado_em <span class="kw">FROM</span> produtos <span class="kw">ORDER</span> <span class="kw">BY</span> id;</code></pre></div>
-<h3>Passo 8 · O teste da conta nº 1</h3>
+<h3>Passo 7 · O teste da conta nº 1</h3>
 <p>Agora repita o “ataque” do LAB. Crie outra requisição POST com o ID do teclado e uma data inventada:</p>
 <div class="code-block"><div class="code-header"><span class="filename">Body · o JSON com campos que não deveriam estar ali</span><span class="lang-badge">JSON</span><button type="button" class="copy-code" aria-label="Copiar Body · o JSON com campos que não deveriam estar ali">Copiar</button></div><pre><code>{
   <span class="st">"id"</span>: <span class="num">1</span>,
@@ -309,18 +292,30 @@ docker exec gestorpro-postgres pg_isready -U gestorpro -d gestorpro</code></pre>
 <p><strong>O que esperar:</strong> 201 com um <strong>ID novo</strong> (2, se for o seu segundo cadastro) e o <code>criadoEm</code> de agora, não do ano 2000. Rode o <code>SELECT</code> de novo: o Teclado Mecânico continua intacto na linha 1. O <code>id</code> e o <code>criadoEm</code> do JSON não tinham campo no formulário e ficaram de fora.</p>
 <div class="checkpoint">✓ Conta nº 1 paga: quem chama a API não escolhe mais o ID nem a data do cadastro.</div>
 <div class="exercise solo"><h3>✍️ Abasteça a loja</h3><p>Cadastre mais um produto: <strong>Monitor 27 pol</strong>, preço 1450.00, estoque 4, categoria Monitores. Antes de enviar, preveja: qual ID volta? Qual <code>criadoEm</code>?</p><details class="answer"><summary>💡 Uma dica</summary><div>O ID é o próximo livre da sequência do banco, mesmo que você tenha excluído linhas pelo psql. O <code>criadoEm</code> é o momento do envio.</div></details><div class="try-first">🚨 PARE! Tente primeiro. Compare o resultado, não só o código.</div><details class="answer"><summary>👀 Só depois de tentar: conferir</summary><div><p>201, o ID seguinte aos que você já criou (3, se foram dois antes), e a data e hora atuais. O <code>SELECT</code> mostra três linhas, com <code>preco</code> sempre com duas casas: <code>1450.00</code>.</p></div></details></div>
-<details class="answer"><summary>🐛 Deu erro? Os três mais comuns aqui</summary><div><ul><li><strong><code>cannot find symbol … method getNome()</code></strong> no Mapper: num record a leitura é <code>dto.nome()</code>, sem <code>get</code>.</li><li><strong>A resposta veio com um campo <code>null</code></strong>, sem erro nenhum: o Mapper esqueceu de copiar esse campo. Confira as quatro linhas do <code>toEntity</code> e os seis valores do <code>toResponse</code>.</li><li><strong>500 ao mandar um JSON sem <code>estoque</code></strong>: o banco recusou, porque a coluna é <code>NOT NULL</code>. Está certo recusar, mas 500 é o status errado. O conserto é a validação, no Encontro B.</li></ul></div></details>
+<details class="answer"><summary>🐛 Deu erro? Os três mais comuns aqui</summary><div><ul><li><strong><code>cannot find symbol … method getNome()</code></strong> no Service: num record a leitura é <code>dto.nome()</code>, sem <code>get</code>.</li><li><strong>A resposta veio com um campo <code>null</code></strong>, sem erro nenhum: faltou copiar esse campo no Service. Confira os quatro <code>set</code> do <code>cadastrar</code> e os seis valores do <code>new ProdutoResponseDTO(...)</code>.</li><li><strong>500 ao mandar um JSON sem <code>estoque</code></strong>: o banco recusou, porque a coluna é <code>NOT NULL</code>. Está certo recusar, mas 500 é o status errado. O conserto é a validação, no Encontro B.</li></ul></div></details>
 <p class="transfer">Cadastrar já devolve o comprovante. Listar precisa devolver um comprovante para cada produto, e é aí que aparece uma ferramenta nova.</p>
 </div></section><div class="section-connector"><div class="line"></div></div>
 
 <section class="step-section" id="listar"><div class="step-header"><div class="step-number sn-green">06</div><div><h2 class="step-title">R · Listar: a esteira</h2><p class="step-sub">Converter uma lista inteira, e a primeira lambda do backend.</p></div></div><div class="card">
 <div class="endpoint"><span>GET</span><code>http://localhost:8080/produtos</code><b>200 OK</b></div>
-<p>O <code>produtoRepository.findAll()</code> devolve uma <code>List&lt;Produto&gt;</code>: entidades. Mas o Controller só fala DTO. Precisamos transformar cada <code>Produto</code> em um <code>ProdutoResponseDTO</code> e juntar tudo numa lista nova. Primeiro, do jeito que você já sabe, com <code>for</code>:</p>
+<p>O <code>produtoRepository.findAll()</code> devolve uma <code>List&lt;Produto&gt;</code>: entidades. Mas o Controller só fala DTO. Precisamos transformar cada <code>Produto</code> em um <code>ProdutoResponseDTO</code> e juntar tudo numa lista nova.</p>
+<p>O <code>cadastrar</code> já sabe montar um comprovante: é o <code>new ProdutoResponseDTO(...)</code> do <code>return</code>. O listar vai precisar da mesma montagem, uma vez para cada produto. Em vez de copiar aquelas linhas, elas ganham um nome: o método <code>paraResposta</code>. Ele recebe uma entidade e devolve o comprovante. É <code>private</code> porque só o próprio Service usa.</p>
+<div class="code-block"><div class="code-header"><span class="filename">O método novo, no fim do Service (não digite ainda)</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar O método novo, no fim do Service (não digite ainda)">Copiar</button></div><pre><code><span class="kw">private</span> <span class="tp">ProdutoResponseDTO</span> paraResposta(<span class="tp">Produto</span> produto) {
+    <span class="kw">return</span> <span class="kw">new</span> <span class="tp">ProdutoResponseDTO</span>(
+            produto.getId(),
+            produto.getNome(),
+            produto.getPreco(),
+            produto.getEstoque(),
+            produto.getCategoria(),
+            produto.getCriadoEm()
+    );
+}</code></pre></div>
+<p>Com ele, o listar precisa chamar <code>paraResposta</code> para cada produto da lista. Primeiro, do jeito que você já sabe, com <code>for</code>:</p>
 <div class="code-block"><div class="code-header"><span class="filename">Versão com for · só para comparar (não digite)</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar Versão com for · só para comparar (não digite)">Copiar</button></div><pre><code><span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">ProdutoResponseDTO</span>&gt; listar() {
     <span class="tp">List</span>&lt;<span class="tp">Produto</span>&gt; produtos = produtoRepository.findAll();
     <span class="tp">List</span>&lt;<span class="tp">ProdutoResponseDTO</span>&gt; respostas = <span class="kw">new</span> <span class="tp">ArrayList</span>&lt;&gt;();
     <span class="kw">for</span> (<span class="tp">Produto</span> produto : produtos) {
-        respostas.add(<span class="tp">ProdutoMapper</span>.toResponse(produto));
+        respostas.add(paraResposta(produto));
     }
     <span class="kw">return</span> respostas;
 }</code></pre></div>
@@ -328,10 +323,10 @@ docker exec gestorpro-postgres pg_isready -U gestorpro -d gestorpro</code></pre>
 <div class="code-block"><div class="code-header"><span class="filename">JavaScript · o .map() do Cap 5</span><span class="lang-badge">JavaScript</span><button type="button" class="copy-code" aria-label="Copiar JavaScript · o .map() do Cap 5">Copiar</button></div><pre><code>const nomes = produtos.map(produto =&gt; produto.nome);</code></pre></div>
 <p>Em Java, a mesma ideia fica assim:</p>
 <div class="code-block"><div class="code-header"><span class="filename">Java · a mesma transformação, com stream</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar Java · a mesma transformação, com stream">Copiar</button></div><pre><code>produtos.stream()
-        .map(produto -&gt; <span class="tp">ProdutoMapper</span>.toResponse(produto))
+        .map(produto -&gt; paraResposta(produto))
         .toList();</code></pre></div>
 <div class="analogy"><h3>🏭 A esteira</h3><p><code>stream()</code> liga a esteira e coloca os produtos nela, um atrás do outro. <code>map(...)</code> é uma estação de trabalho: cada produto que passa entra como entidade e sai como comprovante. <code>toList()</code> é a caixa no fim da esteira, que junta tudo numa lista nova. A lista original não muda.</p></div>
-<h3>Como ler <code>produto -&gt; ProdutoMapper.toResponse(produto)</code></h3>
+<h3>Como ler <code>produto -&gt; paraResposta(produto)</code></h3>
 <p>Isso é uma <strong>lambda</strong>: uma função curta, sem nome, escrita no lugar onde é usada. É a mesma ideia da arrow function do Cap 2. À esquerda da seta, o <strong>parâmetro</strong>: o item que está passando (chamamos de <code>produto</code>, mas o nome é escolha sua). À direita, o <strong>corpo</strong>: o que fazer com ele. O resultado do corpo é devolvido automaticamente, sem <code>return</code>.</p>
 <div class="arrow-compare"><div><small>JavaScript</small><code>produto =&gt; ...</code><span>igual + maior</span></div><div><small>Java</small><code>produto -&gt; ...</code><span>hífen + maior</span></div></div>
 <div class="warning"><strong>⚠️ A seta do Java são dois caracteres: <kbd>-</kbd> seguido de <kbd>&gt;</kbd>.</strong> O IntelliJ e o VS Code costumam desenhar os dois juntos como uma seta só (→), por causa de uma fonte com “ligaduras”. É só desenho: digite hífen e sinal de maior. Se você copiar uma seta → de algum lugar, o Java responde <code>illegal character: '\u2192'</code>. E se escrever a seta do JavaScript (<code>=&gt;</code>), responde <code>illegal start of expression</code>.</div>
@@ -340,7 +335,6 @@ docker exec gestorpro-postgres pg_isready -U gestorpro -d gestorpro</code></pre>
 
 <span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoRequestDTO</span>;
 <span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoResponseDTO</span>;
-<span class="kw">import</span> com.gestorpro.api.mapper.<span class="tp">ProdutoMapper</span>;
 <span class="kw">import</span> com.gestorpro.api.model.<span class="tp">Produto</span>;
 <span class="kw">import</span> com.gestorpro.api.repository.<span class="tp">ProdutoRepository</span>;
 <span class="kw">import</span> lombok.<span class="tp">RequiredArgsConstructor</span>;
@@ -356,20 +350,36 @@ docker exec gestorpro-postgres pg_isready -U gestorpro -d gestorpro</code></pre>
     <span class="kw">private</span> <span class="kw">final</span> <span class="tp">ProdutoRepository</span> produtoRepository;
 
     <span class="kw">public</span> <span class="tp">ProdutoResponseDTO</span> cadastrar(<span class="tp">ProdutoRequestDTO</span> dto) {
-        <span class="tp">Produto</span> produto = <span class="tp">ProdutoMapper</span>.toEntity(dto);
+        <span class="tp">Produto</span> produto = <span class="kw">new</span> <span class="tp">Produto</span>();
+        produto.setNome(dto.nome());
+        produto.setPreco(dto.preco());
+        produto.setEstoque(dto.estoque());
+        produto.setCategoria(dto.categoria());
         produto.setCriadoEm(<span class="tp">LocalDateTime</span>.now());
+
         <span class="tp">Produto</span> salvo = produtoRepository.save(produto);
-        <span class="kw">return</span> <span class="tp">ProdutoMapper</span>.toResponse(salvo);
-    }
+<span class="novo">        <span class="kw">return</span> paraResposta(salvo);</span>
+<span class="novo">    }</span>
 
 <span class="novo">    <span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">ProdutoResponseDTO</span>&gt; listar() {</span>
 <span class="novo">        <span class="tp">List</span>&lt;<span class="tp">Produto</span>&gt; produtos = produtoRepository.findAll();</span>
 <span class="novo">        <span class="kw">return</span> produtos.stream()</span>
-<span class="novo">                .map(produto -&gt; <span class="tp">ProdutoMapper</span>.toResponse(produto))</span>
+<span class="novo">                .map(produto -&gt; paraResposta(produto))</span>
 <span class="novo">                .toList();</span>
 <span class="novo">    }</span>
+
+<span class="novo">    <span class="kw">private</span> <span class="tp">ProdutoResponseDTO</span> paraResposta(<span class="tp">Produto</span> produto) {</span>
+        <span class="kw">return</span> <span class="kw">new</span> <span class="tp">ProdutoResponseDTO</span>(
+<span class="novo">                produto.getId(),</span>
+<span class="novo">                produto.getNome(),</span>
+<span class="novo">                produto.getPreco(),</span>
+<span class="novo">                produto.getEstoque(),</span>
+<span class="novo">                produto.getCategoria(),</span>
+<span class="novo">                produto.getCriadoEm()</span>
+        );
+    }
 }</code></pre><p class="code-note">Linhas com fundo verde: o que mudou nesta etapa. Substitua o arquivo inteiro.</p></div>
-<p>Novo também: o <code>import java.util.List;</code>. Ele fica no fim da lista de imports: o IntelliJ separa os imports do próprio Java (<code>java.*</code>) com uma linha em branco e os coloca por último.</p>
+<p>Repare no <code>cadastrar</code>: o <code>return</code> agora só chama <code>paraResposta(salvo)</code>. O comprovante passa a ser montado num lugar só, e o <code>cadastrar</code> e o <code>listar</code> usam o mesmo método. Novo também: o <code>import java.util.List;</code>. Ele fica no fim da lista de imports: o IntelliJ separa os imports do próprio Java (<code>java.*</code>) com uma linha em branco e os coloca por último.</p>
 <h3>Passo 2 · Controller: listar</h3>
 <div class="code-block"><div class="code-header"><span class="filename">controller/ProdutoController.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar controller/ProdutoController.java">Copiar</button></div><pre data-stage="2" data-file="controller/ProdutoController.java"><code><span class="kw">package</span> com.gestorpro.api.controller;
 
@@ -403,7 +413,7 @@ docker exec gestorpro-postgres pg_isready -U gestorpro -d gestorpro</code></pre>
 }</code></pre><p class="code-note">Linhas com fundo verde: o que mudou nesta etapa. Substitua o arquivo inteiro.</p></div>
 <h3>Passo 3 · Testar</h3>
 <p>Reinicie a API e envie <code>GET http://localhost:8080/produtos</code>. <strong>Resultado esperado:</strong> 200 e uma lista entre colchetes com todos os produtos, cada um no formato do comprovante, com <code>id</code> e <code>criadoEm</code>. Se a tabela estiver vazia, a resposta é <code>[]</code>, também com 200: uma lista vazia ainda é uma resposta válida.</p>
-<div class="decision" data-explanation="map transforma cada item em outra coisa, um por um, e toList junta os resultados. Entram 3 produtos, saem 3 comprovantes. Nenhum item é filtrado nem somado."><h4>🧠 O banco tem 3 produtos. O que <code>.map(produto -&gt; ProdutoMapper.toResponse(produto)).toList()</code> devolve?</h4><div class="choices"><button type="button" data-choice="false" aria-pressed="false">Só o primeiro produto, já convertido.</button><button type="button" data-choice="true" aria-pressed="false">Uma lista com 3 comprovantes, um para cada produto, na mesma ordem.</button><button type="button" data-choice="false" aria-pressed="false">A mesma lista de entidades, agora alterada.</button></div><p class="feedback" role="status" aria-live="polite">Escolha uma resposta. Você pode tentar novamente.</p></div>
+<div class="decision" data-explanation="map transforma cada item em outra coisa, um por um, e toList junta os resultados. Entram 3 produtos, saem 3 comprovantes. Nenhum item é filtrado nem somado."><h4>🧠 O banco tem 3 produtos. O que <code>.map(produto -&gt; paraResposta(produto)).toList()</code> devolve?</h4><div class="choices"><button type="button" data-choice="false" aria-pressed="false">Só o primeiro produto, já convertido.</button><button type="button" data-choice="true" aria-pressed="false">Uma lista com 3 comprovantes, um para cada produto, na mesma ordem.</button><button type="button" data-choice="false" aria-pressed="false">A mesma lista de entidades, agora alterada.</button></div><p class="feedback" role="status" aria-live="polite">Escolha uma resposta. Você pode tentar novamente.</p></div>
 <p class="transfer">Listar devolve todos. E se pedirmos um produto que não existe? Aqui entra a conta nº 2.</p>
 </div></section><div class="section-connector"><div class="line"></div></div>
 
@@ -420,7 +430,6 @@ docker exec gestorpro-postgres pg_isready -U gestorpro -d gestorpro</code></pre>
 
 <span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoRequestDTO</span>;
 <span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoResponseDTO</span>;
-<span class="kw">import</span> com.gestorpro.api.mapper.<span class="tp">ProdutoMapper</span>;
 <span class="kw">import</span> com.gestorpro.api.model.<span class="tp">Produto</span>;
 <span class="kw">import</span> com.gestorpro.api.repository.<span class="tp">ProdutoRepository</span>;
 <span class="kw">import</span> lombok.<span class="tp">RequiredArgsConstructor</span>;
@@ -438,16 +447,21 @@ docker exec gestorpro-postgres pg_isready -U gestorpro -d gestorpro</code></pre>
     <span class="kw">private</span> <span class="kw">final</span> <span class="tp">ProdutoRepository</span> produtoRepository;
 
     <span class="kw">public</span> <span class="tp">ProdutoResponseDTO</span> cadastrar(<span class="tp">ProdutoRequestDTO</span> dto) {
-        <span class="tp">Produto</span> produto = <span class="tp">ProdutoMapper</span>.toEntity(dto);
+        <span class="tp">Produto</span> produto = <span class="kw">new</span> <span class="tp">Produto</span>();
+        produto.setNome(dto.nome());
+        produto.setPreco(dto.preco());
+        produto.setEstoque(dto.estoque());
+        produto.setCategoria(dto.categoria());
         produto.setCriadoEm(<span class="tp">LocalDateTime</span>.now());
+
         <span class="tp">Produto</span> salvo = produtoRepository.save(produto);
-        <span class="kw">return</span> <span class="tp">ProdutoMapper</span>.toResponse(salvo);
+        <span class="kw">return</span> paraResposta(salvo);
     }
 
     <span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">ProdutoResponseDTO</span>&gt; listar() {
         <span class="tp">List</span>&lt;<span class="tp">Produto</span>&gt; produtos = produtoRepository.findAll();
         <span class="kw">return</span> produtos.stream()
-                .map(produto -&gt; <span class="tp">ProdutoMapper</span>.toResponse(produto))
+                .map(produto -&gt; paraResposta(produto))
                 .toList();
     }
 
@@ -455,8 +469,19 @@ docker exec gestorpro-postgres pg_isready -U gestorpro -d gestorpro</code></pre>
 <span class="novo">        <span class="tp">Produto</span> produto = produtoRepository.findById(id)</span>
 <span class="novo">                .orElseThrow(() -&gt; <span class="kw">new</span> <span class="tp">ResponseStatusException</span>(</span>
 <span class="novo">                        <span class="tp">HttpStatus</span>.<span class="tp">NOT_FOUND</span>, <span class="st">"Produto não encontrado"</span>));</span>
-<span class="novo">        <span class="kw">return</span> <span class="tp">ProdutoMapper</span>.toResponse(produto);</span>
+<span class="novo">        <span class="kw">return</span> paraResposta(produto);</span>
 <span class="novo">    }</span>
+
+    <span class="kw">private</span> <span class="tp">ProdutoResponseDTO</span> paraResposta(<span class="tp">Produto</span> produto) {
+        <span class="kw">return</span> <span class="kw">new</span> <span class="tp">ProdutoResponseDTO</span>(
+                produto.getId(),
+                produto.getNome(),
+                produto.getPreco(),
+                produto.getEstoque(),
+                produto.getCategoria(),
+                produto.getCriadoEm()
+        );
+    }
 }</code></pre><p class="code-note">Linhas com fundo verde: o que mudou nesta etapa. Substitua o arquivo inteiro.</p></div>
 <p>Dois imports novos no Service: <code>HttpStatus</code> e <code>ResponseStatusException</code>. No Controller, <code>@PathVariable</code> já chega pelo <code>import org.springframework.web.bind.annotation.*;</code>. Use <kbd>Alt</kbd>+<kbd>Enter</kbd> no IntelliJ quando um nome ficar vermelho, mas confira se o pacote importado é o mesmo do código acima.</p>
 <h3>Passo 2 · Controller: buscar</h3>
@@ -515,48 +540,12 @@ docker exec gestorpro-postgres pg_isready -U gestorpro -d gestorpro</code></pre>
 <div class="endpoint"><span>PUT</span><code>http://localhost:8080/produtos/{id}</code><b>200 OK · 404 Not Found</b></div>
 <p>No Cap 12, o PUT fazia <code>fornecedor.setId(id)</code> e <code>save</code>: montava um objeto novo com os dados do JSON e gravava por cima. Pense no que isso faria com o Produto. O JSON do PUT não tem <code>criadoEm</code> (nem pode ter: o DTO não deixa). O objeto novo chegaria com a data vazia, e o banco recusaria, porque a coluna é <code>NOT NULL</code>. E, se a coluna aceitasse vazio, a data do cadastro original seria apagada.</p>
 <p>O jeito certo tem três passos: <strong>buscar</strong> o produto que já existe (404 se não houver), <strong>copiar</strong> para ele só os campos do formulário, e <strong>salvar</strong>. O que o formulário não tem, como <code>id</code> e <code>criadoEm</code>, fica como estava.</p>
-<h3>Passo 1 · Mapper: copiar para um produto existente</h3>
-<p>O <code>toEntity</code> já copia os quatro campos, mas para um produto <strong>novo</strong>. Agora precisamos copiar para um produto que já existe. Em vez de escrever as mesmas quatro linhas duas vezes, elas vão para um método <code>atualizar</code>, e o <code>toEntity</code> passa a usá-lo:</p>
-<div class="code-block"><div class="code-header"><span class="filename">mapper/ProdutoMapper.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar mapper/ProdutoMapper.java">Copiar</button></div><pre data-stage="4" data-file="mapper/ProdutoMapper.java"><code><span class="kw">package</span> com.gestorpro.api.mapper;
-
-<span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoRequestDTO</span>;
-<span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoResponseDTO</span>;
-<span class="kw">import</span> com.gestorpro.api.model.<span class="tp">Produto</span>;
-
-<span class="kw">public</span> <span class="kw">class</span> <span class="tp">ProdutoMapper</span> {
-
-    <span class="kw">public</span> <span class="kw">static</span> <span class="tp">Produto</span> toEntity(<span class="tp">ProdutoRequestDTO</span> dto) {
-        <span class="tp">Produto</span> produto = <span class="kw">new</span> <span class="tp">Produto</span>();
-<span class="novo">        atualizar(produto, dto);</span>
-<span class="novo">        <span class="kw">return</span> produto;</span>
-<span class="novo">    }</span>
-
-<span class="novo">    <span class="kw">public</span> <span class="kw">static</span> <span class="kw">void</span> atualizar(<span class="tp">Produto</span> produto, <span class="tp">ProdutoRequestDTO</span> dto) {</span>
-        produto.setNome(dto.nome());
-        produto.setPreco(dto.preco());
-        produto.setEstoque(dto.estoque());
-        produto.setCategoria(dto.categoria());
-    }
-
-    <span class="kw">public</span> <span class="kw">static</span> <span class="tp">ProdutoResponseDTO</span> toResponse(<span class="tp">Produto</span> produto) {
-        <span class="kw">return</span> <span class="kw">new</span> <span class="tp">ProdutoResponseDTO</span>(
-                produto.getId(),
-                produto.getNome(),
-                produto.getPreco(),
-                produto.getEstoque(),
-                produto.getCategoria(),
-                produto.getCriadoEm()
-        );
-    }
-}</code></pre><p class="code-note">Linhas com fundo verde: o que mudou nesta etapa. Substitua o arquivo inteiro.</p></div>
-<p><code>atualizar</code> é <code>void</code>: não devolve nada, porque altera o produto que recebeu. Depois dele, o mesmo objeto <code>produto</code> já está com os dados novos.</p>
-<h3>Passo 2 · Service: atualizar, e um método novo</h3>
-<p>O PUT também precisa de “buscar ou responder 404”. Aquele trecho do <code>orElseThrow</code> apareceria duas vezes. Quando um trecho se repete, ele ganha um nome: <code>buscarOuFalhar</code>. É <code>private</code> porque só o próprio Service usa.</p>
+<h3>Passo 1 · Service: atualizar, e um método novo</h3>
+<p>O PUT também precisa de “buscar ou responder 404”. Aquele trecho do <code>orElseThrow</code> apareceria duas vezes. Quando um trecho se repete, ele ganha um nome, como fizemos com o <code>paraResposta</code>: <code>buscarOuFalhar</code>. Também é <code>private</code>.</p>
 <div class="code-block"><div class="code-header"><span class="filename">service/ProdutoService.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar service/ProdutoService.java">Copiar</button></div><pre data-stage="4" data-file="service/ProdutoService.java"><code><span class="kw">package</span> com.gestorpro.api.service;
 
 <span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoRequestDTO</span>;
 <span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoResponseDTO</span>;
-<span class="kw">import</span> com.gestorpro.api.mapper.<span class="tp">ProdutoMapper</span>;
 <span class="kw">import</span> com.gestorpro.api.model.<span class="tp">Produto</span>;
 <span class="kw">import</span> com.gestorpro.api.repository.<span class="tp">ProdutoRepository</span>;
 <span class="kw">import</span> lombok.<span class="tp">RequiredArgsConstructor</span>;
@@ -574,29 +563,38 @@ docker exec gestorpro-postgres pg_isready -U gestorpro -d gestorpro</code></pre>
     <span class="kw">private</span> <span class="kw">final</span> <span class="tp">ProdutoRepository</span> produtoRepository;
 
     <span class="kw">public</span> <span class="tp">ProdutoResponseDTO</span> cadastrar(<span class="tp">ProdutoRequestDTO</span> dto) {
-        <span class="tp">Produto</span> produto = <span class="tp">ProdutoMapper</span>.toEntity(dto);
+        <span class="tp">Produto</span> produto = <span class="kw">new</span> <span class="tp">Produto</span>();
+        produto.setNome(dto.nome());
+        produto.setPreco(dto.preco());
+        produto.setEstoque(dto.estoque());
+        produto.setCategoria(dto.categoria());
         produto.setCriadoEm(<span class="tp">LocalDateTime</span>.now());
+
         <span class="tp">Produto</span> salvo = produtoRepository.save(produto);
-        <span class="kw">return</span> <span class="tp">ProdutoMapper</span>.toResponse(salvo);
+        <span class="kw">return</span> paraResposta(salvo);
     }
 
     <span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">ProdutoResponseDTO</span>&gt; listar() {
         <span class="tp">List</span>&lt;<span class="tp">Produto</span>&gt; produtos = produtoRepository.findAll();
         <span class="kw">return</span> produtos.stream()
-                .map(produto -&gt; <span class="tp">ProdutoMapper</span>.toResponse(produto))
+                .map(produto -&gt; paraResposta(produto))
                 .toList();
     }
 
     <span class="kw">public</span> <span class="tp">ProdutoResponseDTO</span> buscar(<span class="tp">Long</span> id) {
 <span class="novo">        <span class="tp">Produto</span> produto = buscarOuFalhar(id);</span>
-<span class="novo">        <span class="kw">return</span> <span class="tp">ProdutoMapper</span>.toResponse(produto);</span>
+<span class="novo">        <span class="kw">return</span> paraResposta(produto);</span>
 <span class="novo">    }</span>
 
 <span class="novo">    <span class="kw">public</span> <span class="tp">ProdutoResponseDTO</span> atualizar(<span class="tp">Long</span> id, <span class="tp">ProdutoRequestDTO</span> dto) {</span>
 <span class="novo">        <span class="tp">Produto</span> produto = buscarOuFalhar(id);</span>
-<span class="novo">        <span class="tp">ProdutoMapper</span>.atualizar(produto, dto);</span>
+<span class="novo">        produto.setNome(dto.nome());</span>
+<span class="novo">        produto.setPreco(dto.preco());</span>
+<span class="novo">        produto.setEstoque(dto.estoque());</span>
+<span class="novo">        produto.setCategoria(dto.categoria());</span>
+
 <span class="novo">        <span class="tp">Produto</span> salvo = produtoRepository.save(produto);</span>
-<span class="novo">        <span class="kw">return</span> <span class="tp">ProdutoMapper</span>.toResponse(salvo);</span>
+<span class="novo">        <span class="kw">return</span> paraResposta(salvo);</span>
 <span class="novo">    }</span>
 
 <span class="novo">    <span class="kw">private</span> <span class="tp">Produto</span> buscarOuFalhar(<span class="tp">Long</span> id) {</span>
@@ -604,9 +602,21 @@ docker exec gestorpro-postgres pg_isready -U gestorpro -d gestorpro</code></pre>
                 .orElseThrow(() -&gt; <span class="kw">new</span> <span class="tp">ResponseStatusException</span>(
                         <span class="tp">HttpStatus</span>.<span class="tp">NOT_FOUND</span>, <span class="st">"Produto não encontrado"</span>));
     }
+
+    <span class="kw">private</span> <span class="tp">ProdutoResponseDTO</span> paraResposta(<span class="tp">Produto</span> produto) {
+        <span class="kw">return</span> <span class="kw">new</span> <span class="tp">ProdutoResponseDTO</span>(
+                produto.getId(),
+                produto.getNome(),
+                produto.getPreco(),
+                produto.getEstoque(),
+                produto.getCategoria(),
+                produto.getCriadoEm()
+        );
+    }
 }</code></pre><p class="code-note">Linhas com fundo verde: o que mudou nesta etapa. Substitua o arquivo inteiro.</p></div>
-<p>Repare que o <code>buscar</code> também ficou mais curto: agora ele só chama <code>buscarOuFalhar</code> e traduz.</p>
-<h3>Passo 3 · Controller: atualizar</h3>
+<p>Os quatro <code>set</code> do <code>atualizar</code> são os mesmos do <code>cadastrar</code>, com uma diferença importante: aqui não há <code>new Produto()</code>. Os dados novos são copiados para o produto que <strong>veio do banco</strong>, e por isso o <code>id</code> e o <code>criadoEm</code> dele ficam como estavam.</p>
+<p>Repare que o <code>buscar</code> também ficou mais curto: agora ele só chama <code>buscarOuFalhar</code> e <code>paraResposta</code>.</p>
+<h3>Passo 2 · Controller: atualizar</h3>
 <div class="code-block"><div class="code-header"><span class="filename">controller/ProdutoController.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar controller/ProdutoController.java">Copiar</button></div><pre data-stage="4" data-file="controller/ProdutoController.java"><code><span class="kw">package</span> com.gestorpro.api.controller;
 
 <span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoRequestDTO</span>;
@@ -649,7 +659,7 @@ docker exec gestorpro-postgres pg_isready -U gestorpro -d gestorpro</code></pre>
 <span class="novo">        <span class="kw">return</span> produtoService.atualizar(id, dto);</span>
 <span class="novo">    }</span>
 }</code></pre><p class="code-note">Linhas com fundo verde: o que mudou nesta etapa. Substitua o arquivo inteiro.</p></div>
-<h3>Passo 4 · Testar</h3>
+<h3>Passo 3 · Testar</h3>
 <p>Anote o <code>criadoEm</code> do teclado (pelo GET). Envie <code>PUT http://localhost:8080/produtos/1</code> com:</p>
 <div class="code-block"><div class="code-header"><span class="filename">Body · o teclado ficou RGB e mais caro</span><span class="lang-badge">JSON</span><button type="button" class="copy-code" aria-label="Copiar Body · o teclado ficou RGB e mais caro">Copiar</button></div><pre><code>{
   <span class="st">"nome"</span>: <span class="st">"Teclado Mecânico RGB"</span>,
@@ -670,7 +680,6 @@ docker exec gestorpro-postgres pg_isready -U gestorpro -d gestorpro</code></pre>
 
 <span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoRequestDTO</span>;
 <span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoResponseDTO</span>;
-<span class="kw">import</span> com.gestorpro.api.mapper.<span class="tp">ProdutoMapper</span>;
 <span class="kw">import</span> com.gestorpro.api.model.<span class="tp">Produto</span>;
 <span class="kw">import</span> com.gestorpro.api.repository.<span class="tp">ProdutoRepository</span>;
 <span class="kw">import</span> lombok.<span class="tp">RequiredArgsConstructor</span>;
@@ -688,29 +697,38 @@ docker exec gestorpro-postgres pg_isready -U gestorpro -d gestorpro</code></pre>
     <span class="kw">private</span> <span class="kw">final</span> <span class="tp">ProdutoRepository</span> produtoRepository;
 
     <span class="kw">public</span> <span class="tp">ProdutoResponseDTO</span> cadastrar(<span class="tp">ProdutoRequestDTO</span> dto) {
-        <span class="tp">Produto</span> produto = <span class="tp">ProdutoMapper</span>.toEntity(dto);
+        <span class="tp">Produto</span> produto = <span class="kw">new</span> <span class="tp">Produto</span>();
+        produto.setNome(dto.nome());
+        produto.setPreco(dto.preco());
+        produto.setEstoque(dto.estoque());
+        produto.setCategoria(dto.categoria());
         produto.setCriadoEm(<span class="tp">LocalDateTime</span>.now());
+
         <span class="tp">Produto</span> salvo = produtoRepository.save(produto);
-        <span class="kw">return</span> <span class="tp">ProdutoMapper</span>.toResponse(salvo);
+        <span class="kw">return</span> paraResposta(salvo);
     }
 
     <span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">ProdutoResponseDTO</span>&gt; listar() {
         <span class="tp">List</span>&lt;<span class="tp">Produto</span>&gt; produtos = produtoRepository.findAll();
         <span class="kw">return</span> produtos.stream()
-                .map(produto -&gt; <span class="tp">ProdutoMapper</span>.toResponse(produto))
+                .map(produto -&gt; paraResposta(produto))
                 .toList();
     }
 
     <span class="kw">public</span> <span class="tp">ProdutoResponseDTO</span> buscar(<span class="tp">Long</span> id) {
         <span class="tp">Produto</span> produto = buscarOuFalhar(id);
-        <span class="kw">return</span> <span class="tp">ProdutoMapper</span>.toResponse(produto);
+        <span class="kw">return</span> paraResposta(produto);
     }
 
     <span class="kw">public</span> <span class="tp">ProdutoResponseDTO</span> atualizar(<span class="tp">Long</span> id, <span class="tp">ProdutoRequestDTO</span> dto) {
         <span class="tp">Produto</span> produto = buscarOuFalhar(id);
-        <span class="tp">ProdutoMapper</span>.atualizar(produto, dto);
+        produto.setNome(dto.nome());
+        produto.setPreco(dto.preco());
+        produto.setEstoque(dto.estoque());
+        produto.setCategoria(dto.categoria());
+
         <span class="tp">Produto</span> salvo = produtoRepository.save(produto);
-        <span class="kw">return</span> <span class="tp">ProdutoMapper</span>.toResponse(salvo);
+        <span class="kw">return</span> paraResposta(salvo);
     }
 
 <span class="novo">    <span class="kw">public</span> <span class="kw">void</span> excluir(<span class="tp">Long</span> id) {</span>
@@ -724,6 +742,17 @@ docker exec gestorpro-postgres pg_isready -U gestorpro -d gestorpro</code></pre>
         <span class="kw">return</span> produtoRepository.findById(id)
                 .orElseThrow(() -&gt; <span class="kw">new</span> <span class="tp">ResponseStatusException</span>(
                         <span class="tp">HttpStatus</span>.<span class="tp">NOT_FOUND</span>, <span class="st">"Produto não encontrado"</span>));
+    }
+
+    <span class="kw">private</span> <span class="tp">ProdutoResponseDTO</span> paraResposta(<span class="tp">Produto</span> produto) {
+        <span class="kw">return</span> <span class="kw">new</span> <span class="tp">ProdutoResponseDTO</span>(
+                produto.getId(),
+                produto.getNome(),
+                produto.getPreco(),
+                produto.getEstoque(),
+                produto.getCategoria(),
+                produto.getCriadoEm()
+        );
     }
 }</code></pre><p class="code-note">Linhas com fundo verde: o que mudou nesta etapa. Substitua o arquivo inteiro.</p></div>
 <p>Aqui usamos <code>throw</code> direto, dentro de um <code>if</code>, sem <code>Optional</code>: não há caixa para abrir, só uma pergunta de sim ou não.</p>
@@ -1061,7 +1090,7 @@ docker exec gestorpro-postgres pg_isready -U gestorpro -d gestorpro</code></pre>
 ) {
 }</code></pre><p class="code-note">Linhas com fundo verde: o que mudou nesta etapa. Substitua o arquivo inteiro.</p></div>
 <p>Por que só <code>fornecedorId</code>, e não o fornecedor inteiro no JSON? Porque quem cadastra um produto <strong>escolhe</strong> um fornecedor que já existe. Ele não deve poder criar nem alterar um fornecedor de carona no cadastro de produto. É a mesma lógica do formulário da recepção: só os campos que fazem sentido para esta operação. A regra <code>@NotNull</code> vai para a mesma prancheta da seção 10.</p>
-<h3>Passo 3 · DTO de saída e Mapper: o nome, sem a ficha inteira</h3>
+<h3>Passo 3 · DTO de saída: o nome, sem a ficha inteira</h3>
 <div class="code-block"><div class="code-header"><span class="filename">dto/ProdutoResponseDTO.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar dto/ProdutoResponseDTO.java">Copiar</button></div><pre data-stage="8" data-file="dto/ProdutoResponseDTO.java"><code><span class="kw">package</span> com.gestorpro.api.dto;
 
 <span class="kw">import</span> java.math.<span class="tp">BigDecimal</span>;
@@ -1078,49 +1107,13 @@ docker exec gestorpro-postgres pg_isready -U gestorpro -d gestorpro</code></pre>
 <span class="novo">        <span class="tp">String</span> fornecedorNome</span>
 ) {
 }</code></pre><p class="code-note">Linhas com fundo verde: o que mudou nesta etapa. Substitua o arquivo inteiro.</p></div>
-<div class="code-block"><div class="code-header"><span class="filename">mapper/ProdutoMapper.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar mapper/ProdutoMapper.java">Copiar</button></div><pre data-stage="8" data-file="mapper/ProdutoMapper.java"><code><span class="kw">package</span> com.gestorpro.api.mapper;
-
-<span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoRequestDTO</span>;
-<span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoResponseDTO</span>;
-<span class="kw">import</span> com.gestorpro.api.model.<span class="tp">Produto</span>;
-
-<span class="kw">public</span> <span class="kw">class</span> <span class="tp">ProdutoMapper</span> {
-
-    <span class="kw">public</span> <span class="kw">static</span> <span class="tp">Produto</span> toEntity(<span class="tp">ProdutoRequestDTO</span> dto) {
-        <span class="tp">Produto</span> produto = <span class="kw">new</span> <span class="tp">Produto</span>();
-        atualizar(produto, dto);
-        <span class="kw">return</span> produto;
-    }
-
-    <span class="kw">public</span> <span class="kw">static</span> <span class="kw">void</span> atualizar(<span class="tp">Produto</span> produto, <span class="tp">ProdutoRequestDTO</span> dto) {
-        produto.setNome(dto.nome());
-        produto.setPreco(dto.preco());
-        produto.setEstoque(dto.estoque());
-        produto.setCategoria(dto.categoria());
-    }
-
-    <span class="kw">public</span> <span class="kw">static</span> <span class="tp">ProdutoResponseDTO</span> toResponse(<span class="tp">Produto</span> produto) {
-        <span class="kw">return</span> <span class="kw">new</span> <span class="tp">ProdutoResponseDTO</span>(
-                produto.getId(),
-                produto.getNome(),
-                produto.getPreco(),
-                produto.getEstoque(),
-                produto.getCategoria(),
-<span class="novo">                produto.getCriadoEm(),</span>
-<span class="novo">                produto.getFornecedor().getId(),</span>
-<span class="novo">                produto.getFornecedor().getNome()</span>
-        );
-    }
-}</code></pre><p class="code-note">Linhas com fundo verde: o que mudou nesta etapa. Substitua o arquivo inteiro.</p></div>
 <p>O comprovante mostra o ID e o <strong>nome</strong> do fornecedor, lado a lado com os campos do produto. Se o Controller devolvesse a entidade, cada produto da lista carregaria a ficha inteira do fornecedor: CNPJ, telefone, categoria. Com o DTO, nós escolhemos o que aparece.</p>
-<p>Leia <code>produto.getFornecedor().getNome()</code> da esquerda para a direita: do produto, pegue o fornecedor; do fornecedor, pegue o nome. Repare também no que o Mapper <strong>não</strong> faz: ele não busca o fornecedor no banco. Mapper só traduz. Quem consulta o banco é o Service.</p>
 <h3>Passo 4 · Service: dois repositories</h3>
 <p>Para ligar o produto, o Service precisa perguntar ao <code>FornecedorRepository</code> se o fornecedor existe. Ele ganha uma segunda dependência, com o mesmo padrão <code>private final</code> do Cap 12, e um método gêmeo do <code>buscarOuFalhar</code>:</p>
 <div class="code-block"><div class="code-header"><span class="filename">service/ProdutoService.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar service/ProdutoService.java">Copiar</button></div><pre data-stage="8" data-file="service/ProdutoService.java"><code><span class="kw">package</span> com.gestorpro.api.service;
 
 <span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoRequestDTO</span>;
 <span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ProdutoResponseDTO</span>;
-<span class="kw">import</span> com.gestorpro.api.mapper.<span class="tp">ProdutoMapper</span>;
 <span class="novo"><span class="kw">import</span> com.gestorpro.api.model.<span class="tp">Fornecedor</span>;</span>
 <span class="kw">import</span> com.gestorpro.api.model.<span class="tp">Produto</span>;
 <span class="novo"><span class="kw">import</span> com.gestorpro.api.repository.<span class="tp">FornecedorRepository</span>;</span>
@@ -1141,31 +1134,40 @@ docker exec gestorpro-postgres pg_isready -U gestorpro -d gestorpro</code></pre>
 <span class="novo">    <span class="kw">private</span> <span class="kw">final</span> <span class="tp">FornecedorRepository</span> fornecedorRepository;</span>
 
     <span class="kw">public</span> <span class="tp">ProdutoResponseDTO</span> cadastrar(<span class="tp">ProdutoRequestDTO</span> dto) {
-        <span class="tp">Produto</span> produto = <span class="tp">ProdutoMapper</span>.toEntity(dto);
+        <span class="tp">Produto</span> produto = <span class="kw">new</span> <span class="tp">Produto</span>();
+        produto.setNome(dto.nome());
+        produto.setPreco(dto.preco());
+        produto.setEstoque(dto.estoque());
+        produto.setCategoria(dto.categoria());
 <span class="novo">        produto.setFornecedor(buscarFornecedorOuFalhar(dto.fornecedorId()));</span>
         produto.setCriadoEm(<span class="tp">LocalDateTime</span>.now());
+
         <span class="tp">Produto</span> salvo = produtoRepository.save(produto);
-        <span class="kw">return</span> <span class="tp">ProdutoMapper</span>.toResponse(salvo);
+        <span class="kw">return</span> paraResposta(salvo);
     }
 
     <span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">ProdutoResponseDTO</span>&gt; listar() {
         <span class="tp">List</span>&lt;<span class="tp">Produto</span>&gt; produtos = produtoRepository.findAll();
         <span class="kw">return</span> produtos.stream()
-                .map(produto -&gt; <span class="tp">ProdutoMapper</span>.toResponse(produto))
+                .map(produto -&gt; paraResposta(produto))
                 .toList();
     }
 
     <span class="kw">public</span> <span class="tp">ProdutoResponseDTO</span> buscar(<span class="tp">Long</span> id) {
         <span class="tp">Produto</span> produto = buscarOuFalhar(id);
-        <span class="kw">return</span> <span class="tp">ProdutoMapper</span>.toResponse(produto);
+        <span class="kw">return</span> paraResposta(produto);
     }
 
     <span class="kw">public</span> <span class="tp">ProdutoResponseDTO</span> atualizar(<span class="tp">Long</span> id, <span class="tp">ProdutoRequestDTO</span> dto) {
         <span class="tp">Produto</span> produto = buscarOuFalhar(id);
-        <span class="tp">ProdutoMapper</span>.atualizar(produto, dto);
+        produto.setNome(dto.nome());
+        produto.setPreco(dto.preco());
+        produto.setEstoque(dto.estoque());
+        produto.setCategoria(dto.categoria());
 <span class="novo">        produto.setFornecedor(buscarFornecedorOuFalhar(dto.fornecedorId()));</span>
+
         <span class="tp">Produto</span> salvo = produtoRepository.save(produto);
-        <span class="kw">return</span> <span class="tp">ProdutoMapper</span>.toResponse(salvo);
+        <span class="kw">return</span> paraResposta(salvo);
     }
 
     <span class="kw">public</span> <span class="kw">void</span> excluir(<span class="tp">Long</span> id) {
@@ -1186,8 +1188,22 @@ docker exec gestorpro-postgres pg_isready -U gestorpro -d gestorpro</code></pre>
 <span class="novo">                .orElseThrow(() -&gt; <span class="kw">new</span> <span class="tp">ResponseStatusException</span>(</span>
 <span class="novo">                        <span class="tp">HttpStatus</span>.<span class="tp">NOT_FOUND</span>, <span class="st">"Fornecedor não encontrado"</span>));</span>
 <span class="novo">    }</span>
+
+    <span class="kw">private</span> <span class="tp">ProdutoResponseDTO</span> paraResposta(<span class="tp">Produto</span> produto) {
+        <span class="kw">return</span> <span class="kw">new</span> <span class="tp">ProdutoResponseDTO</span>(
+                produto.getId(),
+                produto.getNome(),
+                produto.getPreco(),
+                produto.getEstoque(),
+                produto.getCategoria(),
+<span class="novo">                produto.getCriadoEm(),</span>
+<span class="novo">                produto.getFornecedor().getId(),</span>
+<span class="novo">                produto.getFornecedor().getNome()</span>
+        );
+    }
 }</code></pre><p class="code-note">Linhas com fundo verde: o que mudou nesta etapa. Substitua o arquivo inteiro.</p></div>
 <p>O <code>cadastrar</code> e o <code>atualizar</code> ganharam uma linha cada: buscar o fornecedor pelo número que veio no formulário e colocá-lo no produto. Se o número não existir, a resposta é <strong>404 “Fornecedor não encontrado”</strong>, e o produto não é gravado. Esta é uma regra do segundo tipo da seção 10: precisa consultar o banco, então mora no Service.</p>
+<p>O <code>paraResposta</code> ganhou dois valores no fim, na mesma ordem do record: <code>produto.getFornecedor().getId()</code> e <code>produto.getFornecedor().getNome()</code>. Leia da esquerda para a direita: do produto, pegue o fornecedor; do fornecedor, pegue o nome.</p>
 <h3>Passo 5 · Reiniciar e ver a chave estrangeira</h3>
 <p>Reinicie a API. No psql, peça a descrição da tabela:</p>
 <div class="code-block"><div class="code-header"><span class="filename">psql · descrever a tabela produtos</span><span class="lang-badge">SQL</span><button type="button" class="copy-code" aria-label="Copiar psql · descrever a tabela produtos">Copiar</button></div><pre><code>\d produtos</code></pre></div>
@@ -1221,7 +1237,7 @@ Foreign-key constraints:
 <div class="code-block"><div class="code-header"><span class="filename">psql · produto com o nome do fornecedor</span><span class="lang-badge">SQL</span><button type="button" class="copy-code" aria-label="Copiar psql · produto com o nome do fornecedor">Copiar</button></div><pre><code><span class="kw">SELECT</span> p.nome, p.preco, f.nome <span class="kw">AS</span> fornecedor
 <span class="kw">FROM</span> produtos p
 <span class="kw">JOIN</span> fornecedores f <span class="kw">ON</span> f.id = p.fornecedor_id;</code></pre></div>
-<p>O <code>p</code> e o <code>f</code> são apelidos das tabelas, para não repetir o nome inteiro. Você não precisa escrever <code>JOIN</code> na API: o Hibernate faz isso quando o Mapper pede <code>produto.getFornecedor()</code>.</p></div></details>
+<p>O <code>p</code> e o <code>f</code> são apelidos das tabelas, para não repetir o nome inteiro. Você não precisa escrever <code>JOIN</code> na API: o Hibernate faz isso quando o <code>paraResposta</code> pede <code>produto.getFornecedor()</code>.</p></div></details>
 <h3>O limite que o banco mostrou</h3>
 <p>Tente excluir a TechDistrib, que agora tem um produto ligado: <code>DELETE /fornecedores/1</code>. Resultado real: <strong>500</strong>. No console:</p>
 <div class="code-block"><div class="code-header"><span class="filename">Console do IntelliJ · trecho real</span><span class="lang-badge">Texto</span><button type="button" class="copy-code" aria-label="Copiar Console do IntelliJ · trecho real">Copiar</button></div><pre><code>ERROR: update or delete on table "fornecedores" violates foreign key constraint "fkje6bg3cu81l0e4nfprc0c7wwc" on table "produtos"</code></pre></div>
@@ -1230,25 +1246,25 @@ Foreign-key constraints:
 <p class="transfer">Agora uma requisição pode ser barrada na porta, recusada pelo Service ou chegar até o banco. Vamos ver cada caminho por dentro.</p>
 </div></section><div class="section-connector"><div class="line"></div></div>
 
-<section class="step-section" id="bastidores"><div class="step-header"><div class="step-number sn-green">13</div><div><h2 class="step-title">Quem barra o quê</h2><p class="step-sub">LAB 03: os bastidores, agora com porta, tradutor e recepção.</p></div></div><div class="card">
-<p>No Cap 12, o LAB dos bastidores tinha quatro camadas. Agora há peças novas: a porta (<code>@Valid</code>), o tradutor (Mapper) e a recepção de erros (Tratador). Avance cada caso e repare quais peças <strong>nem chegam a trabalhar</strong>.</p>
-<div class="lab" id="request-lab"><div class="lab-heading"><span>LAB 03 · SIMULAÇÃO</span><h3>Quem está trabalhando agora?</h3><p>Escolha um caso e avance. Peças acesas já trabalharam neste caso; apagadas ainda não, ou nunca vão trabalhar.</p></div><label class="case-label">Caso<select id="request-case"><option value="valid">POST · produto válido</option><option value="invalid">POST · nome vazio</option><option value="missing">GET · produto 99999</option><option value="supplier">POST · fornecedorId 99999</option></select></label><div class="request-track"><div data-layer="client">🌐 Cliente</div><div data-layer="door">🚪 Porta @Valid</div><div data-layer="controller">🎮 Controller</div><div data-layer="service">⚙️ Service</div><div data-layer="mapper">🔁 Mapper</div><div data-layer="repository">🗄️ Repository</div><div data-layer="database">🐘 Banco</div><div data-layer="handler">🛎️ Tratador</div></div><div class="request-state"><article><small>O QUE ESTÁ ACONTECENDO</small><h4 id="request-title"></h4><p id="request-description"></p></article><article><small>RESPOSTA</small><strong id="request-response"></strong><p id="request-records"></p></article></div><p class="lab-caption" id="request-caption" role="status" aria-live="polite"></p><div class="lab-controls"><button type="button" id="request-prev">← Voltar</button><span id="request-step"></span><button type="button" id="request-next">Próximo →</button><button type="button" id="request-reset">Reiniciar caso</button></div></div>
+<section class="step-section" id="bastidores"><div class="step-header"><div class="step-number sn-green">13</div><div><h2 class="step-title">Quem barra o quê</h2><p class="step-sub">LAB 03: os bastidores, agora com porta e recepção.</p></div></div><div class="card">
+<p>No Cap 12, o LAB dos bastidores tinha quatro camadas. Agora há duas peças novas: a porta (<code>@Valid</code>) e a recepção de erros (Tratador). Avance cada caso e repare quais peças <strong>nem chegam a trabalhar</strong>.</p>
+<div class="lab" id="request-lab"><div class="lab-heading"><span>LAB 03 · SIMULAÇÃO</span><h3>Quem está trabalhando agora?</h3><p>Escolha um caso e avance. Peças acesas já trabalharam neste caso; apagadas ainda não, ou nunca vão trabalhar.</p></div><label class="case-label">Caso<select id="request-case"><option value="valid">POST · produto válido</option><option value="invalid">POST · nome vazio</option><option value="missing">GET · produto 99999</option><option value="supplier">POST · fornecedorId 99999</option></select></label><div class="request-track"><div data-layer="client">🌐 Cliente</div><div data-layer="door">🚪 Porta @Valid</div><div data-layer="controller">🎮 Controller</div><div data-layer="service">⚙️ Service</div><div data-layer="repository">🗄️ Repository</div><div data-layer="database">🐘 Banco</div><div data-layer="handler">🛎️ Tratador</div></div><div class="request-state"><article><small>O QUE ESTÁ ACONTECENDO</small><h4 id="request-title"></h4><p id="request-description"></p></article><article><small>RESPOSTA</small><strong id="request-response"></strong><p id="request-records"></p></article></div><p class="lab-caption" id="request-caption" role="status" aria-live="polite"></p><div class="lab-controls"><button type="button" id="request-prev">← Voltar</button><span id="request-step"></span><button type="button" id="request-next">Próximo →</button><button type="button" id="request-reset">Reiniciar caso</button></div></div>
 <div class="decision" data-explanation="Formato de e-mail dá para conferir olhando só o JSON: é trabalho da porta, com @Email no DTO e @Valid no Controller. O Service nem é chamado."><h4>🧠 No Cliente, alguém envia <code>"email": "ana@"</code>. Quem barra?</h4><div class="choices"><button type="button" data-choice="true" aria-pressed="false">🚪 A porta: @Email no DTO, conferido pelo @Valid.</button><button type="button" data-choice="false" aria-pressed="false">⚙️ O Service, depois de perguntar ao banco.</button><button type="button" data-choice="false" aria-pressed="false">🐘 O banco, porque a coluna é NOT NULL.</button></div><p class="feedback" role="status" aria-live="polite">Escolha uma resposta. Você pode tentar novamente.</p></div>
 <div class="decision" data-explanation="O formulário pode estar perfeito e o cliente 77 ainda assim não existir. Só consultando o banco dá para saber: o Service pergunta ao Repository, recebe a caixa vazia e lança o 404."><h4>🧠 Alguém pede <code>GET /clientes/77</code>, que não existe. Quem descobre?</h4><div class="choices"><button type="button" data-choice="false" aria-pressed="false">🚪 A porta, porque 77 é um número inválido.</button><button type="button" data-choice="true" aria-pressed="false">⚙️ O Service, depois de perguntar ao Repository.</button><button type="button" data-choice="false" aria-pressed="false">🎮 O Controller, antes de chamar o Service.</button></div><p class="feedback" role="status" aria-live="polite">Escolha uma resposta. Você pode tentar novamente.</p></div>
 <p class="transfer">Essas duas perguntas não eram sobre Produto. Era um aquecimento: o próximo cadastro é seu.</p>
 </div></section><div class="section-connector"><div class="line"></div></div>
 
 <section class="step-section" id="cliente"><div class="step-header"><div class="step-number sn-green">14</div><div><h2 class="step-title">Sua vez: Cliente inteiro</h2><p class="step-sub">A mesma receita, agora sem o código na tela.</p></div></div><div class="card">
-<p>O GestorPRO também tem <strong>clientes</strong>. Você vai construir o CRUD completo, com tudo o que fizemos em Produto: DTOs, Mapper, validação e 404. Só uma anotação é nova. O resto é repetir a receita com consciência, entendendo cada linha.</p>
+<p>O GestorPRO também tem <strong>clientes</strong>. Você vai construir o CRUD completo, com tudo o que fizemos em Produto: DTOs, validação e 404. Só uma anotação é nova. O resto é repetir a receita com consciência, entendendo cada linha.</p>
 <div class="table-scroll"><table><caption>O pedido: Cliente</caption><thead><tr><th>Campo</th><th>Tipo</th><th>Entrada</th><th>Saída</th><th>Regra</th></tr></thead><tbody><tr><td><code>id</code></td><td>Long</td><td>✗</td><td>✓</td><td>o banco gera</td></tr><tr><td><code>nome</code></td><td>String</td><td>✓</td><td>✓</td><td>obrigatório, sem espaços vazios</td></tr><tr><td><code>email</code></td><td>String</td><td>✓</td><td>✓</td><td>obrigatório e com formato de e-mail</td></tr><tr><td><code>telefone</code></td><td>String</td><td>✓</td><td>✓</td><td>opcional</td></tr><tr><td><code>cidade</code></td><td>String</td><td>✓</td><td>✓</td><td>opcional</td></tr></tbody></table></div>
 <p><strong>A anotação nova:</strong> <code>@Email</code>, do mesmo pacote <code>jakarta.validation.constraints</code>. Ela recusa textos que não têm formato de e-mail, como <code>ana@</code>. Mas ela aceita valor nulo: para “obrigatório e com formato”, use <code>@NotBlank</code> e <code>@Email</code> juntas. Sem <code>criadoEm</code> e sem relacionamento no Cliente.</p>
-<h3>A receita dos sete arquivos</h3>
-<ol class="recipe"><li><code>model/Cliente.java</code> · entidade com Lombok, tabela <code>clientes</code></li><li><code>repository/ClienteRepository.java</code></li><li><code>dto/ClienteRequestDTO.java</code> · record com as anotações</li><li><code>dto/ClienteResponseDTO.java</code> · record com o id</li><li><code>mapper/ClienteMapper.java</code> · toEntity, atualizar, toResponse</li><li><code>service/ClienteService.java</code> · os cinco métodos + buscarOuFalhar</li><li><code>controller/ClienteController.java</code> · <code>/clientes</code>, com <code>@Valid</code></li></ol>
+<h3>A receita dos seis arquivos</h3>
+<ol class="recipe"><li><code>model/Cliente.java</code> · entidade com Lombok, tabela <code>clientes</code></li><li><code>repository/ClienteRepository.java</code></li><li><code>dto/ClienteRequestDTO.java</code> · record com as anotações</li><li><code>dto/ClienteResponseDTO.java</code> · record com o id</li><li><code>service/ClienteService.java</code> · os cinco métodos + <code>buscarOuFalhar</code> e <code>paraResposta</code></li><li><code>controller/ClienteController.java</code> · <code>/clientes</code>, com <code>@Valid</code></li></ol>
 <p>O <code>TratadorDeErros</code> você não precisa mexer: ele já atende o Controller novo.</p>
 <h3>Roteiro de aceite no Insomnia</h3>
 <p>Crie uma pasta <strong>Clientes</strong> no Insomnia. O Cliente só está pronto quando todos os passos abaixo dão o status esperado:</p>
 <div class="table-scroll"><table><caption>Aceite do Cliente</caption><thead><tr><th>#</th><th>Requisição</th><th>Esperado</th></tr></thead><tbody><tr><td>1</td><td>POST Ana Souza, ana@gmail.com, (83) 99999-1111, João Pessoa</td><td>201 com id</td></tr><tr><td>2</td><td>POST com <code>"id": 1</code> no corpo</td><td>201 com outro id</td></tr><tr><td>3</td><td>POST com <code>"email": "ana@"</code></td><td>400 · <code>"email": "Informe um e-mail válido"</code></td></tr><tr><td>4</td><td>POST sem nome</td><td>400 · <code>"nome": "O nome é obrigatório"</code></td></tr><tr><td>5</td><td>GET /clientes</td><td>200 com a lista</td></tr><tr><td>6</td><td>GET /clientes/99999</td><td>404 · Cliente não encontrado</td></tr><tr><td>7</td><td>PUT mudando a cidade</td><td>200, mesmo id</td></tr><tr><td>8</td><td>DELETE · e DELETE de novo</td><td>204 · depois 404</td></tr></tbody></table></div>
-<details class="answer"><summary>💡 Uma dica para começar</summary><div><p>Abra os arquivos de Produto lado a lado com os de Cliente. Em cada linha, pergunte: “isto é de Produto ou é da receita?”. <code>BigDecimal</code>, <code>criadoEm</code> e fornecedor são de Produto e não vêm. <code>buscarOuFalhar</code>, <code>@Valid</code> e <code>existsById</code> são da receita e vêm.</p></div></details>
+<details class="answer"><summary>💡 Uma dica para começar</summary><div><p>Abra os arquivos de Produto lado a lado com os de Cliente. Em cada linha, pergunte: “isto é de Produto ou é da receita?”. <code>BigDecimal</code>, <code>criadoEm</code> e fornecedor são de Produto e não vêm. <code>buscarOuFalhar</code>, <code>paraResposta</code>, <code>@Valid</code> e <code>existsById</code> são da receita e vêm.</p></div></details>
 <div class="try-first">🚨 PARE! Construa e passe no roteiro de aceite antes de abrir o gabarito.</div>
 <details class="answer"><summary>👀 Só depois de tentar: gabarito, arquivo por arquivo</summary><div>
 <div class="code-block"><div class="code-header"><span class="filename">model/Cliente.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar model/Cliente.java">Copiar</button></div><pre data-stage="9" data-file="model/Cliente.java"><code><span class="kw">package</span> com.gestorpro.api.model;
@@ -1319,42 +1335,10 @@ Foreign-key constraints:
         <span class="tp">String</span> cidade
 ) {
 }</code></pre></div>
-<div class="code-block"><div class="code-header"><span class="filename">mapper/ClienteMapper.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar mapper/ClienteMapper.java">Copiar</button></div><pre data-stage="9" data-file="mapper/ClienteMapper.java"><code><span class="kw">package</span> com.gestorpro.api.mapper;
-
-<span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ClienteRequestDTO</span>;
-<span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ClienteResponseDTO</span>;
-<span class="kw">import</span> com.gestorpro.api.model.<span class="tp">Cliente</span>;
-
-<span class="kw">public</span> <span class="kw">class</span> <span class="tp">ClienteMapper</span> {
-
-    <span class="kw">public</span> <span class="kw">static</span> <span class="tp">Cliente</span> toEntity(<span class="tp">ClienteRequestDTO</span> dto) {
-        <span class="tp">Cliente</span> cliente = <span class="kw">new</span> <span class="tp">Cliente</span>();
-        atualizar(cliente, dto);
-        <span class="kw">return</span> cliente;
-    }
-
-    <span class="kw">public</span> <span class="kw">static</span> <span class="kw">void</span> atualizar(<span class="tp">Cliente</span> cliente, <span class="tp">ClienteRequestDTO</span> dto) {
-        cliente.setNome(dto.nome());
-        cliente.setEmail(dto.email());
-        cliente.setTelefone(dto.telefone());
-        cliente.setCidade(dto.cidade());
-    }
-
-    <span class="kw">public</span> <span class="kw">static</span> <span class="tp">ClienteResponseDTO</span> toResponse(<span class="tp">Cliente</span> cliente) {
-        <span class="kw">return</span> <span class="kw">new</span> <span class="tp">ClienteResponseDTO</span>(
-                cliente.getId(),
-                cliente.getNome(),
-                cliente.getEmail(),
-                cliente.getTelefone(),
-                cliente.getCidade()
-        );
-    }
-}</code></pre></div>
 <div class="code-block"><div class="code-header"><span class="filename">service/ClienteService.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar service/ClienteService.java">Copiar</button></div><pre data-stage="9" data-file="service/ClienteService.java"><code><span class="kw">package</span> com.gestorpro.api.service;
 
 <span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ClienteRequestDTO</span>;
 <span class="kw">import</span> com.gestorpro.api.dto.<span class="tp">ClienteResponseDTO</span>;
-<span class="kw">import</span> com.gestorpro.api.mapper.<span class="tp">ClienteMapper</span>;
 <span class="kw">import</span> com.gestorpro.api.model.<span class="tp">Cliente</span>;
 <span class="kw">import</span> com.gestorpro.api.repository.<span class="tp">ClienteRepository</span>;
 <span class="kw">import</span> lombok.<span class="tp">RequiredArgsConstructor</span>;
@@ -1371,28 +1355,37 @@ Foreign-key constraints:
     <span class="kw">private</span> <span class="kw">final</span> <span class="tp">ClienteRepository</span> clienteRepository;
 
     <span class="kw">public</span> <span class="tp">ClienteResponseDTO</span> cadastrar(<span class="tp">ClienteRequestDTO</span> dto) {
-        <span class="tp">Cliente</span> cliente = <span class="tp">ClienteMapper</span>.toEntity(dto);
+        <span class="tp">Cliente</span> cliente = <span class="kw">new</span> <span class="tp">Cliente</span>();
+        cliente.setNome(dto.nome());
+        cliente.setEmail(dto.email());
+        cliente.setTelefone(dto.telefone());
+        cliente.setCidade(dto.cidade());
+
         <span class="tp">Cliente</span> salvo = clienteRepository.save(cliente);
-        <span class="kw">return</span> <span class="tp">ClienteMapper</span>.toResponse(salvo);
+        <span class="kw">return</span> paraResposta(salvo);
     }
 
     <span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">ClienteResponseDTO</span>&gt; listar() {
         <span class="tp">List</span>&lt;<span class="tp">Cliente</span>&gt; clientes = clienteRepository.findAll();
         <span class="kw">return</span> clientes.stream()
-                .map(cliente -&gt; <span class="tp">ClienteMapper</span>.toResponse(cliente))
+                .map(cliente -&gt; paraResposta(cliente))
                 .toList();
     }
 
     <span class="kw">public</span> <span class="tp">ClienteResponseDTO</span> buscar(<span class="tp">Long</span> id) {
         <span class="tp">Cliente</span> cliente = buscarOuFalhar(id);
-        <span class="kw">return</span> <span class="tp">ClienteMapper</span>.toResponse(cliente);
+        <span class="kw">return</span> paraResposta(cliente);
     }
 
     <span class="kw">public</span> <span class="tp">ClienteResponseDTO</span> atualizar(<span class="tp">Long</span> id, <span class="tp">ClienteRequestDTO</span> dto) {
         <span class="tp">Cliente</span> cliente = buscarOuFalhar(id);
-        <span class="tp">ClienteMapper</span>.atualizar(cliente, dto);
+        cliente.setNome(dto.nome());
+        cliente.setEmail(dto.email());
+        cliente.setTelefone(dto.telefone());
+        cliente.setCidade(dto.cidade());
+
         <span class="tp">Cliente</span> salvo = clienteRepository.save(cliente);
-        <span class="kw">return</span> <span class="tp">ClienteMapper</span>.toResponse(salvo);
+        <span class="kw">return</span> paraResposta(salvo);
     }
 
     <span class="kw">public</span> <span class="kw">void</span> excluir(<span class="tp">Long</span> id) {
@@ -1406,6 +1399,16 @@ Foreign-key constraints:
         <span class="kw">return</span> clienteRepository.findById(id)
                 .orElseThrow(() -&gt; <span class="kw">new</span> <span class="tp">ResponseStatusException</span>(
                         <span class="tp">HttpStatus</span>.<span class="tp">NOT_FOUND</span>, <span class="st">"Cliente não encontrado"</span>));
+    }
+
+    <span class="kw">private</span> <span class="tp">ClienteResponseDTO</span> paraResposta(<span class="tp">Cliente</span> cliente) {
+        <span class="kw">return</span> <span class="kw">new</span> <span class="tp">ClienteResponseDTO</span>(
+                cliente.getId(),
+                cliente.getNome(),
+                cliente.getEmail(),
+                cliente.getTelefone(),
+                cliente.getCidade()
+        );
     }
 }</code></pre></div>
 <div class="code-block"><div class="code-header"><span class="filename">controller/ClienteController.java</span><span class="lang-badge">Java</span><button type="button" class="copy-code" aria-label="Copiar controller/ClienteController.java">Copiar</button></div><pre data-stage="9" data-file="controller/ClienteController.java"><code><span class="kw">package</span> com.gestorpro.api.controller;
@@ -1457,7 +1460,7 @@ Foreign-key constraints:
         clienteService.excluir(id);
     }
 }</code></pre></div>
-<p>Se o seu código está diferente, mas passa nos oito passos do aceite, ótimo: compare só para ver se alguma diferença é um descuido (um campo que o Mapper não copia, um <code>@Valid</code> esquecido no PUT).</p></div></details>
+<p>Se o seu código está diferente, mas passa nos oito passos do aceite, ótimo: compare só para ver se alguma diferença é um descuido (um campo que o Service não copia, um <code>@Valid</code> esquecido no PUT).</p></div></details>
 <div class="checkpoint">✓ Cliente aceito: oito requisições, oito status certos. Você construiu um CRUD profissional sozinho.</div>
 </div></section><div class="section-connector"><div class="line"></div></div>
 
@@ -1472,7 +1475,7 @@ Foreign-key constraints:
   location: variable dto of type ProdutoRequestDTO</code></pre></div>
 <p><strong>Causa:</strong> num record, a leitura não tem <code>get</code>. <strong>Conserto:</strong> <code>dto.nome()</code>. Na entidade (com Lombok), continua <code>produto.getNome()</code>.</p></div></details>
 <details class="answer"><summary>🐛 3 · package jakarta.validation.constraints does not exist</summary><div><p><strong>Causa:</strong> a dependência de validação não está no <code>pom.xml</code>, ou o Maven não foi recarregado. <strong>Conserto:</strong> seção 10, passo 1.</p></div></details>
-<details class="answer"><summary>🐛 4 · Um campo volta null na resposta, sem erro nenhum</summary><div><p><strong>Causa:</strong> o Mapper esqueceu de copiar esse campo, no <code>atualizar</code> ou no <code>toResponse</code>. É o pior tipo de bug: nada avisa. <strong>Conserto:</strong> confira o Mapper campo por campo, comparando com os componentes do record.</p></div></details>
+<details class="answer"><summary>🐛 4 · Um campo volta null na resposta, sem erro nenhum</summary><div><p><strong>Causa:</strong> faltou copiar esse campo no Service: num <code>set</code> do <code>cadastrar</code> ou do <code>atualizar</code>, ou no <code>paraResposta</code>. É o pior tipo de bug: nada avisa. <strong>Conserto:</strong> confira o Service campo por campo, comparando com os componentes do record.</p></div></details>
 <details class="answer"><summary>🐛 5 · O preço aparece com uma dízima enorme</summary><div><p><strong>Causa:</strong> <code>new BigDecimal(0.1)</code>, criado a partir de um <code>double</code>, vira <code>0.1000000000000000055511151231257827021181583404541015625</code>. <strong>Conserto:</strong> crie a partir de texto, <code>new BigDecimal("0.1")</code>.</p></div></details>
 <details class="answer"><summary>🐛 6 · illegal character: '\u2192' · ou · illegal start of expression</summary><div>
 <div class="code-block"><div class="code-header"><span class="filename">Mensagem real do compilador</span><span class="lang-badge">Texto</span><button type="button" class="copy-code" aria-label="Copiar Mensagem real do compilador">Copiar</button></div><pre><code>error: illegal character: '\u2192'
@@ -1488,12 +1491,12 @@ Foreign-key constraints:
 <section class="step-section" id="fechamento"><div class="step-header"><div class="step-number sn-green">16</div><div><h2 class="step-title">As contas pagas</h2><p class="step-sub">O que mudou, o que ficou e para onde vamos.</p></div></div><div class="card">
 <div class="finish-banner"><span>🧾 DO CAP 12 AO CAP 13</span><h3>A entidade fica no banco.<br>O DTO conversa com o mundo.<br>A porta confere.</h3><p>A mesma API, agora com regras claras sobre o que entra, o que sai e o que é recusado.</p></div>
 <div class="table-scroll"><table><caption>Antes × depois</caption><thead><tr><th>Situação</th><th>Cap 12 · Fornecedor</th><th>Cap 13 · Produto e Cliente</th></tr></thead><tbody><tr><td>POST com <code>id</code> de um cadastro existente</td><td>201 e sobrescreve</td><td>201 com id novo; o enviado é ignorado</td></tr><tr><td>GET de ID inexistente</td><td>200 com <code>null</code></td><td>404 com mensagem</td></tr><tr><td>DELETE de ID inexistente</td><td>204</td><td>404</td></tr><tr><td>Nome em branco</td><td>gravado (201)</td><td>400, com o campo e o motivo</td></tr><tr><td>Dinheiro</td><td>—</td><td>BigDecimal, <code>numeric(10,2)</code></td></tr><tr><td>Ligação entre cadastros</td><td>—</td><td>Produto → Fornecedor, com chave estrangeira</td></tr></tbody></table></div>
-<div class="layer-map final-map"><div>🌐 Cliente HTTP<span>manda JSON</span></div><i>↓</i><div>🚪 @Valid + 🎮 Controller<span>confere o formulário · fala só DTO</span></div><i>↓</i><div>⚙️ Service + 🔁 Mapper<span>regras que consultam dados · traduz DTO ⇄ entidade</span></div><i>↓</i><div>🗄️ Repository<span>fala só entidade</span></div><i>↓</i><div>🐘 PostgreSQL<span>produtos.fornecedor_id → fornecedores.id</span></div><aside><b>🛎️ TratadorDeErros</b><p>Atende todos os Controllers quando a porta barra: 400 com o motivo de cada campo.</p></aside></div>
+<div class="layer-map final-map"><div>🌐 Cliente HTTP<span>manda JSON</span></div><i>↓</i><div>🚪 @Valid + 🎮 Controller<span>confere o formulário · fala só DTO</span></div><i>↓</i><div>⚙️ Service<span>regras que consultam dados · copia DTO ⇄ entidade</span></div><i>↓</i><div>🗄️ Repository<span>fala só entidade</span></div><i>↓</i><div>🐘 PostgreSQL<span>produtos.fornecedor_id → fornecedores.id</span></div><aside><b>🛎️ TratadorDeErros</b><p>Atende todos os Controllers quando a porta barra: 400 com o motivo de cada campo.</p></aside></div>
 <div class="decision" data-explanation="Preço negativo é um problema de formato: a porta barra com 400 antes do Service. Fornecedor inexistente só se descobre consultando o banco: 404 vindo do Service. 500 fica para falhas inesperadas, como a recusa da chave estrangeira que ainda não traduzimos."><h4>🧠 Um POST de produto chega com preço -5 <strong>e</strong> fornecedorId 99999. Qual status volta?</h4><div class="choices"><button type="button" data-choice="true" aria-pressed="false">400: a porta barra o preço antes de alguém procurar o fornecedor.</button><button type="button" data-choice="false" aria-pressed="false">404: o fornecedor não existe.</button><button type="button" data-choice="false" aria-pressed="false">500: os dois problemas juntos derrubam a API.</button></div><p class="feedback" role="status" aria-live="polite">Escolha uma resposta. Você pode tentar novamente.</p></div>
-<div class="decision" data-explanation="O Mapper só traduz entre DTO e entidade. Buscar no banco é com o Repository, chamado pelo Service. Por isso buscarFornecedorOuFalhar mora no Service."><h4>🧠 Quem busca o fornecedor no banco quando um produto é cadastrado?</h4><div class="choices"><button type="button" data-choice="false" aria-pressed="false">O Mapper, no toEntity.</button><button type="button" data-choice="true" aria-pressed="false">O Service, pelo FornecedorRepository.</button><button type="button" data-choice="false" aria-pressed="false">O Controller, antes de chamar o Service.</button></div><p class="feedback" role="status" aria-live="polite">Escolha uma resposta. Você pode tentar novamente.</p></div>
+<div class="decision" data-explanation="Buscar no banco é com o Repository, chamado pelo Service antes de salvar. Por isso buscarFornecedorOuFalhar mora no Service, e o 404 sai antes de o produto ser gravado."><h4>🧠 Quem busca o fornecedor no banco quando um produto é cadastrado?</h4><div class="choices"><button type="button" data-choice="false" aria-pressed="false">O banco, só na hora do save.</button><button type="button" data-choice="true" aria-pressed="false">O Service, pelo FornecedorRepository.</button><button type="button" data-choice="false" aria-pressed="false">O Controller, antes de chamar o Service.</button></div><p class="feedback" role="status" aria-live="polite">Escolha uma resposta. Você pode tentar novamente.</p></div>
 <h3>Para casa ★★ · pagar as contas do Fornecedor</h3>
-<p>O Fornecedor do Cap 12 ainda tem as três contas abertas. Aplique nele tudo o que você fez no Cliente: <code>FornecedorRequestDTO</code> e <code>FornecedorResponseDTO</code>, <code>FornecedorMapper</code>, <code>@NotBlank</code> no nome com <code>@Valid</code>, e 404 no GET, PUT e DELETE. Use o mesmo roteiro de aceite da seção 14, trocando os dados. Não há gabarito nesta página: o seu Cliente é o modelo.</p>
-<div class="warning"><strong>Cuidado ao refatorar o Fornecedor:</strong> o <code>ProdutoService</code> usa o <code>FornecedorRepository</code>, e o <code>ProdutoMapper</code> lê <code>getFornecedor().getNome()</code>. Mude o Controller e o Service do Fornecedor, mas não mude a entidade nem o Repository. Depois, rode também o POST de produto para confirmar que nada quebrou.</div>
+<p>O Fornecedor do Cap 12 ainda tem as três contas abertas. Aplique nele tudo o que você fez no Cliente: <code>FornecedorRequestDTO</code> e <code>FornecedorResponseDTO</code>, um <code>paraResposta</code> no Service, <code>@NotBlank</code> no nome com <code>@Valid</code>, e 404 no GET, PUT e DELETE. Use o mesmo roteiro de aceite da seção 14, trocando os dados. Não há gabarito nesta página: o seu Cliente é o modelo.</p>
+<div class="warning"><strong>Cuidado ao refatorar o Fornecedor:</strong> o <code>ProdutoService</code> usa o <code>FornecedorRepository</code>, e o <code>paraResposta</code> do <code>ProdutoService</code> lê <code>getFornecedor().getNome()</code>. Mude o Controller e o Service do Fornecedor, mas não mude a entidade nem o Repository. Depois, rode também o POST de produto para confirmar que nada quebrou.</div>
 <h3>As contas que ficam para depois</h3>
 <ul><li>Excluir um fornecedor com produtos ligados responde <strong>500</strong>. O banco tem razão em recusar; falta a API traduzir essa recusa para um status que explique o motivo.</li><li>O <code>ddl-auto=update</code> não sabe lidar com dados antigos quando uma coluna obrigatória aparece. Em sistemas reais, mudanças no banco são escritas e versionadas à parte.</li></ul>
 <div class="download-box"><h3>👀 Material de conferência</h3><p>Use depois de construir. O projeto completo tem Produto (ligado a Fornecedor), Cliente, o tratador de erros e a configuração desta aula. O Fornecedor continua como no Cap 12.</p><a class="action" href="apoio/api-completa.zip">Baixar API completa ↧</a><a class="action secondary" href="apoio/api-inicio-cap13.zip">Projeto de partida ↧</a><a class="action secondary" href="./caderno.html" target="_blank" rel="noopener">Abrir meu caderno ↗</a><p>Extraia, abra a pasta que contém <code>pom.xml</code>, selecione o JDK 21 e recarregue o Maven. Se o seu banco tiver produtos sem fornecedor, esvazie a tabela <code>produtos</code> antes de executar.</p></div>

@@ -112,7 +112,7 @@
         caption: 'O formulário tem só quatro vagas. id e criadoEm não têm onde entrar e são ignorados, sem erro.' },
       { chips: { id: 'out', criadoEm: 'out', nome: 'used', preco: 'used', estoque: 'used', categoria: 'used' }, title: 'Produto · ENTIDADE NOVA',
         form: [['id', 'vazio · o banco decide', 'empty'], ['nome', 'Mouse Gamer'], ['preco', '89.90'], ['estoque', '2'], ['categoria', 'Periféricos'], ['criadoEm', 'agora · 09/10 14:30']], rows: baseRows,
-        caption: 'O Mapper copia as quatro vagas para uma entidade nova, sem id. O Service carimba criadoEm com o relógio do servidor.' },
+        caption: 'O Service faz new Produto() e copia as quatro vagas para essa entidade nova, sem id. Depois carimba criadoEm com o relógio do servidor.' },
       { chips: { id: 'out', criadoEm: 'out', nome: 'used', preco: 'used', estoque: 'used', categoria: 'used' }, title: 'Produto · ENTIDADE NOVA',
         form: [['id', '3 · gerado pelo banco'], ['nome', 'Mouse Gamer'], ['preco', '89.90'], ['estoque', '2'], ['categoria', 'Periféricos'], ['criadoEm', 'agora · 09/10 14:30']],
         rows: [...baseRows, [3, 'Mouse Gamer', '09/10 14:30', 'added']],
@@ -205,24 +205,23 @@
   $('#door-reset').addEventListener('click', () => { doorRows = 2; $('#door-case').value = 'valido'; $('#door-valid').checked = true; $('#door-db').textContent = ''; paintDoorIdle(); $('#door-caption').textContent = 'Tabela restaurada com 2 produtos. Escolha um caso e clique em Enviar.'; });
   paintDoorIdle();
 
-  // ───────── LAB 03 · bastidores com porta, Mapper e Tratador ─────────
+  // ───────── LAB 03 · bastidores com porta e Tratador ─────────
   const requestCases = {
     valid: [
       ['client', 'O pedido sai', 'POST /produtos com nome, preço, estoque e fornecedorId 1.', 'Aguardando', 'Entrada: JSON com os dados do formulário.'],
       ['door', 'A porta confere', '@Valid confere a prancheta do ProdutoRequestDTO: todas as regras passam.', 'Aguardando', 'Regra de formato: dá para conferir só olhando o JSON.'],
       ['controller', 'O Controller repassa', 'cadastrar(dto) chama service.cadastrar(dto). O Controller só conhece o DTO.', 'Aguardando', 'Nenhuma regra aqui: o Controller traduz a conversa HTTP.'],
-      ['service', 'O Service organiza', 'O Service vai traduzir o formulário, ligar o fornecedor e carimbar a data.', 'Aguardando', 'Ele coordena o Mapper e os dois Repositories.'],
-      ['mapper', 'Traduzir para entidade', 'ProdutoMapper.toEntity(dto) cria um Produto novo, sem id.', 'Aguardando', 'O Mapper só copia campos; ele não consulta o banco.'],
+      ['service', 'Montar a entidade', 'new Produto() e os quatro set copiam o formulário para um Produto novo, sem id.', 'Aguardando', 'O Service conhece os dois lados: o DTO e a entidade.'],
       ['repository', 'Buscar o fornecedor e salvar', 'FornecedorRepository encontra a TechDistrib; depois ProdutoRepository.save(produto).', 'Aguardando', 'Regra de dados: “o fornecedor existe?” só o banco responde.'],
       ['database', 'Uma linha é gravada', 'O PostgreSQL insere o produto com fornecedor_id 1 e gera o id.', 'Aguardando', 'A chave estrangeira confere: o fornecedor 1 existe.'],
-      ['mapper', 'Traduzir de volta', 'ProdutoMapper.toResponse(salvo) monta o comprovante, com fornecedorNome.', 'Aguardando', 'A resposta mostra só o que o DTO de saída tem.'],
+      ['service', 'Montar o comprovante', 'paraResposta(salvo) monta o ProdutoResponseDTO, com fornecedorNome.', 'Aguardando', 'A resposta mostra só o que o DTO de saída tem.'],
       ['client', 'Resposta', 'O comprovante volta em JSON.', '201 Created', 'O Tratador não foi chamado: não houve erro.']
     ],
     invalid: [
       ['client', 'O pedido sai', 'POST /produtos com "nome": "".', 'Aguardando', 'O formulário está mal preenchido.'],
       ['door', '@NotBlank recusa', 'A prancheta falha no nome. O Spring lança MethodArgumentNotValidException.', 'Aguardando', 'O método do Controller nem começa a executar.'],
       ['handler', 'O Tratador responde', 'TratadorDeErros.tratarValidacao monta {"nome": "O nome é obrigatório"}.', 'Aguardando', 'Um tratador só, para todos os Controllers.'],
-      ['client', 'Resposta', 'O cliente recebe o motivo, campo por campo.', '400 Bad Request', 'Controller, Service, Mapper, Repository e banco ficaram de fora.']
+      ['client', 'Resposta', 'O cliente recebe o motivo, campo por campo.', '400 Bad Request', 'Controller, Service, Repository e banco ficaram de fora.']
     ],
     missing: [
       ['client', 'O pedido sai', 'GET /produtos/99999, sem corpo.', 'Aguardando', 'Sem formulário, não há nada para a porta conferir.'],
@@ -231,14 +230,13 @@
       ['repository', 'Perguntar ao banco', 'findById(99999) envia um SELECT.', 'Aguardando', 'O resultado volta numa caixa: o Optional.'],
       ['database', 'Nenhuma linha', 'Não há produto com id 99999.', 'Aguardando', 'A caixa volta vazia.'],
       ['service', 'A caixa está vazia', 'orElseThrow lança ResponseStatusException com 404. O return nem executa.', 'Aguardando', 'Quem traduz essa exceção é o próprio Spring.'],
-      ['client', 'Resposta', '"message": "Produto não encontrado".', '404 Not Found', 'O Mapper não trabalhou: não havia o que traduzir.']
+      ['client', 'Resposta', '"message": "Produto não encontrado".', '404 Not Found', 'O paraResposta nem foi chamado: não havia comprovante para montar.']
     ],
     supplier: [
       ['client', 'O pedido sai', 'POST /produtos com dados válidos e "fornecedorId": 99999.', 'Aguardando', 'O formulário está bem preenchido.'],
       ['door', 'A porta deixa passar', '@NotNull no fornecedorId passa: o número está lá.', 'Aguardando', 'A porta não sabe se o fornecedor 99999 existe; ela só vê o JSON.'],
       ['controller', 'O Controller repassa', 'cadastrar(dto) chama service.cadastrar(dto).', 'Aguardando', 'Até aqui, tudo igual ao caso válido.'],
-      ['service', 'O Service organiza', 'O Service traduz o formulário e vai ligar o fornecedor.', 'Aguardando', 'É ele quem conhece as regras de dados.'],
-      ['mapper', 'Traduzir para entidade', 'ProdutoMapper.toEntity(dto) cria o Produto, ainda sem fornecedor.', 'Aguardando', 'O produto existe só na memória.'],
+      ['service', 'Montar a entidade', 'new Produto() e os quatro set copiam o formulário. Falta ligar o fornecedor.', 'Aguardando', 'O produto existe só na memória.'],
       ['repository', 'Procurar o fornecedor', 'FornecedorRepository.findById(99999).', 'Aguardando', 'Uma pergunta ao banco.'],
       ['database', 'Nenhuma linha', 'Não existe fornecedor 99999.', 'Aguardando', 'A caixa volta vazia.'],
       ['service', 'Falhar antes de salvar', 'buscarFornecedorOuFalhar lança 404. O save nunca é chamado.', 'Aguardando', 'O produto da memória é descartado; nada vai para o banco.'],
@@ -258,7 +256,7 @@
     });
     $('#request-title').textContent = title; $('#request-description').textContent = description;
     $('#request-response').textContent = response;
-    $('#request-records').textContent = last ? `Peças que trabalharam: ${used.size} de 8.` : `Peças acionadas até agora: ${seen.size} de 8.`;
+    $('#request-records').textContent = last ? `Peças que trabalharam: ${used.size} de 7.` : `Peças acionadas até agora: ${seen.size} de 7.`;
     $('#request-caption').textContent = caption;
     $('#request-step').textContent = `${requestIndex + 1} / ${steps.length}`;
     $('#request-prev').disabled = requestIndex === 0; $('#request-next').disabled = last;

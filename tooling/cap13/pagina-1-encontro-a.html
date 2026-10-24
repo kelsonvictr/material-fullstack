@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Produto e Cliente com DTO, record, Mapper, BigDecimal, 404, validação, tratador de erros e o primeiro relacionamento @ManyToOne."><title>Cap 13 · Produto e Cliente: a API fica profissional | Programa AI</title><link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&amp;family=JetBrains+Mono:wght@400;600;700&amp;family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet"><link rel="stylesheet" href="../../shared/styles.css"><link rel="stylesheet" href="../../shared/components.css"><link rel="stylesheet" href="../../shared/animations.css"><link rel="stylesheet" href="./cap13.css"><noscript><style>.step-section{opacity:1;transform:none}.lab{display:none}</style></noscript></head>
+<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Produto e Cliente com DTO, record, BigDecimal, 404, validação, tratador de erros e o primeiro relacionamento @ManyToOne."><title>Cap 13 · Produto e Cliente: a API fica profissional | Programa AI</title><link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&amp;family=JetBrains+Mono:wght@400;600;700&amp;family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet"><link rel="stylesheet" href="../../shared/styles.css"><link rel="stylesheet" href="../../shared/components.css"><link rel="stylesheet" href="../../shared/animations.css"><link rel="stylesheet" href="./cap13.css"><noscript><style>.step-section{opacity:1;transform:none}.lab{display:none}</style></noscript></head>
 <body class="spring-chapter"><a class="skip-link" href="#conteudo">Pular para o conteúdo</a><div class="bg-grid" aria-hidden="true"></div><div class="progress-track" aria-hidden="true"><div class="progress-bar"></div></div><button type="button" class="menu-toggle" aria-label="Abrir navegação" aria-expanded="false" aria-controls="chapter-menu">☰</button><div class="sidebar-overlay"></div>
 <nav class="sidebar-nav" id="chapter-menu" aria-label="Navegação do capítulo" inert><button type="button" class="sidebar-close" aria-label="Fechar navegação">✕</button><div class="sidebar-header"><h3>🧾 Cap 13 · DTO e validação</h3><a class="sidebar-back" href="../../index.html">← Mapa do curso</a></div><div class="sidebar-group"><span class="sidebar-group-title">ENCONTRO A · A PORTA DE ENTRADA</span><a class="sidebar-link" href="#mapa">00 · Três contas em aberto</a><a class="sidebar-link" href="#dto">01 · DTO: o formulário da recepção</a><a class="sidebar-link" href="#record">02 · record: um DTO em poucas linhas</a><a class="sidebar-link" href="#recepcao">03 · LAB: o mesmo JSON, dois mundos</a><a class="sidebar-link" href="#dinheiro">04 · Dinheiro não é double</a><a class="sidebar-link" href="#post">05 · C · Cadastrar um produto</a><a class="sidebar-link" href="#listar">06 · R · Listar: a esteira</a><a class="sidebar-link" href="#buscar">07 · R · Buscar: o 404 de verdade</a><a class="sidebar-link" href="#atualizar">08 · U · Atualizar sem perder nada</a><a class="sidebar-link" href="#excluir">09 · D · Excluir com 404</a><span class="sidebar-group-title">ENCONTRO B · SEGURANÇA E RELACIONAMENTO</span><a class="sidebar-link" href="#validacao">10 · O segurança da porta (400)</a><a class="sidebar-link" href="#tratador">11 · A recepção explica o “não”</a><a class="sidebar-link" href="#fornecedor">12 · Produto ganha um fornecedor</a><a class="sidebar-link" href="#bastidores">13 · LAB: quem barra o quê</a><a class="sidebar-link" href="#cliente">14 · Sua vez: Cliente inteiro</a><a class="sidebar-link" href="#bugzilla">15 · BugZilla: erros previsíveis</a><a class="sidebar-link" href="#fechamento">16 · As contas pagas</a><a class="sidebar-link" href="./caderno.html" target="_blank" rel="noopener">📓 Meu caderno ↗</a></div></nav>
 <header class="hero spring-hero"><span class="hero-badge">CAPÍTULO 13 · BACKEND DO GESTORPRO</span><div class="hero-icons"><img src="../../assets/svg/spring.svg" alt="Spring" width="58" height="58"><span aria-hidden="true">＋</span><img src="../../assets/svg/java.svg" alt="Java" width="52" height="52"></div><h1>A mesma API.<br><em>Agora com porta.</em></h1><p class="subtitle">Produto e Cliente do jeito profissional: o que entra, o que sai, o que é barrado e o que não existe. Uma decisão por vez.</p><div class="hero-stack"><span class="stack-chip">DTO + record</span><span class="stack-chip">BigDecimal</span><span class="stack-chip">404 e 400 de verdade</span><span class="stack-chip">@ManyToOne</span></div><div class="hero-note"><span>ANTES</span><b>A entidade conversava com o mundo</b><i aria-hidden="true">→</i><span>AGORA</span><b>Cada coisa no seu lugar</b></div><a class="action" href="#mapa">Bora profissionalizar ↓</a></header>
@@ -38,7 +38,7 @@ docker exec gestorpro-postgres pg_isready -U gestorpro -d gestorpro
 <p>Onde a analogia para: o formulário não é uma tranca de segurança. Ele só define <strong>quais campos existem</strong>. Se algo não tem campo no formulário, não entra. Mas o que tem campo ainda pode vir errado; para isso existe a validação, no Encontro B.</p>
 <h3>O nome técnico</h3>
 <p><strong>DTO</strong> significa <em>Data Transfer Object</em>, ou objeto de transferência de dados. É uma classe que só carrega os dados que <strong>atravessam a fronteira HTTP</strong>, em uma direção. Não tem regra de negócio e não vai para o banco. Na clínica, o formulário e o comprovante são DTOs; o prontuário é a entidade.</p>
-<div class="flow-diagram" aria-label="O caminho dos dados com DTO"><div class="flow-row"><span class="flow-box json">JSON que chega</span><i aria-hidden="true">→</i><span class="flow-box dto">ProdutoRequestDTO<small>o formulário</small></span><i aria-hidden="true">→</i><span class="flow-box mapper">Mapper<small>copia os campos</small></span><i aria-hidden="true">→</i><span class="flow-box entity">Produto<small>a entidade</small></span><i aria-hidden="true">→</i><span class="flow-box db">🐘 banco</span></div><div class="flow-row back"><span class="flow-box json">JSON que sai</span><i aria-hidden="true">←</i><span class="flow-box dto">ProdutoResponseDTO<small>o comprovante</small></span><i aria-hidden="true">←</i><span class="flow-box mapper">Mapper</span><i aria-hidden="true">←</i><span class="flow-box entity">Produto</span><i aria-hidden="true">←</i><span class="flow-box db">🐘 banco</span></div></div>
+<div class="flow-diagram" aria-label="O caminho dos dados com DTO"><div class="flow-row"><span class="flow-box json">JSON que chega</span><i aria-hidden="true">→</i><span class="flow-box dto">ProdutoRequestDTO<small>o formulário</small></span><i aria-hidden="true">→</i><span class="flow-box service">Service<small>copia os campos</small></span><i aria-hidden="true">→</i><span class="flow-box entity">Produto<small>a entidade</small></span><i aria-hidden="true">→</i><span class="flow-box db">🐘 banco</span></div><div class="flow-row back"><span class="flow-box json">JSON que sai</span><i aria-hidden="true">←</i><span class="flow-box dto">ProdutoResponseDTO<small>o comprovante</small></span><i aria-hidden="true">←</i><span class="flow-box service">Service</span><i aria-hidden="true">←</i><span class="flow-box entity">Produto</span><i aria-hidden="true">←</i><span class="flow-box db">🐘 banco</span></div></div>
 <p>São <strong>dois</strong> DTOs, um para cada direção. O de entrada diz o que o cliente da API <strong>pode mandar</strong>. O de saída diz o que a API <strong>mostra</strong>. A entidade continua existindo, mas agora fica do lado de dentro, conversando só com o banco.</p>
 <p>Nosso Produto terá estes campos (os mesmos do GestorPRO que você construiu no React, mais um campo novo, <code>criadoEm</code>, a data e hora do cadastro):</p>
 <div class="table-scroll"><table><caption>Produto: quem preenche cada campo</caption><thead><tr><th>Campo</th><th>Quem decide o valor</th></tr></thead><tbody><tr><td><code>id</code></td><td>O banco, na hora de gravar.</td></tr><tr><td><code>nome</code>, <code>preco</code>, <code>estoque</code>, <code>categoria</code></td><td>Quem usa a API: são os dados do cadastro.</td></tr><tr><td><code>criadoEm</code></td><td>O servidor, com o relógio dele, no momento do cadastro.</td></tr></tbody></table></div>
@@ -124,11 +124,11 @@ System.out.println(new BigDecimal(0.1));
 <p class="transfer">Temos os DTOs desenhados e o tipo do dinheiro escolhido. Hora de construir o primeiro endpoint de ponta a ponta.</p>
 </div></section><div class="section-connector"><div class="line"></div></div>
 
-<section class="step-section" id="post"><div class="step-header"><div class="step-number sn-green">05</div><div><h2 class="step-title">C · Cadastrar um produto</h2><p class="step-sub">Seis arquivos, um POST, e a conta nº 1 paga.</p></div></div><div class="card">
+<section class="step-section" id="post"><div class="step-header"><div class="step-number sn-green">05</div><div><h2 class="step-title">C · Cadastrar um produto</h2><p class="step-sub">Cinco arquivos, um POST, e a conta nº 1 paga.</p></div></div><div class="card">
 <div class="endpoint"><span>POST</span><code>http://localhost:8080/produtos</code><b>201 Created</b></div>
-<p>A ordem de construção é a do Cap 12, com duas peças novas no meio. O pedido vai percorrer o caminho ao contrário, mas construímos de dentro para fora:</p>
-<div class="crud-strip build-order"><span><b>1</b>Model</span><span><b>2</b>Repository</span><span><b>3</b>DTOs</span><span><b>4</b>Mapper</span><span><b>5</b>Service</span><span><b>6</b>Controller</span></div>
-<p>Todos os arquivos ficam dentro de <code>com.gestorpro.api</code>, ao lado dos de Fornecedor. Dois pacotes são novos: <code>dto</code> e <code>mapper</code>.</p>
+<p>A ordem de construção é a do Cap 12, com uma peça nova no meio: os DTOs. O pedido vai percorrer o caminho ao contrário, mas construímos de dentro para fora:</p>
+<div class="crud-strip build-order"><span><b>1</b>Model</span><span><b>2</b>Repository</span><span><b>3</b>DTOs</span><span><b>4</b>Service</span><span><b>5</b>Controller</span></div>
+<p>Todos os arquivos ficam dentro de <code>com.gestorpro.api</code>, ao lado dos de Fornecedor. Um pacote é novo: <code>dto</code>.</p>
 <h3>Passo 1 · Model: a entidade Produto</h3>
 <p>No pacote <code>model</code>, crie a classe <code>Produto</code>. A estrutura é a mesma do Fornecedor; os tipos são novos:</p>
 <!--JAVA 1 model/Produto.java-->
@@ -142,18 +142,17 @@ System.out.println(new BigDecimal(0.1));
 <p>O de saída mostra tudo o que o cadastro tem, inclusive o que só o servidor decide:</p>
 <!--JAVA 1 dto/ProdutoResponseDTO.java-->
 <div class="tip"><strong>Escrever em linhas separadas é só organização.</strong> <code>record ProdutoRequestDTO(String nome, BigDecimal preco, ...)</code> numa linha só funcionaria igual. Uma linha por componente fica mais fácil de ler e, no Encontro B, de anotar.</div>
-<h3>Passo 4 · Mapper: o tradutor</h3>
-<p>Alguém precisa copiar os dados do formulário para a entidade e da entidade para o comprovante. Poderíamos fazer isso dentro do Service, mas a cópia vai se repetir em vários endpoints. Ela ganha uma classe própria. Crie o pacote <code>mapper</code> e a classe <code>ProdutoMapper</code>:</p>
-<!--JAVA 1 mapper/ProdutoMapper.java-->
-<ul><li><code>toEntity</code> (“para entidade”) cria um <code>Produto</code> vazio e copia os quatro campos do formulário. Repare no que <strong>não</strong> é copiado: <code>id</code> e <code>criadoEm</code>. Não existe de onde copiar.</li><li><code>toResponse</code> (“para resposta”) monta o comprovante com <code>new ProdutoResponseDTO(...)</code>. Os valores vão <strong>na mesma ordem</strong> dos componentes do record.</li><li><code>static</code>, como você viu no Cap 11: o método pertence à classe. Chamamos <code>ProdutoMapper.toEntity(dto)</code> sem fazer <code>new ProdutoMapper()</code>. O Mapper não guarda nada; ele só traduz.</li></ul>
-<h3>Passo 5 · Service: cadastrar</h3>
+<h3>Passo 4 · Service: cadastrar</h3>
+<p>Alguém precisa copiar os dados do formulário para a entidade e, depois de salvar, montar o comprovante. Quem faz isso é o Service: ele é a camada que conhece os dois lados, o DTO e a entidade.</p>
 <!--JAVA 1 service/ProdutoService.java-->
-<p>O método <code>cadastrar</code> tem quatro linhas, uma por tarefa: <strong>traduzir</strong> o formulário em entidade; <strong>carimbar</strong> a data com o relógio do servidor (<code>LocalDateTime.now()</code>); <strong>salvar</strong> (o <code>save</code> devolve a entidade já com o ID gerado); e <strong>traduzir de volta</strong> para o comprovante. A data é uma regra do servidor, por isso mora no Service, e não no Mapper.</p>
-<h3>Passo 6 · Controller</h3>
+<p>O método <code>cadastrar</code> faz quatro tarefas, nesta ordem:</p>
+<ul><li><strong>Montar a entidade:</strong> <code>new Produto()</code> cria um produto vazio, e os quatro <code>set</code> copiam os campos do formulário. Repare no que <strong>não</strong> vem do formulário: <code>id</code> e <code>criadoEm</code>. Não existe de onde copiar.</li><li><strong>Carimbar a data</strong> com o relógio do servidor (<code>LocalDateTime.now()</code>). A data é uma regra do servidor, por isso mora no Service.</li><li><strong>Salvar:</strong> o <code>save</code> devolve a entidade já com o ID gerado pelo banco. Guardamos em <code>salvo</code>.</li><li><strong>Montar o comprovante:</strong> <code>new ProdutoResponseDTO(...)</code> recebe os valores <strong>na mesma ordem</strong> dos componentes do record.</li></ul>
+<div class="tip"><strong>Duas formas de ler um valor.</strong> No formulário, que é um record, a leitura é <code>dto.nome()</code>, sem <code>get</code>. Na entidade, que tem <code>@Getter</code> do Lombok, é <code>salvo.getNome()</code>. Trocar uma pela outra é o erro de compilação mais comum desta seção.</div>
+<h3>Passo 5 · Controller</h3>
 <!--JAVA 1 controller/ProdutoController.java-->
-<p>Compare com o Controller de Fornecedor: o <code>@RequestBody</code> agora preenche um <code>ProdutoRequestDTO</code>, e o retorno é um <code>ProdutoResponseDTO</code>. <strong>O Controller não conhece a entidade.</strong> Quem conhece os dois lados é o Service, com a ajuda do Mapper.</p>
-<div class="layer-knows"><div><b>🎮 Controller</b><span>conhece só DTOs</span></div><div><b>⚙️ Service + 🔁 Mapper</b><span>traduzem entre DTO e entidade</span></div><div><b>🗄️ Repository</b><span>conhece só a entidade</span></div></div>
-<h3>Passo 7 · Testar no Insomnia</h3>
+<p>Compare com o Controller de Fornecedor: o <code>@RequestBody</code> agora preenche um <code>ProdutoRequestDTO</code>, e o retorno é um <code>ProdutoResponseDTO</code>. <strong>O Controller não conhece a entidade.</strong> Quem conhece os dois lados é o Service.</p>
+<div class="layer-knows"><div><b>🎮 Controller</b><span>conhece só DTOs</span></div><div><b>⚙️ Service</b><span>copia entre DTO e entidade</span></div><div><b>🗄️ Repository</b><span>conhece só a entidade</span></div></div>
+<h3>Passo 6 · Testar no Insomnia</h3>
 <ol class="steps"><li>Reinicie a API no IntelliJ. No console, procure <code>create table produtos</code>: o Hibernate criou a tabela.</li><li>No Insomnia, crie uma pasta <strong>Produtos</strong> e, dentro dela, a requisição <strong>Cadastrar produto</strong>: método <strong>POST</strong>, URL <code>http://localhost:8080/produtos</code>, body JSON:</li></ol>
 <!--CODE json|Body · cadastrar o Teclado-->
 {
@@ -178,7 +177,7 @@ System.out.println(new BigDecimal(0.1));
 <!--CODE sql|psql · a linha gravada-->
 SELECT id, nome, preco, estoque, criado_em FROM produtos ORDER BY id;
 <!--/CODE-->
-<h3>Passo 8 · O teste da conta nº 1</h3>
+<h3>Passo 7 · O teste da conta nº 1</h3>
 <p>Agora repita o “ataque” do LAB. Crie outra requisição POST com o ID do teclado e uma data inventada:</p>
 <!--CODE json|Body · o JSON com campos que não deveriam estar ali-->
 {
@@ -193,19 +192,33 @@ SELECT id, nome, preco, estoque, criado_em FROM produtos ORDER BY id;
 <p><strong>O que esperar:</strong> 201 com um <strong>ID novo</strong> (2, se for o seu segundo cadastro) e o <code>criadoEm</code> de agora, não do ano 2000. Rode o <code>SELECT</code> de novo: o Teclado Mecânico continua intacto na linha 1. O <code>id</code> e o <code>criadoEm</code> do JSON não tinham campo no formulário e ficaram de fora.</p>
 <div class="checkpoint">✓ Conta nº 1 paga: quem chama a API não escolhe mais o ID nem a data do cadastro.</div>
 <div class="exercise solo"><h3>✍️ Abasteça a loja</h3><p>Cadastre mais um produto: <strong>Monitor 27 pol</strong>, preço 1450.00, estoque 4, categoria Monitores. Antes de enviar, preveja: qual ID volta? Qual <code>criadoEm</code>?</p><details class="answer"><summary>💡 Uma dica</summary><div>O ID é o próximo livre da sequência do banco, mesmo que você tenha excluído linhas pelo psql. O <code>criadoEm</code> é o momento do envio.</div></details><div class="try-first">🚨 PARE! Tente primeiro. Compare o resultado, não só o código.</div><details class="answer"><summary>👀 Só depois de tentar: conferir</summary><div><p>201, o ID seguinte aos que você já criou (3, se foram dois antes), e a data e hora atuais. O <code>SELECT</code> mostra três linhas, com <code>preco</code> sempre com duas casas: <code>1450.00</code>.</p></div></details></div>
-<details class="answer"><summary>🐛 Deu erro? Os três mais comuns aqui</summary><div><ul><li><strong><code>cannot find symbol … method getNome()</code></strong> no Mapper: num record a leitura é <code>dto.nome()</code>, sem <code>get</code>.</li><li><strong>A resposta veio com um campo <code>null</code></strong>, sem erro nenhum: o Mapper esqueceu de copiar esse campo. Confira as quatro linhas do <code>toEntity</code> e os seis valores do <code>toResponse</code>.</li><li><strong>500 ao mandar um JSON sem <code>estoque</code></strong>: o banco recusou, porque a coluna é <code>NOT NULL</code>. Está certo recusar, mas 500 é o status errado. O conserto é a validação, no Encontro B.</li></ul></div></details>
+<details class="answer"><summary>🐛 Deu erro? Os três mais comuns aqui</summary><div><ul><li><strong><code>cannot find symbol … method getNome()</code></strong> no Service: num record a leitura é <code>dto.nome()</code>, sem <code>get</code>.</li><li><strong>A resposta veio com um campo <code>null</code></strong>, sem erro nenhum: faltou copiar esse campo no Service. Confira os quatro <code>set</code> do <code>cadastrar</code> e os seis valores do <code>new ProdutoResponseDTO(...)</code>.</li><li><strong>500 ao mandar um JSON sem <code>estoque</code></strong>: o banco recusou, porque a coluna é <code>NOT NULL</code>. Está certo recusar, mas 500 é o status errado. O conserto é a validação, no Encontro B.</li></ul></div></details>
 <p class="transfer">Cadastrar já devolve o comprovante. Listar precisa devolver um comprovante para cada produto, e é aí que aparece uma ferramenta nova.</p>
 </div></section><div class="section-connector"><div class="line"></div></div>
 
 <section class="step-section" id="listar"><div class="step-header"><div class="step-number sn-green">06</div><div><h2 class="step-title">R · Listar: a esteira</h2><p class="step-sub">Converter uma lista inteira, e a primeira lambda do backend.</p></div></div><div class="card">
 <div class="endpoint"><span>GET</span><code>http://localhost:8080/produtos</code><b>200 OK</b></div>
-<p>O <code>produtoRepository.findAll()</code> devolve uma <code>List&lt;Produto&gt;</code>: entidades. Mas o Controller só fala DTO. Precisamos transformar cada <code>Produto</code> em um <code>ProdutoResponseDTO</code> e juntar tudo numa lista nova. Primeiro, do jeito que você já sabe, com <code>for</code>:</p>
+<p>O <code>produtoRepository.findAll()</code> devolve uma <code>List&lt;Produto&gt;</code>: entidades. Mas o Controller só fala DTO. Precisamos transformar cada <code>Produto</code> em um <code>ProdutoResponseDTO</code> e juntar tudo numa lista nova.</p>
+<p>O <code>cadastrar</code> já sabe montar um comprovante: é o <code>new ProdutoResponseDTO(...)</code> do <code>return</code>. O listar vai precisar da mesma montagem, uma vez para cada produto. Em vez de copiar aquelas linhas, elas ganham um nome: o método <code>paraResposta</code>. Ele recebe uma entidade e devolve o comprovante. É <code>private</code> porque só o próprio Service usa.</p>
+<!--CODE java|O método novo, no fim do Service (não digite ainda)-->
+private ProdutoResponseDTO paraResposta(Produto produto) {
+    return new ProdutoResponseDTO(
+            produto.getId(),
+            produto.getNome(),
+            produto.getPreco(),
+            produto.getEstoque(),
+            produto.getCategoria(),
+            produto.getCriadoEm()
+    );
+}
+<!--/CODE-->
+<p>Com ele, o listar precisa chamar <code>paraResposta</code> para cada produto da lista. Primeiro, do jeito que você já sabe, com <code>for</code>:</p>
 <!--CODE java|Versão com for · só para comparar (não digite)-->
 public List<ProdutoResponseDTO> listar() {
     List<Produto> produtos = produtoRepository.findAll();
     List<ProdutoResponseDTO> respostas = new ArrayList<>();
     for (Produto produto : produtos) {
-        respostas.add(ProdutoMapper.toResponse(produto));
+        respostas.add(paraResposta(produto));
     }
     return respostas;
 }
@@ -217,22 +230,22 @@ const nomes = produtos.map(produto => produto.nome);
 <p>Em Java, a mesma ideia fica assim:</p>
 <!--CODE java|Java · a mesma transformação, com stream-->
 produtos.stream()
-        .map(produto -> ProdutoMapper.toResponse(produto))
+        .map(produto -> paraResposta(produto))
         .toList();
 <!--/CODE-->
 <div class="analogy"><h3>🏭 A esteira</h3><p><code>stream()</code> liga a esteira e coloca os produtos nela, um atrás do outro. <code>map(...)</code> é uma estação de trabalho: cada produto que passa entra como entidade e sai como comprovante. <code>toList()</code> é a caixa no fim da esteira, que junta tudo numa lista nova. A lista original não muda.</p></div>
-<h3>Como ler <code>produto -&gt; ProdutoMapper.toResponse(produto)</code></h3>
+<h3>Como ler <code>produto -&gt; paraResposta(produto)</code></h3>
 <p>Isso é uma <strong>lambda</strong>: uma função curta, sem nome, escrita no lugar onde é usada. É a mesma ideia da arrow function do Cap 2. À esquerda da seta, o <strong>parâmetro</strong>: o item que está passando (chamamos de <code>produto</code>, mas o nome é escolha sua). À direita, o <strong>corpo</strong>: o que fazer com ele. O resultado do corpo é devolvido automaticamente, sem <code>return</code>.</p>
 <div class="arrow-compare"><div><small>JavaScript</small><code>produto =&gt; ...</code><span>igual + maior</span></div><div><small>Java</small><code>produto -&gt; ...</code><span>hífen + maior</span></div></div>
 <div class="warning"><strong>⚠️ A seta do Java são dois caracteres: <kbd>-</kbd> seguido de <kbd>&gt;</kbd>.</strong> O IntelliJ e o VS Code costumam desenhar os dois juntos como uma seta só (→), por causa de uma fonte com “ligaduras”. É só desenho: digite hífen e sinal de maior. Se você copiar uma seta → de algum lugar, o Java responde <code>illegal character: '\u2192'</code>. E se escrever a seta do JavaScript (<code>=&gt;</code>), responde <code>illegal start of expression</code>.</div>
 <h3>Passo 1 · Service: listar</h3>
 <!--JAVA 2 service/ProdutoService.java-->
-<p>Novo também: o <code>import java.util.List;</code>. Ele fica no fim da lista de imports: o IntelliJ separa os imports do próprio Java (<code>java.*</code>) com uma linha em branco e os coloca por último.</p>
+<p>Repare no <code>cadastrar</code>: o <code>return</code> agora só chama <code>paraResposta(salvo)</code>. O comprovante passa a ser montado num lugar só, e o <code>cadastrar</code> e o <code>listar</code> usam o mesmo método. Novo também: o <code>import java.util.List;</code>. Ele fica no fim da lista de imports: o IntelliJ separa os imports do próprio Java (<code>java.*</code>) com uma linha em branco e os coloca por último.</p>
 <h3>Passo 2 · Controller: listar</h3>
 <!--JAVA 2 controller/ProdutoController.java-->
 <h3>Passo 3 · Testar</h3>
 <p>Reinicie a API e envie <code>GET http://localhost:8080/produtos</code>. <strong>Resultado esperado:</strong> 200 e uma lista entre colchetes com todos os produtos, cada um no formato do comprovante, com <code>id</code> e <code>criadoEm</code>. Se a tabela estiver vazia, a resposta é <code>[]</code>, também com 200: uma lista vazia ainda é uma resposta válida.</p>
-<div class="decision" data-explanation="map transforma cada item em outra coisa, um por um, e toList junta os resultados. Entram 3 produtos, saem 3 comprovantes. Nenhum item é filtrado nem somado."><h4>🧠 O banco tem 3 produtos. O que <code>.map(produto -&gt; ProdutoMapper.toResponse(produto)).toList()</code> devolve?</h4><div class="choices"><button type="button" data-choice="false" aria-pressed="false">Só o primeiro produto, já convertido.</button><button type="button" data-choice="true" aria-pressed="false">Uma lista com 3 comprovantes, um para cada produto, na mesma ordem.</button><button type="button" data-choice="false" aria-pressed="false">A mesma lista de entidades, agora alterada.</button></div><p class="feedback" role="status" aria-live="polite">Escolha uma resposta. Você pode tentar novamente.</p></div>
+<div class="decision" data-explanation="map transforma cada item em outra coisa, um por um, e toList junta os resultados. Entram 3 produtos, saem 3 comprovantes. Nenhum item é filtrado nem somado."><h4>🧠 O banco tem 3 produtos. O que <code>.map(produto -&gt; paraResposta(produto)).toList()</code> devolve?</h4><div class="choices"><button type="button" data-choice="false" aria-pressed="false">Só o primeiro produto, já convertido.</button><button type="button" data-choice="true" aria-pressed="false">Uma lista com 3 comprovantes, um para cada produto, na mesma ordem.</button><button type="button" data-choice="false" aria-pressed="false">A mesma lista de entidades, agora alterada.</button></div><p class="feedback" role="status" aria-live="polite">Escolha uma resposta. Você pode tentar novamente.</p></div>
 <p class="transfer">Listar devolve todos. E se pedirmos um produto que não existe? Aqui entra a conta nº 2.</p>
 </div></section><div class="section-connector"><div class="line"></div></div>
 
@@ -272,17 +285,14 @@ Produto produto = produtoRepository.findById(id)
 <div class="endpoint"><span>PUT</span><code>http://localhost:8080/produtos/{id}</code><b>200 OK · 404 Not Found</b></div>
 <p>No Cap 12, o PUT fazia <code>fornecedor.setId(id)</code> e <code>save</code>: montava um objeto novo com os dados do JSON e gravava por cima. Pense no que isso faria com o Produto. O JSON do PUT não tem <code>criadoEm</code> (nem pode ter: o DTO não deixa). O objeto novo chegaria com a data vazia, e o banco recusaria, porque a coluna é <code>NOT NULL</code>. E, se a coluna aceitasse vazio, a data do cadastro original seria apagada.</p>
 <p>O jeito certo tem três passos: <strong>buscar</strong> o produto que já existe (404 se não houver), <strong>copiar</strong> para ele só os campos do formulário, e <strong>salvar</strong>. O que o formulário não tem, como <code>id</code> e <code>criadoEm</code>, fica como estava.</p>
-<h3>Passo 1 · Mapper: copiar para um produto existente</h3>
-<p>O <code>toEntity</code> já copia os quatro campos, mas para um produto <strong>novo</strong>. Agora precisamos copiar para um produto que já existe. Em vez de escrever as mesmas quatro linhas duas vezes, elas vão para um método <code>atualizar</code>, e o <code>toEntity</code> passa a usá-lo:</p>
-<!--JAVA 4 mapper/ProdutoMapper.java-->
-<p><code>atualizar</code> é <code>void</code>: não devolve nada, porque altera o produto que recebeu. Depois dele, o mesmo objeto <code>produto</code> já está com os dados novos.</p>
-<h3>Passo 2 · Service: atualizar, e um método novo</h3>
-<p>O PUT também precisa de “buscar ou responder 404”. Aquele trecho do <code>orElseThrow</code> apareceria duas vezes. Quando um trecho se repete, ele ganha um nome: <code>buscarOuFalhar</code>. É <code>private</code> porque só o próprio Service usa.</p>
+<h3>Passo 1 · Service: atualizar, e um método novo</h3>
+<p>O PUT também precisa de “buscar ou responder 404”. Aquele trecho do <code>orElseThrow</code> apareceria duas vezes. Quando um trecho se repete, ele ganha um nome, como fizemos com o <code>paraResposta</code>: <code>buscarOuFalhar</code>. Também é <code>private</code>.</p>
 <!--JAVA 4 service/ProdutoService.java-->
-<p>Repare que o <code>buscar</code> também ficou mais curto: agora ele só chama <code>buscarOuFalhar</code> e traduz.</p>
-<h3>Passo 3 · Controller: atualizar</h3>
+<p>Os quatro <code>set</code> do <code>atualizar</code> são os mesmos do <code>cadastrar</code>, com uma diferença importante: aqui não há <code>new Produto()</code>. Os dados novos são copiados para o produto que <strong>veio do banco</strong>, e por isso o <code>id</code> e o <code>criadoEm</code> dele ficam como estavam.</p>
+<p>Repare que o <code>buscar</code> também ficou mais curto: agora ele só chama <code>buscarOuFalhar</code> e <code>paraResposta</code>.</p>
+<h3>Passo 2 · Controller: atualizar</h3>
 <!--JAVA 4 controller/ProdutoController.java-->
-<h3>Passo 4 · Testar</h3>
+<h3>Passo 3 · Testar</h3>
 <p>Anote o <code>criadoEm</code> do teclado (pelo GET). Envie <code>PUT http://localhost:8080/produtos/1</code> com:</p>
 <!--CODE json|Body · o teclado ficou RGB e mais caro-->
 {

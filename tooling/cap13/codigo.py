@@ -92,41 +92,11 @@ public record ProdutoResponseDTO(
 }
 '''
 
-MAPPER_1 = '''package com.gestorpro.api.mapper;
-
-import com.gestorpro.api.dto.ProdutoRequestDTO;
-import com.gestorpro.api.dto.ProdutoResponseDTO;
-import com.gestorpro.api.model.Produto;
-
-public class ProdutoMapper {
-    public static Produto toEntity(ProdutoRequestDTO dto) {
-        Produto produto = new Produto();
-        produto.setNome(dto.nome());
-        produto.setPreco(dto.preco());
-        produto.setEstoque(dto.estoque());
-        produto.setCategoria(dto.categoria());
-        return produto;
-    }
-
-    public static ProdutoResponseDTO toResponse(Produto produto) {
-        return new ProdutoResponseDTO(
-                produto.getId(),
-                produto.getNome(),
-                produto.getPreco(),
-                produto.getEstoque(),
-                produto.getCategoria(),
-                produto.getCriadoEm()
-        );
-    }
-}
-'''
-
 SERVICE_1 = '''package com.gestorpro.api.service;
 
 import java.time.LocalDateTime;
 import com.gestorpro.api.dto.ProdutoRequestDTO;
 import com.gestorpro.api.dto.ProdutoResponseDTO;
-import com.gestorpro.api.mapper.ProdutoMapper;
 import com.gestorpro.api.model.Produto;
 import com.gestorpro.api.repository.ProdutoRepository;
 import lombok.RequiredArgsConstructor;
@@ -138,10 +108,22 @@ public class ProdutoService {
     private final ProdutoRepository produtoRepository;
 
     public ProdutoResponseDTO cadastrar(ProdutoRequestDTO dto) {
-        Produto produto = ProdutoMapper.toEntity(dto);
+        Produto produto = new Produto();
+        produto.setNome(dto.nome());
+        produto.setPreco(dto.preco());
+        produto.setEstoque(dto.estoque());
+        produto.setCategoria(dto.categoria());
         produto.setCriadoEm(LocalDateTime.now());
+
         Produto salvo = produtoRepository.save(produto);
-        return ProdutoMapper.toResponse(salvo);
+        return new ProdutoResponseDTO(
+                salvo.getId(),
+                salvo.getNome(),
+                salvo.getPreco(),
+                salvo.getEstoque(),
+                salvo.getCategoria(),
+                salvo.getCriadoEm()
+        );
     }
 }
 '''
@@ -180,7 +162,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import com.gestorpro.api.dto.ProdutoRequestDTO;
 import com.gestorpro.api.dto.ProdutoResponseDTO;
-import com.gestorpro.api.mapper.ProdutoMapper;
 import com.gestorpro.api.model.Produto;
 import com.gestorpro.api.repository.ProdutoRepository;
 import lombok.RequiredArgsConstructor;
@@ -192,17 +173,33 @@ public class ProdutoService {
     private final ProdutoRepository produtoRepository;
 
     public ProdutoResponseDTO cadastrar(ProdutoRequestDTO dto) {
-        Produto produto = ProdutoMapper.toEntity(dto);
+        Produto produto = new Produto();
+        produto.setNome(dto.nome());
+        produto.setPreco(dto.preco());
+        produto.setEstoque(dto.estoque());
+        produto.setCategoria(dto.categoria());
         produto.setCriadoEm(LocalDateTime.now());
+
         Produto salvo = produtoRepository.save(produto);
-        return ProdutoMapper.toResponse(salvo);
+        return paraResposta(salvo);
     }
 
     public List<ProdutoResponseDTO> listar() {
         List<Produto> produtos = produtoRepository.findAll();
         return produtos.stream()
-                .map(produto -> ProdutoMapper.toResponse(produto))
+                .map(produto -> paraResposta(produto))
                 .toList();
+    }
+
+    private ProdutoResponseDTO paraResposta(Produto produto) {
+        return new ProdutoResponseDTO(
+                produto.getId(),
+                produto.getNome(),
+                produto.getPreco(),
+                produto.getEstoque(),
+                produto.getCategoria(),
+                produto.getCriadoEm()
+        );
     }
 }
 '''
@@ -249,7 +246,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import com.gestorpro.api.dto.ProdutoRequestDTO;
 import com.gestorpro.api.dto.ProdutoResponseDTO;
-import com.gestorpro.api.mapper.ProdutoMapper;
 import com.gestorpro.api.model.Produto;
 import com.gestorpro.api.repository.ProdutoRepository;
 import lombok.RequiredArgsConstructor;
@@ -263,16 +259,21 @@ public class ProdutoService {
     private final ProdutoRepository produtoRepository;
 
     public ProdutoResponseDTO cadastrar(ProdutoRequestDTO dto) {
-        Produto produto = ProdutoMapper.toEntity(dto);
+        Produto produto = new Produto();
+        produto.setNome(dto.nome());
+        produto.setPreco(dto.preco());
+        produto.setEstoque(dto.estoque());
+        produto.setCategoria(dto.categoria());
         produto.setCriadoEm(LocalDateTime.now());
+
         Produto salvo = produtoRepository.save(produto);
-        return ProdutoMapper.toResponse(salvo);
+        return paraResposta(salvo);
     }
 
     public List<ProdutoResponseDTO> listar() {
         List<Produto> produtos = produtoRepository.findAll();
         return produtos.stream()
-                .map(produto -> ProdutoMapper.toResponse(produto))
+                .map(produto -> paraResposta(produto))
                 .toList();
     }
 
@@ -280,7 +281,18 @@ public class ProdutoService {
         Produto produto = produtoRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Produto não encontrado"));
-        return ProdutoMapper.toResponse(produto);
+        return paraResposta(produto);
+    }
+
+    private ProdutoResponseDTO paraResposta(Produto produto) {
+        return new ProdutoResponseDTO(
+                produto.getId(),
+                produto.getNome(),
+                produto.getPreco(),
+                produto.getEstoque(),
+                produto.getCategoria(),
+                produto.getCriadoEm()
+        );
     }
 }
 '''
@@ -303,46 +315,12 @@ CONTROLLER_3 = CONTROLLER_2.replace(
 ''')
 
 # ───────────────────────── Etapa 4 · PUT ─────────────────────────
-MAPPER_4 = '''package com.gestorpro.api.mapper;
-
-import com.gestorpro.api.dto.ProdutoRequestDTO;
-import com.gestorpro.api.dto.ProdutoResponseDTO;
-import com.gestorpro.api.model.Produto;
-
-public class ProdutoMapper {
-    public static Produto toEntity(ProdutoRequestDTO dto) {
-        Produto produto = new Produto();
-        atualizar(produto, dto);
-        return produto;
-    }
-
-    public static void atualizar(Produto produto, ProdutoRequestDTO dto) {
-        produto.setNome(dto.nome());
-        produto.setPreco(dto.preco());
-        produto.setEstoque(dto.estoque());
-        produto.setCategoria(dto.categoria());
-    }
-
-    public static ProdutoResponseDTO toResponse(Produto produto) {
-        return new ProdutoResponseDTO(
-                produto.getId(),
-                produto.getNome(),
-                produto.getPreco(),
-                produto.getEstoque(),
-                produto.getCategoria(),
-                produto.getCriadoEm()
-        );
-    }
-}
-'''
-
 SERVICE_4 = '''package com.gestorpro.api.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import com.gestorpro.api.dto.ProdutoRequestDTO;
 import com.gestorpro.api.dto.ProdutoResponseDTO;
-import com.gestorpro.api.mapper.ProdutoMapper;
 import com.gestorpro.api.model.Produto;
 import com.gestorpro.api.repository.ProdutoRepository;
 import lombok.RequiredArgsConstructor;
@@ -356,35 +334,55 @@ public class ProdutoService {
     private final ProdutoRepository produtoRepository;
 
     public ProdutoResponseDTO cadastrar(ProdutoRequestDTO dto) {
-        Produto produto = ProdutoMapper.toEntity(dto);
+        Produto produto = new Produto();
+        produto.setNome(dto.nome());
+        produto.setPreco(dto.preco());
+        produto.setEstoque(dto.estoque());
+        produto.setCategoria(dto.categoria());
         produto.setCriadoEm(LocalDateTime.now());
+
         Produto salvo = produtoRepository.save(produto);
-        return ProdutoMapper.toResponse(salvo);
+        return paraResposta(salvo);
     }
 
     public List<ProdutoResponseDTO> listar() {
         List<Produto> produtos = produtoRepository.findAll();
         return produtos.stream()
-                .map(produto -> ProdutoMapper.toResponse(produto))
+                .map(produto -> paraResposta(produto))
                 .toList();
     }
 
     public ProdutoResponseDTO buscar(Long id) {
         Produto produto = buscarOuFalhar(id);
-        return ProdutoMapper.toResponse(produto);
+        return paraResposta(produto);
     }
 
     public ProdutoResponseDTO atualizar(Long id, ProdutoRequestDTO dto) {
         Produto produto = buscarOuFalhar(id);
-        ProdutoMapper.atualizar(produto, dto);
+        produto.setNome(dto.nome());
+        produto.setPreco(dto.preco());
+        produto.setEstoque(dto.estoque());
+        produto.setCategoria(dto.categoria());
+
         Produto salvo = produtoRepository.save(produto);
-        return ProdutoMapper.toResponse(salvo);
+        return paraResposta(salvo);
     }
 
     private Produto buscarOuFalhar(Long id) {
         return produtoRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Produto não encontrado"));
+    }
+
+    private ProdutoResponseDTO paraResposta(Produto produto) {
+        return new ProdutoResponseDTO(
+                produto.getId(),
+                produto.getNome(),
+                produto.getPreco(),
+                produto.getEstoque(),
+                produto.getCategoria(),
+                produto.getCriadoEm()
+        );
     }
 }
 '''
@@ -521,19 +519,12 @@ RESPONSE_8 = RESPONSE_1.replace('''        LocalDateTime criadoEm
         String fornecedorNome
 ) {''')
 
-MAPPER_8 = MAPPER_4.replace('''                produto.getCriadoEm()
-        );''', '''                produto.getCriadoEm(),
-                produto.getFornecedor().getId(),
-                produto.getFornecedor().getNome()
-        );''')
-
 SERVICE_8 = '''package com.gestorpro.api.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import com.gestorpro.api.dto.ProdutoRequestDTO;
 import com.gestorpro.api.dto.ProdutoResponseDTO;
-import com.gestorpro.api.mapper.ProdutoMapper;
 import com.gestorpro.api.model.Fornecedor;
 import com.gestorpro.api.model.Produto;
 import com.gestorpro.api.repository.FornecedorRepository;
@@ -550,31 +541,40 @@ public class ProdutoService {
     private final FornecedorRepository fornecedorRepository;
 
     public ProdutoResponseDTO cadastrar(ProdutoRequestDTO dto) {
-        Produto produto = ProdutoMapper.toEntity(dto);
+        Produto produto = new Produto();
+        produto.setNome(dto.nome());
+        produto.setPreco(dto.preco());
+        produto.setEstoque(dto.estoque());
+        produto.setCategoria(dto.categoria());
         produto.setFornecedor(buscarFornecedorOuFalhar(dto.fornecedorId()));
         produto.setCriadoEm(LocalDateTime.now());
+
         Produto salvo = produtoRepository.save(produto);
-        return ProdutoMapper.toResponse(salvo);
+        return paraResposta(salvo);
     }
 
     public List<ProdutoResponseDTO> listar() {
         List<Produto> produtos = produtoRepository.findAll();
         return produtos.stream()
-                .map(produto -> ProdutoMapper.toResponse(produto))
+                .map(produto -> paraResposta(produto))
                 .toList();
     }
 
     public ProdutoResponseDTO buscar(Long id) {
         Produto produto = buscarOuFalhar(id);
-        return ProdutoMapper.toResponse(produto);
+        return paraResposta(produto);
     }
 
     public ProdutoResponseDTO atualizar(Long id, ProdutoRequestDTO dto) {
         Produto produto = buscarOuFalhar(id);
-        ProdutoMapper.atualizar(produto, dto);
+        produto.setNome(dto.nome());
+        produto.setPreco(dto.preco());
+        produto.setEstoque(dto.estoque());
+        produto.setCategoria(dto.categoria());
         produto.setFornecedor(buscarFornecedorOuFalhar(dto.fornecedorId()));
+
         Produto salvo = produtoRepository.save(produto);
-        return ProdutoMapper.toResponse(salvo);
+        return paraResposta(salvo);
     }
 
     public void excluir(Long id) {
@@ -594,6 +594,19 @@ public class ProdutoService {
         return fornecedorRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Fornecedor não encontrado"));
+    }
+
+    private ProdutoResponseDTO paraResposta(Produto produto) {
+        return new ProdutoResponseDTO(
+                produto.getId(),
+                produto.getNome(),
+                produto.getPreco(),
+                produto.getEstoque(),
+                produto.getCategoria(),
+                produto.getCriadoEm(),
+                produto.getFornecedor().getId(),
+                produto.getFornecedor().getNome()
+        );
     }
 }
 '''
@@ -679,44 +692,11 @@ public record ClienteResponseDTO(
 }
 '''
 
-CLIENTE_MAPPER = '''package com.gestorpro.api.mapper;
-
-import com.gestorpro.api.dto.ClienteRequestDTO;
-import com.gestorpro.api.dto.ClienteResponseDTO;
-import com.gestorpro.api.model.Cliente;
-
-public class ClienteMapper {
-    public static Cliente toEntity(ClienteRequestDTO dto) {
-        Cliente cliente = new Cliente();
-        atualizar(cliente, dto);
-        return cliente;
-    }
-
-    public static void atualizar(Cliente cliente, ClienteRequestDTO dto) {
-        cliente.setNome(dto.nome());
-        cliente.setEmail(dto.email());
-        cliente.setTelefone(dto.telefone());
-        cliente.setCidade(dto.cidade());
-    }
-
-    public static ClienteResponseDTO toResponse(Cliente cliente) {
-        return new ClienteResponseDTO(
-                cliente.getId(),
-                cliente.getNome(),
-                cliente.getEmail(),
-                cliente.getTelefone(),
-                cliente.getCidade()
-        );
-    }
-}
-'''
-
 CLIENTE_SERVICE = '''package com.gestorpro.api.service;
 
 import java.util.List;
 import com.gestorpro.api.dto.ClienteRequestDTO;
 import com.gestorpro.api.dto.ClienteResponseDTO;
-import com.gestorpro.api.mapper.ClienteMapper;
 import com.gestorpro.api.model.Cliente;
 import com.gestorpro.api.repository.ClienteRepository;
 import lombok.RequiredArgsConstructor;
@@ -730,28 +710,37 @@ public class ClienteService {
     private final ClienteRepository clienteRepository;
 
     public ClienteResponseDTO cadastrar(ClienteRequestDTO dto) {
-        Cliente cliente = ClienteMapper.toEntity(dto);
+        Cliente cliente = new Cliente();
+        cliente.setNome(dto.nome());
+        cliente.setEmail(dto.email());
+        cliente.setTelefone(dto.telefone());
+        cliente.setCidade(dto.cidade());
+
         Cliente salvo = clienteRepository.save(cliente);
-        return ClienteMapper.toResponse(salvo);
+        return paraResposta(salvo);
     }
 
     public List<ClienteResponseDTO> listar() {
         List<Cliente> clientes = clienteRepository.findAll();
         return clientes.stream()
-                .map(cliente -> ClienteMapper.toResponse(cliente))
+                .map(cliente -> paraResposta(cliente))
                 .toList();
     }
 
     public ClienteResponseDTO buscar(Long id) {
         Cliente cliente = buscarOuFalhar(id);
-        return ClienteMapper.toResponse(cliente);
+        return paraResposta(cliente);
     }
 
     public ClienteResponseDTO atualizar(Long id, ClienteRequestDTO dto) {
         Cliente cliente = buscarOuFalhar(id);
-        ClienteMapper.atualizar(cliente, dto);
+        cliente.setNome(dto.nome());
+        cliente.setEmail(dto.email());
+        cliente.setTelefone(dto.telefone());
+        cliente.setCidade(dto.cidade());
+
         Cliente salvo = clienteRepository.save(cliente);
-        return ClienteMapper.toResponse(salvo);
+        return paraResposta(salvo);
     }
 
     public void excluir(Long id) {
@@ -765,6 +754,16 @@ public class ClienteService {
         return clienteRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Cliente não encontrado"));
+    }
+
+    private ClienteResponseDTO paraResposta(Cliente cliente) {
+        return new ClienteResponseDTO(
+                cliente.getId(),
+                cliente.getNome(),
+                cliente.getEmail(),
+                cliente.getTelefone(),
+                cliente.getCidade()
+        );
     }
 }
 '''
@@ -780,21 +779,20 @@ CLIENTE_CONTROLLER = (CONTROLLER_6
 ETAPAS = {
     1: {'model/Produto.java': PRODUTO_1, 'repository/ProdutoRepository.java': PRODUTO_REPOSITORY,
         'dto/ProdutoRequestDTO.java': REQUEST_1, 'dto/ProdutoResponseDTO.java': RESPONSE_1,
-        'mapper/ProdutoMapper.java': MAPPER_1, 'service/ProdutoService.java': SERVICE_1,
+        'service/ProdutoService.java': SERVICE_1,
         'controller/ProdutoController.java': CONTROLLER_1},
     2: {'service/ProdutoService.java': SERVICE_2, 'controller/ProdutoController.java': CONTROLLER_2},
     3: {'service/ProdutoService.java': SERVICE_3, 'controller/ProdutoController.java': CONTROLLER_3},
-    4: {'mapper/ProdutoMapper.java': MAPPER_4, 'service/ProdutoService.java': SERVICE_4,
+    4: {'service/ProdutoService.java': SERVICE_4,
         'controller/ProdutoController.java': CONTROLLER_4},
     5: {'service/ProdutoService.java': SERVICE_5, 'controller/ProdutoController.java': CONTROLLER_5},
     6: {'dto/ProdutoRequestDTO.java': REQUEST_6, 'controller/ProdutoController.java': CONTROLLER_6},
     7: {'exception/TratadorDeErros.java': TRATADOR},
     8: {'model/Produto.java': PRODUTO_8, 'dto/ProdutoRequestDTO.java': REQUEST_8,
-        'dto/ProdutoResponseDTO.java': RESPONSE_8, 'mapper/ProdutoMapper.java': MAPPER_8,
-        'service/ProdutoService.java': SERVICE_8},
+        'dto/ProdutoResponseDTO.java': RESPONSE_8, 'service/ProdutoService.java': SERVICE_8},
     9: {'model/Cliente.java': CLIENTE, 'repository/ClienteRepository.java': CLIENTE_REPOSITORY,
         'dto/ClienteRequestDTO.java': CLIENTE_REQUEST, 'dto/ClienteResponseDTO.java': CLIENTE_RESPONSE,
-        'mapper/ClienteMapper.java': CLIENTE_MAPPER, 'service/ClienteService.java': CLIENTE_SERVICE,
+        'service/ClienteService.java': CLIENTE_SERVICE,
         'controller/ClienteController.java': CLIENTE_CONTROLLER},
 }
 

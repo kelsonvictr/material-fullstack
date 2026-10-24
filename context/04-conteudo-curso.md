@@ -24,7 +24,7 @@ com a API real é uma etapa posterior. Os materiais antigos de backend servem de
 | 10 | `capitulos/10-projeto-gestor/` | **Projeto: GestorPRO** | Sistema de clientes/fornecedores/produtos: CRUD (axios post/put/delete), AGENTS.md, escada "na mão → junto → você comanda" — fecha o front |
 | 11 | `capitulos/11-java-oo-basico/` | **Java & OO direto ao ponto** | Um projeto em 4h10: JDK 21 pelo IntelliJ, Main, Produto, classe/objeto, construtor/this, encapsulamento, List, ProdutoService, teatro didático e ponte para Spring |
 | 12 | `capitulos/12-spring-primeira-api/` | **Spring: nossa primeira API** | Framework, Initializr, Docker Desktop, containers/volumes, PostgreSQL, SQL, IntelliJ/JDK 21 e cinco endpoints de Fornecedor sem DTO; três simulações e caderno livre |
-| 13 | `capitulos/13-spring-dto-validacao/` | **Produto e Cliente: a API fica profissional** | DTO/record, Mapper, BigDecimal, lambda/stream, 404, Bean Validation + tratador (400), `@ManyToOne` Produto → Fornecedor; Cliente construído pelo aluno; 3 simulações |
+| 13 | `capitulos/13-spring-dto-validacao/` | **Produto e Cliente: a API fica profissional** | DTO/record (conversão no Service), BigDecimal, lambda/stream, 404, Bean Validation + tratador (400), `@ManyToOne` Produto → Fornecedor; Cliente construído pelo aluno; 3 simulações |
 
 **Cap 12 implementado localmente:** especificação e evidências em
 [12-plano-cap-12-spring.md](12-plano-cap-12-spring.md). Produto é a próxima entidade proposta
